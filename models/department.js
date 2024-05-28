@@ -3,12 +3,15 @@ import fs from "fs";
 import util from "util";
 
 const Department = {
-  async department_register(department) {
+  async department_register(departmentName, headOfficer, departmentLandline, location, university, description, email) {
     try {
-      // Execute the INSERT query to register the department
+      // Execute the INSERT query to register the department with all provided details
       await excuteQuery({
-        query: "INSERT INTO department (department_name) VALUES (?)",
-        values: [department],
+        query: `
+          INSERT INTO department (department_name, headOfficer, departmentLandline, location, university, description, email)
+          VALUES (?, ?, ?, ?, ?, ?, ?)
+        `,
+        values: [departmentName, headOfficer, departmentLandline, location, university, description, email],
       });
 
       return true; // Return true if the department registration is successful
@@ -16,8 +19,8 @@ const Department = {
       console.error("Error:", error);
       return false; // Return false if there's an error during department registration
     }
-  },
-
+  }, 
+  
   async getAllDepartments() {
     try {
       const result = await excuteQuery({

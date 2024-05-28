@@ -43,13 +43,13 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchUserProfileData = async () => {
       try {
-        const response = await fetch(`../api/profile/${department_id}`);
+        const response = await fetch(`http://localhost:8080/department/${department_id}`);
         if (response.ok) {
           const data = await response.json();
           console.log("Received data:", data); // Add this line to log the received data
           setDepartment(data.department_name);
-          setHeadOfficer(data.headOfficer);
-          setDepartmentLandline(data.departmentLandline);
+          setHeadOfficer(data.head_officer);
+          setDepartmentLandline(data.department_landline);
           setLocation(data.location);
           setUniversity(data.university);
           setDepartmentDescription(data.description);
@@ -69,7 +69,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchProfileGoals = async () => {
       try {
-        const response = await fetch(`../api/checkGoals/${department_id}`);
+        const response = await fetch(`http://localhost:8080/goals/get/${department_id}`);
         if (response.ok) {
           const data = await response.json();
           console.log("Received data:", data); // Add this line to log the received data

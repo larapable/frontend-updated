@@ -31,13 +31,13 @@ export default function UserEditProfile() {
   useEffect(() => {
     const fetchUserProfileData = async () => {
       try {
-        const response = await fetch(`../api/profile/${department_id}`);
+        const response = await fetch(`http://localhost:8080/department/${department_id}`);
         if (response.ok) {
           const data = await response.json();
           console.log("Received data:", data); // Add this line to log the received data
           setDepartment(data.department_name);
-          setHeadOfficer(data.headOfficer);
-          setDepartmentLandline(data.departmentLandline);
+          setHeadOfficer(data.head_officer);
+          setDepartmentLandline(data.department_landline);
           setLocation(data.location);
           setUniversity(data.university);
           setDepartmentDescription(data.description);
@@ -101,18 +101,18 @@ export default function UserEditProfile() {
     e.preventDefault();
 
     try {
-      const res = await fetch("../api/profile", {
+      const res = await fetch(`http://localhost:8080/department/update/${department_id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          headOfficer: headOfficer,
-          departmentLandline: departmentLandline,
+          head_officer: headOfficer,
+          department_landline: departmentLandline,
           location: location,
           university: university,
-          departmentDescription: departmentDescription,
-          departmentId: department_id,
+          description: departmentDescription,
+          department_id: department_id,
         }),
       });
 

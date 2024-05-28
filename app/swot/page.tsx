@@ -17,22 +17,22 @@ interface SwotItem {
 
 interface Strategy {
   id: string;
-  'w-tResponses': string;
+  'w_tResponses': string;
 }
 
 interface Strategy1 {
   id: string;
-  's-tResponses': string;
+  's_tResponses': string;
 }
 
 interface Strategy2 {
   id: string;
-  's-oResponses': string;
+  's_oResponses': string;
 }
 
 interface Strategy3 {
   id: string;
-  'w-oResponses': string;
+  'w_oResponses': string;
 }
 
 
@@ -68,7 +68,7 @@ const Swot = () => {
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`api/wtStrategy/${department_id}`);
+      const response = await fetch(`http://localhost:8080/wtStrat/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -138,12 +138,12 @@ const Swot = () => {
   
       // Save each strategy individually to the database
       for (const strategy of strategiesArray) {
-        const databaseResponse = await fetch("/api/wtStrategy", {
+        const databaseResponse = await fetch("http://localhost:8080/wtStrat/insert", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ response: strategy, department_id: department_id}),
+          body: JSON.stringify({ w_tResponses: strategy, department: {id: department_id}}),
         });
   
         if (!databaseResponse.ok) {
@@ -162,12 +162,12 @@ const Swot = () => {
 
   const deleteStrategy = async (id: string, department_id: string) => {
     try {
-      const response = await fetch(`/api/wtStrategy`, {
+      const response = await fetch(`http://localhost:8080/wtStrat/delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id: id, department_id: department_id}),
+        body: JSON.stringify({id: id, department: {id: department_id}}),
       });
 
       if (!response.ok) {
@@ -183,7 +183,7 @@ const Swot = () => {
   
   const fetchstData = async () => {
     try {
-      const response = await fetch(`api/stStrategy/${department_id}`);
+      const response = await fetch(`http://localhost:8080/stStrat/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -257,12 +257,12 @@ const Swot = () => {
   
      // Save each strategy individually to the database
      for (const strategy of strategiesArray) {
-      const databaseResponse = await fetch("/api/stStrategy", {
+      const databaseResponse = await fetch("http://localhost:8080/stStrat/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ response: strategy, department_id: department_id}),
+        body: JSON.stringify({ s_tResponses: strategy, department: {id: department_id}}),
       });
 
       if (!databaseResponse.ok) {
@@ -281,12 +281,12 @@ const Swot = () => {
 
   const deletestStrategy = async (id: string, department_id: string) => {
     try {
-      const response = await fetch(`/api/stStrategy`, {
+      const response = await fetch(`http://localhost:8080/stStrat/delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id: id, department_id: department_id}),
+        body: JSON.stringify({id: id, department: {id: department_id}}),
       });
 
       if (!response.ok) {
@@ -302,7 +302,7 @@ const Swot = () => {
 
   const fetchsoData = async () => {
     try {
-      const response = await fetch(`api/soStrategy/${department_id}`);
+      const response = await fetch(`http://localhost:8080/soStrat/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -374,12 +374,12 @@ const Swot = () => {
   
       // Save each strategy individually to the database
      for (const strategy of strategiesArray) {
-      const databaseResponse = await fetch("/api/soStrategy", {
+      const databaseResponse = await fetch("http://localhost:8080/soStrat/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ response: strategy, department_id: department_id}),
+        body: JSON.stringify({ s_oResponses: strategy, department: {id: department_id}}),
       });
 
       if (!databaseResponse.ok) {
@@ -398,12 +398,12 @@ const Swot = () => {
 
   const deletesoStrategy = async (id: string, department_id: string) => {
     try {
-      const response = await fetch(`/api/soStrategy`, {
+      const response = await fetch(`http://localhost:8080/soStrat/delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id: id, department_id: department_id}),
+        body: JSON.stringify({id: id, department: {id: department_id}}),
       });
 
       if (!response.ok) {
@@ -419,7 +419,7 @@ const Swot = () => {
 
   const fetchwoData = async () => {
     try {
-      const response = await fetch(`api/woStrategy/${department_id}`);
+      const response = await fetch(`http://localhost:8080/woStrat/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
@@ -490,12 +490,12 @@ const Swot = () => {
   
        // Save each strategy individually to the database
        for (const strategy of strategiesArray) {
-        const databaseResponse = await fetch("/api/woStrategy", {
+        const databaseResponse = await fetch("http://localhost:8080/woStrat/insert", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ response: strategy, department_id: department_id}),
+          body: JSON.stringify({ w_oResponses: strategy, department: {id: department_id}}),
         });
   
         if (!databaseResponse.ok) {
@@ -513,12 +513,12 @@ const Swot = () => {
   };
   const deletewoStrategy = async (id: string, department_id: string) => {
     try {
-      const response = await fetch(`/api/woStrategy`, {
+      const response = await fetch(`http://localhost:8080/woStrat/delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({id: id, department_id: department_id}),
+        body: JSON.stringify({id: id, department: {id: department_id}}),
       });
 
       if (!response.ok) {
@@ -556,32 +556,32 @@ const Swot = () => {
         } else {
           try {
             // Send data to backend
-            const response = await fetch(`api/strengths`, {
+            const response = await fetch(`http://localhost:8080/strengths/insert`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ value: newItem.trim(), department_id: department_id }),
+              body: JSON.stringify({ value: newItem.trim(), department: {id:department_id} }),
             });
     
             if (!response.ok) {
               throw new Error('Failed to add item. Please try again.');
             }
     
-            const { message, newStrength } = await response.json();
+            const newStrength = await response.json();
+            console.log('newStrength:', newStrength); 
     
-            if (response.status === 201) {
-              // Update fetchedStrengths state and wait for it to complete
-              const updatedStrength = { ...newStrength, id: newStrength.data.id };
-              setFetchedStrengths(prevStrengths => [...prevStrengths, updatedStrength]);
-              setNewItem("");
-              setIsAdding(false);
-              toast.success(message);
-
+            if (response.status === 200) {
+              
+                const updatedStrength = { ...newStrength, id: newStrength.id }; 
+                console.log('newStrengtharray:', newStrength.id); 
+                setFetchedStrengths(prevStrengths => [...prevStrengths, updatedStrength]);
+                setNewItem("");
+                setIsAdding(false);
+                toast.success("Strength added successfully");
               fetchUpdatedStrengths();
             } else {
-              console.error('Error adding strength:', message);
-              toast.error(message);
+              toast.error("There is an error adding strength");
             }
     
           } catch (error: any) {
@@ -599,32 +599,31 @@ const Swot = () => {
         } else {
           try {
             // Send data to backend
-            const response = await fetch(`api/weaknesses`, {
+            const response = await fetch(`http://localhost:8080/weaknesses/insert`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ value: newItem.trim(), department_id: department_id }),
+              body: JSON.stringify({ value: newItem.trim(), department : {id: department_id} }),
             });
     
             if (!response.ok) {
               throw new Error('Failed to add item. Please try again.');
             }
     
-            const { message, newWeakness } = await response.json();
+            const newWeakness = await response.json();
 
-            if (response.status === 201) {
-              const updatedWeakness = { ...newWeakness, id: newWeakness.data.id };
+            if (response.status === 200) {
+              const updatedWeakness = { ...newWeakness, id: newWeakness.id };
               setFetchedWeaknesses(prevWeaknesses => [...prevWeaknesses, updatedWeakness]);
               setNewItem("");
               setIsAdding(false);
-              toast.success(message);
+              toast.success("Weakness added successfully");
             
 
               fetchUpdatedWeaknesses();
             } else {
-              console.error('Error adding strength:', message);
-              toast.error(message);
+              toast.error("There is an error adding weakness");
             }
     
           } catch (error: any) {
@@ -641,31 +640,30 @@ const Swot = () => {
           toast.error("Maximum limit of 5 items reached");
         } else {
           try {
-            const response = await fetch(`api/opportunities`, {
+            const response = await fetch(`http://localhost:8080/opportunities/insert`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ value: newItem.trim(), department_id: department_id }),
+              body: JSON.stringify({ value: newItem.trim(), department: {id: department_id} }),
             });
     
             if (!response.ok) {
               throw new Error('Failed to add item. Please try again.');
             }
     
-            const { message, newOpportunities } = await response.json();
+            const newOpportunities = await response.json();
     
-            if (response.status === 201) {
-              const updatedOpportunities = { ...newOpportunities, id: newOpportunities.data.id };
+            if (response.status === 200) {
+              const updatedOpportunities = { ...newOpportunities, id: newOpportunities.id };
               setFetchedOpportunities(prevOpportunities => [...prevOpportunities, updatedOpportunities]);
               setNewItem("");
               setIsAdding(false);
-              toast.success(message);
+              toast.success("Opportunities added successfully");
     
               fetchUpdatedOpportunities();
             } else {
-              console.error('Error adding opportunity:', message);
-              toast.error(message);
+              toast.error("There is an error adding opportunities");
             }
           } catch (error: any) {
             console.error('Error adding item:', error.message);
@@ -681,31 +679,30 @@ const Swot = () => {
           toast.error("Maximum limit of 5 items reached");
         } else {
           try {
-            const response = await fetch(`api/threats`, {
+            const response = await fetch(`http://localhost:8080/threats/insert`, {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({ value: newItem.trim(), department_id: department_id }),
+              body: JSON.stringify({ value: newItem.trim(), department: {id: department_id} }),
             });
     
             if (!response.ok) {
               throw new Error('Failed to add item. Please try again.');
             }
     
-            const { message, newThreats } = await response.json();
+            const newThreats = await response.json();
     
-            if (response.status === 201) {
-              const updatedThreats = { ...newThreats, id: newThreats.data.id };
+            if (response.status === 200) {
+              const updatedThreats = { ...newThreats, id: newThreats.id };
               setFetchedThreats(prevThreats => [...prevThreats, updatedThreats]);
               setNewItem("");
               setIsAdding(false);
-              toast.success(message);
+              toast.success("Threats added successfully");
     
               fetchUpdatedThreats();
             } else {
-              console.error('Error adding threat:', message);
-              toast.error(message);
+              toast.error("There is an error adding threats");
             }
           } catch (error: any) {
             console.error('Error adding item:', error.message);
@@ -717,61 +714,69 @@ const Swot = () => {
     
     const EditStrength = async (id: string, newValue: string, department_id: string) => {
       try {
-        const response = await fetch(`api/strengths`, {
+        const response = await fetch(`http://localhost:8080/strengths/update/${department_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: id, newValue: newValue, department_id: department_id }),
+          body: JSON.stringify({ id: id, value: newValue, department: { id: department_id } }),
         });
     
         if (!response.ok) {
           throw new Error('Failed to update item. Please try again.');
         }
     
-        const {updatedstr }= await response.json();  
+        const updatedStrength = await response.json();
+        console.log('Updated Strength:', updatedStrength);
+    
+        if (!updatedStrength || !updatedStrength.id) {
+          throw new Error('Updated strength is not in the expected format.');
+        }
+    
         setFetchedStrengths(prevStrengths =>
           prevStrengths.map(strength => {
-            if (strength.id === updatedstr.updatedStrength.id) {
-             
-              return updatedstr.updatedStrength;
+            if (strength.id === updatedStrength.id) {
+              return updatedStrength;
             } else {
-             
               return strength;
             }
           })
         );
     
-        console.log(`Strengths updated successfully`);
+        console.log('Strength updated successfully');
       } catch (error: any) {
         console.error('Error updating item:', error.message);
       }
     };
     
+    
     const EditWeakness = async (id: string, newValue: string, department_id: string) => {
       try {
-        const response = await fetch(`api/weaknesses`, {
+        const response = await fetch(`http://localhost:8080/weaknesses/update/${department_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: id, newValue: newValue, department_id: department_id }),
+          body: JSON.stringify({ id: id, value: newValue, department: {id: department_id} }),
         });
     
         if (!response.ok) {
           throw new Error('Failed to update item. Please try again.');
         }
     
-        const {updatedwks }= await response.json();
+        const updatedWeakness = await response.json();
+
+        console.log("Updated Weakness: ", updatedWeakness);
+        if(!updatedWeakness || !updatedWeakness.id) {
+          throw new Error("Updated Weakness is not in the expected format");
+        }
   
         setFetchedWeaknesses(prevWeaknesses =>
           prevWeaknesses.map(weakness => {
          
-            if (weakness.id === updatedwks.updatedWeakness.id) {
-              
-              return updatedwks.updatedWeakness;
+            if (weakness.id === updatedWeakness.id) {
+              return updatedWeakness;
             } else {
-           
               return weakness;
             }
           })
@@ -785,24 +790,28 @@ const Swot = () => {
 
     const EditOpportunities = async (id: string, newValue: string, department_id: string) => {
       try {
-        const response = await fetch(`api/opportunities`, {
+        const response = await fetch(`http://localhost:8080/opportunities/update/${department_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: id, newValue: newValue, department_id: department_id }),
+          body: JSON.stringify({ id: id, value: newValue, department: {id: department_id }}),
         });
     
         if (!response.ok) {
           throw new Error('Failed to update item. Please try again.');
         }
     
-        const {updatedOpp }= await response.json();
+        const updatedOpportunities = await response.json();
+
+        if(!updatedOpportunities || !updatedOpportunities.id) {
+          throw new Error("Updated Opportunities is not in the expected format");
+        }
 
         setFetchedOpportunities(prevOpportunities =>
           prevOpportunities.map(opportunity => {
-            if (opportunity.id === updatedOpp.updatedOpportunities.id) {
-              return updatedOpp.updatedOpportunities;
+            if (opportunity.id === updatedOpportunities.id) {
+              return updatedOpportunities;
             } else {
               return opportunity;
             }
@@ -817,23 +826,27 @@ const Swot = () => {
 
     const EditThreats = async (id: string, newValue: string, department_id: string) => {
       try {
-        const response = await fetch(`api/threats`, {
+        const response = await fetch(`http://localhost:8080/threats/update/${department_id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ id: id, newValue: newValue, department_id: department_id }),
+          body: JSON.stringify({ id: id, value: newValue, department: {id : department_id} }),
         });
     
         if (!response.ok) {
           throw new Error('Failed to update item. Please try again.');
         }
 
-        const {updatedthr }= await response.json();
+        const updatedThreats = await response.json();
+        if(!updatedThreats || !updatedThreats.id) {
+          throw new Error("Updated threats is not in the expected format");
+        }
+
         setFetchedThreats(prevThreats =>
           prevThreats.map(threat => {
-            if (threat.id === updatedthr.updatedThreats.id) {
-              return updatedthr.updatedThreats;
+            if (threat.id === updatedThreats.id) {
+              return updatedThreats;
             } else {
               return threat;
             }
@@ -848,58 +861,55 @@ const Swot = () => {
 
     const deleteItem = async (id: string, department_id: string, endpoint: string) => {
       try {
-        const response = await fetch(`api/${endpoint}`, {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ id: id, department_id: department_id }),
-        });
-    
-        if (response.ok) {
-          // Delete successful, fetch updated items to update UI
-          fetchUpdatedItems(endpoint);
-          console.log(`Item with ID ${id} in ${endpoint} deleted successfully`);
-        } else {
-          console.error(`Error deleting item with ID ${id} in ${endpoint}`);
-        }
-      } catch (error:any) {
-        console.error(`Error deleting item with ID ${id} in ${endpoint}:`, error.message);
+          const response = await fetch(`http://localhost:8080/${endpoint}/delete/${id}`, {
+              method: 'DELETE',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+  
+          if (response.ok) {
+              console.log(`Item with ID ${id} in ${endpoint} deleted successfully`);
+              fetchUpdatedItems(endpoint, department_id);
+          } else {
+              console.error(`Error deleting item with ID ${id} in ${endpoint}`);
+          }
+      } catch (error: any) {
+          console.error(`Error deleting item with ID ${id} in ${endpoint}:`, error.message);
       }
-    };
-
-    const fetchUpdatedItems = async (endpoint: string) => {
+  };
+  
+  const fetchUpdatedItems = async (endpoint: string, department_id: string) => {
       try {
-        const response = await fetch(`api/${endpoint}/${department_id}`);
-        if (!response.ok) {
-          throw new Error(`Failed to fetch updated ${endpoint}`);
-        }
-        const data = await response.json();
-        switch (endpoint) {
-          case 'strengths':
-            setFetchedStrengths(data);
-            break;
-          case 'weaknesses':
-            setFetchedWeaknesses(data);
-            break;
-          case 'opportunities':
-            setFetchedOpportunities(data);
-            break;
-          case 'threats':
-            setFetchedThreats(data);
-            break;
-          default:
-            console.error(`Invalid endpoint: ${endpoint}`);
-        }
-      } catch (error:any) {
-        console.error(`Error fetching updated ${endpoint}:`, error.message);
+          const response = await fetch(`http://localhost:8080/${endpoint}/get/${department_id}`);
+          if (!response.ok) {
+              throw new Error(`Failed to fetch updated ${endpoint}`);
+          }
+          const data = await response.json();
+          switch (endpoint) {
+              case 'strengths':
+                  setFetchedStrengths(data);
+                  break;
+              case 'weaknesses':
+                  setFetchedWeaknesses(data);
+                  break;
+              case 'opportunities':
+                  setFetchedOpportunities(data);
+                  break;
+              case 'threats':
+                  setFetchedThreats(data);
+                  break;
+              default:
+                  console.error(`Invalid endpoint: ${endpoint}`);
+          }
+      } catch (error: any) {
+          console.error(`Error fetching updated ${endpoint}:`, error.message);
       }
-    };
-
-    const deleteStrength = async (id: string, department_id: string) => {
-  await deleteItem(id, department_id, 'strengths');
-};
-
+  };
+  
+  const deleteStrength = async (id: string, department_id: string) => {
+      await deleteItem(id, department_id, 'strengths');
+  };
 const deleteWeakness = async (id: string, department_id: string) => {
   await deleteItem(id, department_id, 'weaknesses');
 };
@@ -923,11 +933,12 @@ const deleteThreats = async (id: string, department_id: string) => {
   useEffect(() => {
     const fetchStrengths = async () => {
       try {
-        const response = await fetch(`api/strengths/${department_id}`);
+        const response = await fetch(`http://localhost:8080/strengths/get/${department_id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch strengths');
         }
         const data = await response.json();
+        console.log("data: ", data);
         setFetchedStrengths(data); 
         setLastFetchedDepartmentId(department_id); 
       } catch (error: any) {
@@ -945,7 +956,7 @@ const deleteThreats = async (id: string, department_id: string) => {
   useEffect(() => {
     const FetchWeaknesses = async () => {
       try {
-        const response = await fetch(`api/weaknesses/${department_id}`);
+        const response = await fetch(`http://localhost:8080/weaknesses/get/${department_id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch weaknesses');
         }
@@ -966,7 +977,7 @@ const deleteThreats = async (id: string, department_id: string) => {
   useEffect(() => {
     const FetchOpportunites = async () => {
       try {
-        const response = await fetch(`api/opportunities/${department_id}`);
+        const response = await fetch(`http://localhost:8080/opportunities/get/${department_id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch opportunities');
         }
@@ -986,7 +997,7 @@ const deleteThreats = async (id: string, department_id: string) => {
   useEffect(() => {
     const FetchThreats = async () => {
       try {
-        const response = await fetch(`api/threats/${department_id}`);
+        const response = await fetch(`http://localhost:8080/threats/get/${department_id}`);
         if (!response.ok) {
           throw new Error('Failed to fetch threats');
         }
@@ -1005,7 +1016,7 @@ const deleteThreats = async (id: string, department_id: string) => {
 
   const fetchUpdatedStrengths = async () => {
     try {
-      const response = await fetch(`api/strengths/${department_id}`);
+      const response = await fetch(`http://localhost:8080/strengths/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch updated strengths');
       }
@@ -1018,7 +1029,7 @@ const deleteThreats = async (id: string, department_id: string) => {
 
   const fetchUpdatedWeaknesses = async () => {
     try {
-      const response = await fetch(`api/weaknesses/${department_id}`);
+      const response = await fetch(`http://localhost:8080/weaknesses/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch updated weaknesses');
       }
@@ -1031,7 +1042,7 @@ const deleteThreats = async (id: string, department_id: string) => {
   
   const fetchUpdatedOpportunities = async () => {
     try {
-      const response = await fetch(`api/opportunities/${department_id}`);
+      const response = await fetch(`http://localhost:8080/opportunities/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch updated opportunities');
       }
@@ -1044,7 +1055,7 @@ const deleteThreats = async (id: string, department_id: string) => {
   
   const fetchUpdatedThreats = async () => {
     try {
-      const response = await fetch(`api/threats/${department_id}`);
+      const response = await fetch(`http://localhost:8080/threats/get/${department_id}`);
       if (!response.ok) {
         throw new Error('Failed to fetch updated threats');
       }
@@ -1558,7 +1569,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                                 <FaTrashAlt className="text-red-500 mr-2 cursor-pointer" 
                                 onClick={() => deletesoStrategy(strategy.id, department_id)}/>
                                 <p className="text-gray-800 text-base leading-relaxed whitespace-pre-line">
-                                    {strategy['s-oResponses']}
+                                    {strategy['s_oResponses']}
                                 </p>
                             </div>
                         </div>
@@ -1581,7 +1592,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                                 <FaTrashAlt className="text-red-500 mr-2 cursor-pointer" 
                                 onClick={() => deletewoStrategy(strategy.id, department_id)}/>
                                 <p className="text-gray-800 text-base leading-relaxed whitespace-pre-line">
-                                    {strategy['w-oResponses']}
+                                    {strategy['w_oResponses']}
                                 </p>
                             </div>
                         </div>
@@ -1607,7 +1618,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                                 <FaTrashAlt className="text-red-500 mr-2 cursor-pointer" 
                                 onClick={() => deletestStrategy(strategy.id, department_id)}/>
                                 <p className="text-gray-800 text-base leading-relaxed whitespace-pre-line">
-                                    {strategy['s-tResponses']}
+                                    {strategy['s_tResponses']}
                                 </p>
                             </div>
                         </div>
@@ -1630,7 +1641,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                                 <FaTrashAlt className="text-red-500 mr-2 cursor-pointer" 
                                 onClick={() => deleteStrategy(strategy.id, department_id)}/>
                                 <p className="text-gray-800 text-base leading-relaxed whitespace-pre-line">
-                                    {strategy['w-tResponses']}
+                                    {strategy['w_tResponses']}
                                 </p>
                             </div>
                         </div>

@@ -4,14 +4,14 @@ import "react-datepicker/dist/react-datepicker.css";
 import { getSession, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
 import { Modal } from "@mui/material";
- 
+
 export default function Inputgoals() {
   const { data: session, status } = useSession();
   console.log("useSession Hook session object", session);
- 
+
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name);
- 
+
   const [isEditing, setIsEditing] = useState(false);
   const [officeVision, setOfficeVision] = useState("");
   const [valueProposition, setValueProposition] = useState("");
@@ -22,18 +22,18 @@ export default function Inputgoals() {
   const [selectedEndDate, setSelectedEndDate] = useState<Date | null>(null);
   const [successModal, setSuccessModal] = useState(false);
   const [isNew, setIsNew] = useState(true); // New state to track if adding new goals
- 
+
   const handleCloseSuccessModal = () => {
     setSuccessModal(false);
   };
- 
+
   const department_id = user?.department_id;
   console.log("User Parsed: ", user);
- 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(`../api/checkGoals/${department_id}`);
+        const response = await fetch(`http://localhost:8080/goals/get/${department_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
@@ -58,34 +58,42 @@ export default function Inputgoals() {
     };
     fetchData();
   }, [department_id]);
- 
+
   const handleSave = async (event: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     event.preventDefault();
- 
+
     if (!officeVision || !valueProposition || !strategicGoals) {
       alert("Please fill out all fields");
       return;
     }
- 
+
     try {
-      const response = await fetch("/api/inputGoals", {
-        method: "POST",
+      // Determine if we should POST or PUT
+      const checkResponse = await fetch(`http://localhost:8080/goals/get/${department_id}`);
+      const isExisting = checkResponse.ok && (await checkResponse.json()).vision;
+
+      const url = isExisting ? `http://localhost:8080/goals/update/${department_id}` : "http://localhost:8080/goals/insert";
+      const method = isExisting ? "PUT" : "POST";
+
+      const response = await fetch(url, {
+        method: method,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          officeVision,
-          valueProposition,
-          strategicGoals,
-          strategicGoals2,
-          strategicGoals3,
-          selectedDate,
-          selectedEndDate,
-          department_id,
-          isNew, // Pass the isNew flag to the backend
+          vision: officeVision,
+          proposition: valueProposition,
+          goals: strategicGoals,
+          goals2: strategicGoals2,
+          goals3: strategicGoals3,
+          startDate: selectedDate,
+          endDate:selectedEndDate,
+          department: {
+            id: department_id, 
+          },
         }),
       });
- 
+
       if (response.ok) {
         setSuccessModal(true);
         setIsEditing(false);
@@ -97,7 +105,7 @@ export default function Inputgoals() {
       console.error("Error:", error);
     }
   };
- 
+
   const handleAddNew = () => {
     setOfficeVision("");
     setValueProposition("");
@@ -109,11 +117,11 @@ export default function Inputgoals() {
     setIsEditing(true);
     setIsNew(true); // Set to true when adding new goals
   };
- 
+
   const toggleEditing = async () => {
     if (isEditing) {
       try {
-        const response = await fetch(`../api/checkGoals/${department_id}`);
+        const response = await fetch(`http://localhost:8080/goals/get/${department_id}`);
         if (!response.ok) {
           throw new Error("Failed to fetch data");
         }
@@ -138,7 +146,6 @@ export default function Inputgoals() {
       setIsEditing((prevIsEditing) => !prevIsEditing);
     }
   };
- 
   return (
     <div className="flex flex-col items-center ml-28">
       <div className="ml-[-78rem] mb-5 mt-[0rem] inline-block break-words font-bold text-[3rem] text-[#000000]">

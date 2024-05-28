@@ -14,7 +14,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successModal, setSuccessModal] = useState(false);
@@ -57,7 +57,8 @@ export default function SignupPage() {
       setErrorModalOpen(true);
       return;
     }
-
+    
+    
     // Check if password meets requirements
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
@@ -70,7 +71,7 @@ export default function SignupPage() {
     }
 
     try {
-      const resUserExists = await fetch("api/userExists", {
+      const resUserExists = await fetch("http://localhost:8080/user/userExists", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -85,8 +86,8 @@ export default function SignupPage() {
         setErrorModalOpen(true);
         return;
       }
-
-      const res = await fetch("api/register", {
+      
+      const res = await fetch("http://localhost:8080/user/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -95,10 +96,13 @@ export default function SignupPage() {
           username,
           email,
           password,
-          department_id: selectedDepartment, // Pass selectedDepartment as department_id
+          department: {
+            id: selectedDepartment, // Pass selectedDepartment as a nested object
+          },
         }),
       });
-
+      const data = await res.json();
+      console.log("data:",data);
       if (res.ok) {
         console.log("Signup successful");
         // Clear input fields after successful signup
@@ -106,7 +110,7 @@ export default function SignupPage() {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
-        setSelectedDepartment("");
+        setSelectedDepartment(0);
         setSuccessModal(true);
         router.push("/login");
       
@@ -120,7 +124,7 @@ export default function SignupPage() {
 
   useEffect(() => {
     const fetchDepartments = async () => {
-      const res = await fetch("../api/getAllDepartment");
+      const res = await fetch("http://localhost:8080/department/getAllDepartments");
       const data = await res.json();
       setDepartments(data.departments);
     };
@@ -135,18 +139,18 @@ export default function SignupPage() {
           Sign Up
         </div>
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
-          <select
-            value={selectedDepartment}
-            onChange={(e) => setSelectedDepartment(e.target.value)}
-            className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
-          >
-            <option value="" disabled className=" text-[#807979]">Select Department</option>
-            {departments.map((dept) => (
-              <option key={dept.id} value={dept.id}>
-                {dept.department_name}
-              </option>
-            ))}
-          </select>
+        <select
+          value={selectedDepartment || ''}
+          onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
+          className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
+        >
+          <option value="">Select a department</option>
+          {departments && departments.map((department) => (
+          <option key={department.id} value={department.id}>
+            {department.department_name}
+          </option>
+        ))}
+        </select>
         </div>
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] mb-6 py-4 flex items-center">
           <input
@@ -204,10 +208,10 @@ export default function SignupPage() {
           <div className="flex-1 bg-[#807979] h-0.5 w-[17.3rem]"></div>
         </div>
         <a
-          href="/"
+          href="/department"
           className="text-2xl text-[#8a252c] font-bold lg:mt-4 md:mb-16 hover:underline"
         >
-          Back Home
+          Register Department
         </a>
       </div>
       <div className="flex flex-col items-center bg-[#8a252c] lg:w-full lg:ml-[12%] md:w-full">
