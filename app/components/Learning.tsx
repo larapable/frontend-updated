@@ -9,8 +9,8 @@ import { toast } from "react-toastify";
 interface LearningScorecard {
   id: number;
   target_code: string;
-  start_date: Date;
-  completion_date: Date;
+  startDate: Date;
+  completionDate: Date;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -125,16 +125,16 @@ export default function Learning() {
 
     try {
       // Send the POST request to the server
-      const response = await fetch("/api/learningBSC", {
+      const response = await fetch("http://localhost:8080/bsc/learningBsc/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          department_id: department_id,
+          department: {id: department_id},
           target_code: learningTargetCode,
-          start_date: learningStartDate,
-          completion_date: learningTargetCompletionDate,
+          startDate: learningStartDate,
+          completionDate: learningTargetCompletionDate,
           office_target: learningOfficeTarget,
           status: learningStatus,
           key_performance_indicator: learningKPI,
@@ -249,13 +249,13 @@ export default function Learning() {
 
       try {
         const response = await fetch(
-          `/api/getLearningScorecard/${department_id}`
+          `http://localhost:8080/bsc/learning/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch learning scorecards");
         }
         const data = await response.json();
-        setLearningSavedScorecards(data.learning_bsc);
+        setLearningSavedScorecards(data);
       } catch (error) {
         console.error("Error fetching learning scorecards:", error);
       }
@@ -296,13 +296,13 @@ export default function Learning() {
     );
     if (scorecardToEdit) {
       // Convert the start date and completion date to the local timezone before setting them
-      const startDate = new Date(scorecardToEdit.start_date);
+      const startDate = new Date(scorecardToEdit.startDate);
       startDate.setMinutes(
         startDate.getMinutes() - startDate.getTimezoneOffset()
       );
       setLearningStartDate(startDate);
 
-      const completionDate = new Date(scorecardToEdit.completion_date);
+      const completionDate = new Date(scorecardToEdit.completionDate);
       completionDate.setMinutes(
         completionDate.getMinutes() - completionDate.getTimezoneOffset()
       );
@@ -407,8 +407,8 @@ export default function Learning() {
                     </div>
                     <div className="flex items-center w-[35rem]">
                       <span className="font-regular mr-5 ml-10">
-                        {item.completion_date
-                          ? new Date(item.completion_date).toLocaleDateString()
+                        {item.completionDate
+                          ? new Date(item.completionDate).toLocaleDateString()
                           : "N/A"}
                       </span>
                       <div

@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 interface InternalScorecard {
   id: number;
   target_code: string;
-  start_date: Date;
-  completion_date: Date;
+  startDate: Date;
+  completionDate: Date;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -126,16 +126,16 @@ export default function Internal() {
 
     try {
       // Send the POST request to the server
-      const response = await fetch("/api/internalBSC", {
+      const response = await fetch("http://localhost:8080/bsc/internalBsc/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          department_id: department_id,
+          department: {id: department_id} ,
           target_code: internalTargetCode,
-          start_date: internalStartDate,
-          completion_date: internalTargetCompletionDate,
+          startDate: internalStartDate,
+          completionDate: internalTargetCompletionDate,
           office_target: internalOfficeTarget,
           status: internalStatus,
           key_performance_indicator: internalKPI,
@@ -256,13 +256,13 @@ export default function Internal() {
 
       try {
         const response = await fetch(
-          `/api/getInternalScorecard/${department_id}`
+          `http://localhost:8080/bsc/internal/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal scorecards");
         }
         const data = await response.json();
-        setInternalSavedScorecards(data.internal_bsc);
+        setInternalSavedScorecards(data);
       } catch (error) {
         console.error("Error fetching internal scorecards:", error);
       }
@@ -303,13 +303,13 @@ export default function Internal() {
     );
     if (scorecardToEdit) {
       // Convert the start date and completion date to the local timezone before setting them
-      const startDate = new Date(scorecardToEdit.start_date);
+      const startDate = new Date(scorecardToEdit.startDate);
       startDate.setMinutes(
         startDate.getMinutes() - startDate.getTimezoneOffset()
       );
       setInternalStartDate(startDate);
 
-      const completionDate = new Date(scorecardToEdit.completion_date);
+      const completionDate = new Date(scorecardToEdit.completionDate);
       completionDate.setMinutes(
         completionDate.getMinutes() - completionDate.getTimezoneOffset()
       );
@@ -414,8 +414,8 @@ export default function Internal() {
                     </div>
                     <div className="flex items-center w-[35rem]">
                       <span className="font-regular mr-5 ml-10">
-                        {item.completion_date
-                          ? new Date(item.completion_date).toLocaleDateString()
+                        {item.completionDate
+                          ? new Date(item.completionDate).toLocaleDateString()
                           : "N/A"}
                       </span>
                       <div

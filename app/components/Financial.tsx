@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 interface FinancialScorecard {
   id: number;
   target_code: string;
-  start_date: Date;
-  completion_date: Date;
+  startDate: Date;
+  completionDate: Date;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -275,7 +275,8 @@ export default function Financial() {
         }
         const data = await response.json();
         console.log("Financial scorecards data:", data);
-        setFinancialSavedScorecards(data.financial_bsc);
+        setFinancialSavedScorecards(data);
+        console.log("Updated financial scorecards:", data.financial_bsc);
       } catch (error) {
         console.error("Error fetching financial scorecards:", error);
       }
@@ -316,13 +317,13 @@ export default function Financial() {
     );
     if (scorecardToEdit) {
       // Convert the start date and completion date to the local timezone before setting them
-      const startDate = new Date(scorecardToEdit.start_date);
+      const startDate = new Date(scorecardToEdit.startDate);
       startDate.setMinutes(
         startDate.getMinutes() - startDate.getTimezoneOffset()
       );
       setFinancialStartDate(startDate);
 
-      const completionDate = new Date(scorecardToEdit.completion_date);
+      const completionDate = new Date(scorecardToEdit.completionDate);
       completionDate.setMinutes(
         completionDate.getMinutes() - completionDate.getTimezoneOffset()
       );
@@ -427,8 +428,8 @@ export default function Financial() {
                     </div>
                     <div className="flex items-center w-[35rem]">
                       <span className="font-regular mr-5 ml-10">
-                        {item.completion_date
-                          ? new Date(item.completion_date).toLocaleDateString()
+                        {item.completionDate
+                          ? new Date(item.completionDate).toLocaleDateString()
                           : "N/A"}
                       </span>
                       <div

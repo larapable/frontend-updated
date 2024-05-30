@@ -8,8 +8,8 @@ import { toast } from "react-toastify";
 interface StakeholderScorecard {
   id: number;
   target_code: string;
-  start_date: Date;
-  completion_date: Date;
+  startDate: Date;
+  completionDate: Date;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -131,16 +131,16 @@ export default function Stakeholder() {
 
     try {
       // Send the POST request to the server
-      const response = await fetch("/api/stakeholderBSC", {
+      const response = await fetch("http://localhost:8080/bsc/stakeholderBsc/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          department_id: department_id,
+          department: {id: department_id},
           target_code: stakeholderTargetCode,
-          start_date: stakeholderStartDate,
-          completion_date: stakeholderTargetCompletionDate,
+          startDate: stakeholderStartDate,
+          completionDate: stakeholderTargetCompletionDate,
           office_target: stakeholderOfficeTarget,
           status: stakeholderStatus,
           key_performance_indicator: stakeholderKPI,
@@ -262,13 +262,13 @@ export default function Stakeholder() {
 
       try {
         const response = await fetch(
-          `/api/getStakeholderScorecard/${department_id}`
+          `http://localhost:8080/bsc/stakeholder/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch stakeholder scorecards");
         }
         const data = await response.json();
-        setStakeholderSavedScorecards(data.stakeholder_bsc);
+        setStakeholderSavedScorecards(data);
       } catch (error) {
         console.error("Error fetching stakeholder scorecards:", error);
       }
@@ -309,13 +309,13 @@ export default function Stakeholder() {
     );
     if (scorecardToEdit) {
       // Convert the start date and completion date to the local timezone before setting them
-      const startDate = new Date(scorecardToEdit.start_date);
+      const startDate = new Date(scorecardToEdit.startDate);
       startDate.setMinutes(
         startDate.getMinutes() - startDate.getTimezoneOffset()
       );
       setStakeholderStartDate(startDate);
 
-      const completionDate = new Date(scorecardToEdit.completion_date);
+      const completionDate = new Date(scorecardToEdit.completionDate);
       completionDate.setMinutes(
         completionDate.getMinutes() - completionDate.getTimezoneOffset()
       );
@@ -420,8 +420,8 @@ export default function Stakeholder() {
                     </div>
                     <div className="flex items-center w-[35rem]">
                       <span className="font-regular mr-5 ml-10">
-                        {item.completion_date
-                          ? new Date(item.completion_date).toLocaleDateString()
+                        {item.completionDate
+                          ? new Date(item.completionDate).toLocaleDateString()
                           : "N/A"}
                       </span>
                       <div
