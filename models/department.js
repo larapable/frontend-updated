@@ -134,6 +134,7 @@ const Department = {
       throw new Error("An error occurred while querying the database.");
     }
   },
+  
   //Checks if the image exists
   async imageExists(department_id) {
     try {

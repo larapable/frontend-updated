@@ -94,7 +94,7 @@ export default function UserProfile() {
   useEffect(() => {
     const fetchImageData = async () => {
       try {
-        const response = await fetch(`../api/getImage/${department_id}`);
+        const response = await fetch(`http://localhost:8080/image/getImage/${department_id}`);
         if (response.ok) {
           const { imageData, imageFormat } = await response.json();
           console.log(

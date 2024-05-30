@@ -57,7 +57,7 @@ export default function UserEditProfile() {
   useEffect(() => {
     const fetchImageData = async () => {
       try {
-        const response = await fetch(`../api/getImage/${department_id}`);
+        const response = await fetch(`http://localhost:8080/image/getImage/${department_id}`);
         if (response.ok) {
           const { imageData, imageFormat } = await response.json();
           console.log(
@@ -154,7 +154,7 @@ export default function UserEditProfile() {
 
       try {
         // Upload the image to the server
-        const response = await fetch("../api/inputImage", {
+        const response = await fetch("http://localhost:8080/image/insertImage", {
           method: "POST",
           body: formData,
         });

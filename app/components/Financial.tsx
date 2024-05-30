@@ -132,17 +132,17 @@ export default function Financial() {
 
     try {
       // Send the POST request to the server
-      const response = await fetch("/api/financialBSC", {
+      const response = await fetch("http://localhost:8080/bsc/financialBsc/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          department_id: department_id, // Ensure you have this variable defined or passed in
+          department: {id: department_id}, // Ensure you have this variable defined or passed in
           target_code: financialTargetCode,
           office_target: financialOfficeTarget,
-          start_date: financialStartDate,
-          completion_date: financialTargetCompletionDate,
+          startDate: financialStartDate,
+          completionDate: financialTargetCompletionDate,
           status: financialStatus,
           key_performance_indicator: financialKPI,
           target_performance: financialTargetPerformance,
@@ -152,6 +152,7 @@ export default function Financial() {
 
       // Parse the JSON response
       const result = await response.json();
+      console.log("Result", result);
 
       // Handle the response based on the status code
       if (response.ok) {
@@ -267,12 +268,13 @@ export default function Financial() {
 
       try {
         const response = await fetch(
-          `../api/getFinancialScorecard/${department_id}`
+          `http://localhost:8080/bsc/financial/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch financial scorecards");
         }
         const data = await response.json();
+        console.log("Financial scorecards data:", data);
         setFinancialSavedScorecards(data.financial_bsc);
       } catch (error) {
         console.error("Error fetching financial scorecards:", error);

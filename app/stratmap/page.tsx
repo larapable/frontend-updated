@@ -168,16 +168,26 @@ const Page = () => {
     toggleDropdown(section);
   };
 
-  const handleFinancialSaveEdit = async (fID: number, newStrategyValue: string) => {
+  const handleFinancialSaveEdit = async (
+    fID: number,
+    office_target: string,
+    department_id: number
+  ) => {
     try {
-      const details = { input: newStrategyValue };
-      const response = await fetch(`/api/stratmap/strategies/financial/${fID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      });
+      const details = {
+        office_target: office_target,
+        department: { id: department_id }, // Include the department ID in the payload
+      };
+      const response = await fetch(
+        `http://localhost:8080/stratmap/financial/edit/${fID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(details),
+        }
+      );
 
       if (!response.ok) {
         console.error("Failed to update strategy");
@@ -193,7 +203,9 @@ const Page = () => {
         console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
         if (updatedStrategy) {
-          const strategyIndex = financial.findIndex((strategy) => strategy.id === fID);
+          const strategyIndex = financial.findIndex(
+            (strategy) => strategy.id === fID
+          );
           if (strategyIndex !== -1) {
             financial[strategyIndex] = updatedStrategy;
             newStrategies.financial = financial;
@@ -206,23 +218,31 @@ const Page = () => {
 
         return newStrategies;
       });
-
-      fetchExistingStrategies(department_id);
     } catch (error) {
       console.error("An error occurred while updating the strategy:", error);
     }
   };
 
-  const handleLearningGrowthSaveEdit = async (fID: number, newStrategyValue: string) => {
+  const handleLearningGrowthSaveEdit = async (
+    fID: number,
+    office_target: string,
+    department_id: number
+  ) => {
     try {
-      const details = { input: newStrategyValue };
-      const response = await fetch(`/api/stratmap/strategies/learningGrowth/${fID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      });
+      const details = {
+        office_target: office_target,
+        department: { id: department_id }, // Include the department ID in the payload
+      };
+      const response = await fetch(
+        `http://localhost:8080/stratmap/learning/edit/${fID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(details),
+        }
+      );
 
       if (!response.ok) {
         console.error("Failed to update strategy");
@@ -238,7 +258,9 @@ const Page = () => {
         console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
         if (updatedStrategy) {
-          const strategyIndex = learningGrowth.findIndex((strategy) => strategy.id === fID);
+          const strategyIndex = learningGrowth.findIndex(
+            (strategy) => strategy.id === fID
+          );
           if (strategyIndex !== -1) {
             learningGrowth[strategyIndex] = updatedStrategy;
             newStrategies.learningGrowth = learningGrowth;
@@ -258,16 +280,26 @@ const Page = () => {
     }
   };
 
-  const handleStakeholderSaveEdit = async (fID: number, newStrategyValue: string) => {
+  const handleStakeholderSaveEdit = async (
+    fID: number,
+    office_target: string,
+    department_id: number
+  ) => {
     try {
-      const details = { input: newStrategyValue };
-      const response = await fetch(`/api/stratmap/strategies/stakeholder/${fID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      });
+      const details = {
+        office_target: office_target,
+        department: { id: department_id }, // Include the department ID in the payload
+      };
+      const response = await fetch(
+        `http://localhost:8080/stratmap/stakeholder/edit/${fID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(details),
+        }
+      );
 
       if (!response.ok) {
         console.error("Failed to update strategy");
@@ -283,7 +315,9 @@ const Page = () => {
         console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
         if (updatedStrategy) {
-          const strategyIndex = stakeholder.findIndex((strategy) => strategy.id === fID);
+          const strategyIndex = stakeholder.findIndex(
+            (strategy) => strategy.id === fID
+          );
           if (strategyIndex !== -1) {
             stakeholder[strategyIndex] = updatedStrategy;
             newStrategies.stakeholder = stakeholder;
@@ -303,10 +337,16 @@ const Page = () => {
     }
   };
 
-  const handleInternalProcessSaveEdit = async (fID: number, newStrategyValue: string) => {
+  const handleInternalProcessSaveEdit = async (
+    fID: number,
+    office_target: string,
+    department_id: number) => {
     try {
-      const details = { input: newStrategyValue };
-      const response = await fetch(`/api/stratmap/strategies/internal/${fID}`, {
+      const details = {
+        office_target: office_target,
+        department: { id: department_id }, // Include the department ID in the payload
+      };
+      const response = await fetch(`http://localhost:8080/stratmap/internal/edit/${fID}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -328,7 +368,9 @@ const Page = () => {
         console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
         if (updatedStrategy) {
-          const strategyIndex = internalProcess.findIndex((strategy) => strategy.id === fID);
+          const strategyIndex = internalProcess.findIndex(
+            (strategy) => strategy.id === fID
+          );
           if (strategyIndex !== -1) {
             internalProcess[strategyIndex] = updatedStrategy;
             newStrategies.internalProcess = internalProcess;
@@ -387,14 +429,20 @@ const Page = () => {
     const strategyFWithCode = `${newFTargetCode}: ${newFStrategy}`;
 
     try {
-      const data = { input: newFStrategy, department_id: department_id };
-      const response = await fetch("/api/stratmap/financial", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const data = {
+        office_target: newFStrategy,
+        department: { id: department_id },
+      };
+      const response = await fetch(
+        "http://localhost:8080/stratmap/financial/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.ok) {
         closeFModal();
@@ -430,14 +478,20 @@ const Page = () => {
     const strategySWithCode = `${newSTargetCode}: ${newSStrategy}`;
 
     try {
-      const data = { input: newSStrategy, department_id: department_id };
-      const response = await fetch("/api/stratmap/stakeholder", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const data = {
+        office_target: newSStrategy,
+        department: { id: department_id },
+      };
+      const response = await fetch(
+        "http://localhost:8080/stratmap/stakeholder/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.ok) {
         closeSModal();
@@ -473,14 +527,20 @@ const Page = () => {
     const strategyIPWithCode = `${newIPTargetCode}: ${newIPStrategy}`;
 
     try {
-      const data = { input: newIPStrategy, department_id: department_id };
-      const response = await fetch("/api/stratmap/internalProcess", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const data = {
+        office_target: newIPStrategy,
+        department: { id: department_id },
+      };
+      const response = await fetch(
+        "http://localhost:8080/stratmap/internal/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.ok) {
         closeIPModal();
@@ -516,14 +576,20 @@ const Page = () => {
     const strategyLGWithCode = `${newLGTargetCode}: ${newLGStrategy}`;
 
     try {
-      const data = { input: newLGStrategy, department_id: department_id };
-      const response = await fetch("/api/stratmap/learningGrowth", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
+      const data = {
+        office_target: newLGStrategy,
+        department: { id: department_id },
+      };
+      const response = await fetch(
+        "http://localhost:8080/stratmap/learning/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
 
       if (response.ok) {
         closeIPModal();
@@ -543,8 +609,10 @@ const Page = () => {
       const response = await fetch(apiEndpoint);
       const data = await response.json();
       const responses = data.rows;
-      console.log(responses);
-      const inputText = responses.map((row: ResponseRow) => `${row["s-tResponses"]}`).join("\n");
+      console.log("Responses: ", responses);
+      const inputText = responses
+        .map((row: ResponseRow) => `${row["s-tResponses"]}`)
+        .join("\n");
       const geminiResponse = await fetch(GEMINI_API_URL, {
         method: "POST",
         headers: {
@@ -560,13 +628,14 @@ const Page = () => {
       });
       const geminiData = await geminiResponse.json();
       const apiResponse =
-        geminiData.candidates?.[0]?.content?.parts?.[0]?.text || "No response received";
+        geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "No response received";
       console.log(apiResponse);
       const generatedSentences: string[] = apiResponse
         .split("\n")
         .filter((sentence: string) => sentence.trim() !== "");
-      const categorizedSentences: GeneratedSentence[] = generatedSentences.reduce(
-        (acc, sentence) => {
+      const categorizedSentences: GeneratedSentence[] =
+        generatedSentences.reduce((acc, sentence) => {
           const parts = sentence.split(". ");
           if (parts.length === 2) {
             const prefix = parts[0];
@@ -582,18 +651,21 @@ const Page = () => {
             console.warn("Invalid sentence format:", sentence);
           }
           return acc;
-        },
-        []
-      );
+        }, []);
       return categorizedSentences;
     } catch (error) {
-      console.error(`Error fetching data or processing Gemini response for ${apiEndpoint}:`, error);
+      console.error(
+        `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
+        error
+      );
       return []; // Return an empty array on error
     }
   };
 
   const fetchAllData = async (department_id: number) => {
-    const promises = API_ENDPOINTS.map((apiEndpoint) => fetchDataAndCategorize(apiEndpoint));
+    const promises = API_ENDPOINTS.map((apiEndpoint) =>
+      fetchDataAndCategorize(apiEndpoint)
+    );
     const categorizedSentencesArrays = await Promise.all(promises);
 
     const strategies = {
@@ -635,9 +707,12 @@ const Page = () => {
       try {
         // Financial entity
         const financialPromises = strategies.financial.map((sentence) => {
-          const data = { input: sentence.value, department_id: department_id };
+          const data = {
+            office_target: sentence.value,
+            department: { id: department_id },
+          };
           console.log("financial data: ", data);
-          return fetch("/api/stratmap/financial", {
+          return fetch("http://localhost:8080/stratmap/financial/insert", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -649,8 +724,11 @@ const Page = () => {
 
         // Stakeholder entity
         const stakeholderPromises = strategies.stakeholder.map((sentence) => {
-          const data = { input: sentence.value, department_id: department_id };
-          return fetch("/api/stratmap/stakeholder", {
+          const data = {
+            office_target: sentence.value,
+            department: { id: department_id },
+          };
+          return fetch("http://localhost:8080/stratmap/stakeholder/insert", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -661,29 +739,39 @@ const Page = () => {
         await Promise.all(stakeholderPromises);
 
         // Internal process entity
-        const internalProcessPromises = strategies.internalProcess.map((sentence) => {
-          const data = { input: sentence.value, department_id: department_id };
-          return fetch("/api/stratmap/internalProcess", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        });
+        const internalProcessPromises = strategies.internalProcess.map(
+          (sentence) => {
+            const data = {
+              office_target: sentence.value,
+              department: { id: department_id },
+            };
+            return fetch("http://localhost:8080/stratmap/internal/insert", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+          }
+        );
         await Promise.all(internalProcessPromises);
 
         // Learning and growth entity
-        const learningGrowthPromises = strategies.learningGrowth.map((sentence) => {
-          const data = { input: sentence.value, department_id: department_id };
-          return fetch("/api/stratmap/learningGrowth", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        });
+        const learningGrowthPromises = strategies.learningGrowth.map(
+          (sentence) => {
+            const data = {
+              office_target: sentence.value,
+              department: { id: department_id },
+            };
+            return fetch("http://localhost:8080/stratmap/learning/insert", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify(data),
+            });
+          }
+        );
         await Promise.all(learningGrowthPromises);
 
         console.log("Data saved to database");
@@ -701,7 +789,9 @@ const Page = () => {
 
   const fetchExistingStrategies = async (department_id: number) => {
     try {
-      const response = await fetch(`/api/stratmap/byDepartment/${department_id}`);
+      const response = await fetch(
+        `http://localhost:8080/stratmap/byDepartment/${department_id}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -710,7 +800,11 @@ const Page = () => {
       console.log("data: ", data);
 
       const strategies = {
-        financial: data.financial.map((item: any) => ({ id: 1, fID: item.id, value: item.office_target })),
+        financial: data.financial.map((item: any) => ({
+          id: 1,
+          fID: item.id,
+          value: item.office_target,
+        })),
         stakeholder: data.stakeholder.map((item: any) => ({
           id: 2,
           fID: item.id,
@@ -739,15 +833,20 @@ const Page = () => {
 
   const handleFinancialDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/stratmap/strategies/financial/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/stratmap/financial/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
-        const updatedStrategies = strategies.financial.filter((strategy) => strategy.id !== id);
+        const updatedStrategies = strategies.financial.filter(
+          (strategy) => strategy.id !== id
+        );
         setStrategies({ ...strategies, financial: updatedStrategies });
         fetchExistingStrategies(department_id);
       } else {
@@ -760,12 +859,15 @@ const Page = () => {
 
   const handleLGDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/stratmap/strategies/learningGrowth/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/stratmap/learning/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const updatedStrategies = strategies.learningGrowth.filter(
@@ -783,15 +885,20 @@ const Page = () => {
 
   const handleStakeholderDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/stratmap/strategies/stakeholder/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/stratmap/stakeholder/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
-        const updatedStrategies = strategies.stakeholder.filter((strategy) => strategy.id !== id);
+        const updatedStrategies = strategies.stakeholder.filter(
+          (strategy) => strategy.id !== id
+        );
         setStrategies({ ...strategies, stakeholder: updatedStrategies });
         fetchExistingStrategies(department_id);
       } else {
@@ -804,7 +911,7 @@ const Page = () => {
 
   const handleInternalDelete = async (id: number) => {
     try {
-      const response = await fetch(`/api/stratmap/strategies/internal/${id}`, {
+      const response = await fetch(`http://localhost:8080/stratmap/internal/delete/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
@@ -827,15 +934,21 @@ const Page = () => {
 
   const checkGeneratedAiStrats = async (username: string) => {
     try {
-      const response = await fetch(`/api/userr/${username}`); // Assuming you have a route to fetch user data
+      const response = await fetch(
+        `http://localhost:8080/user/get/${username}`
+      ); // Assuming you have a route to fetch user data
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const userData = await response.json();
+      console.log("userData: ", userData.generatedAiStrat);
 
       if (userData.generatedAiStrats === 1) {
         await fetchExistingStrategies(department_id);
-      } else {
+      } else if (
+        userData.generatedAiStrats === 0 ||
+        userData.generatedAiStrats === null
+      ) {
         await updateGeneratedAiStrats(username);
         await fetchAllData(department_id);
       }
@@ -846,7 +959,9 @@ const Page = () => {
 
   const updateGeneratedAiStrats = async (username: string) => {
     try {
-      const response = await fetch(`/api/userr/${username}`);
+      const response = await fetch(
+        `http://localhost:8080/user/get/${username}`
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
@@ -854,13 +969,16 @@ const Page = () => {
 
       if (userData.generatedAiStrats === 0) {
         // Update generatedAiStrats to 1
-        const updateResponse = await fetch(`/api/userr/${username}`, {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ generatedAiStrats: 1 }),
-        });
+        const updateResponse = await fetch(
+          `http://localhost:8080/user/update/${username}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ generatedAiStrats: 1 }),
+          }
+        );
 
         if (!updateResponse.ok) {
           throw new Error(`HTTP error! Status: ${updateResponse.status}`);
@@ -877,13 +995,16 @@ const Page = () => {
       <div className="flex-1 h-screen">
         <div className="flex-1 flex flex-col mt-8 ml-80">
           {/* Strategy Mapping container */}
-          <span className="break-words font-bold text-[3rem] text-[#000000]">Strategy Mapping</span>
+          <span className="break-words font-bold text-[3rem] text-[#000000]">
+            Strategy Mapping
+          </span>
           <div className="mt-8 grid grid-cols-3">
             <div className="col-span-3">
               <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-16 mt-[-1rem]">
-                Strategy mapping empowers organizations to translate their vision into actionable
-                strategies, align resources, and drive performance across all aspects of the
-                business. Navigate complexity, capitalize on opportunities, and achieve sustainable
+                Strategy mapping empowers organizations to translate their
+                vision into actionable strategies, align resources, and drive
+                performance across all aspects of the business. Navigate
+                complexity, capitalize on opportunities, and achieve sustainable
                 growth in today&apos;s dynamic business landscape.
               </div>
               {/* perspectives toggle */}
@@ -953,7 +1074,9 @@ const Page = () => {
                         <div className="absolute inset-0 bg-black opacity-50"></div>
                         <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[70rem]">
                           <div className="flex flex-row">
-                            <h2 className="text-2xl mb-5 font-semibold">Financial Strategy</h2>
+                            <h2 className="text-2xl mb-5 font-semibold">
+                              Financial Strategy
+                            </h2>
                             <button
                               onClick={closeFModal}
                               className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
@@ -1015,54 +1138,61 @@ const Page = () => {
                       </div>
                     )}
                     <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
-                      {strategies.financial.map((strategy: GeneratedSentence) => (
-                        <div
-                          key={strategy.id}
-                          className="bg-[#ffffff] mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
-                        >
-                          {/* edit div */}
-                          {editingStrategy === strategy ? (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
-                              <input
-                                type="text"
-                                value={newStrategyValue}
-                                onChange={(e) => setNewStrategyValue(e.target.value)}
-                                className="w-full"
-                              />
+                      {strategies.financial.map(
+                        (strategy: GeneratedSentence) => (
+                          <div
+                            key={strategy.id}
+                            className="bg-[#ffffff] mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                          >
+                            {/* edit div */}
+                            {editingStrategy === strategy ? (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                                <input
+                                  type="text"
+                                  value={newStrategyValue}
+                                  onChange={(e) =>
+                                    setNewStrategyValue(e.target.value)
+                                  }
+                                  className="w-full"
+                                />
+                                <button
+                                  onClick={() =>
+                                    handleFinancialSaveEdit(
+                                      // @ts-ignore
+                                      strategy.fID,
+                                      newStrategyValue,
+                                      department_id
+                                    )
+                                  }
+                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                                {strategy.value}
+                              </div>
+                            )}
+                            <div className="flex">
+                              <button
+                                onClick={() => handleEditClick(strategy)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                              >
+                                Edit
+                              </button>
                               <button
                                 onClick={() =>
-                                  handleFinancialSaveEdit(
-                                    // @ts-ignore
-                                    strategy.fID,
-                                    newStrategyValue
-                                  )
+                                  handleFinancialDelete(strategy.fID)
                                 }
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                               >
-                                Save
+                                Delete
                               </button>
                             </div>
-                          ) : (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
-                              {strategy.value}
-                            </div>
-                          )}
-                          <div className="flex">
-                            <button
-                              onClick={() => handleEditClick(strategy)}
-                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleFinancialDelete(strategy.fID)}
-                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                              Delete
-                            </button>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -1159,50 +1289,58 @@ const Page = () => {
                       </div>
                     )}
                     <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
-                      {strategies.learningGrowth.map((strategy: GeneratedSentence) => (
-                        <div
-                          key={strategy.id}
-                          className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
-                        >
-                          {editingStrategy === strategy ? (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
-                              <input
-                                type="text"
-                                value={newStrategyValue}
-                                onChange={(e) => setNewStrategyValue(e.target.value)}
-                                className="w-full"
-                              />
+                      {strategies.learningGrowth.map(
+                        (strategy: GeneratedSentence) => (
+                          <div
+                            key={strategy.id}
+                            className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                          >
+                            {editingStrategy === strategy ? (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                                <input
+                                  type="text"
+                                  value={newStrategyValue}
+                                  onChange={(e) =>
+                                    setNewStrategyValue(e.target.value)
+                                  }
+                                  className="w-full"
+                                />
+                                <button
+                                  onClick={() =>
+                                    handleLearningGrowthSaveEdit(
+                                      // @ts-ignore
+                                      strategy.fID,
+                                      newStrategyValue,
+                                      department_id
+                                    )
+                                  }
+                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                                {strategy.value}
+                              </div>
+                            )}
+                            <div className="flex">
                               <button
-                                onClick={() =>
-                                    // @ts-ignore
-                                  handleLearningGrowthSaveEdit(strategy.fID, newStrategyValue)
-                                }
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                onClick={() => handleEditClick(strategy)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
                               >
-                                Save
+                                Edit
+                              </button>
+                              <button
+                                onClick={() => handleLGDelete(strategy.fID)}
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                              >
+                                Delete
                               </button>
                             </div>
-                          ) : (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
-                              {strategy.value}
-                            </div>
-                          )}
-                          <div className="flex">
-                            <button
-                              onClick={() => handleEditClick(strategy)}
-                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleLGDelete(strategy.fID)}
-                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                              Delete
-                            </button>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -1211,7 +1349,8 @@ const Page = () => {
                   // INTERNAL PROCESS
                   <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
                     <div className=" mt-5 inline-block self-center break-words font-bold text-[1.3rem] text-[#000000]">
-                      Internal Process : Process Development & Technology Management
+                      Internal Process : Process Development & Technology
+                      Management
                     </div>
                     <button onClick={openIPModal} className="flex flex-row">
                       <div className="text-[#EFAF21] mr-3">
@@ -1299,50 +1438,61 @@ const Page = () => {
                       </div>
                     )}
                     <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
-                      {strategies.internalProcess.map((strategy: GeneratedSentence) => (
-                        <div
-                          key={strategy.id}
-                          className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
-                        >
-                          {editingStrategy === strategy ? (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
-                              <input
-                                type="text"
-                                value={newStrategyValue}
-                                onChange={(e) => setNewStrategyValue(e.target.value)}
-                                className="w-full"
-                              />
+                      {strategies.internalProcess.map(
+                        (strategy: GeneratedSentence) => (
+                          <div
+                            key={strategy.id}
+                            className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                          >
+                            {editingStrategy === strategy ? (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                                <input
+                                  type="text"
+                                  value={newStrategyValue}
+                                  onChange={(e) =>
+                                    setNewStrategyValue(e.target.value)
+                                  }
+                                  className="w-full"
+                                />
+                                <button
+                                  onClick={() =>
+                                    // @ts-ignore
+                                    handleInternalProcessSaveEdit(
+                                    // @ts-ignore
+                                    strategy.fID,
+                                    newStrategyValue,
+                                    department_id
+                                    )
+                                  }
+                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                                {strategy.value}
+                              </div>
+                            )}
+                            <div className="flex">
+                              <button
+                                onClick={() => handleEditClick(strategy)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                              >
+                                Edit
+                              </button>
                               <button
                                 onClick={() =>
-                                    // @ts-ignore
-                                  handleInternalProcessSaveEdit(strategy.fID, newStrategyValue)
+                                  handleInternalDelete(strategy.fID)
                                 }
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                               >
-                                Save
+                                Delete
                               </button>
                             </div>
-                          ) : (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
-                              {strategy.value}
-                            </div>
-                          )}
-                          <div className="flex">
-                            <button
-                              onClick={() => handleEditClick(strategy)}
-                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleInternalDelete(strategy.fID)}
-                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                              Delete
-                            </button>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
@@ -1375,7 +1525,9 @@ const Page = () => {
                         <div className="absolute inset-0 bg-black opacity-50"></div>
                         <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[70rem]">
                           <div className="flex flex-row">
-                            <h2 className="text-2xl mb-5 font-semibold">Stakeholder Strategy</h2>
+                            <h2 className="text-2xl mb-5 font-semibold">
+                              Stakeholder Strategy
+                            </h2>
                             <button
                               onClick={closeSModal}
                               className="ml-[49rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
@@ -1437,50 +1589,60 @@ const Page = () => {
                       </div>
                     )}
                     <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
-                      {strategies.stakeholder.map((strategy: GeneratedSentence) => (
-                        <div
-                          key={strategy.id}
-                          className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
-                        >
-                          {editingStrategy === strategy ? (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
-                              <input
-                                type="text"
-                                value={newStrategyValue}
-                                onChange={(e) => setNewStrategyValue(e.target.value)}
-                                className="w-full"
-                              />
+                      {strategies.stakeholder.map(
+                        (strategy: GeneratedSentence) => (
+                          <div
+                            key={strategy.id}
+                            className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                          >
+                            {editingStrategy === strategy ? (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                                <input
+                                  type="text"
+                                  value={newStrategyValue}
+                                  onChange={(e) =>
+                                    setNewStrategyValue(e.target.value)
+                                  }
+                                  className="w-full"
+                                />
+                                <button
+                                  onClick={() =>
+                                    handleStakeholderSaveEdit(
+                                      // @ts-ignore
+                                      strategy.fID,
+                                      newStrategyValue,
+                                      department_id
+                                    )
+                                  }
+                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                >
+                                  Save
+                                </button>
+                              </div>
+                            ) : (
+                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                                {strategy.value}
+                              </div>
+                            )}
+                            <div className="flex">
+                              <button
+                                onClick={() => handleEditClick(strategy)}
+                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                              >
+                                Edit
+                              </button>
                               <button
                                 onClick={() =>
-                                    // @ts-ignore
-                                  handleStakeholderSaveEdit(strategy.fID, newStrategyValue)
+                                  handleStakeholderDelete(strategy.fID)
                                 }
-                                className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
                               >
-                                Save
+                                Delete
                               </button>
                             </div>
-                          ) : (
-                            <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
-                              {strategy.value}
-                            </div>
-                          )}
-                          <div className="flex">
-                            <button
-                              onClick={() => handleEditClick(strategy)}
-                              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
-                            >
-                              Edit
-                            </button>
-                            <button
-                              onClick={() => handleStakeholderDelete(strategy.fID)}
-                              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
-                            >
-                              Delete
-                            </button>
                           </div>
-                        </div>
-                      ))}
+                        )
+                      )}
                     </div>
                   </div>
                 )}
