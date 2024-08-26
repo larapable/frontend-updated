@@ -4,12 +4,15 @@ import { Button, Modal } from "@mui/material";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Spinner from "../components/Spinner";
 
 export default function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
   const [errorModalOpen, setErrorModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false); 
+
   const handleCancelSave = () => {
     setErrorModalOpen(false);
   };
@@ -24,7 +27,7 @@ export default function LoginPage() {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-    
+
     if (!username || !password) {
       setErrorMessage(
         "You have left a field empty. Please take a moment to complete all the necessary information."
@@ -34,6 +37,7 @@ export default function LoginPage() {
     }
 
     try {
+      setLoading(true); // Show spinner
       const res = await signIn("credentials", {
         username,
         password,
@@ -45,6 +49,7 @@ export default function LoginPage() {
           "We're sorry, but the credentials you entered are incorrect. Please double-check your username and password and try again."
         );
         setErrorModalOpen(true);
+        setLoading(false); // Hide spinner
         return;
       }
 
@@ -54,6 +59,10 @@ export default function LoginPage() {
     }
   };
 
+  if (loading) {
+    return <Spinner />; // Show spinner while loading
+  }
+  
   return (
     <div className="h-screen flex lg:flex-row md:flex-col ">
       <div className="flex flex-col items-center lg:mt-32 lg:ml-60 md:mt-16 md:ml-13">
@@ -81,7 +90,8 @@ export default function LoginPage() {
           />
         </div>
         <button
-          className="rounded-lg bg-[#8a252c] text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white mb-4 hover:bg-[#eec160] hover:text-[#8a252c] "
+          style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+          className="rounded-lg text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white mb-4 hover:bg-[#eec160] hover:text-[#8a252c] "
           onClick={handleSubmit}
         >
           Login
@@ -104,7 +114,10 @@ export default function LoginPage() {
           Back Home
         </a>
       </div>
-      <div className="flex flex-col items-center bg-[#8a252c] lg:w-full lg:ml-[12%] md:w-full">
+      <div
+        style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+        className="flex flex-col items-center lg:w-full lg:ml-[12%] md:w-full"
+      >
         <img
           src="wc-screen-scorecard.png"
           className="w-28 h-28 mt-24 lg:mr-96 md:mr-[60%] mb-4 hover:scale-110 transition-transform"
@@ -158,7 +171,7 @@ export default function LoginPage() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />

@@ -1,7 +1,6 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
-import User from '@/models/user.js';
 import { getToken } from "next-auth/jwt";
 
 const authOptions = {
@@ -14,26 +13,46 @@ const authOptions = {
                 const {username, password} = credentials;
 
                 try {
+
+                    // Admin credentials check
+                    if (username === 'Admin' && password === 'Admin123') {
+                        return {
+                            id: 0,
+                            username: 'Admin',
+                            department_id: 0,
+                            role: 'admin'
+                        };
+                    }
+
                     console.log("Input username:", username);
                     console.log("Input password:", password);
 
-                    const user = await User.findUsername(username);
-                    console.log("User from database:", user);
+                    // Make HTTP request to check if user exists
+                    const response = await fetch(`http://localhost:8080/user/login`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username, password })
+                    });
 
-                    if (!user) {
+                    if (!response.ok) {
                         console.log("User not found");
-                        return null; // User not found
+                        return null; // User not found or other error
                     }
 
-                    // Compare hashed password with user input password
-                    const passwordMatch = password;
+                    const user = await response.json();
+                    console.log("User from API: ", user);
+
+                    // Compare plain text password with user input password
+                    const passwordMatch = await bcrypt.compare(password, user.password);
                     console.log("Password match:", passwordMatch);
 
                     if (!passwordMatch) {
                         console.log("Password does not match");
                         return null; // Passwords don't match
                     }
-
+                    console.log("Return user: ",user)
                     return user; // Return the user if authentication succeeds
 
                 } catch (error) {
@@ -51,13 +70,8 @@ const authOptions = {
             if(user) {
                 token.id = user.id;
                 token.username = user.username;
-                token.department_id = user.department_id;
-                // return {
-                //     ...token,
-                //     id: user.id,
-                //     username: user.username,
-                //     department: user.department,
-                // };
+                token.department_id = user.department.id;
+            
             }
             return token;
         },
@@ -77,6 +91,7 @@ const authOptions = {
             //     }
 
             //  };
+
             return session;
         },
         

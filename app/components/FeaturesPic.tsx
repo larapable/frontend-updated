@@ -27,19 +27,23 @@ const FeaturesPic = () => {
   }, [currentIndex]);
 
   return (
-    <div>
-      <div className="m-[5rem_0_0.8rem_30rem] items-center justify-center inline-block text-center break-words font-extrabold text-[3.8rem] text-[#FFFFFF]">
-        Get a sneak peek into our <span className="powerful-features-text">powerful <br/>features.</span> 
+    <div className='h-screen w-[100%] justify-center align-middle items-center text-[#302E2E]'>
+      <div className='flex flex-row justify-center'>
+        <div className="w-[50%] mt-[7rem]">
+          <img src={images[currentIndex]} alt={`Slide ${currentIndex + 1}`} />
+        </div>
+        <div className='flex flex-col ml-20 mt-[20rem]'>
+          <span className='text-[3rem] font-bold break-words'>A Visual Tour of Atlas</span>
+          <span className='text-[1.3rem] font-regular break-words mt-10'>
+            Take a guided tour through Atlas and explore its intuitive interface <br/>
+            and powerful features firsthand. This slideshow offers a glimpse into <br/>
+            how Atlas simplifies strategic planning with AI-driven tools, <br/>
+            facilitates SWOT analysis, creates balanced scorecards, and generates <br/>
+            insightful reports—all designed to enhance decision-making and drive <br/>
+            organizational success.
+          </span>
+        </div>
       </div>
-
-      <div className="container-29 hidden gap-20 lg:flex">
-          <div className="white-container-features">
-          <div className="slide">
-            <img src={images[currentIndex]} alt={`Slide ${currentIndex + 1}`} />
-          </div>
-          </div>
-      </div>
-
     </div>
   )
 }

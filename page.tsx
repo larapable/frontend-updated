@@ -1193,7 +1193,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                             >
                               <path
                                 strokeLinecap="round"
-                                strokeLinejoin="round"
+                                strokeWidth="round"
                                 strokeWidth={2}
                                 d="M4 6h16M4 12h16M4 18h16"
                               />
@@ -1287,7 +1287,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                             >
                               <path
                                 strokeLinecap="round"
-                                strokeLinejoin="round"
+                                strokeWidth="round"
                                 strokeWidth={2}
                                 d="M4 6h16M4 12h16M4 18h16"
                               />
@@ -1376,7 +1376,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                             >
                               <path
                                 strokeLinecap="round"
-                                strokeLinejoin="round"
+                                strokeWidth="round"
                                 strokeWidth={2}
                                 d="M4 6h16M4 12h16M4 18h16"
                               />
@@ -1469,7 +1469,7 @@ const [isModalVisible, setModalVisible] = useState(false);
                             >
                               <path
                                 strokeLinecap="round"
-                                strokeLinejoin="round"
+                                strokeWidth="round"
                                 strokeWidth={2}
                                 d="M4 6h16M4 12h16M4 18h16"
                               />

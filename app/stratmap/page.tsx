@@ -12,13 +12,19 @@ const Page = () => {
   const username = user?.username;
 
   useEffect(() => {
+
+    fetchProfileGoals();
+
     if (username) {
       checkGeneratedAiStrats(username);
     }
   }, [session]);
 
   interface ResponseRow {
-    "s-tResponses": string;
+    "s_oResponses": string;
+    "s_tResponses": string;
+    "w_oResponses": string;
+    "w_tResponses": string;
   }
 
   interface GeneratedSentence {
@@ -50,9 +56,9 @@ const Page = () => {
   const [buttonVisionLabel, setVisionButtonLabel] = useState("Add");
   const [buttonValuesLabel, setValuesButtonLabel] = useState("Add");
   const [buttonMissionLabel, setMissionButtonLabel] = useState("Add");
-  const [textareaDisabled, setTextareaDisabled] = useState(false);
   const [editingStrategy, setEditingStrategy] = useState(null);
   const [newStrategyValue, setNewStrategyValue] = useState("");
+
 
   // @ts-ignore
   const handleEditClick = (strategy) => {
@@ -218,6 +224,8 @@ const Page = () => {
 
         return newStrategies;
       });
+
+      fetchExistingStrategies(department_id);
     } catch (error) {
       console.error("An error occurred while updating the strategy:", error);
     }
@@ -391,10 +399,11 @@ const Page = () => {
   };
 
   const API_ENDPOINTS = [
-    "/api/stratmap/getStRows",
-    "/api/stratmap/getSoRows",
-    "/api/stratmap/getWtRows",
-    "/api/stratmap/getWoRows",
+    `http://localhost:8080/stStrat/get/${department_id}`,
+    `http://localhost:8080/soStrat/get/${department_id}`,
+    `http://localhost:8080/wtStrat/get/${department_id}`,
+    `http://localhost:8080/woStrat/get/${department_id}`,
+
   ];
 
   const SYSTEM_PROMPT = `Categorize the following responses into the following categories:
@@ -403,8 +412,41 @@ const Page = () => {
       3. Internal Process: Process Development & Technology Management
       4. Learning & Growth: Culture & People Development
       
-    Remove any existing numbering or labeling in the responses namely the returned number from the database. Add the corresponding number and only the number from the categories above at the beginning of each line (only choose from 1-4). Do not modify the original response text. Do not add any markups. If the response is blank, write "Field is blank" for that response.
+    Remove any existing numbering in the responses namely the returned number from the database but do not remove the target code (S1O1, W2T3, etc).
+    Sort the responses by which category you think fits them while also taking into account the OFFICE VISION, VALUE PROPOSITION (only choose from 1-4).
+    When sorting, take into account the these three strategic themes: Excellence in Service Quality, Excellence in Internal Service Systems and Excellence in Organizational Stewardship. Append it to the modified response.
+    DO NOT MODIFY THE ORIGINAL STRATEGY RESPONSE TEXT. If the response is blank, write "Field is blank" for that response. 
+    Sort the responses by strategic theme.
+    This should be your sample output: "(category number 1-4). (whichever strategic theme you think fits the response) W2T1: Implement contingency plans to ensure continuity during economic downturns." DO NOT ADD ANY MARKUP.
     `;
+
+  const fetchProfileGoals = async () => {
+
+    console.log("fetching profile goals");
+
+    try {
+      const response = await fetch(`http://localhost:8080/goals/get/department/${department_id}`);
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Received data:", data); // Log the received data
+
+        const fetchedData = `
+        Office Vision: ${data.vision}
+        Value Proposition: ${data.proposition}
+      `;
+
+        const updatedSystemPrompt = `${SYSTEM_PROMPT}
+      ${fetchedData}`;
+
+        console.log("Updated System Prompt:", updatedSystemPrompt); // Log the updated system prompt
+
+      } else {
+        console.error("Error fetching user profile data:", response.statusText);
+      }
+    } catch (error) {
+      console.error("Error fetching user profile data:", error);
+    }
+  };
 
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=AIzaSyATO5xndEGhEgXrHdeYLOiTbZqtUwYuZqE`;
 
@@ -592,7 +634,7 @@ const Page = () => {
       );
 
       if (response.ok) {
-        closeIPModal();
+        closeLGModal();
       } else {
         console.error("Error saving learning growth strategy");
         // Handle error
@@ -608,11 +650,20 @@ const Page = () => {
     try {
       const response = await fetch(apiEndpoint);
       const data = await response.json();
-      const responses = data.rows;
-      console.log("Responses: ", responses);
-      const inputText = responses
-        .map((row: ResponseRow) => `${row["s-tResponses"]}`)
+      console.log("swot data: ", data);
+
+      const inputText = data
+        .map((row: any) => {
+          if (row["s_oResponses"]) return row["s_oResponses"];
+          else if (row["s_tResponses"]) return row["s_tResponses"];
+          else if (row["w_oResponses"]) return row["w_oResponses"];
+          else if (row["w_tResponses"]) return row["w_tResponses"];
+          else return "";
+        })
         .join("\n");
+
+      console.log("inputText: ", inputText);
+
       const geminiResponse = await fetch(GEMINI_API_URL, {
         method: "POST",
         headers: {
@@ -630,7 +681,7 @@ const Page = () => {
       const apiResponse =
         geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
         "No response received";
-      console.log(apiResponse);
+      console.log("api response: ", apiResponse);
       const generatedSentences: string[] = apiResponse
         .split("\n")
         .filter((sentence: string) => sentence.trim() !== "");
@@ -797,7 +848,7 @@ const Page = () => {
       }
       const data = await response.json();
 
-      console.log("data: ", data);
+      console.log("existing data: ", data);
 
       const strategies = {
         financial: data.financial.map((item: any) => ({
@@ -933,15 +984,18 @@ const Page = () => {
   };
 
   const checkGeneratedAiStrats = async (username: string) => {
+
+    console.log("checking generatedAiStrats");
+
     try {
       const response = await fetch(
         `http://localhost:8080/user/get/${username}`
-      ); // Assuming you have a route to fetch user data
+      );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const userData = await response.json();
-      console.log("userData: ", userData.generatedAiStrat);
+      console.log("userData: ", userData.generatedAiStrats);
 
       if (userData.generatedAiStrats === 1) {
         await fetchExistingStrategies(department_id);
@@ -989,86 +1043,194 @@ const Page = () => {
     }
   };
 
+  const [selectedComponent, setSelectedComponent] = useState("");
+
+  const changeComponent = (componentName: string) => {
+    localStorage.setItem("lastComponent", componentName);
+    setSelectedComponent(componentName);
+  };
+
+  useEffect(() => {
+    const lastComponent = localStorage.getItem("lastComponent");
+    if (lastComponent) {
+      setSelectedComponent(lastComponent);
+    }
+  }, []);
+
+  const [officeVision, setOfficeVision] = useState("");
+  const [valueProposition, setValueProposition] = useState("");
+  const [mission, setMission] = useState("");
+
+  useEffect(() => {
+    const fetchProfileGoals = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/goals/get/department/${department_id}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Received data:", data); // Add this line to log the received data
+          setOfficeVision(data.vision);
+          setValueProposition(data.proposition);
+          setMission(data.mission)
+        } else {
+          console.error(
+            "Error fetching user profile data:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching user profile data:", error);
+      }
+    };
+    fetchProfileGoals();
+  }, [department_id]);
+
+
   return (
-    <div className="flex flex-row w-full bg-[#eeeeee]">
+    <div className="flex flex-row w-full text-[rgb(59,59,59)]">
       <Navbar />
       <div className="flex-1 h-screen">
         <div className="flex-1 flex flex-col mt-8 ml-80">
-          {/* Strategy Mapping container */}
-          <span className="break-words font-bold text-[3rem] text-[#000000]">
-            Strategy Mapping
-          </span>
+          <div className="flex flex-row">
+            <span className="break-words font-bold text-[3rem]">
+              Strategy Mapping
+            </span>
+            {/* perspectives toggle */}
+            <div className="flex justify-center ml-[35rem] mt-[0.5rem] border border-gray-200 bg-gray w-[44rem] h-[4rem] rounded-xl px-1 py-1">
+                <div
+                  className="flex flex-row box-sizing-border mr-2 cursor-pointer"
+                  onClick={() => changeComponent("Financial")}
+                >
+                  <div
+                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                      selectedComponent === "Financial"
+                        ? "bg-[#A43214] text-white"
+                        : "border text-[#A43214]"
+                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
+                  >
+                    FINANCIAL
+                  </div>
+                </div>
+                <div
+                  className="flex flex-row box-sizing-border mr-2 cursor-pointer"
+                  onClick={() => changeComponent("Stakeholder")}
+                >
+                  <div
+                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                      selectedComponent === "Stakeholder"
+                        ? "bg-[#A43214] text-white"
+                        : "border text-[#A43214]"
+                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
+                  >
+                    STAKEHOLDER
+                  </div>
+                </div>
+                <div
+                  className="flex flex-row box-sizing-border mr-2 cursor-pointer"
+                  onClick={() => changeComponent("Internal")}
+                >
+                  <div
+                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                      selectedComponent === "Internal"
+                        ? "bg-[#A43214] text-white"
+                        : "border text-[#A43214]"
+                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
+                  >
+                    INTERNAL PROCESS
+                  </div>
+                </div>
+                <div
+                  className="flex flex-row box-sizing-border cursor-pointer"
+                  onClick={() => changeComponent("Learning")}
+                >
+                  <div
+                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                      selectedComponent === "Learning"
+                        ? "bg-[#A43214] text-white"
+                        : "border text-[#A43214]"
+                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
+                  >
+                    LEARNING & GROWTH
+                  </div>
+                </div>
+            </div>
+            {/* end of perspectives toggle */}
+          </div>
+
           <div className="mt-8 grid grid-cols-3">
             <div className="col-span-3">
-              <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-16 mt-[-1rem]">
+              <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-[6rem] mt-[-1.1rem]">
                 Strategy mapping empowers organizations to translate their
                 vision into actionable strategies, align resources, and drive
                 performance across all aspects of the business. Navigate
                 complexity, capitalize on opportunities, and achieve sustainable
                 growth in today&apos;s dynamic business landscape.
               </div>
-              {/* perspectives toggle */}
-              <div className=" flex flex-row self-start box-sizing-border mt-5 mb-5">
-                <div
-                  className="flex flex-row box-sizing-border mr-10"
-                  onClick={() => setSelectedPerspective("financial")}
-                >
-                  <div className="inline-block break-words font-bold text-[1.3rem] text-[#807C7C] cursor-pointer pb-1.5 transition-all hover:font-extrabold hover:underline hover:text-[#000000]">
-                    FINANCIAL
+
+              <div className="container mx-auto px-4 mb-16">
+                <div className="mt-[-3rem] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-[10rem] w-[102rem] ml-[-6rem]">
+                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <h1 className="text-xl font-bold mb-2">Vision</h1>
+                    <p className="text-gray-700 break-words overflow-auto">
+                      {officeVision}
+                    </p>
                   </div>
-                </div>
-                <div
-                  className="flex flex-row box-sizing-border mr-10"
-                  onClick={() => setSelectedPerspective("stakeholder")}
-                >
-                  <div className="inline-block break-words font-bold text-[1.3rem] text-[#807C7C] cursor-pointer pb-1.5 transition-all hover:font-extrabold hover:underline hover:text-[#000000]">
-                    STAKEHOLDER
+                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <h1 className="text-xl font-bold mb-2">Value</h1>
+                    <p className="text-gray-700">
+                      {valueProposition}
+                    </p>
                   </div>
-                </div>
-                <div
-                  className="flex flex-row box-sizing-border mr-10"
-                  onClick={() => setSelectedPerspective("internalProcess")}
-                >
-                  <div className="inline-block break-words font-bold text-[1.3rem] text-[#807C7C] cursor-pointer pb-1.5 transition-all hover:font-extrabold hover:underline hover:text-[#000000]">
-                    INTERNAL PROCESS
-                  </div>
-                </div>
-                <div
-                  className="flex flex-row box-sizing-border"
-                  onClick={() => setSelectedPerspective("learningGrowth")}
-                >
-                  <div className="inline-block break-words font-bold text-[1.3rem] text-[#807C7C] cursor-pointer pb-1.5 transition-all hover:font-extrabold hover:underline hover:text-[#000000]">
-                    LEARNING & GROWTH
+                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <h1 className="text-xl font-bold mb-2">Mission</h1>
+                    <p className="text-gray-700">
+                      {mission}
+                    </p>
                   </div>
                 </div>
               </div>
-              {/* end of perspectives toggle */}
+
+              
 
               {/* main container */}
-              <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg">
-                {selectedPerspective === "financial" && (
+              <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
+                {selectedComponent === "Financial" && (
                   <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
-                    <div className=" mt-5 inline-block self-center break-words font-bold text-[1.3rem] text-[#000000]">
-                      Financial : Stewardship
+                    <div className="flex flex-row">
+                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                      <img
+                        src="/financial.png"
+                        alt=""
+                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Financial Report Overview
+                        </span>
+                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Measures financial performance and profitability.
+                        </span>
+                      </div>
                     </div>
                     {/* add button here */}
-                    <button onClick={openFModal} className="flex flex-row">
-                      <div className="text-[#EFAF21] mr-3">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-8 h-8"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
-                      </div>
-                      <div className="mt-1">Add more strategies</div>
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[68rem]">
+                    <button onClick={openFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
+                      <div className="flex flex-row">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-8"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </div>
                     </button>
+                  </div>
+                  </div>
                     {isFModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
@@ -1117,19 +1279,25 @@ const Page = () => {
                             <textarea
                               value={newFStrategy}
                               onChange={(e) => setNewFStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[66rem] h-[10rem]"
+                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[66.4rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeFModal}
-                              className="bg-[#8A252C] text-[#ffffff] font-semibold hover:bg-[#a8444b] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
                             <button
-                              onClick={handleFSave}
-                              className="bg-[#eec160] text-[#8A252C] font-semibold hover:bg-[#f8d384] hover:text-[#8A252C] px-4 py-2 mt-4 rounded-lg w-40"
+                              onClick={async () => { 
+                                await handleFSave();
+                                fetchExistingStrategies(department_id); 
+                              }}
+                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                              style={{
+                                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                              }}
                             >
                               Save
                             </button>
@@ -1137,57 +1305,71 @@ const Page = () => {
                         </div>
                       </div>
                     )}
-                    <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
+                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
                       {strategies.financial.map(
-                        (strategy: GeneratedSentence) => (
+                        (strategy: GeneratedSentence,  index: number) => (
                           <div
                             key={strategy.id}
-                            className="bg-[#ffffff] mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
                           >
                             {/* edit div */}
                             {editingStrategy === strategy ? (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
                                 <input
                                   type="text"
                                   value={newStrategyValue}
                                   onChange={(e) =>
                                     setNewStrategyValue(e.target.value)
                                   }
-                                  className="w-full"
+                                  className="w-full rounded-lg border border-orange-400 px-2"
                                 />
                                 <button
-                                  onClick={() =>
+                                  onClick={() => {
                                     handleFinancialSaveEdit(
                                       // @ts-ignore
                                       strategy.fID,
                                       newStrategyValue,
                                       department_id
-                                    )
-                                  }
-                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                    );
+                                  }}
+                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
                                 >
                                   Save
                                 </button>
                               </div>
                             ) : (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
                                 {strategy.value}
                               </div>
                             )}
                             <div className="flex">
                               <button
                                 onClick={() => handleEditClick(strategy)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                className="font-bold py-2 px-2 rounded text-orange-600"
                               >
-                                Edit
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
                               </button>
+
                               <button
-                                onClick={() =>
-                                  handleFinancialDelete(strategy.fID)
-                                }
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() =>handleFinancialDelete(strategy.fID)}
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
-                                Delete
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
                               </button>
                             </div>
                           </div>
@@ -1197,40 +1379,56 @@ const Page = () => {
                   </div>
                 )}
 
-                {selectedPerspective === "learningGrowth" && (
+                {selectedComponent === "Learning" && (
                   // LEARNING & GROWTH
                   <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
-                    <div className=" mt-5 inline-block self-center break-words font-bold text-[1.3rem] text-[#000000]">
-                      Learning & Growth : Culture & People Development
-                    </div>
-                    <button onClick={openLGModal} className="flex flex-row">
-                      <div className="text-[#EFAF21] mr-3">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-8 h-8"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                    <div className="flex flex-row">
+                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                      <img
+                        src="/financial.png"
+                        alt=""
+                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Culture & People Development Overview
+                        </span>
+                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Enhances organizational culture and employee growth.
+                        </span>
                       </div>
-                      <div className="mt-1">Add more strategies</div>
+                    </div>
+                    {/* add button here */}
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[65.5rem]">
+                    <button onClick={openLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
+                      <div className="flex flex-row">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-8"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </div>
                     </button>
+                  </div>
+                  </div>
                     {isLGModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[70rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[77rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Learning & Growth Strategy
                             </h2>
                             <button
                               onClick={closeLGModal}
-                              className="ml-[44rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1268,19 +1466,25 @@ const Page = () => {
                             <textarea
                               value={newLGStrategy}
                               onChange={(e) => setNewLGStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[66rem] h-[10rem]"
+                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[73rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeLGModal}
-                              className="bg-[#8A252C] text-[#ffffff] font-semibold hover:bg-[#a8444b] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
                             <button
-                              onClick={handleLGSave}
-                              className="bg-[#eec160] text-[#8A252C] font-semibold hover:bg-[#f8d384] hover:text-[#8A252C] px-4 py-2 mt-4 rounded-lg w-40"
+                              onClick={async () => { 
+                                await handleLGSave();
+                                fetchExistingStrategies(department_id); 
+                              }}
+                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                              style={{
+                                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                              }}
                             >
                               Save
                             </button>
@@ -1288,22 +1492,23 @@ const Page = () => {
                         </div>
                       </div>
                     )}
-                    <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
+                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
                       {strategies.learningGrowth.map(
-                        (strategy: GeneratedSentence) => (
+                        (strategy: GeneratedSentence,  index: number) => (
                           <div
                             key={strategy.id}
-                            className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
                           >
+                            {/* edit div */}
                             {editingStrategy === strategy ? (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
                                 <input
                                   type="text"
                                   value={newStrategyValue}
                                   onChange={(e) =>
                                     setNewStrategyValue(e.target.value)
                                   }
-                                  className="w-full"
+                                  className="w-full rounded-lg border border-orange-400 px-2"
                                 />
                                 <button
                                   onClick={() =>
@@ -1314,28 +1519,44 @@ const Page = () => {
                                       department_id
                                     )
                                   }
-                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
                                 >
                                   Save
                                 </button>
                               </div>
                             ) : (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
                                 {strategy.value}
                               </div>
                             )}
                             <div className="flex">
                               <button
                                 onClick={() => handleEditClick(strategy)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                className="font-bold py-2 px-2 rounded text-orange-600"
                               >
-                                Edit
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
                               </button>
+
                               <button
-                                onClick={() => handleLGDelete(strategy.fID)}
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() =>handleLGDelete(strategy.fID)}
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
-                                Delete
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
                               </button>
                             </div>
                           </div>
@@ -1345,41 +1566,56 @@ const Page = () => {
                   </div>
                 )}
 
-                {selectedPerspective === "internalProcess" && (
+                {selectedComponent === "Internal" && (
                   // INTERNAL PROCESS
                   <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
-                    <div className=" mt-5 inline-block self-center break-words font-bold text-[1.3rem] text-[#000000]">
-                      Internal Process : Process Development & Technology
-                      Management
-                    </div>
-                    <button onClick={openIPModal} className="flex flex-row">
-                      <div className="text-[#EFAF21] mr-3">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-8 h-8"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                    <div className="flex flex-row">
+                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                      <img
+                        src="/financial.png"
+                        alt=""
+                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Process & Technology Overview
+                        </span>
+                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Optimizes and manages internal processes and technology.
+                        </span>
                       </div>
-                      <div className="mt-1">Add more strategies</div>
+                    </div>
+                    {/* add button here */}
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[63rem]">
+                    <button onClick={openIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
+                      <div className="flex flex-row">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-8"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </div>
                     </button>
+                  </div>
+                  </div>
                     {isIPModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[70rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[75rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Internal Process Strategy
                             </h2>
                             <button
                               onClick={closeIPModal}
-                              className="ml-[46rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1417,19 +1653,25 @@ const Page = () => {
                             <textarea
                               value={newIPStrategy}
                               onChange={(e) => setNewIPStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[66rem] h-[10rem]"
+                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[71rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeIPModal}
-                              className="bg-[#8A252C] text-[#ffffff] font-semibold hover:bg-[#a8444b] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
                             <button
-                              onClick={handleIPSave}
-                              className="bg-[#eec160] text-[#8A252C] font-semibold hover:bg-[#f8d384] hover:text-[#8A252C] px-4 py-2 mt-4 rounded-lg w-40"
+                              onClick={async () => { 
+                                await handleIPSave();
+                                fetchExistingStrategies(department_id); 
+                              }}
+                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                              style={{
+                                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                              }}
                             >
                               Save
                             </button>
@@ -1437,57 +1679,71 @@ const Page = () => {
                         </div>
                       </div>
                     )}
-                    <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
+                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
                       {strategies.internalProcess.map(
-                        (strategy: GeneratedSentence) => (
+                        (strategy: GeneratedSentence,  index: number) => (
                           <div
                             key={strategy.id}
-                            className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
                           >
+                            {/* edit div */}
                             {editingStrategy === strategy ? (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
                                 <input
                                   type="text"
                                   value={newStrategyValue}
                                   onChange={(e) =>
                                     setNewStrategyValue(e.target.value)
                                   }
-                                  className="w-full"
+                                  className="w-full rounded-lg border border-orange-400 px-2"
                                 />
                                 <button
                                   onClick={() =>
-                                    // @ts-ignore
                                     handleInternalProcessSaveEdit(
-                                    // @ts-ignore
-                                    strategy.fID,
-                                    newStrategyValue,
-                                    department_id
+                                      // @ts-ignore
+                                      strategy.fID,
+                                      newStrategyValue,
+                                      department_id
                                     )
                                   }
-                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
                                 >
                                   Save
                                 </button>
                               </div>
                             ) : (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
                                 {strategy.value}
                               </div>
                             )}
                             <div className="flex">
                               <button
                                 onClick={() => handleEditClick(strategy)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                className="font-bold py-2 px-2 rounded text-orange-600"
                               >
-                                Edit
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
                               </button>
+
                               <button
-                                onClick={() =>
-                                  handleInternalDelete(strategy.fID)
-                                }
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() =>handleInternalDelete(strategy.fID)}
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
-                                Delete
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
                               </button>
                             </div>
                           </div>
@@ -1497,40 +1753,56 @@ const Page = () => {
                   </div>
                 )}
 
-                {selectedPerspective === "stakeholder" && (
+                {selectedComponent === "Stakeholder" && (
                   // STAKEHOLDER
                   <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
-                    <div className=" mt-5 inline-block self-center break-words font-bold text-[1.3rem] text-[#000000]">
-                      Stakeholder : Client Relationship
-                    </div>
-                    <button onClick={openSModal} className="flex flex-row">
-                      <div className="text-[#EFAF21] mr-3">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="w-8 h-8"
-                        >
-                          <path
-                            fill-rule="evenodd"
-                            d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                            clip-rule="evenodd"
-                          />
-                        </svg>
+                    <div className="flex flex-row">
+                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                      <img
+                        src="/financial.png"
+                        alt=""
+                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Client Relationship Overview
+                        </span>
+                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                          Measures client engagement quality and value.
+                        </span>
                       </div>
-                      <div className="mt-1">Add more strategies</div>
+                    </div>
+                    {/* add button here */}
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[69rem]">
+                    <button onClick={openSModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
+                      <div className="flex flex-row">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        className="size-8"
+                      >
+                        <path
+                          fill-rule="evenodd"
+                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                          clip-rule="evenodd"
+                        />
+                      </svg>
+                    </div>
                     </button>
+                  </div>
+                  </div>
                     {isSModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[70rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[71.9rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Stakeholder Strategy
                             </h2>
                             <button
                               onClick={closeSModal}
-                              className="ml-[49rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
@@ -1568,19 +1840,25 @@ const Page = () => {
                             <textarea
                               value={newSStrategy}
                               onChange={(e) => setNewSStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[66rem] h-[10rem]"
+                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[68rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeSModal}
-                              className="bg-[#8A252C] text-[#ffffff] font-semibold hover:bg-[#a8444b] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
                             <button
-                              onClick={handleSSave}
-                              className="bg-[#eec160] text-[#8A252C] font-semibold hover:bg-[#f8d384] hover:text-[#8A252C] px-4 py-2 mt-4 rounded-lg w-40"
+                              onClick={async () => { 
+                                await handleSSave();
+                                fetchExistingStrategies(department_id); 
+                              }}
+                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                              style={{
+                                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                              }}
                             >
                               Save
                             </button>
@@ -1588,22 +1866,23 @@ const Page = () => {
                         </div>
                       </div>
                     )}
-                    <div className="bg-[#ffffff] mt-5 w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 border border-yellow-500 overflow-y-auto overflow-x-hidden">
+                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
                       {strategies.stakeholder.map(
-                        (strategy: GeneratedSentence) => (
+                        (strategy: GeneratedSentence,  index: number) => (
                           <div
                             key={strategy.id}
-                            className="bg-[#ffffff] relative mr-8 flex flex-row pt-4 pr-5 pb-4 w-[100%] h-auto box-sizing-border"
+                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
                           >
+                            {/* edit div */}
                             {editingStrategy === strategy ? (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10 flex">
+                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
                                 <input
                                   type="text"
                                   value={newStrategyValue}
                                   onChange={(e) =>
                                     setNewStrategyValue(e.target.value)
                                   }
-                                  className="w-full"
+                                  className="w-full rounded-lg border border-orange-400 px-2"
                                 />
                                 <button
                                   onClick={() =>
@@ -1614,30 +1893,44 @@ const Page = () => {
                                       department_id
                                     )
                                   }
-                                  className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded ml-2"
+                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
                                 >
                                   Save
                                 </button>
                               </div>
                             ) : (
-                              <div className="mt-[-0.6rem] pr-3 pl-3 w-[100%] h-10">
+                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
                                 {strategy.value}
                               </div>
                             )}
                             <div className="flex">
                               <button
                                 onClick={() => handleEditClick(strategy)}
-                                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mr-2"
+                                className="font-bold py-2 px-2 rounded text-orange-600"
                               >
-                                Edit
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
                               </button>
+
                               <button
-                                onClick={() =>
-                                  handleStakeholderDelete(strategy.fID)
-                                }
-                                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded"
+                                onClick={() =>handleStakeholderDelete(strategy.fID)}
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
-                                Delete
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
+                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                </svg>
                               </button>
                             </div>
                           </div>
@@ -1649,257 +1942,6 @@ const Page = () => {
               </div>
               {/* end of main container */}
             </div>
-
-            {/* vision-values-mission container */}
-            {/* <div className="col-span-1 flex justify-end hidden lg:flex">
-              <div className="h-[72rem] border-l border-gray-300 mr-[2rem] mt-[-10rem]"></div>
-              <div className="flex flex-col gap-[1.5rem] mt-[-6rem] mr-2">
-                <div className="bg-[#ffffff] rounded-lg p-4 border border-gray-300 h-80 w-[30rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)]">
-                  <div className="rounded-t-lg bg-[#8A252C] p-2 flex items-center justify-between">
-                    <span className="text-xl font-bold text-white">VISION</span>
-
-                    <div className="relative">
-                      <button
-                        className="px-2 py-1 text-[#ffffff] rounded hover:bg-[#FAD655] text-xl font-bold"
-                        onClick={() => handleMoreClick("vision")}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 6h16M4 12h16M4 18h16"
-                          />
-                        </svg>
-                      </button>
-                      {showVisionDropdown && (
-                        <div
-                          className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10`}
-                        >
-                          <div className="py-1">
-                            <button
-                              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500 w-full text-left"
-                              onClick={() =>
-                                handleAddClick("vision", setVisionButtonLabel, setTextareaDisabled)
-                              }
-                            >
-                              {buttonVisionLabel}
-                            </button>
-                            <button
-                              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500 w-full text-left"
-                              onClick={() => handleVisionDeleteClick("vision")}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {showVisionCard && !visionSaved && (
-                    <div className="bg-white rounded-lg p-1 h-60 w-[28rem]">
-                      <textarea
-                        className="w-full h-full px-4 py-2 rounded-lg focus:outline-none resize-none"
-                        placeholder="Enter your input here"
-                        value={visionInput}
-                        onChange={(e) => handleTextareaChange(setVisionInput, e)}
-                        disabled={textareaDisabled}
-                      ></textarea>
-                      <button
-                        onClick={() =>
-                          handleVisionSaveClick(
-                            setVisionSaved,
-                            setVisionButtonLabel,
-                            setTextareaDisabled
-                          )
-                        }
-                        className="flex mt-[-17.89rem] ml-[20rem] px-2 py-1 bg-white text-[#8A252C] rounded hover:bg-[#FAD655] text-xl font-medium"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  )}
-
-                  {visionSaved && (
-                    <div className="bg-white rounded-lg p-1 h-60 w-[28rem] overflow-auto">
-                      <div className="break-words">{visionInput}</div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="bg-[#ffffff] rounded-lg p-4 border border-gray-300 h-80 w-[30rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)]">
-                  <div className="rounded-t-lg bg-[#8A252C] p-2 flex items-center justify-between">
-                    <span className="text-xl font-bold text-white">VALUES</span>
-
-                    <div className="relative">
-                      <button
-                        className="px-2 py-1 text-[#ffffff] rounded hover:bg-[#FAD655] text-xl font-bold"
-                        onClick={() => handleMoreClick("values")}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 6h16M4 12h16M4 18h16"
-                          />
-                        </svg>
-                      </button>
-                      {showValuesDropdown && (
-                        <div
-                          className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10`}
-                        >
-                          <div className="py-1">
-                            <button
-                              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500 w-full text-left"
-                              onClick={() =>
-                                handleAddClick("values", setValuesButtonLabel, setTextareaDisabled)
-                              }
-                            >
-                              {buttonValuesLabel}
-                            </button>
-                            <button
-                              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500 w-full text-left"
-                              onClick={() => handleValuesDeleteClick("values")}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {showValuesCard && !valuesSaved && (
-                    <div className="bg-white rounded-lg p-1 h-60 w-[28rem]">
-                      <textarea
-                        className="w-full h-full px-4 py-2 rounded-lg focus:outline-none resize-none"
-                        placeholder="Enter your input here"
-                        value={valuesInput}
-                        onChange={(e) => handleTextareaChange(setValuesInput, e)}
-                        disabled={textareaDisabled}
-                      ></textarea>
-                      <button
-                        onClick={() =>
-                          handleValuesSaveClick(
-                            setValuesSaved,
-                            setValuesButtonLabel,
-                            setTextareaDisabled
-                          )
-                        }
-                        className="flex mt-[-17.89rem] ml-[20rem] px-2 py-1 bg-white text-[#8A252C] rounded hover:bg-[#FAD655] text-xl font-medium"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  )}
-
-                  {valuesSaved && (
-                    <div className="bg-white rounded-lg p-1 h-60 w-[28rem] overflow-auto">
-                      <div className="break-words">{valuesInput}</div>
-                    </div>
-                  )}
-                </div>
-
-                <div className="bg-[#ffffff] rounded-lg p-4 border border-gray-300 h-80 w-[30rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)]">
-                  <div className="rounded-t-lg bg-[#8A252C] p-2 flex items-center justify-between">
-                    <span className="text-xl font-bold text-white">MISSION</span>
-
-                    <div className="relative">
-                      <button
-                        className="px-2 py-1 text-[#ffffff] rounded hover:bg-[#FAD655] text-xl font-bold"
-                        onClick={() => handleMoreClick("mission")}
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          className="h-6 w-6"
-                          fill="none"
-                          viewBox="0 0 24 24"
-                          stroke="currentColor"
-                        >
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M4 6h16M4 12h16M4 18h16"
-                          />
-                        </svg>
-                      </button>
-                      {showMissionDropdown && (
-                        <div
-                          className={`absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10`}
-                        >
-                          <div className="py-1">
-                            <button
-                              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500 w-full text-left"
-                              onClick={() =>
-                                handleAddClick(
-                                  "mission",
-                                  setMissionButtonLabel,
-                                  setTextareaDisabled
-                                )
-                              }
-                            >
-                              {buttonMissionLabel}
-                            </button>
-                            <button
-                              className="block px-4 py-2 text-gray-800 hover:bg-gray-100 hover:text-red-500 w-full text-left"
-                              onClick={() => handleMissionDeleteClick("mission")}
-                            >
-                              Delete
-                            </button>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-
-                  {showMissionCard && !missionSaved && (
-                    <div className="bg-white rounded-lg p-1 h-60 w-[28rem]">
-                      <textarea
-                        className="w-full h-full px-4 py-2 rounded-lg focus:outline-none resize-none"
-                        placeholder="Enter your input here"
-                        value={missionInput}
-                        onChange={(e) => handleTextareaChange(setMissionInput, e)}
-                        disabled={textareaDisabled}
-                      ></textarea>
-                      <button
-                        onClick={() =>
-                          handleMissionSaveClick(
-                            setMissionSaved,
-                            setMissionButtonLabel,
-                            setTextareaDisabled
-                          )
-                        }
-                        className="flex mt-[-17.89rem] ml-[20rem] px-2 py-1 bg-white text-[#8A252C] rounded hover:bg-[#FAD655] text-xl font-medium"
-                      >
-                        Save
-                      </button>
-                    </div>
-                  )}
-
-                  {missionSaved && (
-                    <div className="bg-white rounded-lg p-1 h-60 w-[28rem] overflow-auto">
-                      <div className="break-words">{missionInput}</div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </div> */}
-            {/* end of vision value smission container */}
           </div>
         </div>
       </div>

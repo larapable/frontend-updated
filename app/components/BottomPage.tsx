@@ -31,7 +31,8 @@ const BottomPage = () => {
         <div className="bg-[#FFFFFF] relative flex flex-col items-center p-[1.2rem_1.2rem_1.1rem_1.6rem] box-sizing-border">
         <div className="m-[0_1.4rem_0.8rem_0] flex flex-row justify-between w-[90%] box-sizing-border">
           <div className="flex flex-row box-sizing-border">
-            <div className="rounded-[0.6rem] bg-[#8A252C] relative m-[0_1.1rem_0_0] p-[0_1.7rem_0_1.7rem] w-[17.9rem] h-[10.4rem] box-sizing-border">
+            <div className="rounded-[0.6rem] relative m-[0_1.1rem_0_0] p-[0_1.7rem_0_1.7rem] w-[17.9rem] h-[10.4rem] box-sizing-border"
+              style={{ background: "linear-gradient(to left, #882723, #AB3510)"}}>
               <div className="bg-[url('/logo.png')] bg-[50%_50%] bg-cover bg-no-repeat w-[14.1rem] h-[10.4rem]">
               </div>
             </div>

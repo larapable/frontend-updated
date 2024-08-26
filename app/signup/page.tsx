@@ -3,21 +3,30 @@
 import { useState, useEffect } from "react";
 import { Button, Modal } from "@mui/material";
 import { useRouter } from "next/navigation";
+import Spinner from "../components/Spinner";
 
 type Department = {
   id: number;
   department_name: string;
 };
 export default function SignupPage() {
+  const [firstname, setFirstname] = useState("");
+  const [lastname, setLastname] = useState("");
+  const [role, setRole] = useState("");
+  // 
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(null);
+  const [selectedDepartment, setSelectedDepartment] = useState<number | null>(
+    null
+  );
+  
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successModal, setSuccessModal] = useState(false);
+  const [loading, setLoading] = useState(false); // Add loading state
 
   const handleCancelSave = () => {
     setErrorModalOpen(false);
@@ -39,6 +48,9 @@ export default function SignupPage() {
     e.preventDefault();
 
     if (
+      !firstname ||
+      !lastname ||
+      !role ||
       !username ||
       !email ||
       !password ||
@@ -57,8 +69,7 @@ export default function SignupPage() {
       setErrorModalOpen(true);
       return;
     }
-    
-    
+
     // Check if password meets requirements
     const passwordRegex =
       /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&.])[A-Za-z\d@$!%*?&.]{8,}$/;
@@ -71,28 +82,36 @@ export default function SignupPage() {
     }
 
     try {
-      const resUserExists = await fetch("http://localhost:8080/user/userExists", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, username }),
-      });
+      setLoading(true); // Show spinner
+      const resUserExists = await fetch(
+        "http://localhost:8080/user/userExists",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ email, username }),
+        }
+      );
 
-      const { user, userName } = await resUserExists.json(); // Assuming the server responds with both user and userName
+      const { userEmail, userName } = await resUserExists.json(); // Assuming the server responds with both user and userName
 
-      if (user || userName) {
+      if (userEmail || userName) {
         setErrorMessage("Username or email already exists.");
         setErrorModalOpen(true);
+        setLoading(false); // Hide spinner
         return;
       }
-      
+
       const res = await fetch("http://localhost:8080/user/insert", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          firstname,
+          lastname,
+          role,
           username,
           email,
           password,
@@ -102,10 +121,13 @@ export default function SignupPage() {
         }),
       });
       const data = await res.json();
-      console.log("data:",data);
+      console.log("data:", data);
       if (res.ok) {
         console.log("Signup successful");
         // Clear input fields after successful signup
+        setFirstname("");
+        setLastname("");
+        setRole("");
         setUsername("");
         setEmail("");
         setPassword("");
@@ -113,18 +135,21 @@ export default function SignupPage() {
         setSelectedDepartment(0);
         setSuccessModal(true);
         router.push("/login");
-      
       } else {
         console.log("User registration failed.");
       }
     } catch (error) {
       console.log("Error during registration", error);
+    } finally {
+      setLoading(false); // Hide spinner
     }
   };
 
   useEffect(() => {
     const fetchDepartments = async () => {
-      const res = await fetch("http://localhost:8080/department/getAllDepartments");
+      const res = await fetch(
+        "http://localhost:8080/department/getAllDepartments",
+      );
       const data = await res.json();
       setDepartments(data.departments);
     };
@@ -132,25 +157,63 @@ export default function SignupPage() {
     fetchDepartments();
   }, []);
 
+  if (loading) {
+    return <Spinner />; // Show spinner while loading
+  }
+
   return (
     <div className="h-screen flex lg:flex-row md:flex-col">
-      <div className="flex flex-col items-center lg:ml-60 lg:mt-28 md:mt-8 md:ml-13 ">
-        <div className=" font-bold lg:text-[4.1rem] lg:mb-18 md:text-[4rem] md:mb-10 ">
+      <div className="flex flex-col items-center lg:ml-60 lg:mt-5 md:mt-6 md:ml-13 ">
+        <div className=" font-bold lg:text-[4.1rem] lg:mb-10 md:text-[4rem] md:mb-5 ">
           Sign Up
         </div>
+        {/*  */}
+        <div className="flex flex-row space-x-8 mt-[-1rem]">
+          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[18rem] mb-6 py-4 flex items-center">
+            <input
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
+              type="text"
+              placeholder="First Name"
+              className="flex-1 px-3 py-1 ml-4 mr-4 font-medium placeholder-[#807979] bg-transparent focus:outline-none text-[1rem]"
+            />
+          </div>
+          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[18rem] mb-6 py-4 flex items-center">
+            <input
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+              type="text"
+              placeholder="Last Name"
+              className="flex-1 px-3 py-1 ml-4 mr-4 font-medium placeholder-[#807979] bg-transparent focus:outline-none text-[1rem]"
+            />
+          </div>
+        </div>
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
-        <select
-          value={selectedDepartment || ''}
-          onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
-          className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
-        >
-          <option value="">Select a department</option>
-          {departments && departments.map((department) => (
-          <option key={department.id} value={department.id}>
-            {department.department_name}
-          </option>
-        ))}
-        </select>
+          <select
+            value={selectedDepartment || ""}
+            onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
+            className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
+          >
+            <option value="">Select a department</option>
+            {departments &&
+              departments.map((department) => (
+                <option key={department.id} value={department.id}>
+                  {department.department_name}
+                </option>
+              ))}
+          </select>
+        </div>
+        {/*  */}
+        <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
+          <select
+            value={role}
+            onChange={(e) => setRole(e.target.value)}
+            className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
+          >
+            <option value="">Select a role</option>
+            <option value="HEAD OFFICER">HEAD OFFICER</option>
+            <option value="FACULTY">FACULTY</option>
+          </select>
         </div>
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] mb-6 py-4 flex items-center">
           <input
@@ -191,7 +254,8 @@ export default function SignupPage() {
           </div>
         </div>
         <button
-          className="rounded-lg bg-[#8a252c] text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white mb-4 hover:bg-[#eec160] hover:text-[#8a252c] "
+          style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+          className="rounded-lg text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white mb-4 hover:bg-[#eec160] hover:text-[#8a252c] "
           onClick={handleSubmit}
         >
           Sign Up
@@ -208,13 +272,16 @@ export default function SignupPage() {
           <div className="flex-1 bg-[#807979] h-0.5 w-[17.3rem]"></div>
         </div>
         <a
-          href="/department"
+          href="/"
           className="text-2xl text-[#8a252c] font-bold lg:mt-4 md:mb-16 hover:underline"
         >
-          Register Department
+          Back Home
         </a>
       </div>
-      <div className="flex flex-col items-center bg-[#8a252c] lg:w-full lg:ml-[12%] md:w-full">
+      <div
+        style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+        className="flex flex-col items-center lg:w-full lg:ml-[12%] md:w-full"
+      >
         <img
           src="wc-screen-scorecard.png"
           className="w-28 h-28 mt-24 lg:mr-96 md:mr-[60%] mb-4 hover:scale-110 transition-transform"
@@ -268,7 +335,7 @@ export default function SignupPage() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />
@@ -310,7 +377,7 @@ export default function SignupPage() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeLinejoin="round"
+                  strokeWidth="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />

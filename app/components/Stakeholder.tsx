@@ -29,11 +29,9 @@ export default function Stakeholder() {
 
   // stakeholder values
   const [stakeholderTargetCode, setStakeholderTargetCode] = useState("");
-  const [stakeholderStartDate, setStakeholderStartDate] = useState<Date | null>(
-    null
-  );
+  const [stakeholderStartDate, setStakeholderStartDate] = useState(new Date());
   const [stakeholderTargetCompletionDate, setStakeholderTargetCompletionDate] =
-    useState<Date | null>(null);
+    useState(new Date());
   const [stakeholderOfficeTarget, setStakeholderOfficeTarget] = useState("");
   const [stakeholderTargetPerformance, setStakeholderTargetPerformance] =
     useState("");
@@ -44,22 +42,52 @@ export default function Stakeholder() {
   const [stakeholderLevelOfAttainment, setStakeholderLevelOfAttainment] =
     useState("");
 
+  //stakeholder scorecards
   const [stakeholderSavedScorecards, setStakeholderSavedScorecards] = useState<
     StakeholderScorecard[]
   >([]);
 
-  const [stakeholderEditMode, setStakeholderEditMode] = useState<number | null>(
-    null
-  ); // Track edit mode
+  //for edit
+  const [stakeholderEditID, setStakeholderEditID] = useState(0);
+  const [stakeholderEditMode, setStakeholderEditMode] =
+    useState<StakeholderScorecard | null>(null); // Track edit mode
 
   const handleStakeholderCloseModal = () => {
     setStakeholderModalOpen(false);
     setStakeholderEditMode(null); // Reset edit mode
   };
 
+  const handleStartDateChange = (date: Date | null) => {
+    console.log("Selected Start Date", date);
+    if (date) {
+      // Convert the selected date to UTC before saving it
+      const utcDate = new Date(
+        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+      );
+      setStakeholderStartDate(utcDate);
+    } else {
+      setStakeholderStartDate(new Date());
+    }
+  };
+
+  const handleCompletionDateChange = (date: Date | null) => {
+    console.log("Selected Start Date", date);
+    if (date) {
+      // Convert the selected date to UTC before saving it
+      const utcDate = new Date(
+        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+      );
+      setStakeholderTargetCompletionDate(utcDate);
+    } else {
+      //@ts-ignore
+      setStakeholderTargetCompletionDate(null);
+    }
+  };
+
   const handleStakeholderAddMoreScorecard = () => {
     setStakeholderTargetCode("");
-    setStakeholderStartDate(null);
+    setStakeholderStartDate(new Date());
+    //@ts-ignore
     setStakeholderTargetCompletionDate(null);
     setStakeholderOfficeTarget("");
     setStakeholderTargetPerformance("");
@@ -69,6 +97,15 @@ export default function Stakeholder() {
     setStakeholderLevelOfAttainment("");
     setStakeholderEditMode(null);
     setStakeholderModalOpen(true);
+  };
+
+  // Determine which function to call when the save button is clicked
+  const handleSaveButtonClick = () => {
+    if (stakeholderEditMode) {
+      handleStakeholderUpdateScorecard();
+    } else {
+      handleStakeholderSaveScorecard();
+    }
   };
 
   const calculateStakeholderLevelOfAttainment = (
@@ -81,176 +118,32 @@ export default function Stakeholder() {
   };
 
   // display the updated level of attainment base sa actual performance
-  const handleStakeholderActualPerformanceChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const value = e.target.value;
-    //Allow backspacea to clear the input
-    if (value === "") {
-      setStakeholderLevelOfAttainment("");
-      setStakeholderActualPerformance("0%");
-    } else {
-      const newActualPerformance = parseFloat(value);
-      // Check if the value is a number or not NaN
-      if (!isNaN(newActualPerformance) && newActualPerformance <= 100) {
-        setStakeholderActualPerformance(newActualPerformance.toString());
-        // Assuming stakeholderTargetPerformance is already set from the database
-        const targetPerformance = parseFloat(stakeholderTargetPerformance);
-        if (targetPerformance > 0) {
-          // Make sure not to divide by zero
-          const newLevelOfAttainment = calculateStakeholderLevelOfAttainment(
-            newActualPerformance,
-            targetPerformance
-          );
-          setStakeholderLevelOfAttainment(newLevelOfAttainment);
-        }
-      }
-    }
-  };
-
-  // Save Stakeholder Inputs
-  const handleStakeholderSaveScorecard = async () => {
-    // Check if all fields are filled
-    if (
-      !stakeholderTargetCode ||
-      !stakeholderStartDate ||
-      !stakeholderTargetCompletionDate ||
-      !stakeholderOfficeTarget ||
-      !stakeholderTargetPerformance ||
-      !stakeholderStatus ||
-      !stakeholderKPI ||
-      !stakeholderActualPerformance ||
-      parseFloat(stakeholderTargetPerformance) > 100 ||
-      parseFloat(stakeholderActualPerformance) > 100
-    ) {
-      toast.error(
-        "Please fill in all fields and ensure performance values do not exceed 100."
-      );
-      return;
-    }
-
-    try {
-      // Send the POST request to the server
-      const response = await fetch("http://localhost:8080/bsc/stakeholderBsc/insert", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          department: {id: department_id},
-          target_code: stakeholderTargetCode,
-          startDate: stakeholderStartDate,
-          completionDate: stakeholderTargetCompletionDate,
-          office_target: stakeholderOfficeTarget,
-          status: stakeholderStatus,
-          key_performance_indicator: stakeholderKPI,
-          target_performance: stakeholderTargetPerformance,
-          actual_performance: stakeholderActualPerformance,
-        }),
-      });
-      // Parse the JSON response
-      const result = await response.json();
-
-      // Handle the response based on the status code
-      if (response.ok) {
-        console.log(
-          "Stakeholder scorecard data submitted successfully:",
-          result
-        );
-        // Update the saved scorecards
-        const newScorecard = { ...result.data };
-        setStakeholderSavedScorecards((prevScorecards) => [
-          ...prevScorecards,
-          newScorecard,
-        ]);
-        // Set the edit mode to the new scorecard's ID
-        setStakeholderEditMode(newScorecard.id);
-        // Close the modal after saving
-        setStakeholderModalOpen(false);
-        window.location.reload();
-      } else {
-        toast.error(
-          "Failed to submit stakeholder scorecard data:",
-          result.message
-        );
-        // Perform any error actions, like alerts or state updates
-      }
-    } catch (error) {
-      console.error("Error submitting stakeholder scorecard data:", error);
-      // Handle network errors here
-    }
-    // Reset modal state for the next input
-    setStakeholderModalOpen(false);
-    setStakeholderEditMode(null);
-    setStakeholderTargetCode("");
-    setStakeholderStartDate(null);
-    setStakeholderTargetCompletionDate(null);
-    setStakeholderOfficeTarget("");
-    setStakeholderStatus("");
-    setStakeholderKPI("");
-    setStakeholderTargetPerformance("");
-    setStakeholderActualPerformance("");
-  };
-
-  const handleStakeholderUpdateScorecard = async () => {
-    if (!stakeholderEditMode) return; // Exit if not in edit mode
-
-    try {
-      const response = await fetch(`/api/stakeholderBSC/${stakeholderEditMode}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          id: stakeholderEditMode,
-          target_code: stakeholderTargetCode,
-          start_date: stakeholderStartDate,
-          completion_date: stakeholderTargetCompletionDate,
-          office_target: stakeholderOfficeTarget,
-          status: stakeholderStatus,
-          key_performance_indicator: stakeholderKPI,
-          target_performance: stakeholderTargetPerformance,
-          actual_performance: stakeholderActualPerformance,
-        }),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        const updatedScorecard = result.data;
-        setStakeholderSavedScorecards((prevScorecards) =>
-          prevScorecards.map((scorecard) =>
-            scorecard.id === stakeholderEditMode ? updatedScorecard : scorecard
-          )
-        );
-        toast.success("Scorecard updated successfully.");
-      } else {
-        toast.error(`Failed to update scorecard: ${result.message}`);
-      }
-    } catch (error) {
-      toast.error("Error updating scorecard. Please try again.");
-    }
-
-    // Reset modal state after update
-    setStakeholderModalOpen(false);
-    setStakeholderEditMode(null);
-    setStakeholderTargetCode("");
-    setStakeholderStartDate(null);
-    setStakeholderTargetCompletionDate(null);
-    setStakeholderOfficeTarget("");
-    setStakeholderStatus("");
-    setStakeholderKPI("");
-    setStakeholderTargetPerformance("");
-    setStakeholderActualPerformance("");
-  };
-
-  // Determine which function to call when the save button is clicked
-  const handleSaveButtonClick = () => {
-    if (stakeholderEditMode) {
-      handleStakeholderUpdateScorecard();
-    } else {
-      handleStakeholderSaveScorecard();
-    }
-  };
+  // const handleStakeholderActualPerformanceChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const value = e.target.value;
+  //   //Allow backspacea to clear the input
+  //   if (value === "") {
+  //     setStakeholderLevelOfAttainment("");
+  //     setStakeholderActualPerformance("0%");
+  //   } else {
+  //     const newActualPerformance = parseFloat(value);
+  //     // Check if the value is a number or not NaN
+  //     if (!isNaN(newActualPerformance) && newActualPerformance <= 100) {
+  //       setStakeholderActualPerformance(newActualPerformance.toString());
+  //       // Assuming stakeholderTargetPerformance is already set from the database
+  //       const targetPerformance = parseFloat(stakeholderTargetPerformance);
+  //       if (targetPerformance > 0) {
+  //         // Make sure not to divide by zero
+  //         const newLevelOfAttainment = calculateStakeholderLevelOfAttainment(
+  //           newActualPerformance,
+  //           targetPerformance
+  //         );
+  //         setStakeholderLevelOfAttainment(newLevelOfAttainment);
+  //       }
+  //     }
+  //   }
+  // };
 
   // Fetch the saved financial scorecards from the server
   useEffect(() => {
@@ -277,108 +170,191 @@ export default function Stakeholder() {
     fetchStakeholderScorecards();
   }, [department_id]);
 
-  const handleStartDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  const handleStakeholderEditScorecard = (scorecard: StakeholderScorecard) => {
+    setStakeholderTargetCode(scorecard.target_code);
+    setStakeholderStartDate(scorecard.startDate);
+    setStakeholderTargetCompletionDate(scorecard.completionDate);
+    setStakeholderOfficeTarget(scorecard.office_target);
+    setStakeholderStatus(scorecard.status);
+    setStakeholderKPI(scorecard.key_performance_indicator);
+    setStakeholderTargetPerformance(scorecard.target_performance);
+    setStakeholderActualPerformance(scorecard.actual_performance);
+    // pwede rani wala
+    // setStakeholderLevelOfAttainment(
+    //   calculateStakeholderLevelOfAttainment(
+    //     parseFloat(scorecard.actual_performance),
+    //     parseFloat(scorecard.target_performance)
+    //   )
+    // );
+    setStakeholderEditMode(scorecard);
+    setStakeholderEditID(scorecard.id);
+    setStakeholderModalOpen(true);
+  };
+
+  const handleStakeholderSaveScorecard = async () => {
+    // Check if all fields are filled
+    if (
+      !stakeholderTargetCode ||
+      !stakeholderStartDate ||
+      !stakeholderTargetCompletionDate ||
+      !stakeholderOfficeTarget ||
+      !stakeholderTargetPerformance ||
+      !stakeholderStatus ||
+      !stakeholderKPI ||
+      !stakeholderActualPerformance ||
+      parseFloat(stakeholderTargetPerformance) > 100 ||
+      parseFloat(stakeholderActualPerformance) > 100
+    ) {
+      toast.error(
+        "Please fill in all fields and ensure performance values do not exceed 100."
       );
-      setStakeholderStartDate(utcDate);
-    } else {
-      setStakeholderStartDate(null);
+      return;
+    }
+
+    try {
+      // Send the POST request to the server
+      const response = await fetch(
+        "http://localhost:8080/bsc/stakeholderBsc/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            department: { id: department_id },
+            target_code: stakeholderTargetCode,
+            startDate: stakeholderStartDate,
+            completionDate: stakeholderTargetCompletionDate,
+            office_target: stakeholderOfficeTarget,
+            status: stakeholderStatus,
+            key_performance_indicator: stakeholderKPI,
+            target_performance: stakeholderTargetPerformance,
+            actual_performance: stakeholderActualPerformance,
+          }),
+        }
+      );
+      if (!response.ok) {
+        throw new Error("Failed to save stakeholder scorecard");
+      }
+
+      const savedScorecard = await response.json();
+      setStakeholderSavedScorecards([
+        ...stakeholderSavedScorecards,
+        savedScorecard,
+      ]);
+      toast.success("Stakeholder scorecard saved successfully");
+      handleStakeholderCloseModal();
+    } catch (error) {
+      console.error("Error saving stakeholder scorecard:", error);
+      toast.error("Error saving stakeholder scorecard");
     }
   };
 
-  const handleCompletionDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setStakeholderTargetCompletionDate(utcDate);
-    } else {
-      setStakeholderTargetCompletionDate(null);
-    }
-  };
+  const handleStakeholderUpdateScorecard = async () => {
+    if (!stakeholderEditMode) return;
 
-  const handleStakeholderEditScorecard = (id: number) => {
-    const scorecardToEdit = stakeholderSavedScorecards.find(
-      (scorecard) => scorecard.id === id
-    );
-    if (scorecardToEdit) {
-      // Convert the start date and completion date to the local timezone before setting them
-      const startDate = new Date(scorecardToEdit.startDate);
-      startDate.setMinutes(
-        startDate.getMinutes() - startDate.getTimezoneOffset()
-      );
-      setStakeholderStartDate(startDate);
+    const updatedScorecard: StakeholderScorecard = {
+      ...stakeholderEditMode,
+      target_code: stakeholderTargetCode,
+      startDate: stakeholderStartDate,
+      completionDate: stakeholderTargetCompletionDate,
+      office_target: stakeholderOfficeTarget,
+      status: stakeholderStatus,
+      key_performance_indicator: stakeholderKPI,
+      target_performance: stakeholderTargetPerformance,
+      actual_performance: stakeholderActualPerformance,
+    };
 
-      const completionDate = new Date(scorecardToEdit.completionDate);
-      completionDate.setMinutes(
-        completionDate.getMinutes() - completionDate.getTimezoneOffset()
+    try {
+      const response = await fetch(
+        `http://localhost:8080/bsc/stakeholder/update/${stakeholderEditID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedScorecard),
+        }
       );
-      setStakeholderTargetCompletionDate(completionDate);
+      if (!response.ok) {
+        throw new Error("Failed to update stakeholder scorecard");
+      }
 
-      // Set the other fields
-      setStakeholderTargetCode(scorecardToEdit.target_code);
-      setStakeholderOfficeTarget(scorecardToEdit.office_target);
-      setStakeholderStatus(scorecardToEdit.status);
-      setStakeholderKPI(scorecardToEdit.key_performance_indicator);
-      setStakeholderTargetPerformance(scorecardToEdit.target_performance);
-      setStakeholderActualPerformance(scorecardToEdit.actual_performance);
-      setStakeholderLevelOfAttainment(
-        calculateStakeholderLevelOfAttainment(
-          parseFloat(scorecardToEdit.actual_performance),
-          parseFloat(scorecardToEdit.target_performance)
-        )
+      // Update the state with the updated scorecard
+      const updatedScorecards = stakeholderSavedScorecards.map((scorecard) =>
+        scorecard.id === stakeholderEditID ? updatedScorecard : scorecard
       );
 
-      // Open the modal and enter edit mode
-      setStakeholderEditMode(id);
-      setStakeholderModalOpen(true);
+      setStakeholderSavedScorecards(updatedScorecards);
+      toast.success("Stakeholder scorecard updated successfully");
+      handleStakeholderCloseModal();
+    } catch (error) {
+      console.error("Error updating stakeholder scorecard:", error);
+      toast.error("Error updating stakeholder scorecard");
     }
   };
 
   return (
     <div className="flex flex-col">
-      <div className="rounded-[0.3rem] bg-[#8A252C] relative flex flex-row justify-between pt-2 pl-3 pb-2 w-[100%]">
-        <span className="m-[0_0.8rem_0_0] w-[58.7rem] break-words font-bold text-[1.3rem] text-[#FFFFFF]">
-          Stakeholder Scorecard Overview
-        </span>
-      </div>
-      <div className="flex flex-row self-start box-sizing-border mt-5 mb-5">
-        {/* Add More Scorecard Button */}
-        <button
-          className="flex flex-row break-words font-normal text-[1rem] text-[#686666]"
-          onClick={handleStakeholderAddMoreScorecard}
-        >
-          <div className="text-[#EFAF21] mr-3">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-8 h-8"
-            >
-              <path
-                fill-rule="evenodd"
-                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                clip-rule="evenodd"
-              />
-            </svg>
+      <div className="flex flex-col">
+      <div className="flex flex-row">
+        <div className="flex flex-row p-1 w-[85rem] h-auto">
+          <img
+            src="/stakeholder.png"
+            alt=""
+            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+          />
+          <div className="flex flex-col">
+            <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              Stakeholder Scorecard Overview
+            </span>
+            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              Evaluates value delivered to stakeholders, including customers.
+            </span>
           </div>
-          <div className="mt-1">Add more objectives</div>
-        </button>
-        {/* Other perspective toggles */}
+        </div>
+        <div className="flex flex-row self-start box-sizing-border mt-5 mb-5">
+          {/* Add More Scorecard Button */}
+          <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[5rem] pl-[0.25rem] pr-1 pt-1 pb-1">
+            <button
+              className="text-white w-[3rem] h-6 cursor-pointer"
+              onClick={handleStakeholderAddMoreScorecard}
+            >
+              <div className="flex flex-row">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  className="size-8"
+                >
+                  <path
+                    fill-rule="evenodd"
+                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                    clip-rule="evenodd"
+                  />
+                </svg>
+              </div>
+            </button>
+          </div>
+        </div>
+        </div>
+            <div className="flex flex-row p-4 bg-[#fff6d1] text-[rgb(43,43,43)] ">
+              <div className="w-[10rem] flex items-center font-bold">Target Code</div>
+              <div className="w-[25rem] flex items-center font-bold">Financial Office Target</div>
+              <div className="w-[10rem] flex items-center font-bold">Completion</div>
+              <div className="w-[18rem] flex items-center font-bold">Progress</div>
+              <div className="w-[13rem] flex items-center font-bold">Attainment</div>
+              <div className="w-[0rem] flex items-center font-bold">Status</div>
+            </div>
       </div>
-      <div className="bg-[#ffffff] gap-2 w-[100%] h-[100%] flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg border border-yellow-500 overflow-y-auto overflow-x-hidden">
+      <div className="bg-[#ffffff] gap-2 w-[100%] h-[auto] flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg overflow-y-auto overflow-x-hidden">
         {stakeholderSavedScorecards &&
           stakeholderSavedScorecards.length > 0 &&
-          stakeholderSavedScorecards.map((item) => {
+          stakeholderSavedScorecards.map((scorecard, index) => {
+            if (!scorecard) return null;
             const levelOfAttainment = calculateStakeholderLevelOfAttainment(
-              parseFloat(item.actual_performance),
-              parseFloat(item.target_performance)
+              parseFloat(scorecard.actual_performance),
+              parseFloat(scorecard.target_performance)
             );
 
             // Validate the level of attainment to be between 1 and 100
@@ -389,72 +365,84 @@ export default function Stakeholder() {
 
             const progressColor =
               parseFloat(levelOfAttainment) >= 100
-                ? "bg-green-600" // A darker shade of green to indicate full completion
+                ? "bg-orange-400" // A darker shade of green to indicate full completion
                 : parseFloat(levelOfAttainment) >= 50
-                ? "bg-green-500"
-                : "bg-red-500";
+                ? "bg-yellow-300"
+                : "bg-red-600";
 
             const progressBarWidth = `${
               (validatedLevelOfAttainment / 100) * 20
             }rem`; // Adjust the width of the progress bar
 
             return (
+              <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
               <div
-                key={item.id}
-                className="bg-[#ffffff] relative ml-2 flex flex-row pt-4 pb-4 w-[90rem] h-auto box-sizing-border"
-              >
-                <div className="mr-5 gap-10">
-                  <p className="flex flex-row">
-                    <div className="w-[45rem] flex flex-row">
-                      <span className="font-bold bg-yellow-200 pt-2 pb-2 pr-1 pl-2 text-[#962203] mt-[-0.5rem] mr-3 ml-1">
-                        {item.target_code || "N/A"}:
+                  key={index}
+                  className={`flex flex-row p-4 ${index % 2 === 0 ? 'bg-white' : 'bg-[#fff6d1]'}`}
+                >
+                <div className="flex flex-row w-full">
+                    <div className="w-[10rem] flex flex-row">
+                      <span className="font-semibold text-gray-500">
+                        {scorecard.target_code || "N/A"}:
                       </span>
-                      <span className="font-regular">
+                    </div>
+                    <div className="w-[25rem] flex items-center">
+                      <span className="font-semibold">
                         {stakeholderOfficeTarget.length > 60
-                          ? `${(item.office_target || "N/A").substring(
+                          ? `${(scorecard.office_target || "N/A").substring(
                               0,
                               60
                             )}...`
-                          : item.office_target || "N/A"}{" "}
+                          : scorecard.office_target || "N/A"}{" "}
                       </span>
                     </div>
-                    <div className="flex items-center w-[35rem]">
-                      <span className="font-regular mr-5 ml-10">
-                        {item.completionDate
-                          ? new Date(item.completionDate).toLocaleDateString()
+
+                    <div className="flex items-center w-[10rem]">
+                      <span className="font-semibold">
+                        {scorecard.completionDate
+                          ? new Date(
+                              scorecard.completionDate
+                            ).toLocaleDateString()
                           : "N/A"}
                       </span>
-                      <div
-                        className={`h-5 ${progressColor}`}
-                        style={{ width: progressBarWidth }}
-                      ></div>
                     </div>
-                    <div className="flex items-center ml-[-3rem]">
-                      <span className="font-bold ">
+                    <div className="w-[15rem] flex items-center">
+                      <div className={`h-5 ${progressColor} rounded-md`} style={{ width: progressBarWidth }}></div>
+                    </div>
+
+                    <div className="w-[10rem] flex items-center ml-[5rem]">
+                      <span className="font-semibold ">
                         {validatedLevelOfAttainment}%{" "}
                       </span>
-                      <div className="font-bold border rounded-lg bg-yellow-200 border-yellow-500 pt-1 pr-2 pl-2 ml-5 mt-[-0.5rem]  ">
-                        {item.status || "N/A"}{" "}
+                    </div> 
+
+                    <div className="w-[10rem] flex items-center">
+                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2">
+                        {scorecard.status || "N/A"}{" "}
                       </div>
                     </div>
-                  </p>
+                    <div className="w-[5rem] flex items-center justify-end text-orange-700">
+                      <button
+                        onClick={() => handleStakeholderEditScorecard(scorecard)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
                 </div>
-                <button onClick={() => handleStakeholderEditScorecard(item.id)}>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    strokeWidth="1.5"
-                    stroke="currentColor"
-                    className="w-6 h-6"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                    />
-                  </svg>
-                </button>
               </div>
             );
           })}
@@ -582,9 +570,10 @@ export default function Stakeholder() {
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   min="1"
                   max="100"
-                  onChange={(e) =>
-                    setStakeholderTargetPerformance(e.target.value)
-                  }
+                  onChange={(e) => {
+                    const value = Math.min(parseFloat(e.target.value), 100);
+                    setStakeholderTargetPerformance(value.toString());
+                  }}
                 />
               </div>
               <div className="flex flex-col">
@@ -602,22 +591,28 @@ export default function Stakeholder() {
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   min="1"
                   max="100"
-                  onChange={handleStakeholderActualPerformanceChange}
+                  onChange={(e) => {
+                    const value = Math.min(parseFloat(e.target.value), 100);
+                    setStakeholderActualPerformance(value.toString());
+                  }}
                 />
               </div>
             </div>
             <div className="flex flex-row justify-center mt-10 gap-10">
               <button
-                onClick={handleSaveButtonClick}
-                className="bg-[#FAD655] text-[#962203] font-semibold hover:bg-white border hover:border-yellow-500 px-4 py-2 mt-4 rounded-lg w-40"
-              >
-                {stakeholderEditMode ? "Edit" : "Save"}
-              </button>
-              <button
                 onClick={handleStakeholderCloseModal}
-                className="bg-[#FAD655] text-[#962203] font-semibold hover:bg-white border hover:border-yellow-500 px-4 py-2 mt-4 rounded-lg w-40"
+                className="bg-[#ffffff] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
               >
                 Cancel
+              </button>
+              <button
+                onClick={handleSaveButtonClick}
+                className="text-[#ffffff] font-semibold px-4 py-2 mt-4 rounded-lg w-40"
+                style={{
+                  background: "linear-gradient(to left, #8a252c, #AB3510)",
+                }}
+              >
+                {stakeholderEditMode ? "Edit" : "Save"}
               </button>
             </div>
           </div>

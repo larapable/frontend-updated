@@ -9,20 +9,22 @@ import Navbar from './components/LandingNavbar';
 import NavigateBusiness from './components/NavigateBusiness';
 import Pricing from './components/Pricing';
 import './page.css'
-
+import Benefits from './components/Benefits';
+import Showcase from './components/Showcase';
+ 
 export default function Home() {
-
-  
+ 
+ 
   return (
-    <div style={{backgroundColor: '#8A252C'}}>
+    <div style={{backgroundColor: '#FFFFFF'}}>
       <Navbar/>
       <NavigateBusiness />
       <Highlight />
       <AboutUs />
-      <Features />
       <FeaturesPic />
+      <Benefits/>
+      <Showcase/>
       <Pricing />
-      <GetStarted />
       <BottomPage />
     </div>
   )
