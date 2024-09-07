@@ -2,6 +2,7 @@
 import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
 
 const Page = () => {
   const { data: session } = useSession();
@@ -47,9 +48,6 @@ const Page = () => {
   const [visionSaved, setVisionSaved] = useState(false);
   const [valuesSaved, setValuesSaved] = useState(false);
   const [missionSaved, setMissionSaved] = useState(false);
-  const [visionInput, setVisionInput] = useState("");
-  const [valuesInput, setValuesInput] = useState("");
-  const [missionInput, setMissionInput] = useState("");
   const [showVisionDropdown, setShowVisionDropdown] = useState(false);
   const [showValuesDropdown, setShowValuesDropdown] = useState(false);
   const [showMissionDropdown, setShowMissionDropdown] = useState(false);
@@ -58,12 +56,45 @@ const Page = () => {
   const [buttonMissionLabel, setMissionButtonLabel] = useState("Add");
   const [editingStrategy, setEditingStrategy] = useState(null);
   const [newStrategyValue, setNewStrategyValue] = useState("");
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+  const [showWarning, setShowWarning] = useState(false);
 
 
   // @ts-ignore
   const handleEditClick = (strategy) => {
     setEditingStrategy(strategy);
     setNewStrategyValue(strategy.value);
+  };
+
+  const handleButtonClick = (department_id: number) => {
+    setShowWarning(true);
+  };
+
+  const handleConfirmClear = async (department_id: number) => {
+    setShowWarning(false); // Close the warning dialog
+    setIsButtonDisabled(true);
+
+    try {
+      // Call the API endpoints to clear the tables
+      await fetch("http://localhost:8080/stratmap/financial/clear", { method: "DELETE" });
+      await fetch("http://localhost:8080/stratmap/stakeholder/clear", { method: "DELETE" });
+      await fetch("http://localhost:8080/stratmap/learning/clear", { method: "DELETE" });
+      await fetch("http://localhost:8080/stratmap/internal/clear", { method: "DELETE" });
+
+      // Re-fetch the data and categorize after clearing the tables
+      await fetchAllData(department_id);
+    } catch (error) {
+      console.error("Error clearing tables:", error);
+      // Handle errors, e.g., show an error message to the user
+    } finally {
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 60000);
+    }
+  };
+
+  const handleCancelClear = () => {
+    setShowWarning(false); // Close the warning dialog without clearing tables
   };
 
   const [strategies, setStrategies] = useState<StrategyCategories>({
@@ -417,7 +448,12 @@ const Page = () => {
     When sorting, take into account the these three strategic themes: Excellence in Service Quality, Excellence in Internal Service Systems and Excellence in Organizational Stewardship. Append it to the modified response.
     DO NOT MODIFY THE ORIGINAL STRATEGY RESPONSE TEXT. If the response is blank, write "Field is blank" for that response. 
     Sort the responses by strategic theme.
-    This should be your sample output: "(category number 1-4). (whichever strategic theme you think fits the response) W2T1: Implement contingency plans to ensure continuity during economic downturns." DO NOT ADD ANY MARKUP.
+    These are example outputs you should format you output in: (
+    Sample 1: 3. Excellence in Internal Service Systems S6T2: Test new products and marketing strategies to stay ahead of competitors.
+    Sample 2: 1. Excellence in Service Quality S1O1: Implement contingency plans to ensure continuity during economic downturns.
+    Sample 3: 4. Excellence in Organizational Stewardship W2T1: Implement contingency plans to ensure continuity during economic downturns.
+    Sample 4: 2. Excellence in Internal Service Systems S6T2: Test new products and marketing strategies to stay ahead of competitors. )
+    "category number 1-4. (whichever strategic theme you think fits the response, DO NOT ADD THE CATEGORY NAMES OR ANY PRETEXT ASIDE FROM THE STRATEGIC THEME HERE.) (strategy here)" DO NOT ADD ANY MARKUP.
     `;
 
   const fetchProfileGoals = async () => {
@@ -448,7 +484,7 @@ const Page = () => {
     }
   };
 
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.0-pro:generateContent?key=AIzaSyATO5xndEGhEgXrHdeYLOiTbZqtUwYuZqE`;
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=AIzaSyATO5xndEGhEgXrHdeYLOiTbZqtUwYuZqE`;
 
   // financial
   const [isFModalOpen, setIsFModalOpen] = useState(false);
@@ -646,72 +682,98 @@ const Page = () => {
     setSavedFStrategies([...savedLGStrategies, strategyLGWithCode]);
   };
 
-  const fetchDataAndCategorize = async (apiEndpoint: string) => {
-    try {
-      const response = await fetch(apiEndpoint);
-      const data = await response.json();
-      console.log("swot data: ", data);
-
-      const inputText = data
-        .map((row: any) => {
-          if (row["s_oResponses"]) return row["s_oResponses"];
-          else if (row["s_tResponses"]) return row["s_tResponses"];
-          else if (row["w_oResponses"]) return row["w_oResponses"];
-          else if (row["w_tResponses"]) return row["w_tResponses"];
-          else return "";
-        })
-        .join("\n");
-
-      console.log("inputText: ", inputText);
-
-      const geminiResponse = await fetch(GEMINI_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
-            },
-          ],
-        }),
-      });
-      const geminiData = await geminiResponse.json();
-      const apiResponse =
-        geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "No response received";
-      console.log("api response: ", apiResponse);
-      const generatedSentences: string[] = apiResponse
-        .split("\n")
-        .filter((sentence: string) => sentence.trim() !== "");
-      const categorizedSentences: GeneratedSentence[] =
-        generatedSentences.reduce((acc, sentence) => {
-          const parts = sentence.split(". ");
-          if (parts.length === 2) {
-            const prefix = parts[0];
-            const content = parts[1];
-            const id = parseInt(prefix);
-            if (!isNaN(id) && id >= 1 && id <= 4) {
-              // @ts-ignore
-              acc.push({ id, value: content });
-            } else {
-              console.warn("Unexpected prefix:", prefix);
+    const fetchDataAndCategorize = async (apiEndpoint: string) => {
+      try {
+        const response = await fetch(apiEndpoint);
+        const data = await response.json();
+        console.log("swot data: ", data);
+    
+        const inputText = data
+          .map((row: any) => {
+            if (row["s_oResponses"]) return row["s_oResponses"];
+            else if (row["s_tResponses"]) return row["s_tResponses"];
+            else if (row["w_oResponses"]) return row["w_oResponses"];
+            else if (row["w_tResponses"]) return row["w_tResponses"];
+            else return "";
+          })
+          .join("\n");
+    
+        console.log("inputText: ", inputText);
+    
+        const geminiResponse = await fetch(GEMINI_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
+              },
+            ],
+          }),
+        });
+        const geminiData = await geminiResponse.json();
+        const apiResponse =
+          geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
+          "No response received";
+        console.log("api response: ", apiResponse);
+    
+        const generatedSentences: string[] = apiResponse
+          .split("\n")
+          .filter((sentence: string) => sentence.trim() !== "");
+    
+          const categorizedSentences: GeneratedSentence[] = await Promise.all( // Use Promise.all to handle async operations within map
+            generatedSentences.map(async (sentence) => {
+              const match = sentence.match(/^(\d+)\. (.*?) ([SW]\d+[TO]\d+|[WO]\d+[WT]\d+): (.*)$/);
+      
+              if (match) {
+                const [, idStr, strategicTheme, code, content] = match;
+                const id = parseInt(idStr, 10);
+                const fID = id;
+      
+                // POST target code to backend 
+                if (id === 1) { // Assuming id 1 represents Financial perspective 
+                  try {
+                    const response = await fetch( // Make the fetch call asynchronous with await
+                      "http://localhost:8080/bsc/financialBsc/insert",
+                      {
+                        method: "POST",
+                        headers: {
+                          "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                          target_code: code, // Send the extracted target code
+                          office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
+                          department: { id: department_id }, // Assuming department_id is available
+                        }),
+                      }
+                    );
+      
+                    if (!response.ok) {
+                      console.error("Error POSTing target code:", response.status); 
+                    }
+                  } catch (error) {
+                    console.error("Error POSTing target code:", error);
+                  }
+                }
+      
+                return { id, fID, value: `${strategicTheme} ${code}: ${content}` }; 
+              } else {
+                console.warn("Invalid sentence format:", sentence);
+                return { id: -1, fID: -1, value: sentence }; 
+              }
             }
-          } else {
-            console.warn("Invalid sentence format:", sentence);
-          }
-          return acc;
-        }, []);
-      return categorizedSentences;
-    } catch (error) {
-      console.error(
-        `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
-        error
-      );
-      return []; // Return an empty array on error
-    }
-  };
+          ));
+        return categorizedSentences;
+      } catch (error) {
+        console.error(
+          `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
+          error
+        );
+        return []; 
+      }
+    };
 
   const fetchAllData = async (department_id: number) => {
     const promises = API_ENDPOINTS.map((apiEndpoint) =>
@@ -1189,7 +1251,31 @@ const Page = () => {
                 </div>
               </div>
 
-              
+              <Button
+                onClick={() => handleButtonClick(department_id)}
+                variant="contained"
+                disabled={isButtonDisabled}
+              >
+                Re-sort
+              </Button>
+
+              {/* Warning Dialog */}
+              <Dialog open={showWarning} onClose={handleCancelClear}>
+                <DialogTitle>Warning: Clear Tables</DialogTitle>
+                <DialogContent>
+                  <p>
+                    Are you sure you want to re-sort? This will clear the existing data in the Financial, Stakeholder, Internal Process, and Learning & Growth tables. 
+                  </p>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={handleCancelClear} color="primary">
+                    Cancel
+                  </Button>
+                  <Button onClick={() => handleConfirmClear(department_id)} color="secondary">
+                    Confirm
+                  </Button>
+                </DialogActions>
+              </Dialog>
 
               {/* main container */}
               <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
@@ -1222,9 +1308,9 @@ const Page = () => {
                         className="size-8"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     </div>
@@ -1368,7 +1454,7 @@ const Page = () => {
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
                               </button>
                             </div>
@@ -1409,9 +1495,9 @@ const Page = () => {
                         className="size-8"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     </div>
@@ -1555,7 +1641,7 @@ const Page = () => {
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
                               </button>
                             </div>
@@ -1596,9 +1682,9 @@ const Page = () => {
                         className="size-8"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     </div>
@@ -1742,7 +1828,7 @@ const Page = () => {
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
                               </button>
                             </div>
@@ -1783,9 +1869,9 @@ const Page = () => {
                         className="size-8"
                       >
                         <path
-                          fill-rule="evenodd"
+                          fillRule="evenodd"
                           d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clip-rule="evenodd"
+                          clipRule="evenodd"
                         />
                       </svg>
                     </div>
@@ -1929,7 +2015,7 @@ const Page = () => {
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                                 </svg>
                               </button>
                             </div>

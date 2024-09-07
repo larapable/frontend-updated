@@ -1,10 +1,8 @@
 "use client";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { TiLocationArrowOutline } from "react-icons/ti";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react"
+
  
 export default function Navbar() {
  
@@ -145,23 +143,47 @@ export default function Navbar() {
           </div>
         </div>
       </Link>
+      <Link href="/feedback">
+        <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M 12 17 C 12.5523 17 13 16.5523 13 16 C 13 15.4477 12.5523 15 12 15 C 11.4477 15 11 15.4477 11 16 C 11 16.5523 11.4477 17 12 17 Z M 12 21 C 16.9706 21 21 16.9706 21 12 C 21 7.02944 16.9706 3 12 3 C 7.02944 3 3 7.02944 3 12 C 3 16.9706 7.02944 21 12 21 Z M 12 14 C 12 13.8333 12 13.6667 12 13.5 C 12 13.5 12 12 14 11 C 16 10 15.5 7 12.5 7 C 9.5 7 9.5 9.5 9.5 9.5 V 10"
+            />
+          </svg>
+          <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
+            Feedback
+          </div>
+        </div>
+      </Link>
       <div className="w-[18rem] border-t border-white mb-5"></div>
  
-      <div className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 ">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          className="w-8 h-8"
+      <div
+          className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 cursor-pointer"
+          onClick={() => signOut({ callbackUrl: '/login' })}
         >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-          />
-        </svg>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
+            />
+          </svg>
         <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
           Logout
         </div>

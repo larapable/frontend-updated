@@ -2,6 +2,7 @@ import { Button, Card, Modal } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
+import SpinnerPages from "../components/SpinnerPages"; 
 
 export default function UserEditProfile() {
   const { data: session, status, update } = useSession();
@@ -19,6 +20,7 @@ export default function UserEditProfile() {
   const [departmentDescription, setDepartmentDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [loading, setLoading] = useState(false);  
 
   const department_id = user?.department_id;
   console.log("Department: ", department_id);
@@ -27,6 +29,7 @@ export default function UserEditProfile() {
 
   useEffect(() => {
     const fetchUserProfileData = async () => {
+      setLoading(true); 
       try {
         const response = await fetch(`http://localhost:8080/department/${department_id}`);
         if (response.ok) {
@@ -47,13 +50,17 @@ export default function UserEditProfile() {
         }
       } catch (error) {
         console.error("Error fetching user profile data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchUserProfileData();
   }, [department_id]);
 
   useEffect(() => {
     const fetchImageData = async () => {
+      setLoading(true); // Show spinner
       try {
         const response = await fetch(`http://localhost:8080/image/getImage/${department_id}`);
         if (response.ok) {
@@ -88,7 +95,10 @@ export default function UserEditProfile() {
         }
       } catch (error) {
         console.error("Error fetching image data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchImageData();
   }, [department_id]);
@@ -96,6 +106,7 @@ export default function UserEditProfile() {
   const handleSave = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    setLoading(true); // Show spinner
     e.preventDefault();
 
     try {
@@ -173,7 +184,10 @@ export default function UserEditProfile() {
       } catch (error) {
         // Handle network error
         console.error("Network error occurred", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     }
   };
 
@@ -342,7 +356,7 @@ export default function UserEditProfile() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeWidth="round"
+                  strokeLinejoin="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />

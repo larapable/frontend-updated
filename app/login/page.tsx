@@ -3,10 +3,15 @@
 import { Button, Modal } from "@mui/material";
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
 import Spinner from "../components/Spinner";
+import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
 
 export default function LoginPage() {
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
@@ -17,7 +22,6 @@ export default function LoginPage() {
     setErrorModalOpen(false);
   };
 
-  const router = useRouter();
 
   const handleCloseErrorModal = () => {
     setErrorModalOpen(false);
@@ -51,17 +55,35 @@ export default function LoginPage() {
         setErrorModalOpen(true);
         setLoading(false); // Hide spinner
         return;
+      }else {
+        const user = JSON.parse(session?.user?.name as string);
+        if (user?.role === "admin") {
+          router.replace("/admindashboard");
+        } else {
+          router.replace("/profile");
+        }
       }
-
-      router.replace("/profile");
     } catch (error) {
-      console.log(error);
-    }
-  };
-
-  if (loading) {
-    return <Spinner />; // Show spinner while loading
+      console.error("Error during login:", error); // Log the error to the console
+      setErrorMessage("An unexpected error occurred during login. Please try again later."); 
+  } finally {
+    setLoading(false);
   }
+};
+
+if (loading) {
+  return <Spinner />;
+}
+
+if (status === "authenticated") {
+  const user = JSON.parse(session?.user?.name as string);
+  if (user?.role === "admin") {
+    router.replace("/admindashboard");
+  } else {
+    router.replace("/profile");
+  }
+  return null;
+}
   
   return (
     <div className="h-screen flex lg:flex-row md:flex-col ">
@@ -171,7 +193,6 @@ export default function LoginPage() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeWidth="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />
