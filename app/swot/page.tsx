@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { getSession, useSession } from "next-auth/react";
 
 
+
 interface SwotItem {
   id: string;
   value: string;
@@ -61,6 +62,8 @@ interface Threat {
   department: Department;
   isDelete: boolean;
 }
+
+
 
 const Swot = () => {
   const [displaySwot, setDisplaySwot] = useState(true);
@@ -154,6 +157,7 @@ const Swot = () => {
   const [woApiresponse, setWoApiresponse] = useState<Strategy3[]>([]);
 
   const fetchData = async () => {
+ 
     try {
       const response = await fetch(
         `http://localhost:8080/wtStrat/get/${department_id}`
@@ -166,7 +170,8 @@ const Swot = () => {
       setWtApiresponse(data);
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
-    }
+    } 
+
   };
 
   useEffect(() => {
@@ -278,6 +283,7 @@ const Swot = () => {
   };
 
   const fetchstData = async () => {
+   
     try {
       const response = await fetch(
         `http://localhost:8080/stStrat/get/${department_id}`
@@ -290,7 +296,8 @@ const Swot = () => {
       setStApiresponse(data);
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
-    }
+    } 
+
   };
 
   useEffect(() => {
@@ -401,6 +408,7 @@ const Swot = () => {
   };
 
   const fetchsoData = async () => {
+ 
     try {
       const response = await fetch(
         `http://localhost:8080/soStrat/get/${department_id}`
@@ -413,7 +421,8 @@ const Swot = () => {
       setSoApiresponse(data);
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
-    }
+    } 
+
   };
 
   useEffect(() => {
@@ -504,6 +513,7 @@ const Swot = () => {
   };
 
   const deletesoStrategy = async (id: string, department_id: string) => {
+    
     try {
       const response = await fetch(
         `http://localhost:8080/soStrat/delete/${id}`,
@@ -525,9 +535,15 @@ const Swot = () => {
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
     }
+
   };
 
+  useEffect(() => {
+    fetchsoData();
+  }, [department_id]);
+
   const fetchwoData = async () => {
+  
     try {
       const response = await fetch(
         `http://localhost:8080/woStrat/get/${department_id}`
@@ -541,6 +557,7 @@ const Swot = () => {
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
     }
+
   };
 
   useEffect(() => {
@@ -630,6 +647,7 @@ const Swot = () => {
     }
   };
   const deletewoStrategy = async (id: string, department_id: string) => {
+ 
     try {
       const response = await fetch(
         `http://localhost:8080/woStrat/delete/${id}`,
@@ -651,6 +669,7 @@ const Swot = () => {
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
     }
+
   };
 
   // Reusable SWOT function
@@ -668,6 +687,7 @@ const Swot = () => {
     };
 
     const addStrength = async (event: React.KeyboardEvent) => {
+      
       if (event.key === "Enter" && newItem.trim()) {
         if (fetchedStrengths.length >= 5) {
           toast.error("Maximum limit of 5 items reached");

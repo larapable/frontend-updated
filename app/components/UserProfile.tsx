@@ -1,8 +1,7 @@
 import { Button, Card } from "@mui/material";
 import { useState, useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
-import EditProfile from "../profile/edit/page";
-import Email from "next-auth/providers/email";
+import SpinnerPages from "../components/SpinnerPages"; 
 import Link from "next/link";
 
 export default function UserProfile() {
@@ -21,6 +20,7 @@ export default function UserProfile() {
   const [email, setEmail] = useState("");
   const [university, setUniversity] = useState("");
   const [departmentDescription, setDepartmentDescription] = useState(" ");
+  const [loading, setLoading] = useState(false);  
 
   // State to manage the current view
   const [currentView, setCurrentView] = useState("department");
@@ -37,6 +37,7 @@ export default function UserProfile() {
 
   useEffect(() => {
     const fetchUserProfileData = async () => {
+      setLoading(true); //Show spinner
       try {
         const response = await fetch(
           `http://localhost:8080/department/${department_id}`
@@ -59,13 +60,17 @@ export default function UserProfile() {
         }
       } catch (error) {
         console.error("Error fetching user profile data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchUserProfileData();
   }, [department_id]);
 
   useEffect(() => {
     const fetchImageData = async () => {
+      setLoading(true); // Show spinner
       try {
         const response = await fetch(
           `http://localhost:8080/image/getImage/${department_id}`
@@ -102,7 +107,10 @@ export default function UserProfile() {
         }
       } catch (error) {
         console.error("Error fetching image data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchImageData();
   }, [department_id]);
@@ -119,6 +127,7 @@ export default function UserProfile() {
 
   useEffect(() => {
     const fetchUserPersonalProfileData = async () => {
+      setLoading(true); 
       try {
         const response = await fetch(
           `http://localhost:8080/user/${user_id}`
@@ -148,13 +157,17 @@ export default function UserProfile() {
         }
       } catch (error) {
         console.error("Error fetching user profile data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchUserPersonalProfileData();
   }, [user_id]);
 
   useEffect(() => {
     const fetchUserImageData = async () => {
+      setLoading(true); // Show spinner
       try {
         const response = await fetch(
           `http://localhost:8080/userImage/getImage/${user_id}`
@@ -196,7 +209,10 @@ export default function UserProfile() {
         }
       } catch (error) {
         console.error("Error fetching image data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchUserImageData();
   }, [user_id]);
@@ -416,7 +432,10 @@ export default function UserProfile() {
             >
               EDIT
             </div>
+            
           </a>
+
+          
           <div className="w-[80rem] h-[100%] border border-gray-200 px-10 py-10 rounded-xl mb-10">
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-[rgb(77,76,76)] mb-5">
@@ -479,7 +498,11 @@ export default function UserProfile() {
                 </div>
               </div>
             </div>
+            <p className="text-lg">
+              If you want to change password, <a href="/password" className="text-[#AB3510] font-bold">click here</a>.
+            </p>
           </div>
+        
         </Card>
       )}
     </div>

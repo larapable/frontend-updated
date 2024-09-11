@@ -1,9 +1,11 @@
 import NextAuth from "next-auth/next";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
-import { getToken } from "next-auth/jwt";
 
-const authOptions = {
+
+
+
+export const authOptions = {
     providers: [
         CredentialsProvider ({
             name: "credentials",
@@ -14,18 +16,21 @@ const authOptions = {
 
                 try {
 
-                    // Admin credentials check
-                    if (username === 'Admin' && password === 'Admin123') {
+                    console.log("Input username:", username);
+                    console.log("Input password:", password);
+
+                     
+
+                     // Admin credentials check
+                     if (username === 'Admin' && password === 'A@dmin123') {
+                        console.log("Admin login");
                         return {
                             id: 0,
                             username: 'Admin',
-                            department_id: 0,
+                            department: { id: 0 },
                             role: 'admin'
                         };
                     }
-
-                    console.log("Input username:", username);
-                    console.log("Input password:", password);
 
                     // Make HTTP request to check if user exists
                     const response = await fetch(`http://localhost:8080/user/login`, {
@@ -71,6 +76,7 @@ const authOptions = {
                 token.id = user.id;
                 token.username = user.username;
                 token.department_id = user.department.id;
+                token.role = user.role;
             
             }
             return token;

@@ -410,8 +410,8 @@ export default function EditProfileUsers() {
                     <option value="" disabled>
                       Select Role
                     </option>
-                    <option value="Head Officer">HEAD OFFICER</option>
-                    <option value="Faculty">FACULTY</option>
+                    <option value="headOfficer">HEAD OFFICER</option>
+                    <option value="faculty">FACULTY</option>
                   </select>
                 </div>
               </div>
@@ -435,7 +435,7 @@ export default function EditProfileUsers() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeWidth="round"
+                  strokeLinejoin="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />

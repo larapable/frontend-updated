@@ -17,9 +17,7 @@ export default function Inputgoals() {
     id: number;
     vision: string;
     proposition: string;
-    goals: string;
-    goals2?: string;
-    goals3?: string;
+    goals: string[]; 
     targetYear: number;
     accomplished: boolean;
     department: { id: number };
@@ -35,9 +33,7 @@ export default function Inputgoals() {
   const [officeVision, setOfficeVision] = useState("");
   const [valueProposition, setValueProposition] = useState("");
   const [mission, setMission] = useState("");
-  const [strategicGoals, setStrategicGoals] = useState("");
-  const [strategicGoals2, setStrategicGoals2] = useState("");
-  const [strategicGoals3, setStrategicGoals3] = useState("");
+  const [strategicGoals, setStrategicGoals] = useState<string[]>(['']);
   const [selectedYear, setSelectedYear] = useState<number | null>(null);
   const [successModal, setSuccessModal] = useState(false);
   const [isNew, setIsNew] = useState(true); // New state to track if adding new goals
@@ -45,11 +41,29 @@ export default function Inputgoals() {
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [isshowGoalsModal, setShowGoalsModal] = useState(false);
   const dateForDatePicker = selectedYear ? new Date(selectedYear, 0) : null;
+  const [isSaved, setIsSaved] = useState(false);
 
   const department_id = user?.department_id;
 
   const [statuss, setStatus] = useState('Pending');
   const displayedGoals = currentTab === 'current' ? goals.filter(goal => !accomplishedGoals.includes(goal)) : accomplishedGoals;
+
+  // Handler to add a new strategic goal
+  const handleAddGoal = () => {
+    setStrategicGoals([...strategicGoals, '']);
+  };
+
+  // Handler to update a specific goal based on index
+  const handleGoalChange = (index: number, value: string) => {
+    const updatedGoals = [...strategicGoals];
+    updatedGoals[index] = value;
+    setStrategicGoals(updatedGoals);
+  };
+  // Optional: Handler to remove a specific goal
+  const handleRemoveGoal = (index: number) => {
+    const updatedGoals = strategicGoals.filter((_, i) => i !== index);
+    setStrategicGoals(updatedGoals);
+  };
 
   const fetchCurrentGoals = async (departmentId: number) => {
     try {
@@ -73,9 +87,9 @@ export default function Inputgoals() {
     }
   };
 
-  const fetchAccomplishedGoals = async (departmentId: number) => {
+  const fetchAccomplishedGoals = async (department_id: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/goals/getAccomplished/${departmentId}`);
+      const response = await fetch(`http://localhost:8080/goals/getAccomplished/${department_id}`);
       if (!response.ok) throw new Error('Failed to fetch accomplished goals');
       const data = await response.json();
       return data;
@@ -141,8 +155,6 @@ export default function Inputgoals() {
           setValueProposition(data.proposition);
           setMission(data.mission);
           setStrategicGoals(data.goals);
-          setStrategicGoals2(data.goals2);
-          setStrategicGoals3(data.goals3);
         } else {
           console.error(
             "Error fetching user profile data:",
@@ -198,8 +210,6 @@ export default function Inputgoals() {
           setValueProposition(data.proposition || '');
           setMission(data.mission || '');
           setStrategicGoals(data.goals || '');
-          setStrategicGoals2(data.goals2 || '');
-          setStrategicGoals3(data.goals3 || '');
           setSelectedYear(data.targetYear || null);
           setGoalId(data.id || null);
           setIsEditing(false);
@@ -242,8 +252,6 @@ export default function Inputgoals() {
           proposition: valueProposition,
           mission: mission,
           goals: strategicGoals,
-          goals2: strategicGoals2,
-          goals3: strategicGoals3,
           targetYear: selectedYear,
           department: { id: department_id },
         }),
@@ -277,14 +285,13 @@ export default function Inputgoals() {
       setValueProposition(result.proposition);
       setMission(result.mission);
       setStrategicGoals(result.goals);
-      setStrategicGoals2(result.goals2 || ''); // Handle optional fields
-      setStrategicGoals3(result.goals3 || ''); // Handle optional fields
       setSelectedYear(result.targetYear);
 
       // Show success modal and reset editing states
       setSuccessModal(true);
       setIsEditing(false);
       setIsNew(false);
+      setIsSaved(true);
 
     } catch (error) {
       if (error instanceof Error) {
@@ -317,9 +324,7 @@ export default function Inputgoals() {
     setOfficeVision("");
     setValueProposition("");
     setMission("");
-    setStrategicGoals("");
-    setStrategicGoals2("");
-    setStrategicGoals3("");
+    setStrategicGoals([]);
     setSelectedYear(null);
     setIsEditing(true);
     setIsNew(true);
@@ -327,6 +332,10 @@ export default function Inputgoals() {
 
   const toggleEditing = async () => {
     if (isEditing) {
+      // When in editing mode and the button is clicked, revert to non-editing mode
+      setIsEditing(false);
+      setIsNew(false); // Ensure new mode is disable
+      // Fetch the latest data to reset the form to its original state
       try {
         // Make sure to pass the correct department_id or goal_id based on your requirement
         const response = await fetch(`http://localhost:8080/goals/get/${department_id}`);
@@ -338,9 +347,7 @@ export default function Inputgoals() {
           setOfficeVision(data.vision || '');
           setValueProposition(data.proposition || '');
           setMission(data.mission || '');
-          setStrategicGoals(data.goals || '');
-          setStrategicGoals2(data.goals2 || '');
-          setStrategicGoals3(data.goals3 || '');
+          setStrategicGoals(data.goals || []); // Ensure it's an array
           setSelectedYear(data.targetYear || null);
           setIsEditing(false);
           setIsNew(false);
@@ -351,9 +358,13 @@ export default function Inputgoals() {
         console.error("Error fetching data:", error);
       }
     } else {
-      setIsEditing((prevIsEditing) => !prevIsEditing);
+            // When not in editing mode and the button is clicked, switch to editing mode
+            setIsEditing(true);
+            setIsNew(false); // Ensure new mode is disabled
     }
   };
+
+  
 
   return (
     <div className="flex flex-col items-center ml-[6rem]">
@@ -377,7 +388,7 @@ export default function Inputgoals() {
       </div>
 
 
-      <div className="mb-[3rem] rounded-[0.6rem] ml-[-2rem] border border-gray-200 bg-[#FFFFFF] relative p-[0.9rem_1.1rem_0.8rem_1.1rem] w-[103rem] h-[100rem] box-sizing-border">
+      <div className="mb-[3rem] rounded-[0.6rem] ml-[-2rem] border border-gray-200 bg-[#FFFFFF] relative p-[0.9rem_1.1rem_0.8rem_1.1rem] w-[103rem] h-[auto] box-sizing-border">
         <div className="ml-[16rem] mt-[-1rem] mb-10">
           <div className="flex flex-col ml-[-3rem]">
           <div className="flex flex-row p-1 h-auto">
@@ -499,6 +510,7 @@ export default function Inputgoals() {
               alt=""
               className=" h-[4.5rem] mb-5 ml-[-17rem]"
             />
+          <div className="flex flex-row">
           <div className="flex flex-col ml-[-16rem]">
             <div className="flex flex-row w-[fit-content] box-sizing-border">
               <span className="ml-[17rem] w-[31.4rem] mt-2 break-words font-semibold text-[1.3rem] text-[#000000]">
@@ -509,54 +521,45 @@ export default function Inputgoals() {
               A guiding principles for decision-making, driving the organization towards its desired future state.
             </div>
           </div>
-        </div>
-
-          <textarea
-            className={`rounded-[0.9rem] ml-[-16rem] mt-[-1rem] mb-5 w-[98rem] border-[#eee9e7] h-[8.3rem] ${!isEditing && !isNew ? "bg-gray-100" : ""
-              } relative pt-[0.7rem] pr-[4.2rem] pb-[2.1rem] pl-[1.1rem] shadow-md border-solid border-[0.1rem] border-[#807C4C] resize-none overflow-hidden box-sizing-border break-words font-normal text-[1rem] text-[#504C4C]`}
-            value={strategicGoals}
-            onChange={(event) => setStrategicGoals(event.target.value)}
-            disabled={!isEditing && !isNew}
-          ></textarea>
-
-          <textarea
-            className={`rounded-[0.9rem] ml-[-16rem] mt-[-1rem] mb-5 w-[98rem] border-[#eee9e7] h-[8.3rem] ${!isEditing && !isNew ? "bg-gray-100" : ""
-              } relative pt-[0.7rem] pr-[4.2rem] pb-[2.1rem] pl-[1.1rem] shadow-md border-solid border-[0.1rem] border-[#807C4C] resize-none overflow-hidden box-sizing-border break-words font-normal text-[1rem] text-[#504C4C]`}
-            value={strategicGoals2}
-            onChange={(event) => setStrategicGoals2(event.target.value)}
-            disabled={!isEditing && !isNew}
-          ></textarea>
-
-          <textarea
-            className={`rounded-[0.9rem] ml-[-16rem] mt-[-1rem] mb-5 w-[98rem] border-[#eee9e7] h-[8.3rem] ${!isEditing && !isNew ? "bg-gray-100" : ""
-              } relative pt-[0.7rem] pr-[4.2rem] pb-[2.1rem] pl-[1.1rem] shadow-md border-solid border-[0.1rem] border-[#807C4C] resize-none overflow-hidden box-sizing-border break-words font-normal text-[1rem] text-[#504C4C]`}
-            value={strategicGoals3}
-            onChange={(event) => setStrategicGoals3(event.target.value)}
-            disabled={!isEditing && !isNew}
-          ></textarea>
-
-          {/* Remaining textarea elements */}
-        </div>
-
-        <div className="flex flex-row justify-center w-[70rem] mb-20 ml-[13rem]">
-          <div className="flex space-x-10">
+          {/* Add Goal Button */}
+          <div className="absolute right-8 flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] mt-5 pr-1 pt-1 pb-1">
             <button
-              className="break-words font-semibold text-[1.2rem] text-[#962203] w-[11rem] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-              onClick={toggleEditing}
+              className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+              onClick={handleAddGoal}
             >
-              {isEditing ? "Cancel" : "Edit"}
-            </button>
-
-            <button
-              className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-              style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-              onClick={handleSave}
-            >
-              Save
+            <div className="flex flex-row">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
+                  <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
+                </svg>
+            </div>
             </button>
           </div>
-
+          </div>
         </div>
+
+        {strategicGoals.map((goal, index) => (
+          <div key={index}>
+          <textarea
+            className={`rounded-[0.9rem] ml-[-16rem] w-[95rem] border-[#eee9e7] h-[8.3rem] ${!isEditing && !isNew ? "bg-gray-300" : ""
+              } relative pt-[0.7rem] pr-[4.2rem] pb-[2.1rem] pl-[1.1rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.10)] border-solid border-[0.1rem] border-[#807C4C] resize-none overflow-hidden box-sizing-border break-words font-normal text-[1rem] text-[#504C4C]`}
+            value={goal}
+            onChange={(event) => handleGoalChange(index, event.target.value)}
+            disabled={!isEditing && !isNew}
+          ></textarea>
+
+        {/* Remove button (conditionally visible) */}
+        {(isEditing || isNew) && !isSaved && (
+          <button
+            className="absolute bg-[#d35129] rounded-full top-[63.3rem] right-[5.5rem] text-white text-xs px-[0.30rem] py-1 "
+            onClick={() => handleRemoveGoal(index)}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
+              <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25Zm3 10.5a.75.75 0 0 0 0-1.5H9a.75.75 0 0 0 0 1.5h6Z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        )}
+      </div>
+      ))}
 
       </div>
 
@@ -605,9 +608,7 @@ export default function Inputgoals() {
                             <td className="border border-gray-400 px-4 py-2">{goal.proposition}</td>
                             <td className="border border-gray-400 px-4 py-2">{goal.mission}</td>
                             <td className="border border-gray-400 px-4 py-2">
-                              {goal.goals}<br />
-                              {goal.goals2}<br />
-                              {goal.goals3}
+                            {goal.goals.join(', ')} {/* Adjusted to handle multiple goals */}
                             </td>
                             <td className="px-4 py-2 flex justify-center items-center border border-gray-400">
                               {currentTab === 'current' ? (
@@ -716,6 +717,25 @@ export default function Inputgoals() {
           </div>
         </div>
       </Modal>
+    </div>
+    <div className="flex flex-row justify-center w-[70rem] mb-20 mt-10">
+          <div className="flex space-x-10">
+            <button
+              className="break-words font-semibold text-[1.2rem] text-[#AB3510] w-[11rem] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] border border-[#AB3510] cursor-pointer hover:bg-[#AB3510] hover:text-[#ffffff]"
+              onClick={toggleEditing}
+            >
+              {isEditing ? "Cancel" : "Edit"}
+            </button>
+
+            <button
+              className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+              style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+              onClick={handleSave}
+            >
+              Save
+            </button>
+          </div>
+        </div>
     </div>
   );
 }

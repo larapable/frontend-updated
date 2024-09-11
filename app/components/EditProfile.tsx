@@ -2,6 +2,7 @@ import { Button, Card, Modal } from "@mui/material";
 import { useState } from "react";
 import { useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
+import SpinnerPages from "../components/SpinnerPages"; 
 
 export default function UserEditProfile() {
   const { data: session, status, update } = useSession();
@@ -19,6 +20,7 @@ export default function UserEditProfile() {
   const [departmentDescription, setDepartmentDescription] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [confirmationMessage, setConfirmationMessage] = useState("");
+  const [loading, setLoading] = useState(false);  
 
   const department_id = user?.department_id;
   console.log("Department: ", department_id);
@@ -27,6 +29,7 @@ export default function UserEditProfile() {
 
   useEffect(() => {
     const fetchUserProfileData = async () => {
+      setLoading(true); 
       try {
         const response = await fetch(`http://localhost:8080/department/${department_id}`);
         if (response.ok) {
@@ -47,13 +50,17 @@ export default function UserEditProfile() {
         }
       } catch (error) {
         console.error("Error fetching user profile data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchUserProfileData();
   }, [department_id]);
 
   useEffect(() => {
     const fetchImageData = async () => {
+      setLoading(true); // Show spinner
       try {
         const response = await fetch(`http://localhost:8080/image/getImage/${department_id}`);
         if (response.ok) {
@@ -88,7 +95,10 @@ export default function UserEditProfile() {
         }
       } catch (error) {
         console.error("Error fetching image data:", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     };
     fetchImageData();
   }, [department_id]);
@@ -96,6 +106,7 @@ export default function UserEditProfile() {
   const handleSave = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
+    setLoading(true); // Show spinner
     e.preventDefault();
 
     try {
@@ -173,24 +184,29 @@ export default function UserEditProfile() {
       } catch (error) {
         // Handle network error
         console.error("Network error occurred", error);
+      } finally {
+        setLoading(false); // Hide spinner
       }
+
     }
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 items-center justify-center">
       <Card className="w-[105rem] h-[auto] flex flex-col items-center rounded-xl bg-white shadow-xl border border-gray-150 mb-10">
         <div className="w-[100%]">
           <img src="/coverbg.png" alt="" className=" h-[12rem] w-[100%] bg-white object-cover" />
         </div>
-        <div className="mt-[-8rem]">
+        <div className="mt-[-8rem] items-center justify-center">
         {image ? (
-          <div className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 flex items-center justify-center overflow-hidden">
-            <img
-              src={image}
-              alt="Department Image"
-              className="w-full h-full object-cover"
-            />
+          <div className="flex justify-center items-center">
+            <div className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 flex items-center justify-center overflow-hidden">
+              <img
+                src={image}
+                alt="Department Image"
+                className="w-full h-full object-cover justify-center items-center"
+              />
+            </div>
           </div>
         ) : (
           <div className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 py-4 flex items-center justify-center">
@@ -198,7 +214,7 @@ export default function UserEditProfile() {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-24 h-24 text-gray-500"
+              className="w-24 h-24 text-gray-500 justify-center items-center"
             >
               <path
                 fillRule="evenodd"
@@ -342,7 +358,7 @@ export default function UserEditProfile() {
               >
                 <path
                   strokeLinecap="round"
-                  strokeWidth="round"
+                  strokeLinejoin="round"
                   strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />

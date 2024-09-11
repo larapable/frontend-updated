@@ -211,8 +211,8 @@ export default function SignupPage() {
             className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
           >
             <option value="">Select a role</option>
-            <option value="HEAD OFFICER">HEAD OFFICER</option>
-            <option value="FACULTY">FACULTY</option>
+            <option value="headOfficer">HEAD OFFICER</option>
+            <option value="faculty">FACULTY</option>
           </select>
         </div>
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] mb-6 py-4 flex items-center">
@@ -336,7 +336,6 @@ export default function SignupPage() {
                 <path
                   strokeLinecap="round"
                   strokeWidth="round"
-                  strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>
@@ -378,7 +377,6 @@ export default function SignupPage() {
                 <path
                   strokeLinecap="round"
                   strokeWidth="round"
-                  strokeWidth="2"
                   d="M6 18L18 6M6 6l12 12"
                 />
               </svg>

@@ -176,88 +176,157 @@
   transform: scale(1.1);
 }
 
+/* Remove the default border of the entire calendar */
+.react-calendar {
+  border: none;
+}
+
+/* Alternatively, change the border color to white */
+.react-calendar {
+  border: 1px solid white !important;
+  width: 50rem;
+  height: 27rem;
+}
+
+/* Adjust the border of individual tiles if needed */
+.react-calendar__tile {
+  border: 1px solid white !important;
+  margin: 2px;
+  font-size: 1rem !important;
+  gap: 2rem;
+}
+
+/* Highlight today's date with custom styling */
+.react-calendar__tile--now {
+  background: #fdf3ca !important;
+  color: white !important;
+  border-radius: 50%;
+  border-radius: 50%;
+  font-size: 1rem;
+  gap: 2rem;
+}
+
+.react-calendar__month-view__weekdays__weekday,
+.react-calendar__month-view__days__day,
+.react-calendar__navigation__label__labelText {
+  font-size: 1.2rem;
+  margin-top: 1rem;
+  text-decoration: none !important;
+}
+
+.react-calendar a {
+  text-decoration: none !important;
+}
+.react-calendar__month-view__weekdays__weekday abbr {
+  text-decoration: none !important;
+  text-transform: capitalize !important;
+}
+
+.react-calendar__month-view__days__day--weekend {
+  color: #b83216 !important;
+}
+
+.react-calendar__navigation {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 2rem;
+  padding: 1rem;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+/* Styling for the month name */
+.react-calendar__navigation__label {
+  font-size: 2rem !important;
+  font-weight: bold;
+  color: #333;
+  margin-top: 2rem;
+}
+
+/* Styling for the previous and next buttons */
+.react-calendar__navigation__arrow {
+  font-size: 1.5rem;
+  color: #fff;
+  background: #b83216 !important;
+  width: 2rem !important;
+  height: 3rem !important;
+  border-radius: 2rem !important;
+}
+
+/* Ensure navigation buttons have no underline */
+.react-calendar__navigation__arrow:link,
+.react-calendar__navigation__arrow:visited,
+.react-calendar__navigation__arrow:hover,
+.react-calendar__navigation__arrow:active {
+  text-decoration: none;
+}
+
 /* spinner */
-.lds-spinner,
-.lds-spinner div,
-.lds-spinner div:after {
-  box-sizing: border-box;
+
+.loader {
+  animation: rotate 1s infinite;
+  height: 50px;
+  width: 50px;
 }
-.lds-spinner {
-  color: #A43214;
-  display: inline-block;
-  position: relative;
-  width: 80px;
-  height: 80px;
-}
-.lds-spinner div {
-  transform-origin: 40px 40px;
-  animation: lds-spinner 1.2s linear infinite;
-}
-.lds-spinner div:after {
-  content: " ";
+
+.loader:before,
+.loader:after {
+  border-radius: 50%;
+  content: "";
   display: block;
-  position: absolute;
-  top: 3.2px;
-  left: 36.8px;
-  width: 6.4px;
-  height: 17.6px;
-  border-radius: 20%;
-  background: currentColor;
+  height: 20px;
+  width: 20px;
 }
-.lds-spinner div:nth-child(1) {
-  transform: rotate(0deg);
-  animation-delay: -1.1s;
+.loader:before {
+  animation: ball1 1s infinite;
+  background-color: #fad655;
+  box-shadow: 30px 0 0 #d83f19;
+  margin-bottom: 10px;
 }
-.lds-spinner div:nth-child(2) {
-  transform: rotate(30deg);
-  animation-delay: -1s;
+.loader:after {
+  animation: ball2 1s infinite;
+  background-color: #d83f19;
+  box-shadow: 30px 0 0 #fad655;
 }
-.lds-spinner div:nth-child(3) {
-  transform: rotate(60deg);
-  animation-delay: -0.9s;
+
+@keyframes rotate {
+  0% { transform: rotate(0deg) scale(0.8) }
+  50% { transform: rotate(360deg) scale(1.2) }
+  100% { transform: rotate(720deg) scale(0.8) }
 }
-.lds-spinner div:nth-child(4) {
-  transform: rotate(90deg);
-  animation-delay: -0.8s;
-}
-.lds-spinner div:nth-child(5) {
-  transform: rotate(120deg);
-  animation-delay: -0.7s;
-}
-.lds-spinner div:nth-child(6) {
-  transform: rotate(150deg);
-  animation-delay: -0.6s;
-}
-.lds-spinner div:nth-child(7) {
-  transform: rotate(180deg);
-  animation-delay: -0.5s;
-}
-.lds-spinner div:nth-child(8) {
-  transform: rotate(210deg);
-  animation-delay: -0.4s;
-}
-.lds-spinner div:nth-child(9) {
-  transform: rotate(240deg);
-  animation-delay: -0.3s;
-}
-.lds-spinner div:nth-child(10) {
-  transform: rotate(270deg);
-  animation-delay: -0.2s;
-}
-.lds-spinner div:nth-child(11) {
-  transform: rotate(300deg);
-  animation-delay: -0.1s;
-}
-.lds-spinner div:nth-child(12) {
-  transform: rotate(330deg);
-  animation-delay: 0s;
-}
-@keyframes lds-spinner {
+
+@keyframes ball1 {
   0% {
-    opacity: 1;
+    box-shadow: 30px 0 0 #d83f19;
+  }
+  50% {
+    box-shadow: 0 0 0 #d83f19;
+    margin-bottom: 0;
+    transform: translate(15px, 15px);
   }
   100% {
-    opacity: 0;
+    box-shadow: 30px 0 0 #d83f19;
+    margin-bottom: 10px;
   }
 }
+
+@keyframes ball2 {
+  0% {
+    box-shadow: 30px 0 0 #fad655;
+  }
+  50% {
+    box-shadow: 0 0 0 #fad655;
+    margin-top: -20px;
+    transform: translate(15px, 15px);
+  }
+  100% {
+    box-shadow: 30px 0 0 #fad655;
+    margin-top: 0;
+  }
+}
+
+
+
+
 
