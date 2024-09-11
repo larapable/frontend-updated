@@ -72,8 +72,8 @@ const AdminListOfUser: React.FC = () => {
     }
 
     return (
-        <div className="p-8 max-w-15xl mx-auto">
-            <h1 className="text-4xl font-bold text-center mb-8">List of Users</h1>
+        <div className="p-8 max-w-15xl mx-auto text-[rgb(59,59,59)] ">
+            <h1 className="font-bold text-[3rem] text-[rgb(59,59,59)] text-center mb-5">List of Users</h1>
             <div className="mb-8">
                 <p className="text-xl text-center mb-4">Total Users: {userCount}</p>
                 <div className="flex justify-center mb-8">
@@ -107,7 +107,7 @@ const AdminListOfUser: React.FC = () => {
             {filteredUsers.length > 0 ? (
                 <div className="overflow-auto justify-center mb-[6rem] ml-[5rem]">
                     <table className="min-w-full bg-white border border-gray-300 rounded-lg shadow-xl text-lg">
-                        <thead className="bg-gradient-to-r from-red-800 via-red-600 to-red-800 rounded-t-lg">
+                        <thead className="bg-[#b83216] rounded-t-lg">
                             <tr>
                                 <th className="py-4 px-6 text-left font-semibold text-white uppercase tracking-wider border-b border-gray-200 shadow-md">ID</th>
                                 <th className="py-4 px-6 text-left font-semibold text-white uppercase tracking-wider border-b border-gray-200 shadow-md">Username</th>
@@ -121,17 +121,17 @@ const AdminListOfUser: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-200">
-                            {filteredUsers.map((user) => (
-                                <tr key={user.id} className="hover:bg-gray-100 transition duration-300 ease-in-out">
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.id}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.username}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.email}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.firstname}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.lastname}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.role}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.age}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.birthdate ? new Date(user.birthdate).toLocaleDateString() : 'N/A'}</td>
-                                    <td className="py-4 px-6 text-gray-800 border-b border-gray-200">{user.generatedAiStrats}</td>
+                            {filteredUsers.map((user, index) => (
+                                <tr key={user.id} className={`${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'} border-b border-gray-200`}>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.id}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.username}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.email}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.firstname}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.lastname}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.role}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.age}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.birthdate ? new Date(user.birthdate).toLocaleDateString() : 'N/A'}</td>
+                                    <td className="py-4 px-6 text-gray-800 border-b border-white">{user.generatedAiStrats}</td>
                                 </tr>
                             ))}
                         </tbody>

@@ -545,7 +545,7 @@ const ReportsPage = () => {
               </div>
             </div>
             {/* end of perspectives toggle */}
-            <div className="mt-5">
+            <div>
               {selectedComponent === "Financial" && <ReportFinancialView />}
               {selectedComponent === "Stakeholder" && <ReportStakeholderView />}
               {selectedComponent === "Internal" && <ReportInternalView />}

@@ -24,6 +24,8 @@ const FeedbackForm: React.FC = () => {
   const [feedback, setFeedback] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
 
   const handleCancelSave = () => {
     setShowModal(false);
@@ -46,15 +48,18 @@ const FeedbackForm: React.FC = () => {
     e.preventDefault();
 
     if (!feeling) {
-      alert('Please select how you are feeling.');
+      setModalMessage('Please select how you are feeling.');
+      setShowErrorModal(true);
       return;
     }
     if (!satisfaction.friendliness || !satisfaction.knowledge || !satisfaction.quickness) {
-      alert('Please rate all aspects of satisfaction.');
+      setModalMessage('Please rate all aspects of satisfaction.');
+      setShowErrorModal(true);
       return;
     }
     if (!feedback.trim()) {
-      alert('Please provide overall feedback.');
+      setModalMessage('Please provide overall feedback.');
+      setShowErrorModal(true);
       return;
     }
     
@@ -244,6 +249,46 @@ const FeedbackForm: React.FC = () => {
               <div className="flex justify-center gap-10 mt-12 mb-10">
                 <button
                   onClick={() => setShowModal(false)}
+                  className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content]"
+                  style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </Modal>
+
+        {/* Error Modal */}
+        <Modal open={showErrorModal} onClose={() => setShowErrorModal(false)}>
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
+              <button
+                onClick={handleCancelSave}
+                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <p className="text-3xl font-bold mb-4">Notice!</p>
+              <p className="text-xl mb-4 mt-10">
+                {modalMessage}
+              </p>
+              <div className="flex justify-center gap-10 mt-12 mb-10">
+                <button
+                  onClick={() => setShowErrorModal(false)}
                   className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content]"
                   style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                 >

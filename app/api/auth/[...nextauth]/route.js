@@ -3,6 +3,8 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from 'bcryptjs';
 
 
+
+
 export const authOptions = {
     providers: [
         CredentialsProvider ({
@@ -16,6 +18,8 @@ export const authOptions = {
 
                     console.log("Input username:", username);
                     console.log("Input password:", password);
+
+                     
 
                      // Admin credentials check
                      if (username === 'Admin' && password === 'A@dmin123') {

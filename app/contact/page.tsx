@@ -1,74 +1,106 @@
+import TeamsPage from '../components/TeamsPage'
 import React from 'react'
-import { Button } from "@mui/material";
-import ContactsPage from '../components/ContactsPage';
 import Link from 'next/link'
+import { Button } from "@mui/material";
 
 const page = () => {
   return (
-    <div className="h-screen flex lg:flex-row md:flex-col">
-      <div className="flex flex-col items-center lg:ml-60 lg:mt-28 md:mt-8 md:ml-13 ">
-        <div className="font-bold lg:text-[4.1rem] lg:mb-18 md:text-[4rem] md:mb-10 mt-[-3rem]">Contact our team</div>
-        <div className="m-[-2rem_0_3rem_0.3rem] inline-block break-words font-normal text-[1.3rem] text-[#686666]">
-          Let’s explore how the team can work for you.
+    <div className='text-[rgb(59,59,59)] items-center justify-center text-center'>
+      <div className='flex flex-col'>
+        <div className="font-bold lg:text-[3.5rem] mt-10">Contact our team</div>
+        <div className='font-medium text-[1.3rem] mt-5'>We value collaboration and work closely with our clients every step of the way, <br/>ensuring their vision and goals are met with precision and excellence.</div>
+
+        <div className='flex flex-row items-center justify-center text-center gap-5 mt-10'>
+          <button 
+            className="rounded-[0.6rem] text-[#AB3510] border border-[#AB3510] hover:text-white hover:bg-[#AB3510] font-medium text-lg py-3 px-3 w-[10rem] h-[fit-content] mb-10 items-center"
+          >
+              <Link href="/">Home</Link>
+          </button>
+          <button 
+            className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-3 px-3 w-[10rem] h-[fit-content] mb-10 items-center"
+            style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}>
+              <Link href="/team">Team</Link>
+          </button>
         </div>
-          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[50rem] flex items-center mb-6 py-4">
-          <div className="flex flex-row items-center ml-5">
-          <img className="m-[1rem_1.2rem_2.7rem_0] w-[1.5rem] h-[1.5rem]" 
-            src="c-check.png"
-            alt="Maroon Check"
-          />
-          <span className="break-words font-normal text-[1.3rem] text-[#000000]">
-              Our team comprises highly skilled professionals
-              with expertise in their respective fields, ensuring
-              top-notch quality and results for our clients.
-            </span>
+
+        <div style={{
+          backgroundImage: 'url("landingbg.png")',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          width: '100%',
+          height: '46vh',  // Adjust height as needed
+        }}>
+          
+          <div className='flex flex-row gap-10 items-center justify-center mt-10'>
+            <div className='bg-white h-[21rem] w-[35rem] rounded-md'>
+              <div className='flex flex-col'>
+                <div className='text-[1.5rem] font-bold mt-10'>Talk to the Team</div>
+                <div className='flex flex-row mt-5'>
+                  <div className='flex flex-col mt-5 ml-16 items-start'>
+                    <div className='text-[1.3rem] font-medium'>Genevieve:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Lara:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Arziel:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Arvin:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Lyndon:</div>
+                  </div>
+                  <div className='flex flex-col mt-5 ml-[11rem] items-end'>
+                  <div className='text-[1.3rem] font-medium'>+63123456789</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='bg-white h-[21rem] w-[35rem] rounded-md'>
+              <div className='flex flex-col'>
+                <div className='text-[1.5rem] font-bold mt-10'>Browse the Team</div>
+                <div className='flex flex-row mt-5'>
+                  <div className='flex flex-col mt-5 ml-16 items-start'>
+                    <div className='text-[1.3rem] font-medium'>Facebook:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Instagram:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Twitter:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>MS Teams:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Gmail:</div>
+                  </div>
+                  <div className='flex flex-col mt-5 ml-[12rem] items-end'>
+                  <div className='text-[1.3rem] font-medium'>atlas.official</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='bg-white h-[21rem] w-[35rem] rounded-md'>
+              <div className='flex flex-col'>
+                <div className='text-[1.5rem] font-bold mt-10'>Visit the Team</div>
+                <div className='flex flex-row mt-5'>
+                  <div className='flex flex-col mt-5 ml-16 items-start'>
+                    <div className='text-[1.3rem] font-medium'>Address:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Building:</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>Business Hours:</div>
+                  </div>
+                  <div className='flex flex-col mt-5 ml-[8rem] items-end'>
+                  <div className='text-[1.3rem] font-medium'>Tabok Mandaue</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>North Wing 2nd</div>
+                    <div className='text-[1.3rem] mt-1 font-medium'>9:00am - 6:00pm</div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
-          </div>
-        <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[50rem] mb-6 py-4 flex items-center">
-        <div className="flex flex-row items-center ml-5">
-        <img className="m-[1rem_1.2rem_2.7rem_0] w-[1.5rem] h-[1.5rem]" 
-          src="c-check.png"
-          alt="Maroon Check"
-        />
-        <span className="break-words font-normal text-[1.3rem] text-[#000000]">
-            We value collaboration and work closely with our 
-            clients every step of the way, ensuring their vision 
-            and goals are met with precision and excellence.
-          </span>
-        </div>
+          
+
         </div>
 
-        <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[50rem] mb-6 py-4 flex items-center">
-        <div className="flex flex-row items-center ml-5">
-        <img className="m-[1rem_1.2rem_2.7rem_0] w-[1.5rem] h-[1.5rem]" 
-          src="c-check.png"
-          alt="Maroon Check"
-        />
-        <span className="break-words font-normal text-[1.3rem] text-[#000000]">
-            Our clients are at the heart of everything we do. 
-            We prioritize their needs, preferences, and 
-            satisfaction.
-          </span>
+        <div className='font-medium italic text-[1rem] mt-12'>'Your goals, our journey. Together, we achieve.'</div>
+        <div className="inline-block break-words font-normal text-[1rem] text-[#504B4B]">
+          Copyright. All rights reserved.
         </div>
-        </div> 
-
-        <Button className="rounded-lg bg-[#8a252c] text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white mb-4 hover:bg-[#eec160] hover:text-[#8a252c] mt-10">
-          <Link href="/team">View Team</Link>
-        </Button>
-
-        <div className="flex flex-row items-center">
-          <div className="flex-1 bg-[#807979] h-0.5 w-[17.3rem]"></div>
-          <div className="mx-4 text-bold">or</div>
-          <div className="flex-1 bg-[#807979] h-0.5 w-[17.3rem]"></div>
-        </div>
-        <a
-          href="/"
-          className="text-2xl text-[#8a252c] font-bold lg:mt-4 md:mb-16 hover:underline"
-        >
-          Back Home
-        </a>
       </div>
-      <ContactsPage />
     </div>
   )
 }

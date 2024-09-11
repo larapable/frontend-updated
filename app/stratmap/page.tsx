@@ -1255,23 +1255,31 @@ const Page = () => {
                 onClick={() => handleButtonClick(department_id)}
                 variant="contained"
                 disabled={isButtonDisabled}
+                className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.1rem] font-bold text-center items-center rounded-lg px-5 py-2 mb-[-0.5rem]"
               >
                 Re-sort
               </Button>
 
               {/* Warning Dialog */}
-              <Dialog open={showWarning} onClose={handleCancelClear}>
-                <DialogTitle>Warning: Clear Tables</DialogTitle>
+              <Dialog open={showWarning} onClose={handleCancelClear} className="rounded-xl">
+                <DialogTitle className="text-2xl mb-4 justify-center font-semibold mt-5 text-center">Warning: Clear Tables</DialogTitle>
                 <DialogContent>
-                  <p>
+                  <p className="text-xl mb-4 text-center justify-center font-regular">
                     Are you sure you want to re-sort? This will clear the existing data in the Financial, Stakeholder, Internal Process, and Learning & Growth tables. 
                   </p>
                 </DialogContent>
-                <DialogActions>
-                  <Button onClick={handleCancelClear} color="primary">
+                <DialogActions className="mt-[-2rem] mb-5 items-center justify-center">
+                  <Button 
+                    onClick={handleCancelClear} 
+                    className="rounded-[0.6rem] text-[#AB3510] hover:text-white hover:bg-[#AB3510] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
+                  >
                     Cancel
                   </Button>
-                  <Button onClick={() => handleConfirmClear(department_id)} color="secondary">
+                  <Button 
+                    onClick={() => handleConfirmClear(department_id)} 
+                    className="rounded-[0.6rem] text-[#ffffff] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
+                    style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                  >
                     Confirm
                   </Button>
                 </DialogActions>

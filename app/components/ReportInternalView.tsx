@@ -96,7 +96,7 @@ const ReportInternalView = () => {
 
   return (
     <div className="flex flex-col gap-10">
-      <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
+      <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-5 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-5 rounded-lg pb-5">
         <div className="flex flex-row p-1 w-[75rem] h-auto">
           <img
             src="/first.png"
@@ -115,11 +115,10 @@ const ReportInternalView = () => {
           </div>
         </div>
         <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-          <div className="p-2 font-bold w-[8rem]"></div>
           <div className="p-2 font-bold w-[10rem]">Target Code</div>
           <div className="p-2 font-bold w-[15rem]">Office Target</div>
-          <div className="p-2 font-bold w-[8rem]">KPI</div>
-          <div className="p-2 font-bold w-[10rem]">Actions</div>
+          <div className="p-2 font-bold w-[10rem]">KPI</div>
+          <div className="p-2 font-bold w-[12rem]">Actions</div>
           <div className="p-2 font-bold w-[10rem]">Budget</div>
           <div className="p-2 font-bold w-[10rem]">In-charge</div>
           <div className="p-2 font-bold w-[10rem]">
@@ -130,7 +129,7 @@ const ReportInternalView = () => {
               <span>Target</span>
             </div>
           </div>
-          <div className="p-2 w-[5rem] font-bold">OFI</div>
+          <div className="p-2 w-[10rem] font-bold">OFI</div>
         </div>
         {internalReportsFirst
           .filter(
@@ -152,15 +151,14 @@ const ReportInternalView = () => {
                 index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
               }`}
             >
-              <div className="p-2 w-[8rem]"></div>
               <div className="p-2 w-[10rem]">{report.target_code}</div>
               <div className="p-2 w-[15rem]">
                 {truncateString(report.office_target, 20)}
               </div>
-              <div className="p-2 w-[8rem]">
+              <div className="p-2 w-[10rem]">
                 {truncateString(report.key_performance_indicator, 20)}
               </div>
-              <div className="p-2 w-[10rem]">{report.actions}</div>
+              <div className="p-2 w-[12rem]">{report.actions}</div>
               <div className="p-2 w-[10rem]">{report.budget}</div>
               <div className="p-2 w-[10rem]">{report.incharge}</div>
               <div className="p-2 w-[10rem] text-center">
@@ -172,7 +170,7 @@ const ReportInternalView = () => {
                   {report.target_performance}%
                 </span>
               </div>
-              <div className="p-2 w-[5rem]">{report.ofi}</div>
+              <div className="p-2 w-[10rem]">{report.ofi}</div>
             </div>
           ))}
       </div>
@@ -196,11 +194,10 @@ const ReportInternalView = () => {
           </div>
         </div>
         <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-          <div className="p-2 font-bold w-[8rem]"></div>
           <div className="p-2 font-bold w-[10rem]">Target Code</div>
           <div className="p-2 font-bold w-[15rem]">Office Target</div>
-          <div className="p-2 font-bold w-[8rem]">KPI</div>
-          <div className="p-2 font-bold w-[10rem]">Actions</div>
+          <div className="p-2 font-bold w-[10rem]">KPI</div>
+          <div className="p-2 font-bold w-[12rem]">Actions</div>
           <div className="p-2 font-bold w-[10rem]">Budget</div>
           <div className="p-2 font-bold w-[10rem]">In-charge</div>
           <div className="p-2 font-bold w-[10rem]">
@@ -211,7 +208,7 @@ const ReportInternalView = () => {
               <span>Target</span>
             </div>
           </div>
-          <div className="p-2 w-[5rem] font-bold">OFI</div>
+          <div className="p-2 w-[10rem] font-bold">OFI</div>
         </div>
         {internalReportsSecond
           .filter(
@@ -233,15 +230,14 @@ const ReportInternalView = () => {
                 index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
               }`}
             >
-              <div className="p-2 w-[8rem]"></div>
               <div className="p-2 w-[10rem]">{report.target_code}</div>
               <div className="p-2 w-[15rem]">
                 {truncateString(report.office_target, 20)}
               </div>
-              <div className="p-2 w-[8rem]">
+              <div className="p-2 w-[10rem]">
                 {truncateString(report.key_performance_indicator, 20)}
               </div>
-              <div className="p-2 w-[10rem]">{report.actions}</div>
+              <div className="p-2 w-[12rem]">{report.actions}</div>
               <div className="p-2 w-[10rem]">{report.budget}</div>
               <div className="p-2 w-[10rem]">{report.incharge}</div>
               <div className="p-2 w-[10rem] text-center">
@@ -253,7 +249,7 @@ const ReportInternalView = () => {
                   {report.target_performance}%
                 </span>
               </div>
-              <div className="p-2 w-[5rem]">{report.ofi}</div>
+              <div className="p-2 w-[10rem]">{report.ofi}</div>
             </div>
           ))}
       </div>

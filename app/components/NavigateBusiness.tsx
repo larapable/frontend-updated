@@ -52,4 +52,3 @@ const NavigateBusiness = () => {
 }
 
 export default NavigateBusiness
-
