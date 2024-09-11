@@ -82,21 +82,37 @@ export default function Financial() {
       setFinancialTargetCompletionDate(null);
     }
   };
-  // mo add ug scorecard : open modal
-  const handleFinancialAddMoreScorecard = () => {
-    setFinancialTargetCode("");
 
-    setFinancialStartDate(new Date());
-    //@ts-ignore
-    setFinancialTargetCompletionDate(null);
-    setFinancialOfficeTarget("");
-    setFinancialStatus("");
-    setFinancialKPI("");
-    setFinancialTargetPerformance("");
-    setFinancialActualPerformance("");
-    setFinancialEditMode(null);
-    setFinancialModalOpen(true);
+  // mo add ug scorecard : open modal
+  const handleFinancialAddMoreScorecard = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/bsc/financialBsc/getLatestId"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch latest scorecard ID");
+      }
+
+      const { latestId } = await response.json();
+      const newTargetCode = `TC-${latestId + 1}`; // Assuming the latestId is fetched correctly
+
+      setFinancialTargetCode(newTargetCode);
+      setFinancialStartDate(new Date());
+      //@ts-ignore
+      setFinancialTargetCompletionDate(null);
+      setFinancialOfficeTarget("");
+      setFinancialStatus("");
+      setFinancialKPI("");
+      setFinancialTargetPerformance("");
+      setFinancialActualPerformance("");
+      setFinancialEditMode(null);
+      setFinancialModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching latest scorecard ID:", error);
+      toast.error("Error fetching latest scorecard ID");
+    }
   };
+
   // Determine which function to call when the save button is clicked
   const handleSaveButtonClick = () => {
     if (financialEditMode) {
@@ -116,34 +132,6 @@ export default function Financial() {
       (actualFinancialPerformance / targetFinancialPerformance) * 100;
     return levelOfAttainmentFinancial.toFixed(2) + "%";
   };
-
-  // displays the updated level of attainment base sa actual performance
-  // const handleFinancialActualPerformanceChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const value = e.target.value;
-  //   // Allow backspace to clear the input
-  //   if (value === "") {
-  //     setFinancialActualPerformance("");
-  //     setFinancialLevelOfAttainment("0%");
-  //   } else {
-  //     const newActualPerformance = parseFloat(value);
-  //     // Check if the value is a number and not NaN
-  //     if (!isNaN(newActualPerformance) && newActualPerformance <= 100) {
-  //       setFinancialActualPerformance(newActualPerformance.toString());
-  //       // Assuming financialTargetPerformance is already set from the database
-  //       const targetPerformance = parseFloat(financialTargetPerformance);
-  //       if (targetPerformance > 0) {
-  //         // Make sure not to divide by zero
-  //         const newLevelOfAttainment = calculateFinancialLevelOfAttainment(
-  //           newActualPerformance,
-  //           targetPerformance
-  //         );
-  //         setFinancialLevelOfAttainment(newLevelOfAttainment);
-  //       }
-  //     }
-  //   }
-  // };
 
   // Fetch the saved financial scorecards from the server
   useEffect(() => {
@@ -183,12 +171,6 @@ export default function Financial() {
     setFinancialKPI(scorecard.key_performance_indicator);
     setFinancialTargetPerformance(scorecard.target_performance);
     setFinancialActualPerformance(scorecard.actual_performance);
-    // setFinancialLevelOfAttainment(
-    //   calculateFinancialLevelOfAttainment(
-    //     parseFloat(scorecard.actual_performance),
-    //     parseFloat(scorecard.target_performance)
-    //   )
-    // );
     setFinancialEditMode(scorecard);
     setFinancialEditID(scorecard.id);
     setFinancialModalOpen(true);
@@ -465,67 +447,6 @@ export default function Financial() {
                   </div>
                 </div>
               </div>
-
-              // <div
-              //   key={index}
-              //   className="bg-[#ffffff] relative ml-2 flex flex-row pt-4 pb-4 w-[90rem] h-auto box-sizing-border"
-              // >
-              //   <div className="mr-5 gap-10">
-              //     <p className="flex flex-row">
-              //       <div className="w-[45rem] flex flex-row">
-              //         <span className="font-bold bg-yellow-200 pt-2 pb-2 pr-1 pl-2 text-[#962203] mt-[-0.5rem] mr-3 ml-1">
-              //           {scorecard.target_code || "N/A"}:
-              //         </span>
-              //         <span className="font-regular">
-              //           {financialOfficeTarget.length > 60
-              //             ? `${(scorecard.office_target || "N/A").substring(
-              //                 0,
-              //                 60
-              //               )}...`
-              //             : scorecard.office_target || "N/A"}{" "}
-              //         </span>
-              //       </div>
-
-              //       <div className="flex items-center w-[35rem]">
-              //         <span className="font-regular mr-5 ml-10">
-              //           {scorecard.completionDate
-              //             ? new Date(
-              //                 scorecard.completionDate
-              //               ).toLocaleDateString()
-              //             : "N/A"}
-              //         </span>
-              //         <div
-              //           className={`h-5 ${progressColor}`}
-              //           style={{ width: progressBarWidth }}
-              //         ></div>
-              //       </div>
-              //       <div className="flex items-center ml-[-3rem]">
-              //         <span className="font-bold ">
-              //           {validatedLevelOfAttainment}%{" "}
-              //         </span>
-              //         <div className="font-bold border rounded-lg bg-yellow-200 border-yellow-500 pt-1 pr-2 pl-2 ml-5 mt-[-0.5rem]  ">
-              //           {scorecard.status || "N/A"}{" "}
-              //         </div>
-              //       </div>
-              //     </p>
-              //   </div>
-              //   <button onClick={() => handleFinancialEditScorecard(scorecard)}>
-              //     <svg
-              //       xmlns="http://www.w3.org/2000/svg"
-              //       fill="none"
-              //       viewBox="0 0 24 24"
-              //       strokeWidth="1.5"
-              //       stroke="currentColor"
-              //       className="w-6 h-6"
-              //     >
-              //       <path
-              //         strokeLinecap="round"
-              //         strokeLinejoin="round"
-              //         d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-              //       />
-              //     </svg>
-              //   </button>
-              // </div>
             );
           })}
       </div>
@@ -590,7 +511,7 @@ export default function Financial() {
                   key={financialTargetCompletionDate?.toString()}
                   selected={financialTargetCompletionDate}
                   onChange={handleCompletionDateChange}
-                  minDate={new Date()}
+                  minDate={financialStartDate}
                   placeholderText="MM-DD-YYYY"
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                 />

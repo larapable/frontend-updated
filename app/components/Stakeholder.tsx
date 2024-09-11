@@ -84,19 +84,33 @@ export default function Stakeholder() {
     }
   };
 
-  const handleStakeholderAddMoreScorecard = () => {
-    setStakeholderTargetCode("");
-    setStakeholderStartDate(new Date());
-    //@ts-ignore
-    setStakeholderTargetCompletionDate(null);
-    setStakeholderOfficeTarget("");
-    setStakeholderTargetPerformance("");
-    setStakeholderStatus("");
-    setStakeholderKPI("");
-    setStakeholderActualPerformance("");
-    setStakeholderLevelOfAttainment("");
-    setStakeholderEditMode(null);
-    setStakeholderModalOpen(true);
+  const handleStakeholderAddMoreScorecard = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:8080/bsc/stakeholderBsc/getLatestId"
+      );
+      if (!response.ok) {
+        throw new Error("Failed to fetch latest scorecard ID");
+      }
+      const { latestId } = await response.json();
+      const newTargetCode = `TC-${latestId + 1}`; // Assuming the latestId is fetched correctly
+
+      setStakeholderTargetCode(newTargetCode);
+      setStakeholderStartDate(new Date());
+      //@ts-ignore
+      setStakeholderTargetCompletionDate(null);
+      setStakeholderOfficeTarget("");
+      setStakeholderTargetPerformance("");
+      setStakeholderStatus("");
+      setStakeholderKPI("");
+      setStakeholderActualPerformance("");
+      setStakeholderLevelOfAttainment("");
+      setStakeholderEditMode(null);
+      setStakeholderModalOpen(true);
+    } catch (error) {
+      console.error("Error fetching latest scorecard ID:", error);
+      toast.error("Error fetching latest scorecard ID");
+    }
   };
 
   // Determine which function to call when the save button is clicked
@@ -116,34 +130,6 @@ export default function Stakeholder() {
       (actualStakeholderPerformance / targetStakeholderPerformance) * 100;
     return levelOfAttainmentStakeholder.toFixed(2) + "%";
   };
-
-  // display the updated level of attainment base sa actual performance
-  // const handleStakeholderActualPerformanceChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>
-  // ) => {
-  //   const value = e.target.value;
-  //   //Allow backspacea to clear the input
-  //   if (value === "") {
-  //     setStakeholderLevelOfAttainment("");
-  //     setStakeholderActualPerformance("0%");
-  //   } else {
-  //     const newActualPerformance = parseFloat(value);
-  //     // Check if the value is a number or not NaN
-  //     if (!isNaN(newActualPerformance) && newActualPerformance <= 100) {
-  //       setStakeholderActualPerformance(newActualPerformance.toString());
-  //       // Assuming stakeholderTargetPerformance is already set from the database
-  //       const targetPerformance = parseFloat(stakeholderTargetPerformance);
-  //       if (targetPerformance > 0) {
-  //         // Make sure not to divide by zero
-  //         const newLevelOfAttainment = calculateStakeholderLevelOfAttainment(
-  //           newActualPerformance,
-  //           targetPerformance
-  //         );
-  //         setStakeholderLevelOfAttainment(newLevelOfAttainment);
-  //       }
-  //     }
-  //   }
-  // };
 
   // Fetch the saved financial scorecards from the server
   useEffect(() => {
@@ -179,13 +165,6 @@ export default function Stakeholder() {
     setStakeholderKPI(scorecard.key_performance_indicator);
     setStakeholderTargetPerformance(scorecard.target_performance);
     setStakeholderActualPerformance(scorecard.actual_performance);
-    // pwede rani wala
-    // setStakeholderLevelOfAttainment(
-    //   calculateStakeholderLevelOfAttainment(
-    //     parseFloat(scorecard.actual_performance),
-    //     parseFloat(scorecard.target_performance)
-    //   )
-    // );
     setStakeholderEditMode(scorecard);
     setStakeholderEditID(scorecard.id);
     setStakeholderModalOpen(true);
@@ -297,55 +276,63 @@ export default function Stakeholder() {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
-      <div className="flex flex-row">
-        <div className="flex flex-row p-1 w-[85rem] h-auto">
-          <img
-            src="/stakeholder.png"
-            alt=""
-            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-          />
-          <div className="flex flex-col">
-            <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-              Stakeholder Scorecard Overview
-            </span>
-            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-              Evaluates value delivered to stakeholders, including customers.
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-row self-start box-sizing-border mt-5 mb-5">
-          {/* Add More Scorecard Button */}
-          <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[5rem] pl-[0.25rem] pr-1 pt-1 pb-1">
-            <button
-              className="text-white w-[3rem] h-6 cursor-pointer"
-              onClick={handleStakeholderAddMoreScorecard}
-            >
-              <div className="flex flex-row">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="currentColor"
-                  className="size-8"
-                >
-                  <path
-                    fill-rule="evenodd"
-                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                    clip-rule="evenodd"
-                  />
-                </svg>
-              </div>
-            </button>
-          </div>
-        </div>
-        </div>
-            <div className="flex flex-row p-4 bg-[#fff6d1] text-[rgb(43,43,43)] ">
-              <div className="w-[10rem] flex items-center font-bold">Target Code</div>
-              <div className="w-[25rem] flex items-center font-bold">Financial Office Target</div>
-              <div className="w-[10rem] flex items-center font-bold">Completion</div>
-              <div className="w-[18rem] flex items-center font-bold">Progress</div>
-              <div className="w-[13rem] flex items-center font-bold">Attainment</div>
-              <div className="w-[0rem] flex items-center font-bold">Status</div>
+        <div className="flex flex-row">
+          <div className="flex flex-row p-1 w-[85rem] h-auto">
+            <img
+              src="/stakeholder.png"
+              alt=""
+              className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+            />
+            <div className="flex flex-col">
+              <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                Stakeholder Scorecard Overview
+              </span>
+              <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                Evaluates value delivered to stakeholders, including customers.
+              </span>
             </div>
+          </div>
+          <div className="flex flex-row self-start box-sizing-border mt-5 mb-5">
+            {/* Add More Scorecard Button */}
+            <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[5rem] pl-[0.25rem] pr-1 pt-1 pb-1">
+              <button
+                className="text-white w-[3rem] h-6 cursor-pointer"
+                onClick={handleStakeholderAddMoreScorecard}
+              >
+                <div className="flex flex-row">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-8"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-row p-4 bg-[#fff6d1] text-[rgb(43,43,43)] ">
+          <div className="w-[10rem] flex items-center font-bold">
+            Target Code
+          </div>
+          <div className="w-[25rem] flex items-center font-bold">
+            Financial Office Target
+          </div>
+          <div className="w-[10rem] flex items-center font-bold">
+            Completion
+          </div>
+          <div className="w-[18rem] flex items-center font-bold">Progress</div>
+          <div className="w-[13rem] flex items-center font-bold">
+            Attainment
+          </div>
+          <div className="w-[0rem] flex items-center font-bold">Status</div>
+        </div>
       </div>
       <div className="bg-[#ffffff] gap-2 w-[100%] h-[auto] flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg overflow-y-auto overflow-x-hidden">
         {stakeholderSavedScorecards &&
@@ -376,11 +363,13 @@ export default function Stakeholder() {
 
             return (
               <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
-              <div
+                <div
                   key={index}
-                  className={`flex flex-row p-4 ${index % 2 === 0 ? 'bg-white' : 'bg-[#fff6d1]'}`}
+                  className={`flex flex-row p-4 ${
+                    index % 2 === 0 ? "bg-white" : "bg-[#fff6d1]"
+                  }`}
                 >
-                <div className="flex flex-row w-full">
+                  <div className="flex flex-row w-full">
                     <div className="w-[10rem] flex flex-row">
                       <span className="font-semibold text-gray-500">
                         {scorecard.target_code || "N/A"}:
@@ -407,14 +396,17 @@ export default function Stakeholder() {
                       </span>
                     </div>
                     <div className="w-[15rem] flex items-center">
-                      <div className={`h-5 ${progressColor} rounded-md`} style={{ width: progressBarWidth }}></div>
+                      <div
+                        className={`h-5 ${progressColor} rounded-md`}
+                        style={{ width: progressBarWidth }}
+                      ></div>
                     </div>
 
                     <div className="w-[10rem] flex items-center ml-[5rem]">
                       <span className="font-semibold ">
                         {validatedLevelOfAttainment}%{" "}
                       </span>
-                    </div> 
+                    </div>
 
                     <div className="w-[10rem] flex items-center">
                       <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2">
@@ -423,7 +415,9 @@ export default function Stakeholder() {
                     </div>
                     <div className="w-[5rem] flex items-center justify-end text-orange-700">
                       <button
-                        onClick={() => handleStakeholderEditScorecard(scorecard)}
+                        onClick={() =>
+                          handleStakeholderEditScorecard(scorecard)
+                        }
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -508,7 +502,7 @@ export default function Stakeholder() {
                   key={stakeholderTargetCompletionDate?.toString()}
                   selected={stakeholderTargetCompletionDate}
                   onChange={handleCompletionDateChange}
-                  minDate={new Date()}
+                  minDate={stakeholderStartDate}
                   placeholderText="MM-DD-YYYY"
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                 />
