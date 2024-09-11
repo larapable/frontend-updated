@@ -192,19 +192,21 @@ export default function UserEditProfile() {
   };
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex flex-col gap-5 items-center justify-center">
       <Card className="w-[105rem] h-[auto] flex flex-col items-center rounded-xl bg-white shadow-xl border border-gray-150 mb-10">
         <div className="w-[100%]">
           <img src="/coverbg.png" alt="" className=" h-[12rem] w-[100%] bg-white object-cover" />
         </div>
-        <div className="mt-[-8rem]">
+        <div className="mt-[-8rem] items-center justify-center">
         {image ? (
-          <div className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 flex items-center justify-center overflow-hidden">
-            <img
-              src={image}
-              alt="Department Image"
-              className="w-full h-full object-cover"
-            />
+          <div className="flex justify-center items-center">
+            <div className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 flex items-center justify-center overflow-hidden">
+              <img
+                src={image}
+                alt="Department Image"
+                className="w-full h-full object-cover justify-center items-center"
+              />
+            </div>
           </div>
         ) : (
           <div className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 py-4 flex items-center justify-center">
@@ -212,7 +214,7 @@ export default function UserEditProfile() {
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 24 24"
               fill="currentColor"
-              className="w-24 h-24 text-gray-500"
+              className="w-24 h-24 text-gray-500 justify-center items-center"
             >
               <path
                 fillRule="evenodd"

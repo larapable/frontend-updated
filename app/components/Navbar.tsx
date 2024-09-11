@@ -5,6 +5,7 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { TiLocationArrowOutline } from "react-icons/ti";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import { signOut } from "next-auth/react"
 
 export default function Navbar() {
   
@@ -169,7 +170,8 @@ export default function Navbar() {
       </Link>
       <div className="w-[18rem] border-t border-white mb-5"></div>
 
-      <div className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 ">
+      <div className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 "
+        onClick={() => signOut({ callbackUrl: '/login' })}>
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

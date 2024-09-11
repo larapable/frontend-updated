@@ -25,7 +25,7 @@ const Navbar = () => {
   };
   
   return (
-    <nav style={{backgroundColor: '#8A252C'}}> 
+    <div style={{ background:"linear-gradient(to left, #882723, #AB3510)", height:"20rem" }} > 
       <div className="rounded-[1.3rem] bg-[rgba(180,54,54,0.31)] relative m-[0_2.1rem_5rem_2.4rem] flex flex-row justify-between p-[1.3rem_2.5rem_1rem_1rem] w-[97%] h-[7rem] box-sizing-border ">
         <Link href="/">
           <Image src="/logo.png" alt="logo" width={100} height={80}/>
@@ -57,7 +57,7 @@ const Navbar = () => {
       </div>
 
 
-    </nav>
+    </div>
   )
 }
 

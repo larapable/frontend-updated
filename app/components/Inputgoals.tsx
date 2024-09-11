@@ -87,9 +87,9 @@ export default function Inputgoals() {
     }
   };
 
-  const fetchAccomplishedGoals = async (departmentId: number) => {
+  const fetchAccomplishedGoals = async (department_id: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/goals/getAccomplished/${departmentId}`);
+      const response = await fetch(`http://localhost:8080/goals/getAccomplished/${department_id}`);
       if (!response.ok) throw new Error('Failed to fetch accomplished goals');
       const data = await response.json();
       return data;
