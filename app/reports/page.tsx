@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "../components/Navbar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, use } from "react";
 import ReportFinancial from "../components/ReportFinancial";
 import ReportLearning from "../components/ReportLearning";
 import ReportStakeholder from "../components/ReportStakeholder";
@@ -9,8 +9,33 @@ import ReportFinancialView from "../components/ReportFinancialView";
 import ReportStakeholderView from "../components/ReportStakeholderView";
 import ReportInternalView from "../components/ReportInternalView";
 import ReportLearningView from "../components/ReportLearningView";
-import * as XLSX from "xlsx"; // Import xlsx
+import ExcelJS from "exceljs";
 import { useSession } from "next-auth/react";
+
+interface Strength {
+  id: number;
+  value: string;
+  department: number;
+  isDelete: boolean;
+}
+interface Weakness {
+  id: number;
+  value: string;
+  department: number;
+  isDelete: boolean;
+}
+interface Opportunity {
+  id: number;
+  value: string;
+  department: number;
+  isDelete: boolean;
+}
+interface Threat {
+  id: number;
+  value: string;
+  department: number;
+  isDelete: boolean;
+}
 
 const ReportsPage = () => {
   const { data: session } = useSession();
@@ -53,6 +78,12 @@ const ReportsPage = () => {
   const [learningReportsSecond, setLearningReportsSecond] = useState<
     ReportLearningView[]
   >([]);
+
+  //SWOT
+  const [strength, setStrength] = useState<Strength[]>([]);
+  const [weakness, setWeakness] = useState<Weakness[]>([]);
+  const [opportunity, setOpportunity] = useState<Opportunity[]>([]);
+  const [threat, setThreat] = useState<Threat[]>([]);
 
   const changeComponent = (componentName: string) => {
     localStorage.setItem("lastComponent", componentName);
@@ -148,6 +179,43 @@ const ReportsPage = () => {
 
         setLearningReportsFirst(firstSemesterLearningReports);
         setLearningReportsSecond(secondSemesterLearningReports);
+
+        // Fetch SWOT
+        const strengthResponse = await fetch(
+          `http://localhost:8080/strengths/get/${department_id}`
+        );
+        if (!strengthResponse.ok) {
+          throw new Error("Failed to fetch strengths");
+        }
+        const strengthData = await strengthResponse.json();
+        setStrength(strengthData);
+
+        const weaknessResponse = await fetch(
+          `http://localhost:8080/weaknesses/get/${department_id}`
+        );
+        if (!weaknessResponse.ok) {
+          throw new Error("Failed to fetch weaknesses");
+        }
+        const weaknessData = await weaknessResponse.json();
+        setWeakness(weaknessData);
+
+        const opportunityResponse = await fetch(
+          `http://localhost:8080/opportunities/get/${department_id}`
+        );
+        if (!opportunityResponse.ok) {
+          throw new Error("Failed to fetch opportunities");
+        }
+        const opportunityData = await opportunityResponse.json();
+        setOpportunity(opportunityData);
+
+        const threatResponse = await fetch(
+          `http://localhost:8080/threats/get/${department_id}`
+        );
+        if (!threatResponse.ok) {
+          throw new Error("Failed to fetch threats");
+        }
+        const threatData = await threatResponse.json();
+        setThreat(threatData);
       } catch (error) {
         console.error("Error fetching reports:", error);
       }
@@ -156,7 +224,7 @@ const ReportsPage = () => {
     getReports(department_id);
   }, [department_id]);
 
-  const handleDownload = () => {
+  const handleDownload = async () => {
     // Define custom headers
     const headers = [
       "Target Code",
@@ -183,6 +251,13 @@ const ReportsPage = () => {
         "Target Performance": report.target_performance,
         OFI: report.ofi,
       }));
+    };
+
+    const headerSWOT = {
+      Strength: "Strength",
+      Weakness: "Weakness",
+      Opportunity: "Opportunity",
+      Threat: "Threat",
     };
 
     // Financial reports
@@ -305,75 +380,261 @@ const ReportsPage = () => {
       )
     );
 
-    // Create worksheets for each report type
+    // Create a new workbook and add worksheets
+    const workbook = new ExcelJS.Workbook();
+
+    // Style settings for headers and cells
+    const headerStyle: ExcelJS.Style = {
+      fill: {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "A43214" }, // Background color #A43214
+      },
+      font: {
+        color: { argb: "FFFFFF" }, // White text
+        bold: true, // Bold text
+      },
+      border: {
+        top: { style: "thin" as ExcelJS.BorderStyle },
+        bottom: { style: "thin" as ExcelJS.BorderStyle },
+        left: { style: "thin" as ExcelJS.BorderStyle },
+        right: { style: "thin" as ExcelJS.BorderStyle },
+      },
+      numFmt: "General",
+      alignment: { horizontal: "center", vertical: "middle" },
+      protection: {},
+    };
+
+    const cellStyle: ExcelJS.Style = {
+      fill: {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "fff6d1" }, // Background color #fff6d1
+      },
+      font: {
+        color: { argb: "000000" }, // black text
+      },
+      border: {
+        top: { style: "thin" as ExcelJS.BorderStyle },
+        bottom: { style: "thin" as ExcelJS.BorderStyle },
+        left: { style: "thin" as ExcelJS.BorderStyle },
+        right: { style: "thin" as ExcelJS.BorderStyle },
+      },
+      numFmt: "General",
+      alignment: { horizontal: "left", vertical: "middle", wrapText: true },
+      protection: {},
+    };
+
+    const titleStyle: ExcelJS.Style = {
+      font: {
+        size: 14, // Larger font size
+        bold: true, // Bold text
+      },
+      alignment: { horizontal: "left", vertical: "middle" },
+      fill: { type: "pattern", pattern: "none" },
+      border: {},
+      numFmt: "General",
+      protection: {},
+    };
+
+    // Function to create and add a worksheet for each report type
     const createWorksheet = (
       reportTitle: string,
       firstSemData: any[],
       secondSemData: any[]
     ) => {
-      const worksheetData = [];
-      worksheetData.push([`1st Semester ${reportTitle}`]); // Label
-      worksheetData.push(headers); // Add headers
-      worksheetData.push(...firstSemData.map(Object.values)); // Data
+      const worksheet = workbook.addWorksheet(reportTitle);
 
-      worksheetData.push([]); // Blank row between tables
+      // Add 1st semester label and headers
+      const titleRowFirst = worksheet.addRow([`1st Semester ${reportTitle}`]);
+      titleRowFirst.eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = titleStyle;
+      });
 
-      worksheetData.push([`2nd Semester ${reportTitle}`]); // Label
-      worksheetData.push(headers); // Add headers
-      worksheetData.push(...secondSemData.map(Object.values)); // Data
+      const headerRowFirst = worksheet.addRow(headers);
+      headerRowFirst.eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = headerStyle;
+      });
 
-      return XLSX.utils.aoa_to_sheet(worksheetData);
+      firstSemData.forEach((row) => {
+        const dataRow = worksheet.addRow(Object.values(row));
+        dataRow.eachCell({ includeEmpty: true }, (cell) => {
+          cell.style = cellStyle;
+        });
+      });
+
+      worksheet.addRow([]); // Blank row
+      worksheet.addRow([]); // Blank row
+
+      // Add 2nd semester label and headers
+      const titleRowSecond = worksheet.addRow([`2nd Semester ${reportTitle}`]);
+      titleRowSecond.eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = titleStyle;
+      });
+
+      const headerRowSecond = worksheet.addRow(headers);
+      headerRowSecond.eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = headerStyle;
+      });
+
+      secondSemData.forEach((row) => {
+        const dataRow = worksheet.addRow(Object.values(row));
+        dataRow.eachCell({ includeEmpty: true }, (cell) => {
+          cell.style = cellStyle;
+        });
+      });
+
+      // Set column widths
+      headers.forEach((header, i) => {
+        const maxLength = Math.max(
+          ...firstSemData.map((row) => row[headers[i]]?.toString().length || 0),
+          ...secondSemData.map(
+            (row) => row[headers[i]]?.toString().length || 0
+          ),
+          header.length
+        );
+        worksheet.getColumn(i + 1).width = maxLength + 2; // Adding padding
+      });
     };
 
-    // Create a new workbook
-    const workbook = XLSX.utils.book_new();
-
-    // Add financial worksheet
-    XLSX.utils.book_append_sheet(
-      workbook,
-      createWorksheet(
-        "Financial Report",
-        transformedFinancialReportsFirst,
-        transformedFinancialReportsSecond
-      ),
-      "Financial Reports"
+    // Create sheets for each report type
+    createWorksheet(
+      "Financial Reports",
+      transformedFinancialReportsFirst,
+      transformedFinancialReportsSecond
+    );
+    createWorksheet(
+      "Stakeholder Reports",
+      transformedStakeholderReportsFirst,
+      transformedStakeholderReportsSecond
+    );
+    createWorksheet(
+      "Internal Reports",
+      transformedInternalReportsFirst,
+      transformedInternalReportsSecond
+    );
+    createWorksheet(
+      "Learning Reports",
+      transformedLearningReportsFirst,
+      transformedLearningReportsSecond
     );
 
-    // Add stakeholder worksheet
-    XLSX.utils.book_append_sheet(
-      workbook,
-      createWorksheet(
-        "Stakeholder Report",
-        transformedStakeholderReportsFirst,
-        transformedStakeholderReportsSecond
-      ),
-      "Stakeholder Reports"
-    );
+    // Add SWOT sheet
+    const swotWorksheet = workbook.addWorksheet("SWOT Analysis");
 
-    // Add internal worksheet
-    XLSX.utils.book_append_sheet(
-      workbook,
-      createWorksheet(
-        "Internal Report",
-        transformedInternalReportsFirst,
-        transformedInternalReportsSecond
-      ),
-      "Internal Reports"
-    );
+    // Define SWOT sections and their data
+    const swotSections = [
+      { title: "Strength", data: strength },
+      { title: "Weakness", data: weakness },
+      { title: "Opportunity", data: opportunity },
+      { title: "Threat", data: threat },
+    ];
 
-    // Add learning worksheet
-    XLSX.utils.book_append_sheet(
-      workbook,
-      createWorksheet(
-        "Learning Report",
-        transformedLearningReportsFirst,
-        transformedLearningReportsSecond
-      ),
-      "Learning Reports"
-    );
+    // Define style for SWOT title
+    const swotTitleStyle: ExcelJS.Style = {
+      font: {
+        size: 16,
+        bold: true,
+      },
+      alignment: { horizontal: "left", vertical: "middle" },
+      fill: { type: "pattern", pattern: "none" },
+      border: {},
+      numFmt: "General",
+      protection: {},
+    };
 
-    // Save the workbook
-    XLSX.writeFile(workbook, "Report.xlsx");
+    // Define style for SWOT data
+    const swotHeaderStyle: ExcelJS.Style = {
+      fill: {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "A43214" }, // Background color #A43214
+      },
+      font: {
+        color: { argb: "FFFFFF" }, // White text
+        bold: true, // Bold text
+      },
+      border: {
+        top: { style: "thin" as ExcelJS.BorderStyle },
+        bottom: { style: "thin" as ExcelJS.BorderStyle },
+        left: { style: "thin" as ExcelJS.BorderStyle },
+        right: { style: "thin" as ExcelJS.BorderStyle },
+      },
+      numFmt: "General",
+      alignment: { horizontal: "center", vertical: "middle" },
+      protection: {},
+    };
+
+    const swotDataStyle: ExcelJS.Style = {
+      fill: {
+        type: "pattern",
+        pattern: "solid",
+        fgColor: { argb: "fff6d1" }, // Background color #fff6d1
+      },
+      font: {
+        color: { argb: "000000" }, // black text
+      },
+      border: {
+        top: { style: "thin" as ExcelJS.BorderStyle },
+        bottom: { style: "thin" as ExcelJS.BorderStyle },
+        left: { style: "thin" as ExcelJS.BorderStyle },
+        right: { style: "thin" as ExcelJS.BorderStyle },
+      },
+      numFmt: "General",
+      alignment: { horizontal: "left", vertical: "middle", wrapText: true },
+      protection: {},
+    };
+
+    // Add SWOT data to the worksheet
+    let rowIndex = 1;
+    swotSections.forEach((section) => {
+      // Add title
+      const titleRow = swotWorksheet.addRow([section.title]);
+      titleRow.eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = swotTitleStyle;
+      });
+
+      // Add data headers
+      const headerRow = swotWorksheet.addRow(["Value"]);
+      headerRow.eachCell({ includeEmpty: true }, (cell) => {
+        cell.style = swotHeaderStyle;
+      });
+
+      // Add data
+      section.data.forEach((item) => {
+        const dataRow = swotWorksheet.addRow([item.value]);
+        dataRow.eachCell({ includeEmpty: true }, (cell) => {
+          cell.style = swotDataStyle;
+        });
+      });
+
+      // Add a blank row for separation
+      swotWorksheet.addRow([]);
+
+      rowIndex += section.data.length + 3; // Update row index for separation
+
+      // Set column width for the SWOT sheet
+      // Calculate max length for the "Value" column
+      const maxLength = Math.max(
+        ...section.data.map((item) => item.value?.toString().length || 0),
+        "Value".length
+      );
+      swotWorksheet.getColumn(1).width = maxLength + 2; // Adding padding
+    });
+
+    // Save the workbook as an Excel file
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+
+    // Trigger download
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Report.xlsx";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
   };
 
   return (
@@ -545,7 +806,7 @@ const ReportsPage = () => {
               </div>
             </div>
             {/* end of perspectives toggle */}
-            <div>
+            <div className="mt-5">
               {selectedComponent === "Financial" && <ReportFinancialView />}
               {selectedComponent === "Stakeholder" && <ReportStakeholderView />}
               {selectedComponent === "Internal" && <ReportInternalView />}
@@ -557,7 +818,7 @@ const ReportsPage = () => {
           <div className="flex flex-row justify-end items-end mr-8 mb-10">
             <button
               onClick={handleDownload}
-              className="
+              className=" text-[#A43214]
         hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white 
         inline-block break-words font-bold transition-all rounded-lg px-4 py-3"
             >
