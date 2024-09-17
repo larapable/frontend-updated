@@ -133,7 +133,7 @@ export default function SignupPage() {
         setPassword("");
         setConfirmPassword("");
         setSelectedDepartment(0);
-        setSuccessModal(true);
+        // setSuccessModal(true);
         router.push("/login");
       } else {
         console.log("User registration failed.");

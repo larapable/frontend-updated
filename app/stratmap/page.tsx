@@ -11,22 +11,15 @@ const Page = () => {
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
   const department_id = user?.department_id;
   const username = user?.username;
+  const role = user?.role;
+
 
   useEffect(() => {
 
     fetchProfileGoals();
+    fetchExistingStrategies(department_id);
 
-    if (username) {
-      checkGeneratedAiStrats(username);
-    }
   }, [session]);
-
-  interface ResponseRow {
-    "s_oResponses": string;
-    "s_tResponses": string;
-    "w_oResponses": string;
-    "w_tResponses": string;
-  }
 
   interface GeneratedSentence {
     id: number;
@@ -454,6 +447,7 @@ const Page = () => {
     Sample 3: 4. Excellence in Organizational Stewardship W2T1: Implement contingency plans to ensure continuity during economic downturns.
     Sample 4: 2. Excellence in Internal Service Systems S6T2: Test new products and marketing strategies to stay ahead of competitors. )
     "category number 1-4. (whichever strategic theme you think fits the response, DO NOT ADD THE CATEGORY NAMES OR ANY PRETEXT ASIDE FROM THE STRATEGIC THEME HERE.) (strategy here)" DO NOT ADD ANY MARKUP.
+    "Make sure not to output any double strategies with the same target code"
     `;
 
   const fetchProfileGoals = async () => {
@@ -484,7 +478,7 @@ const Page = () => {
     }
   };
 
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=AIzaSyATO5xndEGhEgXrHdeYLOiTbZqtUwYuZqE`;
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
 
   // financial
   const [isFModalOpen, setIsFModalOpen] = useState(false);
@@ -510,6 +504,7 @@ const Page = () => {
       const data = {
         office_target: newFStrategy,
         department: { id: department_id },
+        user_generated: 1
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/financial/insert",
@@ -559,6 +554,7 @@ const Page = () => {
       const data = {
         office_target: newSStrategy,
         department: { id: department_id },
+        user_generated: 1
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/stakeholder/insert",
@@ -608,6 +604,7 @@ const Page = () => {
       const data = {
         office_target: newIPStrategy,
         department: { id: department_id },
+        user_generated: 1
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/internal/insert",
@@ -657,6 +654,7 @@ const Page = () => {
       const data = {
         office_target: newLGStrategy,
         department: { id: department_id },
+        user_generated: 1
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/learning/insert",
@@ -725,7 +723,7 @@ const Page = () => {
     
           const categorizedSentences: GeneratedSentence[] = await Promise.all( // Use Promise.all to handle async operations within map
             generatedSentences.map(async (sentence) => {
-              const match = sentence.match(/^(\d+)\. (.*?) ([SW]\d+[TO]\d+|[WO]\d+[WT]\d+): (.*)$/);
+              const match = sentence.match(/^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/);
       
               if (match) {
                 const [, idStr, strategicTheme, code, content] = match;
@@ -1251,37 +1249,38 @@ const Page = () => {
                 </div>
               </div>
 
-              <Button
-                onClick={() => handleButtonClick(department_id)}
-                variant="contained"
-                disabled={isButtonDisabled}
-                className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.1rem] font-bold text-center items-center rounded-lg px-5 py-2 mb-[-0.5rem]"
-              >
-                Re-sort
-              </Button>
+              {role !== "FACULTY" && (
+                <button
+                  onClick={() => handleButtonClick(department_id)}
+                  disabled={isButtonDisabled}
+                  className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.1rem] font-bold text-center items-center rounded-lg px-5 py-2 mb-[-0.5rem]"
+                >
+                  Sort
+                </button>
+              )}
 
               {/* Warning Dialog */}
               <Dialog open={showWarning} onClose={handleCancelClear} className="rounded-xl">
                 <DialogTitle className="text-2xl mb-4 justify-center font-semibold mt-5 text-center">Warning: Clear Tables</DialogTitle>
                 <DialogContent>
                   <p className="text-xl mb-4 text-center justify-center font-regular">
-                    Are you sure you want to re-sort? This will clear the existing data in the Financial, Stakeholder, Internal Process, and Learning & Growth tables. 
+                    Are you sure you want to sort? This will clear any existing data in the Financial, Stakeholder, Internal Process, and Learning & Growth tables. 
                   </p>
                 </DialogContent>
                 <DialogActions className="mt-[-2rem] mb-5 items-center justify-center">
-                  <Button 
+                  <button 
                     onClick={handleCancelClear} 
                     className="rounded-[0.6rem] text-[#AB3510] hover:text-white hover:bg-[#AB3510] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
                   >
                     Cancel
-                  </Button>
-                  <Button 
+                  </button>
+                  <button 
                     onClick={() => handleConfirmClear(department_id)} 
                     className="rounded-[0.6rem] text-[#ffffff] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
                     style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                   >
                     Confirm
-                  </Button>
+                  </button>
                 </DialogActions>
               </Dialog>
 

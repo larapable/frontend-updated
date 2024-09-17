@@ -275,8 +275,9 @@ const Swot = () => {
         throw new Error("Failed to delete strategy");
       }
 
-      // Remove the strategy from the state to update the UI
-      fetchData();
+      setWtApiresponse((prevStrategies) =>
+        prevStrategies.filter((strategy) => strategy.id !== id)
+      );
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
     }
@@ -400,8 +401,10 @@ const Swot = () => {
         throw new Error("Failed to delete strategy");
       }
 
-      // Remove the strategy from the state to update the UI
-      fetchstData();
+      setStApiresponse((prevStrategies) =>
+        prevStrategies.filter((strategy) => strategy.id !== id)
+      );
+      // fetchstData();
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
     }
@@ -512,8 +515,8 @@ const Swot = () => {
     }
   };
 
-  const deletesoStrategy = async (id: string, department_id: string) => {
-    
+  // Example: Modify all your deleteStrategy functions like this
+  const deletesoStrategy = async (id: string, department_id: string): Promise<Response> => { // Explicitly return Response
     try {
       const response = await fetch(
         `http://localhost:8080/soStrat/delete/${id}`,
@@ -530,12 +533,16 @@ const Swot = () => {
         throw new Error("Failed to delete strategy");
       }
 
-      // Remove the strategy from the state to update the UI
-      fetchsoData();
+          // Remove the strategy from the state to update the UI
+          setSoApiresponse((prevStrategies) =>
+            prevStrategies.filter((strategy) => strategy.id !== id)
+  
+          );
+      return response; // Return the response object
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
+      throw error; // Re-throw the error for handleDeleteConfirm to catch
     }
-
   };
 
   useEffect(() => {
@@ -553,7 +560,8 @@ const Swot = () => {
       }
       const data = await response.json();
       console.log(data);
-      setWoApiresponse(data);
+        setWoApiresponse(data); // Otherwise, set the fetched data
+      
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
     }
@@ -664,8 +672,10 @@ const Swot = () => {
         throw new Error("Failed to delete strategy");
       }
 
-      // Remove the strategy from the state to update the UI
-      fetchwoData();
+      setWoApiresponse((prevStrategies) =>
+        prevStrategies.filter((strategy) => strategy.id !== id)
+      );
+      
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
     }
@@ -1500,7 +1510,53 @@ const Swot = () => {
   };
   
  
-  // end 
+  // end
+  
+   // State for delete confirmation modals
+   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+   const [strategyToDelete, setStrategyToDelete] = useState<any>(null); 
+   const [deleteModalType, setDeleteModalType] = useState<string | null>(null); 
+ 
+   // Open the delete confirmation modal
+   const openDeleteModal = (strategy: any, type: string) => {
+     setStrategyToDelete(strategy);
+     setDeleteModalType(type);
+     setIsDeleteModalOpen(true);
+   };
+ 
+   // Handle delete confirmation
+   const handleDeleteConfirm = async () => {
+     if (strategyToDelete && deleteModalType) {
+       try {
+         let response;
+         switch (deleteModalType) {
+           case 'SO':
+             response = await deletesoStrategy(strategyToDelete.id, department_id);
+             break;
+           case 'WO':
+             response = await deletewoStrategy(strategyToDelete.id, department_id);
+             break;
+           case 'ST':
+             response = await deletestStrategy(strategyToDelete.id, department_id);
+             break;
+           case 'WT':
+             response = await deleteStrategy(strategyToDelete.id, department_id);
+             break;
+           default:
+             console.error("Invalid delete modal type");
+             break;
+         }
+ 
+         toast.success("Strategy deleted successfully");
+       } catch (error) {
+         console.error("Error deleting strategy:", error);
+         toast.error("An error occurred");
+       }
+     }
+     setIsDeleteModalOpen(false);
+     setStrategyToDelete(null);
+     setDeleteModalType(null);
+   };
 
   return (
     <div className="flex flex-row">
@@ -2475,7 +2531,7 @@ const Swot = () => {
                                 //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                 onClick={() =>
-                                deletesoStrategy(strategy.id, department_id)
+                                openDeleteModal(strategy, 'SO')
                                 }
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
@@ -2531,7 +2587,7 @@ const Swot = () => {
                                 //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                 onClick={() =>
-                                  deletewoStrategy(strategy.id, department_id)
+                                  openDeleteModal(strategy, 'WO')
                                 }
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
@@ -2585,7 +2641,7 @@ const Swot = () => {
                                 //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                 onClick={() =>
-                                  deletestStrategy(strategy.id, department_id)
+                                  openDeleteModal(strategy, 'ST')
                                 }
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
@@ -2636,10 +2692,9 @@ const Swot = () => {
                               
                             </p>
                             <button
-                                //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                 onClick={() =>
-                                  deleteStrategy(strategy.id, department_id)
+                                  openDeleteModal(strategy, 'WT') //added ni
                                 }
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
@@ -2650,6 +2705,30 @@ const Swot = () => {
                         </div>
                       ))}
                     </div>
+                    {/* added ni */}
+                    {isDeleteModalOpen && strategyToDelete && (
+                    <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                      <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
+                        <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
+                        <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strategy?</p>
+                        <div className="flex justify-center space-x-3 mt-10">
+                          <button
+                            className="break-words font-semibold border border-[#962203] w-[11rem] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                            onClick={() => setIsDeleteModalOpen(false)}
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                            style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                            onClick={handleDeleteConfirm}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                   </div>
                 </Card>
             </div>

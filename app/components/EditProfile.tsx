@@ -224,7 +224,9 @@ export default function UserEditProfile() {
             </svg>
           </div>
         )}
-        <div className="mt-[-0.5rem] bg-white rounded-full h-6 ml-[5rem]">
+        </div>
+        
+        <div className="mt-[-2rem] bg-white rounded-full h-6 ">
         <label htmlFor="imageUpload" className="mb-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -253,7 +255,7 @@ export default function UserEditProfile() {
             <div className="text-4xl font-bold text-center mb-3 mt-5">{department}</div>
             <span className="text-lg font-normal mb-4 text-[rgb(158,157,157)]">Department Name</span>
           </div>
-        </div>
+        
         <div className="mt-[-7rem] mb-10">
           <button
             className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content] mt-28"

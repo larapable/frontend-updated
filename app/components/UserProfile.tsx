@@ -291,13 +291,14 @@ export default function UserProfile() {
                 </svg>
               </div>
             )}
-            <div className="mt-1 mb-2">
+            </div>
+            <div className="mt-1 mb-2 items-center justify-center text-center">
               <div className="text-4xl font-bold mb-4">{department}</div>
               <span className="text-lg font-normal mb-4 text-[rgb(158,157,157)]">
                 Department Name
               </span>
             </div>
-          </div>
+          
           <a
             href="/profile/edit"
             className="text-[#ffffff] font-medium text-lg"

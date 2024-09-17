@@ -5,7 +5,7 @@ import UserEditProfile from "@/app/components/EditProfile";
 export default function EditProfile() {
 
   return (
-    <div className="flex flex-row w-full h-screen bg-[#E9E9E9]">
+    <div className="flex flex-row w-full h-screen">
       <div className="flex">
         <Navbar />
       </div>

@@ -24,7 +24,7 @@ export default  function Profile() {
     return null; 
   }
   return (
-    <div className="flex flex-row w-full h-screen bg-[#eeeeee]">
+    <div className="flex flex-row w-full h-screen">
       <div className="flex">
         <Navbar />
       </div>
