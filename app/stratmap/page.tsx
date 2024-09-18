@@ -1327,7 +1327,7 @@ const Page = () => {
                     {isFModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[70rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Financial Strategy
@@ -1353,7 +1353,7 @@ const Page = () => {
                             </button>
                           </div>
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
                               Target Code
                               <span className="text-[#DD1414]">*</span>
                             </span>
@@ -1365,20 +1365,34 @@ const Page = () => {
                             className="border border-gray-300 rounded px-3 py-2 mb-4"
                           />
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            
+                            <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
                               Strategy
                               <span className="text-[#DD1414]">*</span>
                             </span>
+
+                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                            <ul className="list-disc ml-10 mb-2">
+                              <li className="font-bold">Excellence in Service Quality</li>
+                              <li className="font-bold">Excellence in Internal Service Systems</li>
+                              <li className="font-bold">Excellence in Organizational Stewardship</li>
+                            </ul>
+                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
                             <textarea
                               value={newFStrategy}
                               onChange={(e) => setNewFStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[66.4rem] h-[10rem]"
+                              className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeFModal}
-                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
@@ -1514,7 +1528,7 @@ const Page = () => {
                     {isLGModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[77rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[77rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Learning & Growth Strategy
@@ -1540,7 +1554,7 @@ const Page = () => {
                             </button>
                           </div>
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 break-words font-bold text-lg">
                               Target Code
                               <span className="text-[#DD1414]">*</span>
                             </span>
@@ -1552,20 +1566,32 @@ const Page = () => {
                             className="border border-gray-300 rounded px-3 py-2 mb-4"
                           />
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 break-words font-bold text-lg">
                               Strategy
                               <span className="text-[#DD1414]">*</span>
                             </span>
+                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                            <ul className="list-disc ml-10 mb-2">
+                              <li className="font-bold">Excellence in Service Quality</li>
+                              <li className="font-bold">Excellence in Internal Service Systems</li>
+                              <li className="font-bold">Excellence in Organizational Stewardship</li>
+                            </ul>
+                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
                             <textarea
                               value={newLGStrategy}
                               onChange={(e) => setNewLGStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[73rem] h-[10rem]"
+                              className="border border-gray-300 mt-5 pl-2 pr-2 rounded-lg w-[73rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeLGModal}
-                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
@@ -1701,7 +1727,7 @@ const Page = () => {
                     {isIPModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[75rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[75rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Internal Process Strategy
@@ -1727,7 +1753,7 @@ const Page = () => {
                             </button>
                           </div>
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 break-words font-bold text-lg">
                               Target Code
                               <span className="text-[#DD1414]">*</span>
                             </span>
@@ -1739,20 +1765,32 @@ const Page = () => {
                             className="border border-gray-300 rounded px-3 py-2 mb-4"
                           />
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 break-words font-bold text-lg">
                               Strategy
                               <span className="text-[#DD1414]">*</span>
                             </span>
+                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                            <ul className="list-disc ml-10 mb-2">
+                              <li className="font-bold">Excellence in Service Quality</li>
+                              <li className="font-bold">Excellence in Internal Service Systems</li>
+                              <li className="font-bold">Excellence in Organizational Stewardship</li>
+                            </ul>
+                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
                             <textarea
                               value={newIPStrategy}
                               onChange={(e) => setNewIPStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[71rem] h-[10rem]"
+                              className="border border-gray-300 mt-5 pl-2 pr-2 rounded-lg w-[71rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeIPModal}
-                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
@@ -1888,7 +1926,7 @@ const Page = () => {
                     {isSModalOpen && (
                       <div className="fixed inset-0 flex items-center justify-center">
                         <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[29rem] w-[71.9rem]">
+                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[71.9rem]">
                           <div className="flex flex-row">
                             <h2 className="text-2xl mb-5 font-semibold">
                               Stakeholder Strategy
@@ -1914,7 +1952,7 @@ const Page = () => {
                             </button>
                           </div>
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 break-words font-bold text-lg">
                               Target Code
                               <span className="text-[#DD1414]">*</span>
                             </span>
@@ -1926,20 +1964,32 @@ const Page = () => {
                             className="border border-gray-300 rounded px-3 py-2 mb-4"
                           />
                           <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-regular text-md text-[#000000]">
+                            <span className="mr-3 mb-2 break-words font-bold text-lg ">
                               Strategy
                               <span className="text-[#DD1414]">*</span>
                             </span>
+                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                            <ul className="list-disc ml-10 mb-2">
+                              <li className="font-bold">Excellence in Service Quality</li>
+                              <li className="font-bold">Excellence in Internal Service Systems</li>
+                              <li className="font-bold">Excellence in Organizational Stewardship</li>
+                            </ul>
+                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
                             <textarea
                               value={newSStrategy}
                               onChange={(e) => setNewSStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 rounded-lg w-[68rem] h-[10rem]"
+                              className="border border-gray-300 pl-2 pr-2 mt-5 rounded-lg w-[68rem] h-[10rem]"
                             />
                           </div>
                           <div className="flex flex-row justify-center mt-2 gap-10">
                             <button
                               onClick={closeSModal}
-                              className=" text-[#8a252c] font-semibold text-lg hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                              className=" text-[#AB3510] font-semibold text-lg border border-[#AB3510] hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                             >
                               Cancel
                             </button>
