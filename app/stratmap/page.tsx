@@ -3,6 +3,7 @@ import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+import { toast } from 'react-toastify';
 
 const Page = () => {
   const { data: session } = useSession();
@@ -485,24 +486,59 @@ const Page = () => {
   const [newFStrategy, setNewFStrategy] = useState("");
   const [newFTargetCode, setNewFTargetCode] = useState("");
   const [savedFStrategies, setSavedFStrategies] = useState<string[]>([]);
+  const [isStrategyInvalid, setIsStrategyInvalid] = useState(false); 
 
+  const generateTargetCode = () => {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let randomPart = '';
+  
+    let firstChar = characters.charAt(Math.floor(Math.random() * characters.length));
+    randomPart += firstChar;
+  
+    let secondChar;
+    do {
+      secondChar = characters.charAt(Math.floor(Math.random() * characters.length));
+    } while (secondChar === firstChar);
+    randomPart += secondChar;
+  
+    let thirdChar;
+    do {
+      thirdChar = characters.charAt(Math.floor(Math.random() * characters.length));
+    } while (thirdChar === firstChar || thirdChar === secondChar);
+    randomPart += thirdChar;
+  
+    return `TC-${randomPart}`;
+  };
   const openFModal = () => {
     setIsFModalOpen(true);
-    setNewFTargetCode("");
+    const newFinancialTargetCode = generateTargetCode();
+    setNewFTargetCode(newFinancialTargetCode);
     setNewFStrategy("");
+    setIsStrategyInvalid(false);
   };
 
   const closeFModal = () => {
-    setNewFTargetCode("");
+    setNewFTargetCode("");  
     setIsFModalOpen(false);
+    setIsStrategyInvalid(false); 
   };
 
-  const handleFSave = async () => {
-    const strategyFWithCode = `${newFTargetCode}: ${newFStrategy}`;
+  
 
+  const handleFSave = async () => {
+  
+    const strategyFWithCode = `${newFTargetCode}: ${newFStrategy}`;
+    if (newFStrategy.trim() === "") {
+      setIsStrategyInvalid(true);
+      return; 
+    }
+
+    setIsStrategyInvalid(false); 
+  
     try {
       const data = {
         office_target: newFStrategy,
+        target_code: newFTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -538,21 +574,31 @@ const Page = () => {
 
   const openSModal = () => {
     setIsSModalOpen(true);
-    setNewSTargetCode("");
+    const newStakeholderTargetCode = generateTargetCode();
+    setNewSTargetCode(newStakeholderTargetCode);
     setNewSStrategy("");
+    setIsStrategyInvalid(false); 
   };
 
   const closeSModal = () => {
     setNewSTargetCode("");
     setIsSModalOpen(false);
+    setIsStrategyInvalid(false); 
   };
 
   const handleSSave = async () => {
     const strategySWithCode = `${newSTargetCode}: ${newSStrategy}`;
+    if (newSStrategy.trim() === "") {
+      setIsStrategyInvalid(true);
+      return; 
+    }
+
+    setIsStrategyInvalid(false); 
 
     try {
       const data = {
         office_target: newSStrategy,
+        target_code: newSTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -588,21 +634,31 @@ const Page = () => {
 
   const openIPModal = () => {
     setIsIPModalOpen(true);
-    setNewIPTargetCode("");
+    const newInternalTargetCode = generateTargetCode();
+    setNewIPTargetCode(newInternalTargetCode);
     setNewIPStrategy("");
+    setIsStrategyInvalid(false); 
   };
 
   const closeIPModal = () => {
     setNewIPTargetCode("");
     setIsIPModalOpen(false);
+    setIsStrategyInvalid(false); 
   };
 
   const handleIPSave = async () => {
     const strategyIPWithCode = `${newIPTargetCode}: ${newIPStrategy}`;
+    if (newIPStrategy.trim() === "") {
+      setIsStrategyInvalid(true);
+      return; 
+    }
+
+    setIsStrategyInvalid(false); 
 
     try {
       const data = {
         office_target: newIPStrategy,
+        target_code: newIPTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -638,21 +694,31 @@ const Page = () => {
 
   const openLGModal = () => {
     setIsLGModalOpen(true);
-    setNewLGTargetCode("");
+    const newLearningTargetCode = generateTargetCode();
+    setNewLGTargetCode(newLearningTargetCode);
     setNewLGStrategy("");
+    setIsStrategyInvalid(false); 
   };
 
   const closeLGModal = () => {
     setNewLGTargetCode("");
     setIsLGModalOpen(false);
+    setIsStrategyInvalid(false); 
   };
 
   const handleLGSave = async () => {
     const strategyLGWithCode = `${newLGTargetCode}: ${newLGStrategy}`;
+    if (newIPStrategy.trim() === "") {
+      setIsStrategyInvalid(true);
+      return; 
+    }
+
+    setIsStrategyInvalid(false); 
 
     try {
       const data = {
         office_target: newLGStrategy,
+        target_code: newLGTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -960,11 +1026,14 @@ const Page = () => {
         );
         setStrategies({ ...strategies, financial: updatedStrategies });
         fetchExistingStrategies(department_id);
+        return true;
       } else {
         console.error("Failed to delete financial strategy");
+        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
+      throw error;
     }
   };
 
@@ -986,11 +1055,14 @@ const Page = () => {
         );
         setStrategies({ ...strategies, learningGrowth: updatedStrategies });
         fetchExistingStrategies(department_id);
+        return true;
       } else {
         console.error("Failed to delete financial strategy");
+        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
+      throw error;
     }
   };
 
@@ -1012,11 +1084,14 @@ const Page = () => {
         );
         setStrategies({ ...strategies, stakeholder: updatedStrategies });
         fetchExistingStrategies(department_id);
+        return true;
       } else {
         console.error("Failed to delete financial strategy");
+        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
+      throw error;
     }
   };
 
@@ -1035,11 +1110,14 @@ const Page = () => {
         );
         setStrategies({ ...strategies, internalProcess: updatedStrategies });
         fetchExistingStrategies(department_id);
+        return true;
       } else {
         console.error("Failed to delete financial strategy");
+        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
+      throw error;
     }
   };
 
@@ -1143,7 +1221,59 @@ const Page = () => {
     };
     fetchProfileGoals();
   }, [department_id]);
+ 
 
+
+     // State for delete confirmation modal
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [strategyToDelete, setStrategyToDelete] = useState<GeneratedSentence | null>(null);
+  const [deleteModalType, setDeleteModalType] = useState<string | null>(null);
+
+  // Open the delete confirmation modal
+  const openDeleteModal = (strategy: GeneratedSentence, type: string) => {
+    setStrategyToDelete(strategy);
+    setDeleteModalType(type);
+    setIsDeleteModalOpen(true);
+  };
+    // Handle delete confirmation
+   const handleDeleteConfirm = async () => {
+    if (strategyToDelete && deleteModalType) {
+      try {
+        let success = false; // Track if deletion was successful
+
+        switch (deleteModalType) {
+          case 'Financial':
+            success = await handleFinancialDelete(strategyToDelete.fID);
+            break;
+          case 'Learning':
+            success = await handleLGDelete(strategyToDelete.fID);
+            break;
+          case 'Stakeholder':
+            success = await handleStakeholderDelete(strategyToDelete.fID);
+            break;
+          case 'Internal':
+            success = await handleInternalDelete(strategyToDelete.fID);
+            break;
+          default:
+            console.error("Invalid delete modal type");
+            break;
+        }
+        if (success) {
+          toast.success("Strategy deleted successfully");
+        } else {
+          toast.error("Failed to delete strategy");
+        }
+
+      } catch (error) {
+        console.error("Error deleting strategy:", error);
+        toast.error("An error occurred");
+      }
+    }
+    setIsDeleteModalOpen(false);
+    setStrategyToDelete(null);
+    setDeleteModalType(null);
+
+  };
 
   return (
     <div className="flex flex-row w-full text-[rgb(59,59,59)]">
@@ -1471,7 +1601,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>handleFinancialDelete(strategy.fID)}
+                                onClick={() =>openDeleteModal(strategy, 'Financial')} 
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -1670,7 +1800,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>handleLGDelete(strategy.fID)}
+                                onClick={() =>openDeleteModal(strategy, 'Learning')} 
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -1869,7 +1999,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>handleInternalDelete(strategy.fID)}
+                                onClick={() =>openDeleteModal(strategy, 'Internal')} 
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -2068,7 +2198,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>handleStakeholderDelete(strategy.fID)}
+                                onClick={() =>openDeleteModal(strategy, 'Stakeholder')} 
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -2084,6 +2214,33 @@ const Page = () => {
                 )}
               </div>
               {/* end of main container */}
+              
+    {/* Delete Confirmation Modal */}
+    {isDeleteModalOpen && strategyToDelete && (
+                  <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                    <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
+                      <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
+                      <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strategy?</p>
+                      <div className="flex justify-center space-x-3 mt-10">
+                        <button
+
+                          className="break-words font-semibold border border-[#962203] w-[11rem] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                          onClick={() => setIsDeleteModalOpen(false)}
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                          style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                          onClick={handleDeleteConfirm}
+                        >
+                          Delete
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
             </div>
           </div>
         </div>
