@@ -42,6 +42,13 @@ export default function Inputgoals() {
   const [isshowGoalsModal, setShowGoalsModal] = useState(false);
   const dateForDatePicker = selectedYear ? new Date(selectedYear, 0) : null;
   const [isSaved, setIsSaved] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const handleCancelSave = () => {
+    setShowModal(false);
+  };
 
   const department_id = user?.department_id;
 
@@ -139,7 +146,9 @@ export default function Inputgoals() {
       setShowSuccessMessageWithButtons(true);
     } catch (error) {
       console.error('Error updating goal:', error);
-      alert('An error occurred while updating the goal');
+      // alert('An error occurred while updating the goal');
+      setModalMessage('An error occurred while updating the goal');
+      setShowErrorModal(true);
     }
   };
 
@@ -232,7 +241,9 @@ export default function Inputgoals() {
 
     // Check for required fields
     if (selectedYear === null || !officeVision || !valueProposition || !strategicGoals) {
-      alert("Please fill out all required fields");
+      // alert("Please fill out all required fields");
+      setModalMessage('Please fill out all required fields');
+      setShowErrorModal(true);
       return;
     }
 
@@ -299,10 +310,14 @@ export default function Inputgoals() {
     } catch (error) {
       if (error instanceof Error) {
         console.error("Error saving goal setting:", error.message);
-        alert("An error occurred while saving the goal setting: " + error.message);
+        // alert("An error occurred while saving the goal setting: " + error.message);
+        setModalMessage("An error occurred while saving the goal setting: " + error.message);
+        setShowErrorModal(true);
       } else {
         console.error("Unexpected error:", error);
-        alert("An unexpected error occurred.");
+        // alert("An unexpected error occurred.");
+        setModalMessage('An unexpected error occurred.');
+        setShowErrorModal(true);
       }
     }
   };
@@ -740,6 +755,45 @@ export default function Inputgoals() {
           </button>
         </div>
       </div>
+      {/* Error Modal */}
+      <Modal open={showErrorModal} onClose={() => setShowErrorModal(false)}>
+          <div className="flex flex-col items-center justify-center h-full">
+            <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
+              <button
+                onClick={handleCancelSave}
+                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  className="w-6 h-6"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+              </button>
+              <p className="text-3xl font-bold mb-4">Notice!</p>
+              <p className="text-xl mb-4 mt-10">
+                {modalMessage}
+              </p>
+              <div className="flex justify-center gap-10 mt-12 mb-10">
+                <button
+                  onClick={() => setShowErrorModal(false)}
+                  className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content]"
+                  style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </Modal>
     </div>
   );
 }

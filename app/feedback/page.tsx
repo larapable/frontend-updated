@@ -99,7 +99,9 @@ const FeedbackForm: React.FC = () => {
 
     } catch (error) {
       console.error('Error submitting feedback:', error);
-      alert('Failed to submit feedback. Please try again.');
+      // alert('Failed to submit feedback. Please try again.');
+      setModalMessage('Failed to submit feedback. Please try again.');
+      setShowErrorModal(true);
     } finally {
       setIsSubmitting(false);
     }

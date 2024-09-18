@@ -134,13 +134,12 @@ export default function Password() {
                             >
                                 Save
                             </button>
-                            {showSuccess && (
-                                <div className="text-green-500">
+                        </div>
+                        {showSuccess && (
+                                <div className="text-green-500 mt-[-1rem]">
                                     Password updated successfully!
                                 </div>
                             )}
-                          
-                        </div>
 
                     </div>
                 </div>

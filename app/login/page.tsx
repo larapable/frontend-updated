@@ -143,6 +143,7 @@ export default function LoginPage() {
             />
           </div>
 
+          <div className="flex flex-row gap-[3rem]">
           <ReCAPTCHA
             ref={reCaptchaRef}
             sitekey="6LdT5T0qAAAAADX-EG0m12My_ZFX1PlPYZzLLwZf"
@@ -157,14 +158,16 @@ export default function LoginPage() {
             }}
             onExpired={handleCaptchaExpired}
           />
-
+          <div className="flex justify-end">
           <button
             style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-            className="rounded-lg text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white mb-4 hover:bg-[#eec160] hover:text-[#8a252c] "
+            className="rounded-lg text-white font-semibold text-xl w-[16rem] px-12 py-6 border[0.1rem] border-white mb-6 hover:bg-[#eec160] hover:text-white "
             onClick={handleSubmit}
           >
             Login
           </button>
+          </div>
+          </div>
           <div className="text-lg mb-2 font-light">
             Dont have an account?{" "}
             <a href="/signup" className="font-bold text-black hover:underline">
@@ -252,7 +255,7 @@ export default function LoginPage() {
                 {errorMessage}
               </p>
               <button
-                className="rounded-xl bg-[#8a252c] text-white text-xl w-40 px-4 py-2 border[0.1rem] border-white hover:bg-[#a8444b] font-medium hover:text-[#fffff] focus:outline-none h-12 mt-5"
+                className="rounded-[0.6rem] bg-[#A43214] text-white text-lg py-2 px-3 w-36 border[0.1rem] border-white hover:bg-[#a8444b] font-medium hover:text-[#fffff] focus:outline-none h-12 mt-5"
                 onClick={handleCloseErrorModal}
               >
                 Enter again
