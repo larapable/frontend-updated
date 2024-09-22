@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 interface ReportStakeholder {
   id: number;
   actions: string;
-  semester: string;
   budget: number;
   incharge: string;
   ofi: string;
@@ -16,6 +15,7 @@ interface ReportStakeholder {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  perspective: string;
 }
 
 const ReportStakeholder = () => {
@@ -29,7 +29,7 @@ const ReportStakeholder = () => {
   const username = user?.username;
 
   // Values for the report
-  const [stakeholderSemester, setStakeholderSemester] = useState("");
+  const [stakeholderPerspective, setStakeholderPerspective] = useState("stakeholder");
   const [stakeholderActions, setStakeholderActions] = useState("");
   const [stakeholderBudget, setStakeholderBudget] = useState<number>(0);
   const [stakeholderIncharge, setStakeholderIncharge] = useState("");
@@ -89,7 +89,7 @@ const ReportStakeholder = () => {
     setStakeholderActualPerformance(report.actual_performance || "0");
     setStakeholderTargetPerformance(report.target_performance || "0");
     setReportEditId(report.id);
-    setStakeholderSemester(report.semester);
+    setStakeholderPerspective(report.perspective);
     setStakeholderActions(report.actions);
     setStakeholderBudget(report.budget);
     setStakeholderIncharge(report.incharge);
@@ -102,7 +102,7 @@ const ReportStakeholder = () => {
     const updatedReport: ReportStakeholder = {
       id: reportEditId,
       actions: stakeholderActions,
-      semester: stakeholderSemester,
+      perspective: stakeholderPerspective,
       budget: stakeholderBudget,
       incharge: stakeholderIncharge,
       ofi: stakeholderOFI,
@@ -156,14 +156,7 @@ const ReportStakeholder = () => {
             Stakeholder Scorecard Overview
           </span>
           <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem] w-[88rem]">
-            Each objective is categorized by semester,{" "}
-            <span className="font-bold">
-              select ( <span className="font-bold text-red-500">1st</span> for
-              FIRST SEMESTER,{" "}
-              <span className="font-bold text-yellow-500">2nd</span> for SECOND
-              SEMESTER).{" "}
-            </span>
-            Additionally, users must input the{" "}
+            Each objective is categorized annually. Users must input the{" "}
             <span className="font-bold">
               actions taken, budget, person in charge,{" "}
             </span>
@@ -176,7 +169,6 @@ const ReportStakeholder = () => {
       </div>
 
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-        <div className="p-2 font-bold w-[10rem]">Semester</div>
         <div className="p-2 font-bold w-[10rem]">Target Code</div>
         <div className="p-2 font-bold w-[15rem]">Office Target</div>
         <div className="p-2 font-bold w-[8rem]">KPI</div>
@@ -201,7 +193,6 @@ const ReportStakeholder = () => {
             index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
           }`}
         >
-          <div className="p-2 w-[10rem]">{report?.semester || "..."}</div>
           <div className="p-2 w-[10rem]">{report.target_code}</div>
           <div className="p-2 w-[15rem]">
             {report.office_target && report.office_target.length > 20
@@ -276,22 +267,6 @@ const ReportStakeholder = () => {
               </button>
             </div>
             <div className="flex flex-row gap-16 mb-5 items-center justify-center">
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Semester
-                  <span className="text-[#DD1414]">*</span>
-                </span>
-                <Select
-                  value={stakeholderSemester}
-                  onChange={(e) => setStakeholderSemester(e.target.value)}
-                  displayEmpty
-                  className="text-lg font-regular bg-gray-50 w-[23rem] h-10 rounded-md text-[rgb(59,59,59)]"
-                >
-                  <MenuItem value="" disabled></MenuItem>
-                  <MenuItem value="1st">1st Semester</MenuItem>
-                  <MenuItem value="2nd">2nd Semester</MenuItem>
-                </Select>
-              </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Code

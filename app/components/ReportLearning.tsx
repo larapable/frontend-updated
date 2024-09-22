@@ -7,7 +7,6 @@ import { toast } from "react-toastify";
 interface ReportLearning {
   id: number;
   actions: string;
-  semester: string;
   budget: number;
   incharge: string;
   ofi: string;
@@ -16,6 +15,7 @@ interface ReportLearning {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  perspective: string;
 }
 
 const ReportLearning = () => {
@@ -29,7 +29,7 @@ const ReportLearning = () => {
   const username = user?.username;
 
   // Values for the report
-  const [learningSemester, setLearningSemester] = useState("");
+  const [learningPerspective, setLearningPerspective] = useState("learning");
   const [learningActions, setLearningActions] = useState("");
   const [learningBudget, setLearningBudget] = useState<number>(0);
   const [learningIncharge, setLearningIncharge] = useState("");
@@ -87,7 +87,7 @@ const ReportLearning = () => {
     setLearningActualPerformance(report.actual_performance || "0");
     setLearningTargetPerformance(report.target_performance || "0");
     setReportEditId(report.id);
-    setLearningSemester(report.semester);
+    setLearningPerspective(report.perspective);
     setLearningActions(report.actions);
     setLearningBudget(report.budget);
     setLearningIncharge(report.incharge);
@@ -100,7 +100,7 @@ const ReportLearning = () => {
     const updatedReport: ReportLearning = {
       id: reportEditId,
       actions: learningActions,
-      semester: learningSemester,
+      perspective: learningPerspective,
       budget: learningBudget,
       incharge: learningIncharge,
       ofi: learningOFI,
@@ -154,14 +154,7 @@ const ReportLearning = () => {
             Learning Scorecard Overview
           </span>
           <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem] w-[88rem]">
-            Each objective is categorized by semester,{" "}
-            <span className="font-bold">
-              select ( <span className="font-bold text-red-500">1st</span> for
-              FIRST SEMESTER,{" "}
-              <span className="font-bold text-yellow-500">2nd</span> for SECOND
-              SEMESTER).{" "}
-            </span>
-            Additionally, users must input the{" "}
+            Each objective is categorized annually. Users must input the{" "}
             <span className="font-bold">
               actions taken, budget, person in charge,{" "}
             </span>
@@ -174,7 +167,6 @@ const ReportLearning = () => {
       </div>
 
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-        <div className="p-2 font-bold w-[10rem]">Semester</div>
         <div className="p-2 font-bold w-[10rem]">Target Code</div>
         <div className="p-2 font-bold w-[15rem]">Office Target</div>
         <div className="p-2 font-bold w-[8rem]">KPI</div>
@@ -199,7 +191,6 @@ const ReportLearning = () => {
             index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
           }`}
         >
-          <div className="p-2 w-[10rem]">{report?.semester || "..."}</div>
           <div className="p-2 w-[10rem]">{report.target_code}</div>
           <div className="p-2 w-[15rem]">
             {report.office_target && report.office_target.length > 20
@@ -217,10 +208,10 @@ const ReportLearning = () => {
           <div className="p-2 w-[10rem]">{report?.incharge || "..."}</div>
           <div className="p-2 w-[10rem] text-center">
             <span className="text-start mr-2">
-              {report.actual_performance}%
+              {report.actual_performance}
             </span>
             <span className="text-center">|</span>
-            <span className="text-end ml-2">{report.target_performance}%</span>
+            <span className="text-end ml-2">{report.target_performance}</span>
           </div>
           <div className="p-2 w-[5rem]">{report?.ofi || "..."}</div>
           <div className="ml-5 w-[5rem] flex items-center text-orange-700">
@@ -274,23 +265,6 @@ const ReportLearning = () => {
               </button>
             </div>
             <div className="flex flex-row gap-16 mb-5 items-center justify-center">
-            <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Semester
-                  <span className="text-[#DD1414]">*</span>
-                </span>
-                <Select
-                  value={learningSemester}
-                  onChange={(e) => setLearningSemester(e.target.value)}
-                  displayEmpty
-                  className="text-lg font-regular bg-gray-50 w-[23rem] h-10 rounded-md text-[rgb(59,59,59)]"
-                >
-                  <MenuItem value="" disabled></MenuItem>
-                  <MenuItem value="1st">1st Semester</MenuItem>
-                  <MenuItem value="2nd">2nd Semester</MenuItem>
-                </Select>
-              </div>
-
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Code
