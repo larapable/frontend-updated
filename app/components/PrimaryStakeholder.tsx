@@ -1,11 +1,11 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 
-interface StakeholderScorecard {
+interface PrimaryStakeholderScorecard {
   id: number;
   target_code: string;
   metric: string;
@@ -16,152 +16,122 @@ interface StakeholderScorecard {
   actual_performance: string;
 }
 
-export default function Stakeholder() {
+export default function PrimaryStakeholder() {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
-
   // open modal
-  const [stakeholderModalOpen, setStakeholderModalOpen] = useState(false);
+  const [primaryModalOpen, setPrimaryModalOpen] = useState(false);
 
-  // stakeholder values
-  const [stakeholderTargetCode, setStakeholderTargetCode] = useState("");
-  const [stakeholderMetric, setStakeholderMetric] = useState("");
-  const [stakeholderOfficeTarget, setStakeholderOfficeTarget] = useState("");
-  const [stakeholderTargetPerformance, setStakeholderTargetPerformance] =
-    useState("");
-  const [stakeholderStatus, setStakeholderStatus] = useState("");
-  const [stakeholderKPI, setStakeholderKPI] = useState("");
-  const [stakeholderActualPerformance, setStakeholderActualPerformance] =
-    useState("");
-  const [stakeholderLevelOfAttainment, setStakeholderLevelOfAttainment] =
-    useState("");
+  // primary stakeholder values
+  const [primaryTargetCode, setPrimaryTargetCode] = useState("");
+  const [primaryMetric, setPrimaryMetric] = useState("");
+  const [primaryOfficeTarget, setPrimaryOfficeTarget] = useState("");
+  const [primaryStatus, setPrimaryStatus] = useState("");
+  const [primaryKPI, setPrimaryKPI] = useState("");
+  const [primaryTargetPerformance, setPrimaryTargetPerformance] = useState("");
+  const [primaryActualPerformance, setPrimaryActualPerformance] = useState("");
 
-  //stakeholder scorecards
-  const [stakeholderSavedScorecards, setStakeholderSavedScorecards] = useState<
-    StakeholderScorecard[]
-  >([]);
+  // primary stakeholder scorecard
+  const [primaryStakeholderScorecard, setPrimaryStakeholderScorecard] =
+    useState<PrimaryStakeholderScorecard[]>([]);
 
-  //for edit
-  const [stakeholderEditID, setStakeholderEditID] = useState(0);
-  const [stakeholderEditMode, setStakeholderEditMode] =
-    useState<StakeholderScorecard | null>(null); // Track edit mode
+  // for edit
+  const [primaryEditId, setPrimaryEditId] = useState(0);
+  const [primaryEditMode, setPrimaryEditMode] =
+    useState<PrimaryStakeholderScorecard | null>(null);
 
-  const handleStakeholderCloseModal = () => {
-    setStakeholderModalOpen(false);
-    setStakeholderEditMode(null); // Reset edit mode
+  const handleCloseModal = () => {
+    setPrimaryModalOpen(false);
+    setPrimaryEditMode(null);
   };
 
-  // const handleStartDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setStakeholderStartDate(utcDate);
-  //   } else {
-  //     setStakeholderStartDate(new Date());
-  //   }
-  // };
-
-  // const handleCompletionDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setStakeholderTargetCompletionDate(utcDate);
-  //   } else {
-  //     //@ts-ignore
-  //     setStakeholderTargetCompletionDate(null);
-  //   }
-  // };
-
-  const handleStakeholderAddMoreScorecard = async () => {
-    setStakeholderTargetCode("");
-    setStakeholderMetric("");
-    //@ts-ignore
-    //setStakeholderTargetCompletionDate(null);
-    setStakeholderOfficeTarget("");
-    setStakeholderTargetPerformance("");
-    setStakeholderStatus("");
-    setStakeholderKPI("");
-    setStakeholderActualPerformance("");
-    setStakeholderLevelOfAttainment("");
-    setStakeholderEditMode(null);
-    setStakeholderModalOpen(true);
+  const handlePrimaryAddMoreScorecard = async () => {
+    setPrimaryTargetCode("");
+    setPrimaryMetric("");
+    setPrimaryOfficeTarget("");
+    setPrimaryStatus("");
+    setPrimaryKPI("");
+    setPrimaryTargetPerformance("");
+    setPrimaryActualPerformance("");
+    setPrimaryEditMode(null);
+    setPrimaryModalOpen(true);
   };
 
   // Determine which function to call when the save button is clicked
   const handleSaveButtonClick = () => {
-    if (stakeholderEditMode) {
-      handleStakeholderUpdateScorecard();
+    if (primaryEditMode) {
+      // If we're in edit mode, update the existing scorecard
+      handlePrimaryUpdateScorecard();
     } else {
-      handleStakeholderSaveScorecard();
+      // If we're not in edit mode, save as a new scorecard
+      handlePrimarySaveScorecard();
     }
   };
-
-  const calculateStakeholderLevelOfAttainment = (
-    actualStakeholderPerformance: number,
-    targetStakeholderPerformance: number
+  const calculateLevelOfAttainment = (
+    actualPerformance: number,
+    targetPerformance: number
   ): string => {
-    const levelOfAttainmentStakeholder =
-      (actualStakeholderPerformance / targetStakeholderPerformance) * 100;
-    return levelOfAttainmentStakeholder.toFixed(2);
+    const levelOfAttainment = (actualPerformance / targetPerformance) * 100;
+    return levelOfAttainment.toFixed(2);
   };
 
-  // Fetch the saved financial scorecards from the server
   useEffect(() => {
-    const fetchStakeholderScorecards = async () => {
+    const fetchPrimaryStakeholderScorecard = async () => {
       if (!department_id) {
-        console.log("Department ID is not available yet.");
+        console.log("Department ID is not available");
         return;
       }
+      console.log(
+        "Fetching Primary Stakeholder Scorecard for department ID: ",
+        department_id
+      );
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${department_id}`
+          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch stakeholder scorecards");
+          throw new Error("An error occurred while fetching data");
         }
         const data = await response.json();
-        setStakeholderSavedScorecards(data);
+        console.log("Primary Stakeholder Scorecard data: ", data);
+        setPrimaryStakeholderScorecard(data);
       } catch (error) {
         console.error("Error fetching stakeholder scorecards:", error);
       }
     };
 
-    fetchStakeholderScorecards();
+    fetchPrimaryStakeholderScorecard();
   }, [department_id]);
 
-  const handleStakeholderEditScorecard = (scorecard: StakeholderScorecard) => {
-    setStakeholderTargetCode(scorecard.target_code);
-    setStakeholderMetric(scorecard.metric);
-    setStakeholderOfficeTarget(scorecard.office_target);
-    setStakeholderStatus(scorecard.status);
-    setStakeholderKPI(scorecard.key_performance_indicator);
-    setStakeholderTargetPerformance(scorecard.target_performance);
-    setStakeholderActualPerformance(scorecard.actual_performance);
-    setStakeholderEditMode(scorecard);
-    setStakeholderEditID(scorecard.id);
-    setStakeholderModalOpen(true);
+  const handlePrimaryEditScorecard = (
+    scorecard: PrimaryStakeholderScorecard
+  ) => {
+    setPrimaryTargetCode(scorecard.target_code);
+    setPrimaryMetric(scorecard.metric);
+    setPrimaryOfficeTarget(scorecard.office_target);
+    setPrimaryStatus(scorecard.status);
+    setPrimaryKPI(scorecard.key_performance_indicator);
+    setPrimaryTargetPerformance(scorecard.target_performance);
+    setPrimaryActualPerformance(scorecard.actual_performance);
+    setPrimaryEditMode(scorecard);
+    setPrimaryEditId(scorecard.id);
+    setPrimaryModalOpen(true);
   };
 
-  const handleStakeholderSaveScorecard = async () => {
+  const handlePrimarySaveScorecard = async () => {
     // Check if all fields are filled
     if (
-      !stakeholderTargetCode ||
-      !stakeholderMetric ||
-      !stakeholderOfficeTarget ||
-      !stakeholderTargetPerformance ||
-      !stakeholderStatus ||
-      !stakeholderKPI ||
-      !stakeholderActualPerformance
+      !primaryTargetCode ||
+      !primaryMetric ||
+      !primaryOfficeTarget ||
+      !primaryStatus ||
+      !primaryKPI ||
+      !primaryTargetPerformance ||
+      !primaryActualPerformance
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed its limit."
@@ -172,7 +142,7 @@ export default function Stakeholder() {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://localhost:8080/bsc/stakeholderBsc/insert",
+        "http://localhost:8080/bsc/primaryStakeholderBsc/insert",
         {
           method: "POST",
           headers: {
@@ -180,50 +150,49 @@ export default function Stakeholder() {
           },
           body: JSON.stringify({
             department: { id: department_id },
-            target_code: stakeholderTargetCode,
-            metric: stakeholderMetric,
-            office_target: stakeholderOfficeTarget,
-            status: stakeholderStatus,
-            key_performance_indicator: stakeholderKPI,
-            target_performance: stakeholderTargetPerformance,
-            actual_performance: stakeholderActualPerformance,
+            target_code: primaryTargetCode,
+            metric: primaryMetric,
+            office_target: primaryOfficeTarget,
+            status: primaryStatus,
+            key_performance_indicator: primaryKPI,
+            target_performance: primaryTargetPerformance,
+            actual_performance: primaryActualPerformance,
           }),
         }
       );
       if (!response.ok) {
-        throw new Error("Failed to save stakeholder scorecard");
+        throw new Error("Failed to save primary stakeholder scorecard");
       }
-
       const savedScorecard = await response.json();
-      setStakeholderSavedScorecards([
-        ...stakeholderSavedScorecards,
+      setPrimaryStakeholderScorecard([
+        ...primaryStakeholderScorecard,
         savedScorecard,
       ]);
-      toast.success("Stakeholder scorecard saved successfully");
-      handleStakeholderCloseModal();
+      toast.success("Primary stakeholder scorecard saved successfully");
+      handleCloseModal();
     } catch (error) {
-      console.error("Error saving stakeholder scorecard:", error);
-      toast.error("Error saving stakeholder scorecard");
+      console.error("Error saving primary stakeholder scorecard:", error);
+      toast.error("Error saving primary stakeholder scorecard");
     }
   };
 
-  const handleStakeholderUpdateScorecard = async () => {
-    if (!stakeholderEditMode) return;
+  const handlePrimaryUpdateScorecard = async () => {
+    if (!primaryEditMode) return;
 
-    const updatedScorecard: StakeholderScorecard = {
-      ...stakeholderEditMode,
-      target_code: stakeholderTargetCode,
-      metric: stakeholderMetric,
-      office_target: stakeholderOfficeTarget,
-      status: stakeholderStatus,
-      key_performance_indicator: stakeholderKPI,
-      target_performance: stakeholderTargetPerformance,
-      actual_performance: stakeholderActualPerformance,
+    const updatedScorecard: PrimaryStakeholderScorecard = {
+      ...primaryEditMode,
+      target_code: primaryTargetCode,
+      metric: primaryMetric,
+      office_target: primaryOfficeTarget,
+      status: primaryStatus,
+      key_performance_indicator: primaryKPI,
+      target_performance: primaryTargetPerformance,
+      actual_performance: primaryActualPerformance,
     };
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/stakeholder/update/${stakeholderEditID}`,
+        `http://localhost:8080/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
         {
           method: "PUT",
           headers: {
@@ -235,18 +204,17 @@ export default function Stakeholder() {
       if (!response.ok) {
         throw new Error("Failed to update stakeholder scorecard");
       }
-
       // Update the state with the updated scorecard
-      const updatedScorecards = stakeholderSavedScorecards.map((scorecard) =>
-        scorecard.id === stakeholderEditID ? updatedScorecard : scorecard
+      const updatedScorecards = primaryStakeholderScorecard.map((scorecard) =>
+        scorecard.id === primaryEditId ? updatedScorecard : scorecard
       );
 
-      setStakeholderSavedScorecards(updatedScorecards);
-      toast.success("Stakeholder scorecard updated successfully");
-      handleStakeholderCloseModal();
+      setPrimaryStakeholderScorecard(updatedScorecards);
+      toast.success("Primary Stakeholder scorecard updated successfully");
+      handleCloseModal();
     } catch (error) {
-      console.error("Error updating stakeholder scorecard:", error);
-      toast.error("Error updating stakeholder scorecard");
+      console.error("Error updating primary stakeholder scorecard:", error);
+      toast.error("Error updating primary stakeholder scorecard");
     }
   };
 
@@ -269,12 +237,12 @@ export default function Stakeholder() {
               </span>
             </div>
           </div>
-          <div className="flex flex-row self-start box-sizing-border mt-5 mb-5">
+          <div className="flex flex-col self-start justify-end mt-5 mb-5">
             {/* Add More Scorecard Button */}
             <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[5rem] pl-[0.25rem] pr-1 pt-1 pb-1">
               <button
-                className="text-white w-[3rem] h-6 cursor-pointer"
-                onClick={handleStakeholderAddMoreScorecard}
+                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                onClick={handlePrimaryAddMoreScorecard}
               >
                 <div className="flex flex-row">
                   <svg
@@ -294,6 +262,7 @@ export default function Stakeholder() {
             </div>
           </div>
         </div>
+
         <div className="flex flex-row p-4 bg-[#fff6d1] text-[rgb(43,43,43)] ">
           <div className="w-[10rem] flex items-center font-bold">
             Target Code
@@ -311,17 +280,18 @@ export default function Stakeholder() {
           <div className="w-[10rem] flex items-center font-bold">Status</div>
         </div>
       </div>
+
+      {/* Mapping of Primary Data*/}
       <div className="bg-[#ffffff] gap-2 w-[100%] h-[auto] flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg overflow-y-auto overflow-x-hidden">
-        {stakeholderSavedScorecards &&
-          stakeholderSavedScorecards.length > 0 &&
-          stakeholderSavedScorecards.map((scorecard, index) => {
+        {primaryStakeholderScorecard &&
+          primaryStakeholderScorecard.length > 0 &&
+          primaryStakeholderScorecard.map((scorecard, index) => {
             if (!scorecard) return null;
-            const levelOfAttainment = calculateStakeholderLevelOfAttainment(
+            const levelOfAttainment = calculateLevelOfAttainment(
               parseFloat(scorecard.actual_performance),
               parseFloat(scorecard.target_performance)
             );
 
-            // Validate the level of attainment to be between 1 and 100
             const validatedLevelOfAttainment = Math.min(
               Math.max(parseFloat(levelOfAttainment), 1),
               100
@@ -346,7 +316,10 @@ export default function Stakeholder() {
                       <span className="font-semibold">
                         {scorecard.office_target &&
                         scorecard.office_target.length > 60
-                          ? `${scorecard.office_target.substring(0, 60)}...`
+                          ? `${(scorecard.office_target || "NA").substring(
+                              0,
+                              60
+                            )}...`
                           : scorecard.office_target || "N/A"}
                       </span>
                     </div>
@@ -359,9 +332,7 @@ export default function Stakeholder() {
 
                     <div className="w-[16rem] flex items-center">
                       <div className={"font-semibold"}>
-                        {scorecard.metric === "Percentage"
-                          ? `${scorecard.target_performance}%`
-                          : scorecard.target_performance || "N/A"}
+                        {scorecard.target_performance || "N/A"}
                       </div>
                     </div>
 
@@ -379,9 +350,7 @@ export default function Stakeholder() {
 
                     <div className="w-[5rem] flex items-center justify-end text-orange-700">
                       <button
-                        onClick={() =>
-                          handleStakeholderEditScorecard(scorecard)
-                        }
+                        onClick={() => handlePrimaryEditScorecard(scorecard)}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -406,14 +375,15 @@ export default function Stakeholder() {
           })}
       </div>
 
-      {stakeholderModalOpen && (
+      {/* Modal */}
+      {primaryModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="bg-white p-8 rounded-lg z-10 h-[50rem] w-[96rem]">
             <div className="flex flex-row">
-              <h2 className="text-2xl mb-10 font-semibold">Financial</h2>
+              <h2 className="text-2xl mb-10 font-semibold">Stakeholder</h2>
               <button
-                onClick={handleStakeholderCloseModal}
+                onClick={handleCloseModal}
                 className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
               >
                 <svg
@@ -440,9 +410,9 @@ export default function Stakeholder() {
                 </span>
                 <input
                   type="text"
-                  value={stakeholderTargetCode}
+                  value={primaryTargetCode}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                  onChange={(e) => setStakeholderTargetCode(e.target.value)}
+                  onChange={(e) => setPrimaryTargetCode(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
@@ -451,9 +421,9 @@ export default function Stakeholder() {
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
-                  value={stakeholderMetric || ""}
+                  value={primaryMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                  onChange={(e) => setStakeholderMetric(e.target.value)}
+                  onChange={(e) => setPrimaryMetric(e.target.value)}
                 >
                   <option value="" disabled>
                     Select
@@ -465,15 +435,27 @@ export default function Stakeholder() {
                   <option value="Succession Plan">Succession Plan</option>
                 </select>
               </div>
+              {/* <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Target Completion Date
+                </span>
+                <DatePicker
+                  key={financialTargetCompletionDate?.toString()}
+                  selected={financialTargetCompletionDate}
+                  onChange={handleCompletionDateChange}
+                  placeholderText="MM-DD-YYYY"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
+                />
+              </div> */}
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
               <span className="text-[#DD1414]">*</span>
             </span>
             <textarea
-              value={stakeholderOfficeTarget}
+              value={primaryOfficeTarget}
               className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
-              onChange={(e) => setStakeholderOfficeTarget(e.target.value)}
+              onChange={(e) => setPrimaryOfficeTarget(e.target.value)}
             />
             <div className=" mt-10 flex flex-row gap-36">
               <div className="flex flex-col">
@@ -482,9 +464,9 @@ export default function Stakeholder() {
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
-                  value={stakeholderStatus || ""}
+                  value={primaryStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  onChange={(e) => setStakeholderStatus(e.target.value)}
+                  onChange={(e) => setPrimaryStatus(e.target.value)}
                 >
                   <option value="" disabled>
                     Select
@@ -501,9 +483,9 @@ export default function Stakeholder() {
                 </span>
                 <input
                   type="text"
-                  value={stakeholderKPI}
+                  value={primaryKPI}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  onChange={(e) => setStakeholderKPI(e.target.value)}
+                  onChange={(e) => setPrimaryKPI(e.target.value)}
                 />
               </div>
             </div>
@@ -513,30 +495,30 @@ export default function Stakeholder() {
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                {stakeholderMetric === "Percentage" && (
+                {primaryMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
                     including the &apos;%&apos; symbol.
                   </span>
                 )}
-                {stakeholderMetric === "Count" && (
+                {primaryMetric === "Count" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a whole number (e.g., 10).
                   </span>
                 )}
-                {stakeholderMetric === "Rating" && (
+                {primaryMetric === "Rating" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a number from 1 to 5, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
-                {stakeholderMetric === "Score" && (
+                {primaryMetric === "Score" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a score from 1 to 10, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
-                {stakeholderMetric === "Succession Plan" && (
+                {primaryMetric === "Succession Plan" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a numeric value to represent the status of the
                     succession plan. Ensure the value accurately reflects
@@ -545,15 +527,15 @@ export default function Stakeholder() {
                 )}
                 <input
                   type="number"
-                  value={stakeholderTargetPerformance}
+                  value={primaryTargetPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => {
                     const maxLimit =
-                      stakeholderMetric === "Percentage"
+                      primaryMetric === "Percentage"
                         ? 100
-                        : stakeholderMetric === "Rating"
+                        : primaryMetric === "Rating"
                         ? 10
-                        : stakeholderMetric === "Score"
+                        : primaryMetric === "Score"
                         ? 20
                         : 1000;
 
@@ -563,14 +545,14 @@ export default function Stakeholder() {
                     value = Math.min(value, maxLimit);
 
                     if (
-                      stakeholderMetric === "Rating" ||
-                      stakeholderMetric === "Score"
+                      primaryMetric === "Rating" ||
+                      primaryMetric === "Score"
                     ) {
                       value = Math.min(value, maxLimit);
                       value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
                     }
 
-                    setStakeholderTargetPerformance(value.toString());
+                    setPrimaryTargetPerformance(value.toString());
                   }}
                 />
               </div>
@@ -579,30 +561,30 @@ export default function Stakeholder() {
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                {stakeholderMetric === "Percentage" && (
+                {primaryMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
                     including the &apos;%&apos; symbol.
                   </span>
                 )}
-                {stakeholderMetric === "Count" && (
+                {primaryMetric === "Count" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a whole number (e.g., 10).
                   </span>
                 )}
-                {stakeholderMetric === "Rating" && (
+                {primaryMetric === "Rating" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a number from 1 to 5, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
-                {stakeholderMetric === "Score" && (
+                {primaryMetric === "Score" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a score from 1 to 10, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
-                {stakeholderMetric === "Succession Plan" && (
+                {primaryMetric === "Succession Plan" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a numeric value to represent the status of the
                     succession plan. Ensure the value accurately reflects
@@ -611,15 +593,15 @@ export default function Stakeholder() {
                 )}
                 <input
                   type="number"
-                  value={stakeholderActualPerformance}
+                  value={primaryActualPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => {
                     const maxLimit =
-                      stakeholderMetric === "Percentage"
+                      primaryMetric === "Percentage"
                         ? 100
-                        : stakeholderMetric === "Rating"
+                        : primaryMetric === "Rating"
                         ? 10
-                        : stakeholderMetric === "Score"
+                        : primaryMetric === "Score"
                         ? 20
                         : 1000;
 
@@ -628,22 +610,25 @@ export default function Stakeholder() {
                     // Apply min/max limits for all metrics
                     value = Math.min(value, maxLimit);
 
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
                     if (
-                      stakeholderMetric === "Rating" ||
-                      stakeholderMetric === "Score"
+                      primaryMetric === "Rating" ||
+                      primaryMetric === "Score"
                     ) {
                       value = Math.min(value, maxLimit);
                       value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
                     }
 
-                    setStakeholderActualPerformance(value.toString());
+                    setPrimaryActualPerformance(value.toString());
                   }}
                 />
               </div>
             </div>
             <div className="flex flex-row justify-center mt-10 gap-10">
               <button
-                onClick={handleStakeholderCloseModal}
+                onClick={handleCloseModal}
                 className="bg-[#ffffff] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
               >
                 Cancel
@@ -655,7 +640,7 @@ export default function Stakeholder() {
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                 }}
               >
-                {stakeholderEditMode ? "Edit" : "Save"}
+                {primaryEditMode ? "Edit" : "Save"}
               </button>
             </div>
           </div>

@@ -8,8 +8,7 @@ import { toast } from "react-toastify";
 interface FinancialScorecard {
   id: number;
   target_code: string;
-  startDate: Date;
-  completionDate: Date;
+  metric: string;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -28,7 +27,7 @@ export default function Financial() {
   const [financialModalOpen, setFinancialModalOpen] = useState(false);
   // financial values
   const [financialTargetCode, setFinancialTargetCode] = useState("");
-  const [financialStartDate, setFinancialStartDate] = useState(new Date());
+  const [financialMetric, setFinancialMetric] = useState("");
   const [financialTargetCompletionDate, setFinancialTargetCompletionDate] =
     useState(new Date());
   const [financialOfficeTarget, setFinancialOfficeTarget] = useState("");
@@ -56,61 +55,45 @@ export default function Financial() {
     setFinancialEditMode(null); // Reset edit mode
   };
 
-  const handleStartDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setFinancialStartDate(utcDate);
-    } else {
-      setFinancialStartDate(new Date());
-    }
-  };
+  // const handleStartDateChange = (date: Date | null) => {
+  //   console.log("Selected Start Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setFinancialStartDate(utcDate);
+  //   } else {
+  //     setFinancialStartDate(new Date());
+  //   }
+  // };
 
-  const handleCompletionDateChange = (date: Date | null) => {
-    console.log("Selected Completion Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setFinancialTargetCompletionDate(utcDate);
-    } else {
-      //@ts-ignore
-      setFinancialTargetCompletionDate(null);
-    }
-  };
+  // const handleCompletionDateChange = (date: Date | null) => {
+  //   console.log("Selected Completion Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setFinancialTargetCompletionDate(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setFinancialTargetCompletionDate(null);
+  //   }
+  // };
 
   // mo add ug scorecard : open modal
   const handleFinancialAddMoreScorecard = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/bsc/financialBsc/getLatestId"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch latest scorecard ID");
-      }
-
-      const { latestId } = await response.json();
-      const newTargetCode = `TC-${latestId + 1}`; // Assuming the latestId is fetched correctly
-
-      setFinancialTargetCode(newTargetCode);
-      setFinancialStartDate(new Date());
-      //@ts-ignore
-      setFinancialTargetCompletionDate(null);
-      setFinancialOfficeTarget("");
-      setFinancialStatus("");
-      setFinancialKPI("");
-      setFinancialTargetPerformance("");
-      setFinancialActualPerformance("");
-      setFinancialEditMode(null);
-      setFinancialModalOpen(true);
-    } catch (error) {
-      console.error("Error fetching latest scorecard ID:", error);
-      toast.error("Error fetching latest scorecard ID");
-    }
+    setFinancialTargetCode("");
+    setFinancialMetric("");
+    //setFinancialTargetCompletionDate(null);
+    setFinancialOfficeTarget("");
+    setFinancialStatus("");
+    setFinancialKPI("");
+    setFinancialTargetPerformance("");
+    setFinancialActualPerformance("");
+    setFinancialEditMode(null);
+    setFinancialModalOpen(true);
   };
 
   // Determine which function to call when the save button is clicked
@@ -130,7 +113,7 @@ export default function Financial() {
   ): string => {
     const levelOfAttainmentFinancial =
       (actualFinancialPerformance / targetFinancialPerformance) * 100;
-    return levelOfAttainmentFinancial.toFixed(2) + "%";
+    return levelOfAttainmentFinancial.toFixed(2);
   };
 
   // Fetch the saved financial scorecards from the server
@@ -164,8 +147,7 @@ export default function Financial() {
 
   const handleFinancialEditScorecard = (scorecard: FinancialScorecard) => {
     setFinancialTargetCode(scorecard.target_code);
-    setFinancialStartDate(scorecard.startDate);
-    setFinancialTargetCompletionDate(scorecard.completionDate);
+    setFinancialMetric(scorecard.metric);
     setFinancialOfficeTarget(scorecard.office_target);
     setFinancialStatus(scorecard.status);
     setFinancialKPI(scorecard.key_performance_indicator);
@@ -180,8 +162,7 @@ export default function Financial() {
     // Check if all fields are filled
     if (
       !financialTargetCode ||
-      !financialStartDate ||
-      !financialTargetCompletionDate ||
+      !financialMetric ||
       !financialOfficeTarget ||
       !financialTargetPerformance ||
       !financialStatus ||
@@ -209,8 +190,7 @@ export default function Financial() {
             department: { id: department_id }, // Ensure you have this variable defined or passed in
             target_code: financialTargetCode,
             office_target: financialOfficeTarget,
-            startDate: financialStartDate,
-            completionDate: financialTargetCompletionDate,
+            metric: financialMetric,
             status: financialStatus,
             key_performance_indicator: financialKPI,
             target_performance: financialTargetPerformance,
@@ -242,8 +222,7 @@ export default function Financial() {
     const updatedScorecard: FinancialScorecard = {
       ...financialEditMode,
       target_code: financialTargetCode,
-      startDate: financialStartDate,
-      completionDate: financialTargetCompletionDate,
+      metric: financialMetric,
       office_target: financialOfficeTarget,
       status: financialStatus,
       key_performance_indicator: financialKPI,
@@ -330,13 +309,13 @@ export default function Financial() {
           <div className="w-[10rem] flex items-center font-bold">
             Target Code
           </div>
-          <div className="w-[25rem] flex items-center font-bold">
+          <div className="w-[25rem] flex items-center font-bold mr-10">
             Financial Office Target
           </div>
-          <div className="w-[10rem] flex items-center font-bold">
-            Completion
+          <div className="w-[10rem] flex items-center font-bold">Metric</div>
+          <div className="w-[18rem] flex items-center font-bold">
+            Target Performance
           </div>
-          <div className="w-[18rem] flex items-center font-bold">Progress</div>
           <div className="w-[13rem] flex items-center font-bold">
             Attainment
           </div>
@@ -348,7 +327,7 @@ export default function Financial() {
           financialSavedScorecards.length > 0 &&
           financialSavedScorecards.map((scorecard, index) => {
             if (!scorecard) return null; // Skip rendering if item is undefined
-            //const actualPerformance = scorecard.actual_performance || "0";
+            // Calculate the level of attainment for the financial scorecard
             const levelOfAttainment = calculateFinancialLevelOfAttainment(
               parseFloat(scorecard.actual_performance),
               parseFloat(scorecard.target_performance)
@@ -359,17 +338,6 @@ export default function Financial() {
               Math.max(parseFloat(levelOfAttainment), 1),
               100
             );
-
-            const progressColor =
-              parseFloat(levelOfAttainment) >= 100
-                ? "bg-orange-400" // A darker shade of green to indicate full completion
-                : parseFloat(levelOfAttainment) >= 50
-                ? "bg-yellow-300"
-                : "bg-red-600";
-
-            const progressBarWidth = `${
-              (validatedLevelOfAttainment / 100) * 20
-            }rem`; // Adjust the width of the progress bar
 
             return (
               <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
@@ -386,7 +354,7 @@ export default function Financial() {
                       </span>
                     </div>
 
-                    <div className="w-[25rem] flex items-center">
+                    <div className="w-[25.5rem] mr-10 flex items-center ">
                       <span className="font-semibold">
                         {scorecard.office_target &&
                         scorecard.office_target.length > 60
@@ -395,31 +363,28 @@ export default function Financial() {
                       </span>
                     </div>
 
-                    <div className="w-[10rem] flex items-center">
+                    <div className="w-[13rem] flex items-center ">
                       <span className="font-semibold ">
-                        {scorecard.completionDate
-                          ? new Date(
-                              scorecard.completionDate
-                            ).toLocaleDateString()
-                          : "N/A"}
+                        {scorecard.metric || "N/A"}
                       </span>
                     </div>
 
-                    <div className="w-[15rem] flex items-center">
-                      <div
-                        className={`h-5 ${progressColor} rounded-md`}
-                        style={{ width: progressBarWidth }}
-                      ></div>
+                    <div className="w-[16rem] flex items-center">
+                      <div className={"font-semibold"}>
+                        {scorecard.metric === "Percentage"
+                          ? `${scorecard.target_performance}%`
+                          : scorecard.target_performance || "N/A"}
+                      </div>
                     </div>
 
-                    <div className="w-[10rem] flex items-center ml-[5rem]">
+                    <div className="w-[10rem] flex items-center ">
                       <span className="font-semibold">
-                        {validatedLevelOfAttainment}%
+                        {validatedLevelOfAttainment || "N/A"}%
                       </span>
                     </div>
 
-                    <div className="w-[10rem] flex items-center">
-                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2">
+                    <div className="w-[8rem] flex items-center text-center">
+                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2 w-[10rem]">
                         {scorecard.status || "N/A"}
                       </div>
                     </div>
@@ -492,18 +457,25 @@ export default function Financial() {
               </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Start Date
+                  Metric / Unit of Measure
+                  <span className="text-[#DD1414]">*</span>
                 </span>
-                <DatePicker
-                  key={financialStartDate?.toString()}
-                  selected={financialStartDate}
-                  onChange={handleStartDateChange}
-                  minDate={new Date()}
-                  placeholderText="MM-DD-YYYY"
+                <select
+                  value={financialMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                />
+                  onChange={(e) => setFinancialMetric(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Percentage">Percentage (%)</option>
+                  <option value="Count">Count</option>
+                  <option value="Rating">Rating</option>
+                  <option value="Score">Score</option>
+                  <option value="Succession Plan">Succession Plan</option>
+                </select>
               </div>
-              <div className="flex flex-col">
+              {/* <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Completion Date
                 </span>
@@ -511,11 +483,10 @@ export default function Financial() {
                   key={financialTargetCompletionDate?.toString()}
                   selected={financialTargetCompletionDate}
                   onChange={handleCompletionDateChange}
-                  minDate={financialStartDate}
                   placeholderText="MM-DD-YYYY"
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                 />
-              </div>
+              </div> */}
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
@@ -533,15 +504,14 @@ export default function Financial() {
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
-                  value={financialStatus}
+                  value={financialStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setFinancialStatus(e.target.value)}
                 >
                   <option value="" disabled>
                     Select
                   </option>
-                  <option value="Uninitiated">Uninitiated</option>
-                  <option value="Initiated">Initiated</option>
+                  <option value="Not Achieved">Not Achieved</option>
                   <option value="Achieved">Achieved</option>
                 </select>
               </div>
@@ -565,18 +535,63 @@ export default function Financial() {
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                  Please enter the target performance as a percentage without
-                  including the &apos;%&apos; symbol.
-                </span>
+                {financialMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {financialMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {financialMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {financialMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {financialMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
                 <input
                   type="number"
                   value={financialTargetPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  min="1"
-                  max="100"
                   onChange={(e) => {
-                    const value = Math.min(parseFloat(e.target.value), 100);
+                    const maxLimit =
+                      financialMetric === "Percentage"
+                        ? 100
+                        : financialMetric === "Rating"
+                        ? 10
+                        : financialMetric === "Score"
+                        ? 20
+                        : 1000;
+
+                    let value = parseFloat(e.target.value);
+
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
+                    if (
+                      financialMetric === "Rating" ||
+                      financialMetric === "Score"
+                    ) {
+                      value = Math.min(value, maxLimit);
+                      value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
+                    }
+
                     setFinancialTargetPerformance(value.toString());
                   }}
                 />
@@ -586,18 +601,63 @@ export default function Financial() {
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                  Please enter the actual performance as a percentage without
-                  including the &apos;%&apos; symbol.
-                </span>
+                {financialMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {financialMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {financialMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {financialMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {financialMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
                 <input
                   type="number"
                   value={financialActualPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  min="1"
-                  max="100"
                   onChange={(e) => {
-                    const value = Math.min(parseFloat(e.target.value), 100);
+                    const maxLimit =
+                      financialMetric === "Percentage"
+                        ? 100
+                        : financialMetric === "Rating"
+                        ? 10
+                        : financialMetric === "Score"
+                        ? 20
+                        : 1000;
+
+                    let value = parseFloat(e.target.value);
+                    
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
+                    if (
+                      financialMetric === "Rating" ||
+                      financialMetric === "Score"
+                    ) {
+                      value = Math.min(value, maxLimit);
+                      value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
+                    }
+
                     setFinancialActualPerformance(value.toString());
                   }}
                 />

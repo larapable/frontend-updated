@@ -318,7 +318,7 @@ export default function Internal() {
             Target Code
           </div>
           <div className="w-[25rem] flex items-center font-bold">
-            Financial Office Target
+            Internal Office Target
           </div>
           <div className="w-[10rem] flex items-center font-bold">
             Completion

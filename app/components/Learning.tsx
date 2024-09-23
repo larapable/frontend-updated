@@ -315,7 +315,7 @@ export default function Learning() {
             Target Code
           </div>
           <div className="w-[25rem] flex items-center font-bold">
-            Financial Office Target
+            Learning Office Target
           </div>
           <div className="w-[10rem] flex items-center font-bold">
             Completion
