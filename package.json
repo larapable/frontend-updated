@@ -20,6 +20,8 @@
     "bcryptjs": "^2.4.3",
     "chart.js": "^4.4.3",
     "exceljs": "^4.4.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.3",
     "my-sql": "^1.2.15",
     "mysql2": "^3.10.3",
     "next": "^14.2.3",

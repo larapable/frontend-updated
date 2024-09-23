@@ -16,7 +16,6 @@ import DatePicker from "react-datepicker";
 interface ReportFinancial {
   id: number;
   actions: string;
-  semester: string;
   budget: number;
   incharge: string;
   ofi: string;
@@ -25,6 +24,7 @@ interface ReportFinancial {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  perspective: string;
 }
 
 const ReportFinancial = () => {
@@ -37,7 +37,7 @@ const ReportFinancial = () => {
 
   const username = user?.username;
   // Values for report
-  const [financialSemester, setFinancialSemester] = useState("");
+  const [financialPerspective, setFinancialPerspective] = useState("financial");
   const [financialActions, setFinancialActions] = useState("");
   const [financialBudget, setFinancialBudget] = useState<number>(0);
   const [financialIncharge, setFinancialIncharge] = useState("");
@@ -107,7 +107,7 @@ const ReportFinancial = () => {
     setFinancialActualPerformance(report.actual_performance || "0");
     setFinancialTargetPerformance(report.target_performance || "0");
     setReportEditId(report.id);
-    setFinancialSemester(report.semester);
+    setFinancialPerspective(report.perspective);
     setFinancialActions(report.actions);
     setFinancialBudget(report.budget);
     setFinancialIncharge(report.incharge);
@@ -120,7 +120,7 @@ const ReportFinancial = () => {
     const updatedReport: ReportFinancial = {
       id: reportEditId,
       actions: financialActions,
-      semester: financialSemester,
+      perspective: financialPerspective,
       budget: financialBudget,
       incharge: financialIncharge,
       ofi: financialOfi,
@@ -174,14 +174,7 @@ const ReportFinancial = () => {
             Financial Scorecard Overview
           </span>
           <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem] w-[88rem]">
-            Each objective is categorized by semester,{" "}
-            <span className="font-bold">
-              select ( <span className="font-bold text-red-500">1st</span> for
-              FIRST SEMESTER,{" "}
-              <span className="font-bold text-yellow-500">2nd</span> for SECOND
-              SEMESTER).{" "}
-            </span>
-            Additionally, users must input the{" "}
+            Each objective is categorized annually. Users must input the{" "}
             <span className="font-bold">
               actions taken, budget, person in charge,{" "}
             </span>
@@ -194,7 +187,6 @@ const ReportFinancial = () => {
       </div>
 
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-        <div className="p-2 font-bold w-[10rem]">Semester</div>
         <div className="p-2 font-bold w-[10rem]">Target Code</div>
         <div className="p-2 font-bold w-[15rem]">Office Target</div>
         <div className="p-2 font-bold w-[8rem]">KPI</div>
@@ -219,7 +211,6 @@ const ReportFinancial = () => {
             index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
           }`}
         >
-          <div className="p-2 w-[10rem]">{report?.semester || "..."}</div>
           <div className="p-2 w-[10rem]">{report.target_code}</div>
           <div className="p-2 w-[15rem]">
             {truncateString(report.office_target, 20)}
@@ -232,10 +223,10 @@ const ReportFinancial = () => {
           <div className="p-2 w-[10rem]">{report?.incharge || "..."}</div>
           <div className="p-2 w-[10rem] text-center">
             <span className="text-start mr-2">
-              {report.actual_performance}%
+              {report.actual_performance}
             </span>
             <span className="text-center">|</span>
-            <span className="text-end ml-2">{report.target_performance}%</span>
+            <span className="text-end ml-2">{report.target_performance}</span>
           </div>
           <div className="p-2 w-[5rem]">{report?.ofi || "..."}</div>
           <div className="ml-5 w-[5rem] flex items-center text-orange-700">
@@ -289,22 +280,6 @@ const ReportFinancial = () => {
               </button>
             </div>
             <div className="flex flex-row gap-16 mb-5 items-center justify-center">
-              <div className="flex flex-col">
-                  <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                    Semester
-                    <span className="text-[#DD1414]">*</span>
-                  </span>
-                  <Select
-                    value={financialSemester}
-                    onChange={(e) => setFinancialSemester(e.target.value)}
-                    displayEmpty
-                    className="text-lg font-regular bg-gray-50 w-[23rem] h-10 rounded-md text-[rgb(59,59,59)]"
-                  >
-                    <MenuItem value="" disabled></MenuItem>
-                    <MenuItem value="1st">1st Semester</MenuItem>
-                    <MenuItem value="2nd">2nd Semester</MenuItem>
-                  </Select>
-              </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Code

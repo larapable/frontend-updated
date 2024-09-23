@@ -5,7 +5,7 @@ import React, { useState, useEffect } from "react";
 
 interface ReportLearningView {
   id: number;
-  semester: string;
+  perspective: string;
   target_code: string;
   office_target: string;
   actions: string;
@@ -26,15 +26,11 @@ const ReportLearningView = () => {
   console.log(department_id);
 
   //Report
-  const [learningReportsFirst, setLearningReportsFirst] = useState<
-    ReportLearningView[]
-  >([]);
-  const [learningReportsSecond, setLearningReportsSecond] = useState<
-    ReportLearningView[]
-  >([]);
+  const [learningReports, setLearningReports] = useState<ReportLearningView[]>([]);
+
 
   useEffect(() => {
-    const getFirstReports = async (department_id: number) => {
+    const getReports = async (department_id: number) => {
       try {
         const response = await fetch(
           `http://localhost:8080/bsc/learning/get/${department_id}`
@@ -44,40 +40,12 @@ const ReportLearningView = () => {
         }
         const data = await response.json();
         //console.log("response data:", data);
-
-        // Filter reports to only include the first semester
-        const firstSemesterReports = data.filter(
-          (report: ReportLearningView) => report.semester === "1st"
-        );
-
-        setLearningReportsFirst(firstSemesterReports);
+        setLearningReports(data);
       } catch (error) {
         console.error("Error fetching learning reports:", error);
       }
     };
-    const getSecondReports = async (department_id: number) => {
-      try {
-        const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${department_id}`
-        );
-        if (!response.ok) {
-          throw new Error("Failed to fetch learning reports");
-        }
-        const data = await response.json();
-        //console.log("response data:", data);
-
-        // Filter reports to only include the first semester
-        const secondSemesterReports = data.filter(
-          (report: ReportLearningView) => report.semester === "2nd"
-        );
-
-        setLearningReportsSecond(secondSemesterReports);
-      } catch (error) {
-        console.error("Error fetching learning reports:", error);
-      }
-    };
-    getFirstReports(department_id);
-    getSecondReports(department_id);
+    getReports(department_id);
   }, [department_id]);
 
   function truncateString(str: string | null | undefined, num: number): string {
@@ -95,17 +63,17 @@ const ReportLearningView = () => {
       <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
         <div className="flex flex-row p-1 w-[75rem] h-auto">
           <img
-            src="/first.png"
+            src="/learning.png"
             alt=""
             className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
           />
           <div className="flex flex-col">
             {/* insert here ang year nga giset sa input goals */}
             <span className="font-bold text-2xl items-center mt-1 ml-[-0.5rem]">
-              1ST SEMESTER S.Y{" "}
+             LEARNING AND GROWTH PERSPECTIVE
             </span>
             <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-              The 1st Semester Progress Report offers a detailed look into
+              The Annual Progress Report offers a detailed look into
               academic performance during the first half of the year.
             </span>
           </div>
@@ -128,7 +96,7 @@ const ReportLearningView = () => {
           </div>
           <div className="p-2 w-[5rem] font-bold">OFI</div>
         </div>
-        {learningReportsFirst
+        {learningReports
           .filter(
             (report) =>
               report.target_code &&
@@ -161,92 +129,11 @@ const ReportLearningView = () => {
               <div className="p-2 w-[10rem]">{report.incharge}</div>
               <div className="p-2 w-[10rem] text-center">
                 <span className="text-start mr-2">
-                  {report.actual_performance}%
+                  {report.actual_performance}
                 </span>
                 <span className="text-center">|</span>
                 <span className="text-end ml-2">
-                  {report.target_performance}%
-                </span>
-              </div>
-              <div className="p-2 w-[5rem]">{report.ofi}</div>
-            </div>
-          ))}
-      </div>
-
-      <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-        <div className="flex flex-row p-1 w-[75rem] h-auto">
-          <img
-            src="/second.png"
-            alt=""
-            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-          />
-          <div className="flex flex-col">
-            {/* insert here ang year nga giset sa input goals */}
-            <span className="font-bold text-2xl items-center mt-1 ml-[-0.5rem]">
-              2ND SEMESTER S.Y{" "}
-            </span>
-            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-              The 2nd Semester Progress Report offers a detailed look into
-              academic performance during the second half of the year.
-            </span>
-          </div>
-        </div>
-        <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-          <div className="p-2 font-bold w-[8rem]"></div>
-          <div className="p-2 font-bold w-[10rem]">Target Code</div>
-          <div className="p-2 font-bold w-[15rem]">Office Target</div>
-          <div className="p-2 font-bold w-[8rem]">KPI</div>
-          <div className="p-2 font-bold w-[10rem]">Actions</div>
-          <div className="p-2 font-bold w-[10rem]">Budget</div>
-          <div className="p-2 font-bold w-[10rem]">In-charge</div>
-          <div className="p-2 font-bold w-[10rem]">
-            Performance <br />
-            <div className="font-medium ">
-              <span>Actual</span>
-              <span className="font-bold">|</span>
-              <span>Target</span>
-            </div>
-          </div>
-          <div className="p-2 w-[5rem] font-bold">OFI</div>
-        </div>
-        {learningReportsSecond
-          .filter(
-            (report) =>
-              report.target_code &&
-              report.office_target &&
-              report.key_performance_indicator &&
-              report.actions &&
-              report.budget &&
-              report.incharge &&
-              report.actual_performance !== null &&
-              report.target_performance !== null &&
-              report.ofi
-          )
-          .map((report, index) => (
-            <div
-              key={report.id}
-              className={`flex items-center text-center ${
-                index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
-              }`}
-            >
-              <div className="p-2 w-[8rem]"></div>
-              <div className="p-2 w-[10rem]">{report.target_code}</div>
-              <div className="p-2 w-[15rem]">
-                {truncateString(report.office_target, 20)}
-              </div>
-              <div className="p-2 w-[8rem]">
-                {truncateString(report.key_performance_indicator, 20)}
-              </div>
-              <div className="p-2 w-[10rem]">{report.actions}</div>
-              <div className="p-2 w-[10rem]">{report.budget}</div>
-              <div className="p-2 w-[10rem]">{report.incharge}</div>
-              <div className="p-2 w-[10rem] text-center">
-                <span className="text-start mr-2">
-                  {report.actual_performance}%
-                </span>
-                <span className="text-center">|</span>
-                <span className="text-end ml-2">
-                  {report.target_performance}%
+                  {report.target_performance}
                 </span>
               </div>
               <div className="p-2 w-[5rem]">{report.ofi}</div>
