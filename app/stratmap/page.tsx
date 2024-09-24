@@ -3,24 +3,143 @@ import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
-import { toast } from 'react-toastify';
 
 const Page = () => {
   const { data: session } = useSession();
+  const [selectedComponent, setSelectedComponent] = useState("");
+  const [currentView, setCurrentView] = useState("primary");
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
   const department_id = user?.department_id;
-  const username = user?.username;
   const role = user?.role;
+  const hasPrimary = user?.hasPrimary;
+  const username = user?.username;
 
+  useEffect(() => {
+    const lastComponent = localStorage.getItem("lastComponent");
+    if (lastComponent) {
+      setSelectedComponent(lastComponent);
+    }
+  }, []);
+
+  useEffect(() => {
+
+    const postToPrimaryStrategies = async () => {
+      if (hasPrimary === 0) {
+        try {
+          
+          const primaryFinancialData = {
+            office_target: "A8.1: 100% compliance to prescribed budget ceiling", 
+            department: { id: department_id },
+          };
+      
+          const primaryStakeholderData = {
+            office_target: 
+              "A8.1: 100% compliance to prescribed budget ceiling, " +
+              "A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices, " + 
+              "A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction, " +
+              "A2.1: Have at least 4-star (out of 5) customer service rating, " +
+              "A2.2: Have at least 9-star (out of 10) net promoter score, " +
+              "A2.3: 90% transanctions resolved or answered customer query within expected time",
+            department: { id: department_id },
+          };
+      
+          const primaryInternalProcessData = {
+            office_target: 
+              "A4.1: 100% of the office systems standardized and documented, " +
+              "A6.1: 100% awareness of the existence of the 5S+ Program, " +
+              "A6.2: 100% participation in the orientation/re-orientation of 5S+ training", 
+            department: { id: department_id },
+          };
+      
+          const primaryLearningGrowthData = {
+            office_target: 
+              "A7.1: At least 90% participation in CIT-sponsored events, " +
+              "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences, " +
+              "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
+            department: { id: department_id },
+          };
+
+          await Promise.all([
+            fetch("http://localhost:8080/stratmap/primaryFinancial/insert", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(primaryFinancialData), 
+            }),
+            fetch("http://localhost:8080/stratmap/primaryStakeholder/insert", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(primaryStakeholderData),
+            }),
+            fetch("http://localhost:8080/stratmap/primaryInternal/insert", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(primaryInternalProcessData),
+            }),
+            fetch("http://localhost:8080/stratmap/primaryLearning/insert", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(primaryLearningGrowthData),
+            }),
+          ]);
+
+          if (username) {
+            const response = await fetch(
+              `http://localhost:8080/user/update/${username}`,
+              {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ hasPrimary: 1 }),
+              }
+            );
+
+            if (!response.ok) {
+              console.error(
+                "Error updating hasPrimary in user session:",
+                response.status
+              );
+              // Handle the error appropriately (e.g., show an error message)
+            }
+          } else {
+            console.error("Username not found in session data.");
+          }
+
+          // Re-fetch primary strategies to update the UI
+          fetchPrimaryFinancialStrategies(department_id);
+          fetchPrimaryStakeholderStrategies(department_id);
+          fetchPrimaryInternalProcessStrategies(department_id);
+          fetchPrimaryLearningGrowthStrategies(department_id);
+        } catch (error) {
+          console.error("Error posting to primary strategies:", error);
+          // Handle errors, e.g., display an error message to the user
+        }
+      }
+    };
+
+    postToPrimaryStrategies();
+  }, [session, hasPrimary]);
 
   useEffect(() => {
 
     fetchProfileGoals();
     fetchExistingStrategies(department_id);
 
-  }, [session]);
+    type Perspective = "Financial" | "Stakeholder" | "Internal Process" | "Learning & Growth";
+
+    const fetchFunctions: Record<Perspective, (department_id: number) => Promise<void>> = {
+      "Financial": fetchPrimaryFinancialStrategies,
+      "Stakeholder": fetchPrimaryStakeholderStrategies,
+      "Internal Process": fetchPrimaryInternalProcessStrategies,
+      "Learning & Growth": fetchPrimaryLearningGrowthStrategies,
+    };
+  
+    // Fetch data only if in primary view and component is valid
+    if (currentView === "primary" && (selectedComponent as Perspective) in fetchFunctions) {
+      fetchFunctions[selectedComponent as Perspective](department_id);
+    }
+
+  }, [session, currentView, selectedComponent]);
 
   interface GeneratedSentence {
     id: number;
@@ -36,23 +155,14 @@ const Page = () => {
   }
 
   // for vision values mission
-  const [showVisionCard, setShowVisionCard] = useState(false);
-  const [showValuesCard, setShowValuesCard] = useState(false);
-  const [showMissionCard, setShowMissionCard] = useState(false);
-  const [visionSaved, setVisionSaved] = useState(false);
-  const [valuesSaved, setValuesSaved] = useState(false);
-  const [missionSaved, setMissionSaved] = useState(false);
-  const [showVisionDropdown, setShowVisionDropdown] = useState(false);
-  const [showValuesDropdown, setShowValuesDropdown] = useState(false);
-  const [showMissionDropdown, setShowMissionDropdown] = useState(false);
-  const [buttonVisionLabel, setVisionButtonLabel] = useState("Add");
-  const [buttonValuesLabel, setValuesButtonLabel] = useState("Add");
-  const [buttonMissionLabel, setMissionButtonLabel] = useState("Add");
   const [editingStrategy, setEditingStrategy] = useState(null);
   const [newStrategyValue, setNewStrategyValue] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-
+  const [primaryFinancialStrategies, setPrimaryFinancialStrategies] = useState<GeneratedSentence[]>([]);
+  const [primaryStakeholderStrategies, setPrimaryStakeholderStrategies] = useState<GeneratedSentence[]>([]);
+  const [primaryInternalProcessStrategies, setPrimaryInternalProcessStrategies] = useState<GeneratedSentence[]>([]);
+  const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] = useState<GeneratedSentence[]>([]);
 
   // @ts-ignore
   const handleEditClick = (strategy) => {
@@ -97,107 +207,6 @@ const Page = () => {
     internalProcess: [],
     learningGrowth: [],
   });
-
-  const [selectedPerspective, setSelectedPerspective] = useState("financial");
-
-  const handleTextareaChange = (
-    setStateFunction: React.Dispatch<React.SetStateAction<string>>,
-    event: ChangeEvent<HTMLTextAreaElement>
-  ) => {
-    setStateFunction(event.target.value);
-  };
-
-  const toggleDropdown = (section: string) => {
-    switch (section) {
-      case "vision":
-        setShowVisionDropdown(!showVisionDropdown);
-        break;
-      case "values":
-        setShowValuesDropdown(!showValuesDropdown);
-        break;
-      case "mission":
-        setShowMissionDropdown(!showMissionDropdown);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleMoreClick = (section: string) => {
-    toggleDropdown(section);
-  };
-
-  const handleAddClick = (
-    section: string,
-    setButtonLabel: React.Dispatch<React.SetStateAction<string>>,
-    setTextareaDisabled: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    toggleDropdown(section);
-    switch (section) {
-      case "vision":
-        setShowVisionCard(true);
-        setVisionSaved(false);
-        setVisionButtonLabel("Save");
-        setTextareaDisabled(false);
-        break;
-      case "values":
-        setShowValuesCard(true);
-        setValuesSaved(false);
-        setValuesButtonLabel("Save");
-        setTextareaDisabled(false);
-        break;
-      case "mission":
-        setShowMissionCard(true);
-        setMissionSaved(false);
-        setMissionButtonLabel("Save");
-        setTextareaDisabled(false);
-        break;
-      default:
-        break;
-    }
-  };
-
-  const handleVisionSaveClick = (
-    setStateFunction: React.Dispatch<React.SetStateAction<boolean>>,
-    setButtonLabel: React.Dispatch<React.SetStateAction<string>>,
-    setTextareaDisabled: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    setStateFunction(true);
-    setVisionButtonLabel("Edit");
-    setTextareaDisabled(true);
-  };
-
-  const handleValuesSaveClick = (
-    setStateFunction: React.Dispatch<React.SetStateAction<boolean>>,
-    setButtonLabel: React.Dispatch<React.SetStateAction<string>>,
-    setTextareaDisabled: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    setStateFunction(true);
-    setValuesButtonLabel("Edit");
-    setTextareaDisabled(true);
-  };
-
-  const handleMissionSaveClick = (
-    setStateFunction: React.Dispatch<React.SetStateAction<boolean>>,
-    setButtonLabel: React.Dispatch<React.SetStateAction<string>>,
-    setTextareaDisabled: React.Dispatch<React.SetStateAction<boolean>>
-  ) => {
-    setStateFunction(true);
-    setMissionButtonLabel("Edit");
-    setTextareaDisabled(true);
-  };
-
-  const handleVisionDeleteClick = (section: string) => {
-    toggleDropdown(section);
-  };
-
-  const handleValuesDeleteClick = (section: string) => {
-    toggleDropdown(section);
-  };
-
-  const handleMissionDeleteClick = (section: string) => {
-    toggleDropdown(section);
-  };
 
   const handleFinancialSaveEdit = async (
     fID: number,
@@ -451,33 +460,35 @@ const Page = () => {
     "Make sure not to output any double strategies with the same target code"
     `;
 
-  const fetchProfileGoals = async () => {
-
-    console.log("fetching profile goals");
-
-    try {
-      const response = await fetch(`http://localhost:8080/goals/get/department/${department_id}`);
-      if (response.ok) {
-        const data = await response.json();
-        console.log("Received data:", data); // Log the received data
-
-        const fetchedData = `
-        Office Vision: ${data.vision}
-        Value Proposition: ${data.proposition}
-      `;
-
-        const updatedSystemPrompt = `${SYSTEM_PROMPT}
-      ${fetchedData}`;
-
-        console.log("Updated System Prompt:", updatedSystemPrompt); // Log the updated system prompt
-
-      } else {
-        console.error("Error fetching user profile data:", response.statusText);
+    const fetchProfileGoals = async () => {
+      console.log("Fetching profile goals...");
+      try {
+        const response = await fetch(
+          `http://localhost:8080/goals/get/department/${department_id}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Received data:", data);
+  
+          // Update all states related to profile goals 
+          setOfficeVision(data.vision);
+          setValueProposition(data.proposition);
+          setMission(data.mission); 
+  
+          // Update the system prompt with fetched data
+          const fetchedData = `
+            Office Vision: ${data.vision}
+            Value Proposition: ${data.proposition}
+          `;
+          const updatedSystemPrompt = `${SYSTEM_PROMPT}\n${fetchedData}`;
+          console.log("Updated System Prompt:", updatedSystemPrompt);
+        } else {
+          console.error("Error fetching user profile data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching user profile data:", error);
       }
-    } catch (error) {
-      console.error("Error fetching user profile data:", error);
-    }
-  };
+    };
 
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
 
@@ -486,59 +497,24 @@ const Page = () => {
   const [newFStrategy, setNewFStrategy] = useState("");
   const [newFTargetCode, setNewFTargetCode] = useState("");
   const [savedFStrategies, setSavedFStrategies] = useState<string[]>([]);
-  const [isStrategyInvalid, setIsStrategyInvalid] = useState(false); 
 
-  const generateTargetCode = () => {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let randomPart = '';
-  
-    let firstChar = characters.charAt(Math.floor(Math.random() * characters.length));
-    randomPart += firstChar;
-  
-    let secondChar;
-    do {
-      secondChar = characters.charAt(Math.floor(Math.random() * characters.length));
-    } while (secondChar === firstChar);
-    randomPart += secondChar;
-  
-    let thirdChar;
-    do {
-      thirdChar = characters.charAt(Math.floor(Math.random() * characters.length));
-    } while (thirdChar === firstChar || thirdChar === secondChar);
-    randomPart += thirdChar;
-  
-    return `TC-${randomPart}`;
-  };
   const openFModal = () => {
     setIsFModalOpen(true);
-    const newFinancialTargetCode = generateTargetCode();
-    setNewFTargetCode(newFinancialTargetCode);
+    setNewFTargetCode("");
     setNewFStrategy("");
-    setIsStrategyInvalid(false);
   };
 
   const closeFModal = () => {
-    setNewFTargetCode("");  
+    setNewFTargetCode("");
     setIsFModalOpen(false);
-    setIsStrategyInvalid(false); 
   };
 
-  
-
   const handleFSave = async () => {
-  
     const strategyFWithCode = `${newFTargetCode}: ${newFStrategy}`;
-    if (newFStrategy.trim() === "") {
-      setIsStrategyInvalid(true);
-      return; 
-    }
 
-    setIsStrategyInvalid(false); 
-  
     try {
       const data = {
         office_target: newFStrategy,
-        target_code: newFTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -566,6 +542,170 @@ const Page = () => {
     setSavedFStrategies([...savedFStrategies, strategyFWithCode]);
   };
 
+  const handlePrimaryFSave = async () => {
+    try {
+      const data = {
+        office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`, // Combine target code and strategy
+        department: { id: department_id },
+      };
+  
+      console.log("Data to be sent:", data); // Log the data for debugging
+  
+      const response = await fetch(
+        "http://localhost:8080/stratmap/primaryFinancial/insert", // Use the correct endpoint
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+  
+      if (response.ok) {
+        closePrimaryFModal();
+        fetchPrimaryFinancialStrategies(department_id); // Refresh the list after saving
+      } else {
+        console.error("Error saving primary financial strategy:", response.status);
+        // Handle error, e.g., display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error saving primary financial strategy:", error);
+      // Handle error, e.g., display an error message to the user
+    }
+  };
+
+  const handlePrimarySSave = async () => {
+    try {
+      const data = {
+        office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`, // Combine target code and strategy
+        department: { id: department_id },
+      };
+  
+      console.log("Data to be sent:", data); // Log the data for debugging
+  
+      const response = await fetch(
+        "http://localhost:8080/stratmap/primaryStakeholder/insert", // Use the correct endpoint
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+  
+      if (response.ok) {
+        closePrimarySModal();
+        fetchPrimaryStakeholderStrategies(department_id); // Refresh the list after saving
+      } else {
+        console.error("Error saving primary stakeholder strategy:", response.status);
+        // Handle error, e.g., display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error saving primary stakeholder strategy:", error);
+      // Handle error, e.g., display an error message to the user
+    }
+  };
+
+  const handlePrimaryLGSave = async () => {
+    try {
+      const data = {
+        office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`, // Combine target code and strategy
+        department: { id: department_id },
+      };
+  
+      console.log("Data to be sent:", data); // Log the data for debugging
+  
+      const response = await fetch(
+        "http://localhost:8080/stratmap/primaryLearning/insert", // Use the correct endpoint
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+  
+      if (response.ok) {
+        closePrimaryLGModal();
+        fetchPrimaryLearningGrowthStrategies(department_id); // Refresh the list after saving
+      } else {
+        console.error("Error saving primary learning strategy:", response.status);
+        // Handle error, e.g., display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error saving primary learning strategy:", error);
+      // Handle error, e.g., display an error message to the user
+    }
+  };
+
+  const handlePrimaryIPSave = async () => {
+    try {
+      const data = {
+        office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`, // Combine target code and strategy
+        department: { id: department_id },
+      };
+  
+      console.log("Data to be sent:", data); // Log the data for debugging
+  
+      const response = await fetch(
+        "http://localhost:8080/stratmap/primaryInternal/insert", // Use the correct endpoint
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        }
+      );
+  
+      if (response.ok) {
+        closePrimaryIPModal();
+        fetchPrimaryInternalProcessStrategies(department_id); // Refresh the list after saving
+      } else {
+        console.error("Error saving primary internal strategy:", response.status);
+        // Handle error, e.g., display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error saving primary internal strategy:", error);
+      // Handle error, e.g., display an error message to the user
+    }
+  };
+
+  // Primary financial
+  const [isPrimaryFModalOpen, setIsPrimaryFModalOpen] = useState(false);
+  const [newPrimaryFStrategy, setNewPrimaryFStrategy] = useState("");
+  const [newPrimaryFTargetCode, setNewPrimaryFTargetCode] = useState("");
+
+  const openPrimaryFModal = () => {
+    setIsPrimaryFModalOpen(true);
+    setNewPrimaryFTargetCode("");
+    setNewPrimaryFStrategy("");
+  };
+
+  const closePrimaryFModal = () => {
+    setNewPrimaryFTargetCode("");
+    setIsPrimaryFModalOpen(false);
+  };
+
+  // Primary stakeholder
+  const [isPrimarySModalOpen, setIsPrimarySModalOpen] = useState(false);
+  const [newPrimarySStrategy, setNewPrimarySStrategy] = useState("");
+  const [newPrimarySTargetCode, setNewPrimarySTargetCode] = useState("");
+
+  const openPrimarySModal = () => {
+    setIsPrimarySModalOpen(true);
+    setNewPrimarySTargetCode("");
+    setNewPrimarySStrategy("");
+  };
+
+  const closePrimarySModal = () => {
+    setNewPrimarySTargetCode("");
+    setIsPrimarySModalOpen(false);
+  };
+
   // stakeholder
   const [isSModalOpen, setIsSModalOpen] = useState(false);
   const [newSStrategy, setNewSStrategy] = useState("");
@@ -574,31 +714,21 @@ const Page = () => {
 
   const openSModal = () => {
     setIsSModalOpen(true);
-    const newStakeholderTargetCode = generateTargetCode();
-    setNewSTargetCode(newStakeholderTargetCode);
+    setNewSTargetCode("");
     setNewSStrategy("");
-    setIsStrategyInvalid(false); 
   };
 
   const closeSModal = () => {
     setNewSTargetCode("");
     setIsSModalOpen(false);
-    setIsStrategyInvalid(false); 
   };
 
   const handleSSave = async () => {
     const strategySWithCode = `${newSTargetCode}: ${newSStrategy}`;
-    if (newSStrategy.trim() === "") {
-      setIsStrategyInvalid(true);
-      return; 
-    }
-
-    setIsStrategyInvalid(false); 
 
     try {
       const data = {
         office_target: newSStrategy,
-        target_code: newSTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -627,6 +757,22 @@ const Page = () => {
   };
 
   // internal process
+  const [isPrimaryIPModalOpen, setIsPrimaryIPModalOpen] = useState(false);
+  const [newPrimaryIPStrategy, setNewPrimaryIPStrategy] = useState("");
+  const [newPrimaryIPTargetCode, setNewPrimaryIPTargetCode] = useState("");
+
+  const openPrimaryIPModal = () => {
+    setIsPrimaryIPModalOpen(true);
+    setNewPrimaryIPTargetCode("");
+    setNewPrimaryIPStrategy("");
+  };
+
+  const closePrimaryIPModal = () => {
+    setNewPrimaryIPTargetCode("");
+    setIsPrimaryIPModalOpen(false);
+  };
+
+  // internal process
   const [isIPModalOpen, setIsIPModalOpen] = useState(false);
   const [newIPStrategy, setNewIPStrategy] = useState("");
   const [newIPTargetCode, setNewIPTargetCode] = useState("");
@@ -634,31 +780,21 @@ const Page = () => {
 
   const openIPModal = () => {
     setIsIPModalOpen(true);
-    const newInternalTargetCode = generateTargetCode();
-    setNewIPTargetCode(newInternalTargetCode);
+    setNewIPTargetCode("");
     setNewIPStrategy("");
-    setIsStrategyInvalid(false); 
   };
 
   const closeIPModal = () => {
     setNewIPTargetCode("");
     setIsIPModalOpen(false);
-    setIsStrategyInvalid(false); 
   };
 
   const handleIPSave = async () => {
     const strategyIPWithCode = `${newIPTargetCode}: ${newIPStrategy}`;
-    if (newIPStrategy.trim() === "") {
-      setIsStrategyInvalid(true);
-      return; 
-    }
-
-    setIsStrategyInvalid(false); 
 
     try {
       const data = {
         office_target: newIPStrategy,
-        target_code: newIPTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -686,6 +822,22 @@ const Page = () => {
     setSavedSStrategies([...savedIPStrategies, strategyIPWithCode]);
   };
 
+  // Primary learning&growth
+  const [isPrimaryLGModalOpen, setIsPrimaryLGModalOpen] = useState(false);
+  const [newPrimaryLGStrategy, setNewPrimaryLGStrategy] = useState("");
+  const [newPrimaryLGTargetCode, setNewPrimaryLGTargetCode] = useState("");
+
+  const openPrimaryLGModal = () => {
+    setIsPrimaryLGModalOpen(true);
+    setNewPrimaryLGTargetCode("");
+    setNewPrimaryLGStrategy("");
+  };
+
+  const closePrimaryLGModal = () => {
+    setNewPrimaryLGTargetCode("");
+    setIsPrimaryLGModalOpen(false);
+  };
+
   // learning&growth
   const [isLGModalOpen, setIsLGModalOpen] = useState(false);
   const [newLGStrategy, setNewLGStrategy] = useState("");
@@ -694,31 +846,21 @@ const Page = () => {
 
   const openLGModal = () => {
     setIsLGModalOpen(true);
-    const newLearningTargetCode = generateTargetCode();
-    setNewLGTargetCode(newLearningTargetCode);
+    setNewLGTargetCode("");
     setNewLGStrategy("");
-    setIsStrategyInvalid(false); 
   };
 
   const closeLGModal = () => {
     setNewLGTargetCode("");
     setIsLGModalOpen(false);
-    setIsStrategyInvalid(false); 
   };
 
   const handleLGSave = async () => {
     const strategyLGWithCode = `${newLGTargetCode}: ${newLGStrategy}`;
-    if (newIPStrategy.trim() === "") {
-      setIsStrategyInvalid(true);
-      return; 
-    }
-
-    setIsStrategyInvalid(false); 
 
     try {
       const data = {
         office_target: newLGStrategy,
-        target_code: newLGTargetCode,
         department: { id: department_id },
         user_generated: 1
       };
@@ -964,6 +1106,101 @@ const Page = () => {
     }
   };
 
+  const fetchPrimaryFinancialStrategies = async (department_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}` // Assuming this is your API endpoint
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      console.log("primary financial data: ", data);
+
+      // Update the strategies state with the fetched primary financial strategies
+      setPrimaryFinancialStrategies( // Update the primaryFinancialStrategies state
+        data.map((item: any) => ({
+          id: 1, 
+          fID: item.id,
+          value: item.office_target,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching primary financial strategies:", error);
+    }
+  };
+
+  const fetchPrimaryStakeholderStrategies = async (department_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}` // Assuming this is your API endpoint
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // Update the strategies state with the fetched primary stakeholder strategies
+      setPrimaryStakeholderStrategies( // Update the primaryFinancialStrategies state
+        data.map((item: any) => ({
+          id: 1, 
+          fID: item.id,
+          value: item.office_target,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching primary stakeholder strategies:", error);
+    }
+  };
+
+  const fetchPrimaryInternalProcessStrategies = async (department_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/stratmap/primaryInternal/get/${department_id}` // Assuming this is your API endpoint
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // Update the strategies state with the fetched primary internal process strategies
+      setPrimaryInternalProcessStrategies( // Update the primaryFinancialStrategies state
+        data.map((item: any) => ({
+          id: 1, 
+          fID: item.id,
+          value: item.office_target,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching primary internal process strategies:", error);
+    }
+  };
+
+  const fetchPrimaryLearningGrowthStrategies = async (department_id: number) => {
+    try {
+      const response = await fetch(
+        `http://localhost:8080/stratmap/primaryLearning/get/${department_id}` // Assuming this is your API endpoint
+      );
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+
+      // Update the strategies state with the fetched primary learning and growth strategies
+      setPrimaryLearningGrowthStrategies( // Update the primaryFinancialStrategies state
+        data.map((item: any) => ({
+          id: 1, 
+          fID: item.id,
+          value: item.office_target,
+        }))
+      );
+    } catch (error) {
+      console.error("Error fetching primary learning and growth strategies:", error);
+    }
+  };
+
+
   const fetchExistingStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
@@ -1006,8 +1243,6 @@ const Page = () => {
     }
   };
 
-  const handleDeleteClick = {};
-
   const handleFinancialDelete = async (id: number) => {
     try {
       const response = await fetch(
@@ -1026,14 +1261,11 @@ const Page = () => {
         );
         setStrategies({ ...strategies, financial: updatedStrategies });
         fetchExistingStrategies(department_id);
-        return true;
       } else {
         console.error("Failed to delete financial strategy");
-        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
-      throw error;
     }
   };
 
@@ -1055,14 +1287,11 @@ const Page = () => {
         );
         setStrategies({ ...strategies, learningGrowth: updatedStrategies });
         fetchExistingStrategies(department_id);
-        return true;
       } else {
         console.error("Failed to delete financial strategy");
-        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
-      throw error;
     }
   };
 
@@ -1084,14 +1313,11 @@ const Page = () => {
         );
         setStrategies({ ...strategies, stakeholder: updatedStrategies });
         fetchExistingStrategies(department_id);
-        return true;
       } else {
         console.error("Failed to delete financial strategy");
-        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
-      throw error;
     }
   };
 
@@ -1110,14 +1336,11 @@ const Page = () => {
         );
         setStrategies({ ...strategies, internalProcess: updatedStrategies });
         fetchExistingStrategies(department_id);
-        return true;
       } else {
         console.error("Failed to delete financial strategy");
-        return false;
       }
     } catch (error) {
       console.error("Error deleting financial strategy:", error);
-      throw error;
     }
   };
 
@@ -1181,99 +1404,14 @@ const Page = () => {
     }
   };
 
-  const [selectedComponent, setSelectedComponent] = useState("");
-
   const changeComponent = (componentName: string) => {
     localStorage.setItem("lastComponent", componentName);
     setSelectedComponent(componentName);
   };
 
-  useEffect(() => {
-    const lastComponent = localStorage.getItem("lastComponent");
-    if (lastComponent) {
-      setSelectedComponent(lastComponent);
-    }
-  }, []);
-
   const [officeVision, setOfficeVision] = useState("");
   const [valueProposition, setValueProposition] = useState("");
   const [mission, setMission] = useState("");
-
-  useEffect(() => {
-    const fetchProfileGoals = async () => {
-      try {
-        const response = await fetch(`http://localhost:8080/goals/get/department/${department_id}`);
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Received data:", data); // Add this line to log the received data
-          setOfficeVision(data.vision);
-          setValueProposition(data.proposition);
-          setMission(data.mission)
-        } else {
-          console.error(
-            "Error fetching user profile data:",
-            response.statusText
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching user profile data:", error);
-      }
-    };
-    fetchProfileGoals();
-  }, [department_id]);
- 
-
-
-     // State for delete confirmation modal
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [strategyToDelete, setStrategyToDelete] = useState<GeneratedSentence | null>(null);
-  const [deleteModalType, setDeleteModalType] = useState<string | null>(null);
-
-  // Open the delete confirmation modal
-  const openDeleteModal = (strategy: GeneratedSentence, type: string) => {
-    setStrategyToDelete(strategy);
-    setDeleteModalType(type);
-    setIsDeleteModalOpen(true);
-  };
-    // Handle delete confirmation
-   const handleDeleteConfirm = async () => {
-    if (strategyToDelete && deleteModalType) {
-      try {
-        let success = false; // Track if deletion was successful
-
-        switch (deleteModalType) {
-          case 'Financial':
-            success = await handleFinancialDelete(strategyToDelete.fID);
-            break;
-          case 'Learning':
-            success = await handleLGDelete(strategyToDelete.fID);
-            break;
-          case 'Stakeholder':
-            success = await handleStakeholderDelete(strategyToDelete.fID);
-            break;
-          case 'Internal':
-            success = await handleInternalDelete(strategyToDelete.fID);
-            break;
-          default:
-            console.error("Invalid delete modal type");
-            break;
-        }
-        if (success) {
-          toast.success("Strategy deleted successfully");
-        } else {
-          toast.error("Failed to delete strategy");
-        }
-
-      } catch (error) {
-        console.error("Error deleting strategy:", error);
-        toast.error("An error occurred");
-      }
-    }
-    setIsDeleteModalOpen(false);
-    setStrategyToDelete(null);
-    setDeleteModalType(null);
-
-  };
 
   return (
     <div className="flex flex-row w-full text-[rgb(59,59,59)]">
@@ -1284,8 +1422,74 @@ const Page = () => {
             <span className="break-words font-bold text-[3rem]">
               Strategy Mapping
             </span>
-            {/* perspectives toggle */}
-            <div className="flex justify-center ml-[35rem] mt-[0.5rem] border border-gray-200 bg-gray w-[44rem] h-[4rem] rounded-xl px-1 py-1">
+            <div className="flex justify-center lg:ml-[55rem] md:ml-[50rem] mt-[0.5rem] border border-gray-200 bg-gray w-[24rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
+              <button
+                onClick={() => setCurrentView("primary")}
+                className={`rounded-lg ${
+                  currentView === "primary"
+                    ? "bg-[#A43214] text-white"
+                    : "border text-[#A43214]"
+                } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}>
+                  PRIMARY
+              </button>
+              <button
+                onClick={() => setCurrentView("secondary")}
+                className={`rounded-lg ${
+                  currentView === "secondary"
+                    ? "bg-[#A43214] text-white"
+                    : "border text-[#A43214]"
+                } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}>
+                  SECONDARY
+              </button>
+              
+              {role !== "FACULTY" && (
+                  <button
+                    onClick={() => handleButtonClick(department_id)}
+                    disabled={isButtonDisabled}
+                    className="bg-[#ffffff] text-[#A43214] hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white text-center items-center rounded-lg px-6 py-2"
+                  >
+                    SORT
+                  </button>
+                )}
+            </div>
+          </div>
+
+          <div className="mt-8 grid grid-cols-3">
+            <div className="col-span-3">
+              <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-[6rem] mt-[-1.1rem]">
+                Strategy mapping empowers organizations to translate their
+                vision into actionable strategies, align resources, and drive
+                performance across all aspects of the business. Navigate
+                complexity, capitalize on opportunities, and achieve sustainable
+                growth in today&apos;s dynamic business landscape.
+              </div>
+
+              <div className="container mx-auto px-4 mb-16 sm:flex-col md:flex-col sm:mb-5 md:mb-24 lg:mb-20">
+                <div className="mt-[-3rem] grid grid-cols-1 sm:w-[80%] lg:w-[109%] sm:items-start sm:flex-col sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 h-[auto] w-[102rem] ml-[-6rem]">
+                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <h1 className="text-xl font-bold mb-2">Vision</h1>
+                    <p className="text-gray-700 break-words overflow-auto">
+                      {officeVision}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <h1 className="text-xl font-bold mb-2">Value</h1>
+                    <p className="text-gray-700">
+                      {valueProposition}
+                    </p>
+                  </div>
+                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+                    <h1 className="text-xl font-bold mb-2">Mission</h1>
+                    <p className="text-gray-700">
+                      {mission}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+
+              {/* perspectives toggle */}
+              <div className="flex justify-center mt-[0.5rem] border border-gray-200 bg-gray w-[44rem] h-[4rem] rounded-xl px-1 py-1">
                 <div
                   className="flex flex-row box-sizing-border mr-2 cursor-pointer"
                   onClick={() => changeComponent("Financial")}
@@ -1316,7 +1520,7 @@ const Page = () => {
                 </div>
                 <div
                   className="flex flex-row box-sizing-border mr-2 cursor-pointer"
-                  onClick={() => changeComponent("Internal")}
+                  onClick={() => changeComponent("Internal Process")}
                 >
                   <div
                     className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
@@ -1330,7 +1534,7 @@ const Page = () => {
                 </div>
                 <div
                   className="flex flex-row box-sizing-border cursor-pointer"
-                  onClick={() => changeComponent("Learning")}
+                  onClick={() => changeComponent("Learning & Growth")}
                 >
                   <div
                     className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
@@ -1344,50 +1548,593 @@ const Page = () => {
                 </div>
             </div>
             {/* end of perspectives toggle */}
-          </div>
 
-          <div className="mt-8 grid grid-cols-3">
-            <div className="col-span-3">
-              <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-[6rem] mt-[-1.1rem]">
-                Strategy mapping empowers organizations to translate their
-                vision into actionable strategies, align resources, and drive
-                performance across all aspects of the business. Navigate
-                complexity, capitalize on opportunities, and achieve sustainable
-                growth in today&apos;s dynamic business landscape.
-              </div>
 
-              <div className="container mx-auto px-4 mb-16">
-                <div className="mt-[-3rem] grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 h-[10rem] w-[102rem] ml-[-6rem]">
-                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-                    <h1 className="text-xl font-bold mb-2">Vision</h1>
-                    <p className="text-gray-700 break-words overflow-auto">
-                      {officeVision}
-                    </p>
+            {/* PRIMARY VIEW */}
+            {currentView === "primary" && (
+              <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
+                {selectedComponent === "Financial" && (
+                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
+                  <div className="flex flex-row">
+                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                    <img
+                      src="/financial.png"
+                      alt=""
+                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Primary: Financial Report Overview
+                      </span>
+                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Measures financial performance and profitability.
+                      </span>
+                    </div>
                   </div>
-                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-                    <h1 className="text-xl font-bold mb-2">Value</h1>
-                    <p className="text-gray-700">
-                      {valueProposition}
-                    </p>
+                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[68.4rem]">
+                  <button onClick={openPrimaryFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
+                    
+                    <div className="flex flex-row">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-8"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
                   </div>
-                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-                    <h1 className="text-xl font-bold mb-2">Mission</h1>
-                    <p className="text-gray-700">
-                      {mission}
-                    </p>
+                  </button>
+                </div>
+                </div>
+                  {isPrimaryFModalOpen && ( 
+                    <div className="fixed inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black opacity-50"></div>
+                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
+                        <div className="flex flex-row">
+                          <h2 className="text-2xl mb-5 font-semibold">
+                            Financial Strategy
+                          </h2>
+                          <button
+                            onClick={closePrimaryFModal} 
+                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Target Code
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          value={newPrimaryFTargetCode} 
+                          onChange={(e) => setNewPrimaryFTargetCode(e.target.value)}  
+                          className="border border-gray-300 rounded px-3 py-2 mb-4"
+                        />
+                        <div className="flex flex-col">
+                          
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Strategy
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+
+                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                          <ul className="list-disc ml-10 mb-2">
+                            <li className="font-bold">Excellence in Service Quality</li>
+                            <li className="font-bold">Excellence in Internal Service Systems</li>
+                            <li className="font-bold">Excellence in Organizational Stewardship</li>
+                          </ul>
+                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
+                          <textarea
+                            value={newPrimaryFStrategy} 
+                            onChange={(e) => setNewPrimaryFStrategy(e.target.value)}  
+                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
+                          />
+                        </div>
+                        <div className="flex flex-row justify-center mt-2 gap-10">
+                          <button
+                            onClick={closePrimaryFModal}
+                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={async () => { 
+                              await handlePrimaryFSave(); //change 
+                              fetchPrimaryFinancialStrategies(department_id); //change 
+                            }}
+                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                            style={{
+                              background: "linear-gradient(to left, #8a252c, #AB3510)",
+                            }}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
+                    {primaryFinancialStrategies.map( // Map the fetched primary data directly
+                      (strategy: GeneratedSentence, index: number) => (
+                        <div
+                          key={strategy.id}
+                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
+                            index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
+                          }`}
+                        >
+                            <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
+                              {strategy.value}   
+                              {/* change */}
+                            </div>
+                        </div>
+                      )
+                    )}
                   </div>
                 </div>
-              </div>
-
-              {role !== "FACULTY" && (
-                <button
-                  onClick={() => handleButtonClick(department_id)}
-                  disabled={isButtonDisabled}
-                  className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.1rem] font-bold text-center items-center rounded-lg px-5 py-2 mb-[-0.5rem]"
-                >
-                  Sort
-                </button>
               )}
+
+              {selectedComponent === "Learning & Growth" && (
+                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
+                  <div className="flex flex-row">
+                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                    <img
+                      src="/learning.png"
+                      alt=""
+                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Primary: Culture & People Development Overview
+                      </span>
+                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Enhances organizational culture and employee growth.
+                      </span>
+                    </div>
+                  </div>
+                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[60.2rem]">
+                  <button onClick={openPrimaryLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
+                    
+                    <div className="flex flex-row">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-8"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  </button>
+                </div>
+                </div>
+                  {isPrimaryLGModalOpen && ( 
+                    <div className="fixed inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black opacity-50"></div>
+                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
+                        <div className="flex flex-row">
+                          <h2 className="text-2xl mb-5 font-semibold">
+                            Learning & Growth Strategy
+                          </h2>
+                          <button
+                            onClick={closePrimaryLGModal} 
+                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Target Code
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          value={newPrimaryLGTargetCode} 
+                          onChange={(e) => setNewPrimaryLGTargetCode(e.target.value)}  
+                          className="border border-gray-300 rounded px-3 py-2 mb-4"
+                        />
+                        <div className="flex flex-col">
+                          
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Strategy
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+
+                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                          <ul className="list-disc ml-10 mb-2">
+                            <li className="font-bold">Excellence in Service Quality</li>
+                            <li className="font-bold">Excellence in Internal Service Systems</li>
+                            <li className="font-bold">Excellence in Organizational Stewardship</li>
+                          </ul>
+                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
+                          <textarea
+                            value={newPrimaryLGStrategy} 
+                            onChange={(e) => setNewPrimaryLGStrategy(e.target.value)}  
+                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
+                          />
+                        </div>
+                        <div className="flex flex-row justify-center mt-2 gap-10">
+                          <button
+                            onClick={closePrimaryLGModal}
+                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={async () => { 
+                              await handlePrimaryLGSave(); //change
+                              fetchPrimaryLearningGrowthStrategies(department_id); //change 
+                            }}
+                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                            style={{
+                              background: "linear-gradient(to left, #8a252c, #AB3510)",
+                            }}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
+                    {primaryLearningGrowthStrategies.map( // Map the fetched primary data directly
+                      (strategy: GeneratedSentence, index: number) => (
+                        <div
+                          key={strategy.id}
+                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
+                            index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
+                          }`}
+                        >
+                            <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
+                              {strategy.value}   
+                              {/* change */}
+                            </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+              {selectedComponent === "Internal Process" && (
+                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
+                  <div className="flex flex-row">
+                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                    <img
+                      src="/internal.png"
+                      alt=""
+                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Primary: Process & Technology Overview
+                      </span>
+                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Optimizes and manages internal processes and technology.
+                      </span>
+                    </div>
+                  </div>
+                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[63.2rem]">
+                  <button onClick={openPrimaryIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
+                     
+                    <div className="flex flex-row">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-8"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  </button>
+                </div>
+                </div>
+                  {isPrimaryIPModalOpen && (  
+                    <div className="fixed inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black opacity-50"></div>
+                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
+                        <div className="flex flex-row">
+                          <h2 className="text-2xl mb-5 font-semibold">
+                            Internal Process Strategy
+                          </h2>
+                          <button
+                            onClick={closeIPModal} 
+                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Target Code
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          value={newPrimaryIPTargetCode} 
+                          onChange={(e) => setNewPrimaryIPTargetCode(e.target.value)}  
+                          className="border border-gray-300 rounded px-3 py-2 mb-4"
+                        />
+                        <div className="flex flex-col">
+                          
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Strategy
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+
+                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                          <ul className="list-disc ml-10 mb-2">
+                            <li className="font-bold">Excellence in Service Quality</li>
+                            <li className="font-bold">Excellence in Internal Service Systems</li>
+                            <li className="font-bold">Excellence in Organizational Stewardship</li>
+                          </ul>
+                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
+                          <textarea
+                            value={newPrimaryIPStrategy} 
+                            onChange={(e) => setNewPrimaryIPStrategy(e.target.value)}  
+                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
+                          />
+                        </div>
+                        <div className="flex flex-row justify-center mt-2 gap-10">
+                          <button
+                            onClick={closeIPModal}
+                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={async () => { 
+                              await handlePrimaryIPSave(); //change 
+                              fetchExistingStrategies(department_id); //change 
+                            }}
+                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                            style={{
+                              background: "linear-gradient(to left, #8a252c, #AB3510)",
+                            }}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
+                    {primaryInternalProcessStrategies.map( // Map the fetched primary data directly
+                        (strategy: GeneratedSentence, index: number) => (
+                          <div
+                            key={strategy.id}
+                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
+                              index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
+                            }`}
+                          >
+                            <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
+                              {strategy.value}   
+                              {/* change */}
+                            </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              )}
+              {selectedComponent === "Stakeholder" && (
+                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
+                  <div className="flex flex-row">
+                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+                    <img
+                      src="/stakeholder.png"
+                      alt=""
+                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                    />
+                    <div className="flex flex-col">
+                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Primary: Client Relationship Overview
+                      </span>
+                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        Measures client engagement quality and value.
+                      </span>
+                    </div>
+                  </div>
+                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[67.5rem]">
+                  <button onClick={openPrimarySModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
+                    
+                    <div className="flex flex-row">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-8"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </div>
+                  </button>
+                </div>
+                </div>
+                  {isPrimarySModalOpen && (  
+                    <div className="fixed inset-0 flex items-center justify-center">
+                      <div className="absolute inset-0 bg-black opacity-50"></div>
+                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
+                        <div className="flex flex-row">
+                          <h2 className="text-2xl mb-5 font-semibold">
+                            Stakeholder Strategy
+                          </h2>
+                          <button
+                            onClick={closePrimarySModal} 
+                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M6 18L18 6M6 6l12 12"
+                              />
+                            </svg>
+                          </button>
+                        </div>
+                        <div className="flex flex-col">
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Target Code
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+                        </div>
+                        <input
+                          type="text"
+                          value={newPrimarySTargetCode} 
+                          onChange={(e) => setNewPrimarySTargetCode(e.target.value)}  
+                          className="border border-gray-300 rounded px-3 py-2 mb-4"
+                        />
+                        <div className="flex flex-col">
+                          
+                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
+                            Strategy
+                            <span className="text-[#DD1414]">*</span>
+                          </span>
+
+                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
+                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
+                          <ul className="list-disc ml-10 mb-2">
+                            <li className="font-bold">Excellence in Service Quality</li>
+                            <li className="font-bold">Excellence in Internal Service Systems</li>
+                            <li className="font-bold">Excellence in Organizational Stewardship</li>
+                          </ul>
+                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
+                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
+                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
+                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
+
+                          <textarea
+                            value={newPrimarySStrategy}  
+                            onChange={(e) => setNewPrimarySStrategy(e.target.value)}  
+                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
+                          />
+                        </div>
+                        <div className="flex flex-row justify-center mt-2 gap-10">
+                          <button
+                            onClick={closeSModal}
+                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={async () => { 
+                              await handlePrimarySSave(); //change 
+                              fetchExistingStrategies(department_id); //change 
+                            }}
+                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
+                            style={{
+                              background: "linear-gradient(to left, #8a252c, #AB3510)",
+                            }}
+                          >
+                            Save
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
+                  {primaryStakeholderStrategies.map( // Map the correct array
+                    (strategy: GeneratedSentence, index: number) => (
+                      <div
+                        key={strategy.id}
+                        className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
+                          index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
+                        }`}
+                      >
+                        <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
+                          {strategy.value}   
+                        </div>
+                      </div>
+                    )
+                  )}
+                  </div>
+                </div>
+              )}
+              </div>
+            )}
 
               {/* Warning Dialog */}
               <Dialog open={showWarning} onClose={handleCancelClear} className="rounded-xl">
@@ -1397,27 +2144,31 @@ const Page = () => {
                     Are you sure you want to sort? This will clear any existing data in the Financial, Stakeholder, Internal Process, and Learning & Growth tables. 
                   </p>
                 </DialogContent>
-                <DialogActions className="mt-[-2rem] mb-5 items-center justify-center">
-                  <button 
-                    onClick={handleCancelClear} 
-                    className="rounded-[0.6rem] text-[#AB3510] hover:text-white hover:bg-[#AB3510] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
-                  >
-                    Cancel
-                  </button>
-                  <button 
-                    onClick={() => handleConfirmClear(department_id)} 
-                    className="rounded-[0.6rem] text-[#ffffff] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
-                    style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                  >
-                    Confirm
-                  </button>
-                </DialogActions>
+                <div className="flex items-center justify-center">
+                  <DialogActions className="mt-[-2rem] mb-5 ml-[-3rem]">
+                    <button 
+                      onClick={handleCancelClear} 
+                      className="rounded-[0.6rem] text-[#AB3510] border border-[#AB3510] hover:text-white hover:bg-[#AB3510] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 justify-center"
+                    >
+                      Cancel
+                    </button>
+                    <button 
+                      onClick={() => handleConfirmClear(department_id)} 
+                      className="rounded-[0.6rem] text-[#ffffff] break-words font-regular text-lg flex pt-[0.60rem] pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
+                      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                    >
+                      Confirm
+                    </button>
+                  </DialogActions>
+                </div>
               </Dialog>
 
+              {/* SECONDARY VIEW */}
               {/* main container */}
-              <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
+              {currentView === "secondary" && (
+                <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
                 {selectedComponent === "Financial" && (
-                  <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
+                  <div className="flex flex-col align-middle items-center justify-center w-[100%]">
                     <div className="flex flex-row">
                     <div className="flex flex-row p-1 h-auto ml-[-1rem]">
                       <img
@@ -1601,7 +2352,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>openDeleteModal(strategy, 'Financial')} 
+                                onClick={() =>handleFinancialDelete(strategy.fID)}
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -1618,11 +2369,11 @@ const Page = () => {
 
                 {selectedComponent === "Learning" && (
                   // LEARNING & GROWTH
-                  <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
+                  <div className="flex flex-col align-middle items-center justify-center  w-[100%]">
                     <div className="flex flex-row">
                     <div className="flex flex-row p-1 h-auto ml-[-1rem]">
                       <img
-                        src="/financial.png"
+                        src="/learning.png"
                         alt=""
                         className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
                       />
@@ -1800,7 +2551,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>openDeleteModal(strategy, 'Learning')} 
+                                onClick={() =>handleLGDelete(strategy.fID)}
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -1817,11 +2568,11 @@ const Page = () => {
 
                 {selectedComponent === "Internal" && (
                   // INTERNAL PROCESS
-                  <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
+                  <div className="flex flex-col align-middle items-center justify-center w-[100%]">
                     <div className="flex flex-row">
                     <div className="flex flex-row p-1 h-auto ml-[-1rem]">
                       <img
-                        src="/financial.png"
+                        src="/internal.png"
                         alt=""
                         className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
                       />
@@ -1999,7 +2750,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>openDeleteModal(strategy, 'Internal')} 
+                                onClick={() =>handleInternalDelete(strategy.fID)}
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -2016,11 +2767,11 @@ const Page = () => {
 
                 {selectedComponent === "Stakeholder" && (
                   // STAKEHOLDER
-                  <div className="flex flex-col align-middle items-center justify-center relative w-[100%]">
+                  <div className="flex flex-col align-middle items-center justify-center w-[100%]">
                     <div className="flex flex-row">
                     <div className="flex flex-row p-1 h-auto ml-[-1rem]">
                       <img
-                        src="/financial.png"
+                        src="/stakeholder.png"
                         alt=""
                         className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
                       />
@@ -2198,7 +2949,7 @@ const Page = () => {
                               </button>
 
                               <button
-                                onClick={() =>openDeleteModal(strategy, 'Stakeholder')} 
+                                onClick={() =>handleStakeholderDelete(strategy.fID)}
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
                               >
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
@@ -2213,34 +2964,9 @@ const Page = () => {
                   </div>
                 )}
               </div>
+              )}
               {/* end of main container */}
               
-    {/* Delete Confirmation Modal */}
-    {isDeleteModalOpen && strategyToDelete && (
-                  <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                    <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                      <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
-                      <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strategy?</p>
-                      <div className="flex justify-center space-x-3 mt-10">
-                        <button
-
-                          className="break-words font-semibold border border-[#962203] w-[11rem] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-                          onClick={() => setIsDeleteModalOpen(false)}
-                        >
-                          Cancel
-                        </button>
-                        <button
-                          className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-                          style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                          onClick={handleDeleteConfirm}
-                        >
-                          Delete
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
             </div>
           </div>
         </div>
