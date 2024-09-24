@@ -8,8 +8,7 @@ import { toast } from "react-toastify";
 interface LearningScorecard {
   id: number;
   target_code: string;
-  startDate: Date;
-  completionDate: Date;
+  metric: string;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -28,9 +27,7 @@ export default function Learning() {
 
   // Learning state variables
   const [learningTargetCode, setLearningTargetCode] = useState("");
-  const [learningStartDate, setLearningStartDate] = useState(new Date());
-  const [learningTargetCompletionDate, setLearningTargetCompletionDate] =
-    useState(new Date());
+  const [learningMetric, setLearningMetric] = useState("");
   const [learningOfficeTarget, setLearningOfficeTarget] = useState("");
   const [learningTargetPerformance, setLearningTargetPerformance] =
     useState("");
@@ -54,58 +51,45 @@ export default function Learning() {
     setLearningEditMode(null);
   };
 
-  const handleStartDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setLearningStartDate(utcDate);
-    } else {
-      setLearningStartDate(new Date());
-    }
-  };
+  // const handleStartDateChange = (date: Date | null) => {
+  //   console.log("Selected Start Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setLearningStartDate(utcDate);
+  //   } else {
+  //     setLearningStartDate(new Date());
+  //   }
+  // };
 
-  const handleCompletionDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setLearningTargetCompletionDate(utcDate);
-    } else {
-      //@ts-ignore
-      setLearningTargetCompletionDate(null);
-    }
-  };
+  // const handleCompletionDateChange = (date: Date | null) => {
+  //   console.log("Selected Start Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setLearningTargetCompletionDate(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setLearningTargetCompletionDate(null);
+  //   }
+  // };
+
   const handleLearningAddMoreScorecard = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/bsc/learningBsc/getLatestId"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch latest scorecard ID");
-      }
-      const { latestId } = await response.json();
-      const newTargetCode = `TC-${latestId + 1}`; // Assuming the latestId is fetched correctly
-
-      setLearningTargetCode(newTargetCode);
-      setLearningStartDate(new Date());
-      //@ts-ignore
-      setLearningTargetCompletionDate(null);
-      setLearningOfficeTarget("");
-      setLearningStatus("");
-      setLearningKPI("");
-      setLearningTargetPerformance("");
-      setLearningActualPerformance("");
-      setLearningEditMode(null);
-      setLearningModalOpen(true);
-    } catch (error) {
-      console.error("Error fetching latest scorecard ID:", error);
-      toast.error("Error fetching latest scorecard ID");
-    }
+    setLearningTargetCode("");
+    setLearningMetric("");
+    //@ts-ignore
+    //setLearningTargetCompletionDate(null);
+    setLearningOfficeTarget("");
+    setLearningStatus("");
+    setLearningKPI("");
+    setLearningTargetPerformance("");
+    setLearningActualPerformance("");
+    setLearningEditMode(null);
+    setLearningModalOpen(true);
   };
 
   // Determine which function to call when the save button is clicked
@@ -153,8 +137,7 @@ export default function Learning() {
 
   const handleLearningEditScorecard = (scorecard: LearningScorecard) => {
     setLearningTargetCode(scorecard.target_code);
-    setLearningStartDate(scorecard.startDate);
-    setLearningTargetCompletionDate(scorecard.completionDate);
+    setLearningMetric(scorecard.metric);
     setLearningOfficeTarget(scorecard.office_target);
     setLearningStatus(scorecard.status);
     setLearningKPI(scorecard.key_performance_indicator);
@@ -169,15 +152,12 @@ export default function Learning() {
     // Check if all fields are filled
     if (
       !learningTargetCode ||
-      !learningStartDate ||
-      !learningTargetCompletionDate ||
+      !learningMetric ||
       !learningOfficeTarget ||
       !learningTargetPerformance ||
       !learningStatus ||
       !learningKPI ||
-      !learningActualPerformance ||
-      parseFloat(learningTargetPerformance) > 100 ||
-      parseFloat(learningActualPerformance) > 100
+      !learningActualPerformance
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed 100."
@@ -198,8 +178,7 @@ export default function Learning() {
             department: { id: department_id }, // Ensure you have this variable defined or passed in
             target_code: learningTargetCode,
             office_target: learningOfficeTarget,
-            startDate: learningStartDate,
-            completionDate: learningTargetCompletionDate,
+            metric: learningMetric,
             status: learningStatus,
             key_performance_indicator: learningKPI,
             target_performance: learningTargetPerformance,
@@ -228,8 +207,7 @@ export default function Learning() {
     const updatedScorecard: LearningScorecard = {
       ...learningEditMode,
       target_code: learningTargetCode,
-      startDate: learningStartDate,
-      completionDate: learningTargetCompletionDate,
+      metric: learningMetric,
       office_target: learningOfficeTarget,
       status: learningStatus,
       key_performance_indicator: learningKPI,
@@ -314,13 +292,13 @@ export default function Learning() {
           <div className="w-[10rem] flex items-center font-bold">
             Target Code
           </div>
-          <div className="w-[25rem] flex items-center font-bold">
+          <div className="w-[25rem] flex items-center font-bold mr-10">
             Learning Office Target
           </div>
-          <div className="w-[10rem] flex items-center font-bold">
-            Completion
+          <div className="w-[10rem] flex items-center font-bold">Metric</div>
+          <div className="w-[18rem] flex items-center font-bold">
+            Target Performance
           </div>
-          <div className="w-[18rem] flex items-center font-bold">Progress</div>
           <div className="w-[13rem] flex items-center font-bold">
             Attainment
           </div>
@@ -343,17 +321,6 @@ export default function Learning() {
               100
             );
 
-            const progressColor =
-              parseFloat(levelOfAttainment) >= 100
-                ? "bg-orange-400" // A darker shade of green to indicate full completion
-                : parseFloat(levelOfAttainment) >= 50
-                ? "bg-yellow-300"
-                : "bg-red-600";
-
-            const progressBarWidth = `${
-              (validatedLevelOfAttainment / 100) * 20
-            }rem`; // Adjust the width of the progress bar
-
             return (
               <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
                 <div
@@ -363,48 +330,44 @@ export default function Learning() {
                   }`}
                 >
                   <div className="flex flex-row w-full">
-                    <div className="w-[10rem] flex flex-row">
+                    <div className="w-[10rem] flex items-center">
                       <span className="font-semibold text-gray-500">
                         {scorecard.target_code || "N/A"}:
                       </span>
                     </div>
 
-                    <div className="w-[25rem] flex items-center">
+                    <div className="w-[25.5rem] mr-10 flex items-center ">
                       <span className="font-semibold">
-                        {learningOfficeTarget.length > 60
-                          ? `${(scorecard.office_target || "N/A").substring(
-                              0,
-                              60
-                            )}...`
-                          : scorecard.office_target || "N/A"}{" "}
+                        {scorecard.office_target &&
+                        scorecard.office_target.length > 60
+                          ? `${scorecard.office_target.substring(0, 60)}...`
+                          : scorecard.office_target || "N/A"}
                       </span>
                     </div>
 
-                    <div className="flex items-center w-[10rem]">
-                      <span className="font-semibold">
-                        {scorecard.completionDate
-                          ? new Date(
-                              scorecard.completionDate
-                            ).toLocaleDateString()
-                          : "N/A"}
-                      </span>
-                    </div>
-                    <div className="w-[15rem] flex items-center">
-                      <div
-                        className={`h-5 ${progressColor} rounded-md`}
-                        style={{ width: progressBarWidth }}
-                      ></div>
-                    </div>
-
-                    <div className="w-[10rem] flex items-center ml-[5rem]">
+                    <div className="w-[13rem] flex items-center ">
                       <span className="font-semibold ">
-                        {validatedLevelOfAttainment}%{" "}
+                        {scorecard.metric || "N/A"}
                       </span>
                     </div>
 
-                    <div className="w-[10rem] flex items-center">
-                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2">
-                        {scorecard.status || "N/A"}{" "}
+                    <div className="w-[16rem] flex items-center">
+                      <div className={"font-semibold"}>
+                        {scorecard.metric === "Percentage"
+                          ? `${scorecard.target_performance}%`
+                          : scorecard.target_performance || "N/A"}
+                      </div>
+                    </div>
+
+                    <div className="w-[10rem] flex items-center ">
+                      <span className="font-semibold">
+                        {validatedLevelOfAttainment || "N/A"}%
+                      </span>
+                    </div>
+
+                    <div className="w-[8rem] flex items-center text-center">
+                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2 w-[10rem]">
+                        {scorecard.status || "N/A"}
                       </div>
                     </div>
 
@@ -439,12 +402,10 @@ export default function Learning() {
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="bg-white p-8 rounded-lg z-10 h-[50rem] w-[96rem]">
             <div className="flex flex-row">
-              <h2 className="text-2xl mb-10 font-semibold">
-                Learning & Growth
-              </h2>
+              <h2 className="text-2xl mb-10 font-semibold">Financial</h2>
               <button
                 onClick={handleLearningCloseModal}
-                className="ml-[77rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
+                className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -477,30 +438,36 @@ export default function Learning() {
               </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Start Date
+                  Metric / Unit of Measure
+                  <span className="text-[#DD1414]">*</span>
                 </span>
-                <DatePicker
-                  key={learningStartDate?.toString()}
-                  selected={learningStartDate}
-                  onChange={handleStartDateChange}
-                  minDate={new Date()}
-                  placeholderText="MM-DD-YYYY"
+                <select
+                  value={learningMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                />
+                  onChange={(e) => setLearningMetric(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Percentage">Percentage (%)</option>
+                  <option value="Count">Count</option>
+                  <option value="Rating">Rating</option>
+                  <option value="Score">Score</option>
+                  <option value="Succession Plan">Succession Plan</option>
+                </select>
               </div>
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Target Completion Date
-                </span>
-                <DatePicker
-                  key={learningTargetCompletionDate?.toString()}
-                  selected={learningTargetCompletionDate}
-                  onChange={handleCompletionDateChange}
-                  minDate={learningStartDate}
-                  placeholderText="MM-DD-YYYY"
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                />
-              </div>
+              {/* <div className="flex flex-col">
+               <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                 Target Completion Date
+               </span>
+               <DatePicker
+                 key={financialTargetCompletionDate?.toString()}
+                 selected={financialTargetCompletionDate}
+                 onChange={handleCompletionDateChange}
+                 placeholderText="MM-DD-YYYY"
+                 className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
+               />
+             </div> */}
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
@@ -518,13 +485,14 @@ export default function Learning() {
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
-                  value={learningStatus}
+                  value={learningStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setLearningStatus(e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Uninitiated">Uninitiated</option>
-                  <option value="Initiated">Initiated</option>
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Not Achieved">Not Achieved</option>
                   <option value="Achieved">Achieved</option>
                 </select>
               </div>
@@ -548,40 +516,129 @@ export default function Learning() {
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                  Please enter the target performance as a percentage without
-                  including the &apos;%&apos; symbol.
-                </span>
+                {learningMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {learningMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {learningMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {learningMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {learningMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
                 <input
                   type="number"
                   value={learningTargetPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  min="1"
-                  max="100"
                   onChange={(e) => {
-                    const value = Math.min(parseFloat(e.target.value), 100);
+                    const maxLimit =
+                      learningMetric === "Percentage"
+                        ? 100
+                        : learningMetric === "Rating"
+                        ? 10
+                        : learningMetric === "Score"
+                        ? 20
+                        : 1000;
+
+                    let value = parseFloat(e.target.value);
+
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
+                    if (
+                      learningMetric === "Rating" ||
+                      learningMetric === "Score"
+                    ) {
+                      value = Math.min(value, maxLimit);
+                      value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
+                    }
+
                     setLearningTargetPerformance(value.toString());
                   }}
                 />
               </div>
-
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                  Please enter the actual performance as a percentage without
-                  including the &apos;%&apos; symbol.
-                </span>
+                {learningMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {learningMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {learningMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {learningMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {learningMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
                 <input
                   type="number"
                   value={learningActualPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  min="1"
-                  max="100"
                   onChange={(e) => {
-                    const value = Math.min(parseFloat(e.target.value), 100);
+                    const maxLimit =
+                      learningMetric === "Percentage"
+                        ? 100
+                        : learningMetric === "Rating"
+                        ? 10
+                        : learningMetric === "Score"
+                        ? 20
+                        : 1000;
+
+                    let value = parseFloat(e.target.value);
+
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
+                    if (
+                      learningMetric === "Rating" ||
+                      learningMetric === "Score"
+                    ) {
+                      value = Math.min(value, maxLimit);
+                      value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
+                    }
+
                     setLearningActualPerformance(value.toString());
                   }}
                 />

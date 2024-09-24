@@ -8,8 +8,7 @@ import { toast } from "react-toastify";
 interface InternalScorecard {
   id: number;
   target_code: string;
-  startDate: Date;
-  completionDate: Date;
+  metric: string;
   office_target: string;
   status: string;
   key_performance_indicator: string;
@@ -28,9 +27,7 @@ export default function Internal() {
 
   // internal values
   const [internalTargetCode, setInternalTargetCode] = useState("");
-  const [internalStartDate, setInternalStartDate] = useState(new Date());
-  const [internalTargetCompletionDate, setInternalTargetCompletionDate] =
-    useState(new Date());
+  const [internalMetric, setInternalMetric] = useState("");
   const [internalOfficeTarget, setInternalOfficeTarget] = useState("");
   const [internalTargetPerformance, setInternalTargetPerformance] =
     useState("");
@@ -55,60 +52,46 @@ export default function Internal() {
     setInternalModalOpen(false);
     setInternalEditMode(null); // Reset the edit mode
   };
-  const handleStartDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setInternalStartDate(utcDate);
-    } else {
-      setInternalStartDate(new Date());
-    }
-  };
 
-  const handleCompletionDateChange = (date: Date | null) => {
-    console.log("Selected Start Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setInternalTargetCompletionDate(utcDate);
-    } else {
-      //@ts-ignore
-      setInternalTargetCompletionDate(null);
-    }
-  };
+  // const handleStartDateChange = (date: Date | null) => {
+  //   console.log("Selected Start Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setInternalStartDate(utcDate);
+  //   } else {
+  //     setInternalStartDate(new Date());
+  //   }
+  // };
+
+  // const handleCompletionDateChange = (date: Date | null) => {
+  //   console.log("Selected Start Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setInternalTargetCompletionDate(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setInternalTargetCompletionDate(null);
+  //   }
+  // };
 
   const handleInternalAddMoreScorecard = async () => {
-    try {
-      const response = await fetch(
-        "http://localhost:8080/bsc/internalBsc/getLatestId"
-      );
-      if (!response.ok) {
-        throw new Error("Failed to fetch latest scorecard ID");
-      }
-
-      const { latestId } = await response.json();
-      const newTargetCode = `TC-${latestId + 1}`; // Assuming the latestId is fetched correctly
-      setInternalTargetCode(newTargetCode);
-      setInternalStartDate(new Date());
-      //@ts-ignore
-      setInternalTargetCompletionDate(null);
-      setInternalOfficeTarget("");
-      setInternalTargetPerformance("");
-      setInternalStatus("");
-      setInternalKPI("");
-      setInternalActualPerformance("");
-      setInternalLevelOfAttainment("");
-      setInternalEditMode(null);
-      setInternalModalOpen(true);
-    } catch (error) {
-      console.error("Error adding more scorecard:", error);
-      toast.error("Error adding more scorecard");
-    }
+    setInternalTargetCode("");
+    setInternalMetric("");
+    //setInternalTargetCompletionDate(null);
+    setInternalOfficeTarget("");
+    setInternalTargetPerformance("");
+    setInternalStatus("");
+    setInternalKPI("");
+    setInternalActualPerformance("");
+    setInternalLevelOfAttainment("");
+    setInternalEditMode(null);
+    setInternalModalOpen(true);
   };
 
   // Determine which function to call when the save button is clicked
@@ -126,7 +109,7 @@ export default function Internal() {
   ): string => {
     const levelOfAttainmentInternal =
       (actualInternalPerformance / targetInternalPerformance) * 100;
-    return levelOfAttainmentInternal.toFixed(2) + "%";
+    return levelOfAttainmentInternal.toFixed(2);
   };
 
   // Fetch the saved financial scorecards from the server
@@ -156,8 +139,7 @@ export default function Internal() {
 
   const handleInternalEditScorecard = (scorecard: InternalScorecard) => {
     setInternalTargetCode(scorecard.target_code);
-    setInternalStartDate(scorecard.startDate);
-    setInternalTargetCompletionDate(scorecard.completionDate);
+    setInternalMetric(scorecard.metric);
     setInternalOfficeTarget(scorecard.office_target);
     setInternalStatus(scorecard.status);
     setInternalKPI(scorecard.key_performance_indicator);
@@ -172,15 +154,12 @@ export default function Internal() {
     // Check if all fields are filled
     if (
       !internalTargetCode ||
-      !internalStartDate ||
-      !internalTargetCompletionDate ||
       !internalOfficeTarget ||
+      !internalMetric ||
       !internalTargetPerformance ||
       !internalStatus ||
       !internalKPI ||
-      !internalActualPerformance ||
-      parseFloat(internalTargetPerformance) > 100 ||
-      parseFloat(internalActualPerformance) > 100
+      !internalActualPerformance
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed 100."
@@ -200,8 +179,7 @@ export default function Internal() {
           body: JSON.stringify({
             department: { id: department_id },
             target_code: internalTargetCode,
-            startDate: internalStartDate,
-            completionDate: internalTargetCompletionDate,
+            metric: internalMetric,
             office_target: internalOfficeTarget,
             status: internalStatus,
             key_performance_indicator: internalKPI,
@@ -231,8 +209,7 @@ export default function Internal() {
     const updatedScorecard: InternalScorecard = {
       ...internalEditMode,
       target_code: internalTargetCode,
-      startDate: internalStartDate,
-      completionDate: internalTargetCompletionDate,
+      metric: internalMetric,
       office_target: internalOfficeTarget,
       status: internalStatus,
       key_performance_indicator: internalKPI,
@@ -317,13 +294,13 @@ export default function Internal() {
           <div className="w-[10rem] flex items-center font-bold">
             Target Code
           </div>
-          <div className="w-[25rem] flex items-center font-bold">
+          <div className="w-[25rem] flex items-center font-bold mr-10">
             Internal Office Target
           </div>
-          <div className="w-[10rem] flex items-center font-bold">
-            Completion
+          <div className="w-[10rem] flex items-center font-bold">Metric</div>
+          <div className="w-[18rem] flex items-center font-bold">
+            Target Performance
           </div>
-          <div className="w-[18rem] flex items-center font-bold">Progress</div>
           <div className="w-[13rem] flex items-center font-bold">
             Attainment
           </div>
@@ -346,16 +323,16 @@ export default function Internal() {
               100
             );
 
-            const progressColor =
-              parseFloat(levelOfAttainment) >= 100
-                ? "bg-orange-400" // A darker shade of green to indicate full completion
-                : parseFloat(levelOfAttainment) >= 50
-                ? "bg-yellow-300"
-                : "bg-red-600";
+            // const progressColor =
+            //   parseFloat(levelOfAttainment) >= 100
+            //     ? "bg-orange-400" // A darker shade of green to indicate full completion
+            //     : parseFloat(levelOfAttainment) >= 50
+            //     ? "bg-yellow-300"
+            //     : "bg-red-600";
 
-            const progressBarWidth = `${
-              (validatedLevelOfAttainment / 100) * 20
-            }rem`; // Adjust the width of the progress bar
+            // const progressBarWidth = `${
+            //   (validatedLevelOfAttainment / 100) * 20
+            // }rem`; // Adjust the width of the progress bar
 
             return (
               <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
@@ -366,49 +343,47 @@ export default function Internal() {
                   }`}
                 >
                   <div className="flex flex-row w-full">
-                    <div className="w-[10rem] flex flex-row">
+                    <div className="w-[10rem] flex items-center">
                       <span className="font-semibold text-gray-500">
                         {scorecard.target_code || "N/A"}:
                       </span>
                     </div>
 
-                    <div className="w-[25rem] flex items-center">
+                    <div className="w-[25.5rem] mr-10 flex items-center ">
                       <span className="font-semibold">
-                        {internalOfficeTarget.length > 60
-                          ? `${(scorecard.office_target || "N/A").substring(
-                              0,
-                              60
-                            )}...`
-                          : scorecard.office_target || "N/A"}{" "}
+                        {scorecard.office_target &&
+                        scorecard.office_target.length > 60
+                          ? `${scorecard.office_target.substring(0, 60)}...`
+                          : scorecard.office_target || "N/A"}
                       </span>
                     </div>
 
-                    <div className="flex items-center w-[10rem]">
-                      <span className="font-semibold">
-                        {scorecard.completionDate
-                          ? new Date(
-                              scorecard.completionDate
-                            ).toLocaleDateString()
-                          : "N/A"}
-                      </span>
-                    </div>
-                    <div className="w-[15rem] flex items-center">
-                      <div
-                        className={`h-5 ${progressColor} rounded-md`}
-                        style={{ width: progressBarWidth }}
-                      ></div>
-                    </div>
-
-                    <div className="w-[10rem] flex items-center ml-[5rem]">
+                    <div className="w-[13rem] flex items-center ">
                       <span className="font-semibold ">
-                        {validatedLevelOfAttainment}%{" "}
+                        {scorecard.metric || "N/A"}
                       </span>
                     </div>
-                    <div className="w-[10rem] flex items-center">
-                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2">
-                        {scorecard.status || "N/A"}{" "}
+
+                    <div className="w-[16rem] flex items-center">
+                      <div className={"font-semibold"}>
+                        {scorecard.metric === "Percentage"
+                          ? `${scorecard.target_performance}%`
+                          : scorecard.target_performance || "N/A"}
                       </div>
                     </div>
+
+                    <div className="w-[10rem] flex items-center ">
+                      <span className="font-semibold">
+                        {validatedLevelOfAttainment || "N/A"}%
+                      </span>
+                    </div>
+
+                    <div className="w-[8rem] flex items-center text-center">
+                      <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 p-2 w-[10rem]">
+                        {scorecard.status || "N/A"}
+                      </div>
+                    </div>
+
                     <div className="w-[5rem] flex items-center justify-end text-orange-700">
                       <button
                         onClick={() => handleInternalEditScorecard(scorecard)}
@@ -440,10 +415,10 @@ export default function Internal() {
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="bg-white p-8 rounded-lg z-10 h-[50rem] w-[96rem]">
             <div className="flex flex-row">
-              <h2 className="text-2xl mb-10 font-semibold">Internal Process</h2>
+              <h2 className="text-2xl mb-10 font-semibold">Internal</h2>
               <button
                 onClick={handleInternalCloseModal}
-                className="ml-[78.5rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
+                className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -476,30 +451,36 @@ export default function Internal() {
               </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Start Date
+                  Metric / Unit of Measure
+                  <span className="text-[#DD1414]">*</span>
                 </span>
-                <DatePicker
-                  key={internalStartDate?.toString()}
-                  selected={internalStartDate}
-                  onChange={handleStartDateChange}
-                  minDate={new Date()}
-                  placeholderText="MM-DD-YYYY"
+                <select
+                  value={internalMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                />
+                  onChange={(e) => setInternalMetric(e.target.value)}
+                >
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Percentage">Percentage (%)</option>
+                  <option value="Count">Count</option>
+                  <option value="Rating">Rating</option>
+                  <option value="Score">Score</option>
+                  <option value="Succession Plan">Succession Plan</option>
+                </select>
               </div>
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Target Completion Date
-                </span>
-                <DatePicker
-                  key={internalTargetCompletionDate?.toString()}
-                  selected={internalTargetCompletionDate}
-                  onChange={handleCompletionDateChange}
-                  minDate={internalStartDate}
-                  placeholderText="MM-DD-YYYY"
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                />
-              </div>
+              {/* <div className="flex flex-col">
+              <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                Target Completion Date
+              </span>
+              <DatePicker
+                key={financialTargetCompletionDate?.toString()}
+                selected={financialTargetCompletionDate}
+                onChange={handleCompletionDateChange}
+                placeholderText="MM-DD-YYYY"
+                className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
+              />
+            </div> */}
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
@@ -517,13 +498,14 @@ export default function Internal() {
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
-                  value={internalStatus}
+                  value={internalStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setInternalStatus(e.target.value)}
                 >
-                  <option value="">Select</option>
-                  <option value="Uninitiated">Uninitiated</option>
-                  <option value="Initiated">Initiated</option>
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Not Achieved">Not Achieved</option>
                   <option value="Achieved">Achieved</option>
                 </select>
               </div>
@@ -547,18 +529,63 @@ export default function Internal() {
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                  Please enter the target performance as a percentage without
-                  including the &apos;%&apos; symbol.
-                </span>
+                {internalMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {internalMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {internalMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {internalMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {internalMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
                 <input
                   type="number"
                   value={internalTargetPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  min="1"
-                  max="100"
                   onChange={(e) => {
-                    const value = Math.min(parseFloat(e.target.value), 100);
+                    const maxLimit =
+                      internalMetric === "Percentage"
+                        ? 100
+                        : internalMetric === "Rating"
+                        ? 10
+                        : internalMetric === "Score"
+                        ? 20
+                        : 1000;
+
+                    let value = parseFloat(e.target.value);
+
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
+                    if (
+                      internalMetric === "Rating" ||
+                      internalMetric === "Score"
+                    ) {
+                      value = Math.min(value, maxLimit);
+                      value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
+                    }
+
                     setInternalTargetPerformance(value.toString());
                   }}
                 />
@@ -568,18 +595,63 @@ export default function Internal() {
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                  Please enter the actual performance as a percentage without
-                  including the &apos;%&apos; symbol.
-                </span>
+                {internalMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {internalMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {internalMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {internalMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {internalMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
                 <input
                   type="number"
                   value={internalActualPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  min="1"
-                  max="100"
                   onChange={(e) => {
-                    const value = Math.min(parseFloat(e.target.value), 100);
+                    const maxLimit =
+                      internalMetric === "Percentage"
+                        ? 100
+                        : internalMetric === "Rating"
+                        ? 10
+                        : internalMetric === "Score"
+                        ? 20
+                        : 1000;
+
+                    let value = parseFloat(e.target.value);
+
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
+                    if (
+                      internalMetric === "Rating" ||
+                      internalMetric === "Score"
+                    ) {
+                      value = Math.min(value, maxLimit);
+                      value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
+                    }
+
                     setInternalActualPerformance(value.toString());
                   }}
                 />

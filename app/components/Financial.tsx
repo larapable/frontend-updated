@@ -167,9 +167,7 @@ export default function Financial() {
       !financialTargetPerformance ||
       !financialStatus ||
       !financialKPI ||
-      !financialActualPerformance ||
-      parseFloat(financialTargetPerformance) > 100 ||
-      parseFloat(financialActualPerformance) > 100
+      !financialActualPerformance
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed 100."
@@ -646,7 +644,7 @@ export default function Financial() {
                         : 1000;
 
                     let value = parseFloat(e.target.value);
-                    
+
                     // Apply min/max limits for all metrics
                     value = Math.min(value, maxLimit);
 
