@@ -8,12 +8,12 @@ const Page = () => {
   const { data: session } = useSession();
   const [selectedComponent, setSelectedComponent] = useState("");
   const [currentView, setCurrentView] = useState("primary");
+  const [hasPrimaryStrats, setHasPrimaryStrats] = useState<string | null>(null);
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
   const department_id = user?.department_id;
   const role = user?.role;
-  const hasPrimary = user?.hasPrimary;
   const username = user?.username;
 
   useEffect(() => {
@@ -24,87 +24,178 @@ const Page = () => {
   }, []);
 
   useEffect(() => {
+    let isMounted = true;
 
     const postToPrimaryStrategies = async () => {
-      if (hasPrimary === 0) {
+      const response = await fetch(`http://localhost:8080/user/getHasPrimaryStrats/${username}`);
+      const data = await response.json();
+
+      console.log("data:", data);
+
+      if (data === 0 && isMounted) {
         try {
-          
-          const primaryFinancialData = {
-            office_target: "A8.1: 100% compliance to prescribed budget ceiling", 
-            department: { id: department_id },
-          };
+          // Define an array of primary strategy data
+          const primaryStrategiesData = [
+            {
+              perspective: "financial", // Added perspective field
+              office_target: "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
+              department: { id: department_id },
+            },
+            {
+              perspective: "stakeholder", // Added perspective field
+              office_target: "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
+              department: { id: department_id },
+            },
+            {
+              perspective: "stakeholder", // Added perspective field
+              office_target: "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
+              department: { id: department_id },
+            },
+            {
+              perspective: "stakeholder", // Added perspective field
+              office_target: "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
+              department: { id: department_id },
+            },
+            {
+              perspective: "stakeholder", // Added perspective field
+              office_target: "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
+              department: { id: department_id },
+            },
+            {
+              perspective: "stakeholder", // Added perspective field
+              office_target: "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
+              department: { id: department_id },
+            },
+            {
+              perspective: "stakeholder", // Added perspective field
+              office_target: "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
+              department: { id: department_id },
+            },
+            {
+              perspective: "internal", // Added perspective field
+              office_target: "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning", // Added perspective field
+              office_target: "A7.1: At least 90% participation in CIT-sponsored events",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning", // Added perspective field
+              office_target: "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning", // Added perspective field
+              office_target: "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning",
+              office_target: "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning",
+              office_target: "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning",
+              office_target: "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning",
+              office_target: "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning",
+              office_target: "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
+              department: { id: department_id },
+            },
+            {
+              perspective: "learning",
+              office_target: "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
+              department: { id: department_id },
+            }
+          ];
       
-          const primaryStakeholderData = {
-            office_target: 
-              "A8.1: 100% compliance to prescribed budget ceiling, " +
-              "A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices, " + 
-              "A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction, " +
-              "A2.1: Have at least 4-star (out of 5) customer service rating, " +
-              "A2.2: Have at least 9-star (out of 10) net promoter score, " +
-              "A2.3: 90% transanctions resolved or answered customer query within expected time",
-            department: { id: department_id },
-          };
+          // Post each strategy individually
+          const postPromises = primaryStrategiesData.map(async (strategyData) => {
+            const endpoint = `http://localhost:8080/stratmap/primary${strategyData.perspective.charAt(0).toUpperCase() + strategyData.perspective.slice(1)}/insert`;
+            console.log("Endpoint:", endpoint); // Log the endpoint for debugging
+            const response = await fetch(endpoint, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(strategyData),
+            });
       
-          const primaryInternalProcessData = {
-            office_target: 
-              "A4.1: 100% of the office systems standardized and documented, " +
-              "A6.1: 100% awareness of the existence of the 5S+ Program, " +
-              "A6.2: 100% participation in the orientation/re-orientation of 5S+ training", 
-            department: { id: department_id },
-          };
+            if (!response.ok) {
+              console.error(`Error posting ${strategyData.perspective} strategy:`, response.status);
+            }
+          });
       
-          const primaryLearningGrowthData = {
-            office_target: 
-              "A7.1: At least 90% participation in CIT-sponsored events, " +
-              "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences, " +
-              "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
-            department: { id: department_id },
-          };
-
-          await Promise.all([
-            fetch("http://localhost:8080/stratmap/primaryFinancial/insert", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(primaryFinancialData), 
-            }),
-            fetch("http://localhost:8080/stratmap/primaryStakeholder/insert", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(primaryStakeholderData),
-            }),
-            fetch("http://localhost:8080/stratmap/primaryInternal/insert", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(primaryInternalProcessData),
-            }),
-            fetch("http://localhost:8080/stratmap/primaryLearning/insert", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(primaryLearningGrowthData),
-            }),
-          ]);
-
+          await Promise.all(postPromises);
+      
+          // Update hasPrimaryStrats in the user entity
           if (username) {
             const response = await fetch(
-              `http://localhost:8080/user/update/${username}`,
+              `http://localhost:8080/user/update/primaryStrats/${username}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ hasPrimary: 1 }),
+                body: JSON.stringify({ hasPrimaryStrats: 1 }),
               }
             );
-
+      
             if (!response.ok) {
               console.error(
-                "Error updating hasPrimary in user session:",
+                "Error updating hasPrimaryStrats in user session:",
                 response.status
               );
               // Handle the error appropriately (e.g., show an error message)
             }
+            else {
+              localStorage.setItem('hasPrimaryStrats', '1');
+              setHasPrimaryStrats('1'); // Store in local storage
+            }
           } else {
             console.error("Username not found in session data.");
           }
-
+      
           // Re-fetch primary strategies to update the UI
           fetchPrimaryFinancialStrategies(department_id);
           fetchPrimaryStakeholderStrategies(department_id);
@@ -116,12 +207,19 @@ const Page = () => {
         }
       }
     };
-
+  
     postToPrimaryStrategies();
-  }, [session, hasPrimary]);
+
+    return () => { 
+      isMounted = false; // Cleanup: set isMounted to false on unmount
+    };
+
+  }, []);
 
   useEffect(() => {
 
+    setHasPrimaryStrats(localStorage.getItem('hasPrimaryStrats'));
+    
     fetchProfileGoals();
     fetchExistingStrategies(department_id);
 
@@ -139,7 +237,8 @@ const Page = () => {
       fetchFunctions[selectedComponent as Perspective](department_id);
     }
 
-  }, [session, currentView, selectedComponent]);
+
+  }, [session, currentView, selectedComponent, hasPrimaryStrats]);
 
   interface GeneratedSentence {
     id: number;
