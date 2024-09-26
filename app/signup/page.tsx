@@ -13,7 +13,7 @@ export default function SignupPage() {
   const [firstname, setFirstname] = useState("");
   const [lastname, setLastname] = useState("");
   const [role, setRole] = useState("");
-  // 
+  //
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +22,7 @@ export default function SignupPage() {
   const [selectedDepartment, setSelectedDepartment] = useState<number | null>(
     null
   );
-  
+
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
   const [successModal, setSuccessModal] = useState(false);
@@ -55,7 +55,7 @@ export default function SignupPage() {
       !email ||
       !password ||
       !confirmPassword ||
-      !selectedDepartment
+      (role !== "qualityAssurance" && !selectedDepartment) // department is required only for non-QA roles
     ) {
       setErrorMessage(
         "You have left a field empty. Please take a moment to complete all the necessary information."
@@ -103,23 +103,34 @@ export default function SignupPage() {
         return;
       }
 
-      const res = await fetch("http://localhost:8080/user/insert", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstname,
-          lastname,
-          role,
-          username,
-          email,
-          password,
-          department: {
-            id: selectedDepartment, // Pass selectedDepartment as a nested object
+      const res = await fetch(
+        "http://localhost:8080/user/insert",
+        // role === "qualityAssurance"
+        //   ? "http://localhost:8080/qauser/insert"
+        //   : "http://localhost:8080/user/insert",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            firstname,
+            lastname,
+            role,
+            username,
+            email,
+            password,
+            // ...(role !== "qualityAssurance" && {
+            //   department: { id: selectedDepartment },
+            // }),
+            // department: {
+            //   id: selectedDepartment, // Pass selectedDepartment as a nested object
+            // },
+            department:
+              role === "qualityAssurance" ? null : { id: selectedDepartment }, // Set department to null for QA role
+          }),
+        }
+      );
       const data = await res.json();
       console.log("data:", data);
       if (res.ok) {
@@ -133,8 +144,12 @@ export default function SignupPage() {
         setPassword("");
         setConfirmPassword("");
         setSelectedDepartment(0);
-        // setSuccessModal(true);
-        router.push("/login");
+        setSuccessModal(true);
+
+        setTimeout(() => {
+          setSuccessModal(false);
+          router.push("/login");
+        }, 2000);
       } else {
         console.log("User registration failed.");
       }
@@ -148,7 +163,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartments",
+        "http://localhost:8080/department/getAllDepartments"
       );
       const data = await res.json();
       setDepartments(data.departments);
@@ -188,21 +203,7 @@ export default function SignupPage() {
             />
           </div>
         </div>
-        <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
-          <select
-            value={selectedDepartment || ""}
-            onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
-            className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
-          >
-            <option value="">Select a department</option>
-            {departments &&
-              departments.map((department) => (
-                <option key={department.id} value={department.id}>
-                  {department.department_name}
-                </option>
-              ))}
-          </select>
-        </div>
+
         {/*  */}
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
           <select
@@ -213,8 +214,27 @@ export default function SignupPage() {
             <option value="">Select a role</option>
             <option value="headOfficer">HEAD OFFICER</option>
             <option value="faculty">FACULTY</option>
+            <option value="qualityAssurance">QUALITY ASSURANCE</option>
           </select>
         </div>
+        {/* Conditionally render the department dropdown based on the selected role */}
+        {role !== "qualityAssurance" && (
+          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
+            <select
+              value={selectedDepartment || ""}
+              onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
+              className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
+            >
+              <option value="">Select a department</option>
+              {departments &&
+                departments.map((department) => (
+                  <option key={department.id} value={department.id}>
+                    {department.department_name}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
         <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] mb-6 py-4 flex items-center">
           <input
             value={email}

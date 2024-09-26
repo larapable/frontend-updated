@@ -44,7 +44,9 @@ export default function LoginPage() {
     setErrorModalOpen(false);
   };
 
-  const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  const handleSubmit = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
 
     if (!username || !password) {
@@ -79,7 +81,7 @@ export default function LoginPage() {
         // Reset reCAPTCHA after failed login
         if (reCaptchaRef.current) {
           // Use the reset method from the grecaptcha object
-          window.grecaptcha.reset(reCaptchaRef.current.getValue()); 
+          window.grecaptcha.reset(reCaptchaRef.current.getValue());
           setCaptchaVerified(false);
         }
         return;
@@ -87,13 +89,17 @@ export default function LoginPage() {
         const user = JSON.parse(session?.user?.name as string);
         if (user?.role === "admin") {
           router.replace("/admindashboard");
+        } else if (user?.role === "qualityAssurance") {
+          router.replace("/qaprofileview");
         } else {
           router.replace("/profile");
         }
       }
     } catch (error) {
       console.error("Error during login:", error);
-      setErrorMessage("An unexpected error occurred during login. Please try again later.");
+      setErrorMessage(
+        "An unexpected error occurred during login. Please try again later."
+      );
     } finally {
       setLoading(false);
     }
@@ -103,11 +109,12 @@ export default function LoginPage() {
     return <Spinner />;
   }
 
-
   if (status === "authenticated") {
     const user = JSON.parse(session?.user?.name as string);
     if (user?.role === "admin") {
       router.replace("/admindashboard");
+    } else if (user?.role === "qualityAssurance") {
+      router.replace("/qaprofileview");
     } else {
       router.replace("/profile");
     }
@@ -116,7 +123,6 @@ export default function LoginPage() {
 
   return (
     <>
-
       <div className="h-screen flex lg:flex-row md:flex-col ">
         <div className="flex flex-col items-center lg:mt-32 lg:ml-60 md:mt-16 md:ml-13">
           <div className=" font-bold lg:text-[4.1rem] lg:mb-18 md:mt-10 md:text-[4rem] md:mb-10 ">
@@ -144,29 +150,32 @@ export default function LoginPage() {
           </div>
 
           <div className="flex flex-row gap-[3rem]">
-          <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6LdT5T0qAAAAADX-EG0m12My_ZFX1PlPYZzLLwZf"
-            onChange={(token: string | null) => { // Handle both string and null
-              if (token) {
-                setCaptchaVerified(true);
-                console.log("reCAPTCHA verified:", token);
-              } else {
-                setCaptchaVerified(false);
-                console.log("reCAPTCHA not verified");
-              }
-            }}
-            onExpired={handleCaptchaExpired}
-          />
-          <div className="flex justify-end">
-          <button
-            style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-            className="rounded-lg text-white font-semibold text-xl w-[16rem] px-12 py-6 border[0.1rem] border-white mb-6 hover:bg-[#eec160] hover:text-white "
-            onClick={handleSubmit}
-          >
-            Login
-          </button>
-          </div>
+            <ReCAPTCHA
+              ref={reCaptchaRef}
+              sitekey="6LdT5T0qAAAAADX-EG0m12My_ZFX1PlPYZzLLwZf"
+              onChange={(token: string | null) => {
+                // Handle both string and null
+                if (token) {
+                  setCaptchaVerified(true);
+                  console.log("reCAPTCHA verified:", token);
+                } else {
+                  setCaptchaVerified(false);
+                  console.log("reCAPTCHA not verified");
+                }
+              }}
+              onExpired={handleCaptchaExpired}
+            />
+            <div className="flex justify-end">
+              <button
+                style={{
+                  background: "linear-gradient(to left, #8a252c, #AB3510)",
+                }}
+                className="rounded-lg text-white font-semibold text-xl w-[16rem] px-12 py-6 border[0.1rem] border-white mb-6 hover:bg-[#eec160] hover:text-white "
+                onClick={handleSubmit}
+              >
+                Login
+              </button>
+            </div>
           </div>
           <div className="text-lg mb-2 font-light">
             Dont have an account?{" "}
@@ -219,7 +228,9 @@ export default function LoginPage() {
           />
           <p className="text-white ml-40 mr-20 mb-4 md:mb-16 font-bold text-2xl">
             <span className="text-[#fad655]">Define objectives</span>
-            <span>, outline initiatives, and map out your path to success.</span>
+            <span>
+              , outline initiatives, and map out your path to success.
+            </span>
           </p>
         </div>
         <Modal
