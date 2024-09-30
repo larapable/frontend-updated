@@ -1,11 +1,10 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
+import { use, useEffect, useState } from "react";
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 
-interface InternalScorecard {
+interface PrimaryFinancialScorecard {
   id: number;
   target_code: string;
   metric: string;
@@ -15,184 +14,206 @@ interface InternalScorecard {
   target_performance: string;
   actual_performance: string;
 }
-export default function Internal() {
+interface Department {
+  id: number;
+  department_name: string;
+}
+
+type QAPrimaryFinancialProps = {
+  selectedDepartmentId: number;
+  departments: Department[];
+};
+export default function QAPrimaryFinancial({
+  selectedDepartmentId,
+  departments,
+}: QAPrimaryFinancialProps) {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
-  const department_id = user?.department_id;
-  const userRole = user?.role;
 
   // open modal
-  const [internalModalOpen, setInternalModalOpen] = useState(false);
+  const [primaryModalOpen, setPrimaryModalOpen] = useState(false);
 
-  // internal values
-  const [internalTargetCode, setInternalTargetCode] = useState("");
-  const [internalMetric, setInternalMetric] = useState("");
-  const [internalOfficeTarget, setInternalOfficeTarget] = useState("");
-  const [internalTargetPerformance, setInternalTargetPerformance] =
-    useState("");
-  const [internalStatus, setInternalStatus] = useState("Not Achieved");
-  const [internalKPI, setInternalKPI] = useState("");
-  const [internalActualPerformance, setInternalActualPerformance] =
-    useState("");
-  const [internalLevelOfAttainment, setInternalLevelOfAttainment] =
-    useState("");
+  // primary financial values
+  const [primaryTargetCode, setPrimaryTargetCode] = useState("");
+  const [primaryMetric, setPrimaryMetric] = useState("");
+  const [primaryOfficeTarget, setPrimaryOfficeTarget] = useState("");
+  const [primaryStatus, setPrimaryStatus] = useState("");
+  const [primaryKPI, setPrimaryKPI] = useState("");
+  const [primaryTargetPerformance, setPrimaryTargetPerformance] = useState("");
+  const [primaryActualPerformance, setPrimaryActualPerformance] = useState("");
 
-  // internal scorecard
-  const [internalSavedScorecards, setInternalSavedScorecards] = useState<
-    InternalScorecard[]
+  // primary financial scorecard
+  const [primaryFinancialScorecard, setPrimaryFinancialScorecard] = useState<
+    PrimaryFinancialScorecard[]
   >([]);
 
   // for edit
-  const [internalEditID, setInternalEditID] = useState(0);
-  const [internalEditMode, setInternalEditMode] =
-    useState<InternalScorecard | null>(null);
+  const [primaryEditId, setPrimaryEditId] = useState(0);
+  const [primaryEditMode, setPrimaryEditMode] =
+    useState<PrimaryFinancialScorecard | null>(null);
 
-  const handleInternalCloseModal = () => {
-    setInternalModalOpen(false);
-    setInternalEditMode(null); // Reset the edit mode
+  const handleCloseModal = () => {
+    setPrimaryModalOpen(false);
+    setPrimaryEditMode(null);
   };
 
-  const handleInternalAddMoreScorecard = async () => {
-    setInternalTargetCode("");
-    setInternalMetric("");
-    setInternalOfficeTarget("");
-    setInternalTargetPerformance("");
-    setInternalStatus("Not Achieved");
-    setInternalKPI("");
-    setInternalActualPerformance("");
-    setInternalLevelOfAttainment("");
-    setInternalEditMode(null);
-    setInternalModalOpen(true);
+  const handlePrimaryAddMoreScorecard = async () => {
+    setPrimaryTargetCode("");
+    setPrimaryMetric("");
+    setPrimaryOfficeTarget("");
+    setPrimaryStatus("");
+    setPrimaryKPI("");
+    setPrimaryTargetPerformance("");
+    setPrimaryActualPerformance("");
+    setPrimaryEditMode(null);
+    setPrimaryModalOpen(true);
   };
 
   // Determine which function to call when the save button is clicked
   const handleSaveButtonClick = () => {
-    if (internalEditMode) {
-      handleInternalUpdateScorecard();
+    if (primaryEditMode) {
+      // If we're in edit mode, update the existing scorecard
+      handlePrimaryUpdateScorecard();
     } else {
-      handleInternalSaveScorecard();
+      // If we're not in edit mode, save as a new scorecard
+      handlePrimarySaveScorecard();
     }
   };
-
-  const calculateInternalLevelOfAttainment = (
-    actualInternalPerformance: number,
-    targetInternalPerformance: number
+  const calculateLevelOfAttainment = (
+    actualFinancialPerformance: number,
+    targetFinancialPerformance: number
   ): string => {
-    const levelOfAttainmentInternal =
-      (actualInternalPerformance / targetInternalPerformance) * 100;
-    return levelOfAttainmentInternal.toFixed(2);
+    const levelOfAttainmentFinancial =
+      (actualFinancialPerformance / targetFinancialPerformance) * 100;
+    return levelOfAttainmentFinancial.toFixed(2);
   };
 
-  // Fetch the saved financial scorecards from the server
   useEffect(() => {
-    const fetchInternalScorecards = async () => {
-      if (!department_id) {
-        console.log("Department ID is not available yet.");
+    const fetchPrimaryFinancialScorecard = async () => {
+      if (!selectedDepartmentId) {
+        console.log("Department ID is not available");
         return;
       }
+      console.log(
+        "Fetching Primary Financial Scorecard for department ID: ",
+        selectedDepartmentId
+      );
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${department_id}`
+          `http://localhost:8080/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
-          throw new Error("Failed to fetch internal scorecards");
+          throw new Error("An error occurred while fetching data");
         }
         const data = await response.json();
-        setInternalSavedScorecards(data);
+        console.log("Primary Financial Scorecard data: ", data);
+        setPrimaryFinancialScorecard(data);
       } catch (error) {
-        console.error("Error fetching internal scorecards:", error);
+        console.error("Error fetching financial scorecards:", error);
       }
     };
 
-    fetchInternalScorecards();
-  }, [department_id]);
+    fetchPrimaryFinancialScorecard();
+  }, [selectedDepartmentId]);
 
-  const handleInternalEditScorecard = (scorecard: InternalScorecard) => {
-    setInternalTargetCode(scorecard.target_code);
-    setInternalMetric(scorecard.metric);
-    setInternalOfficeTarget(scorecard.office_target);
-    setInternalStatus(scorecard.status);
-    setInternalKPI(scorecard.key_performance_indicator);
-    setInternalTargetPerformance(scorecard.target_performance);
-    setInternalActualPerformance(scorecard.actual_performance);
-    setInternalEditMode(scorecard);
-    setInternalEditID(scorecard.id);
-    setInternalModalOpen(true);
+  const handlePrimaryEditScorecard = (scorecard: PrimaryFinancialScorecard) => {
+    setPrimaryTargetCode(scorecard.target_code);
+    setPrimaryMetric(scorecard.metric);
+    setPrimaryOfficeTarget(scorecard.office_target);
+    setPrimaryStatus(scorecard.status);
+    setPrimaryKPI(scorecard.key_performance_indicator);
+    setPrimaryTargetPerformance(scorecard.target_performance);
+    setPrimaryActualPerformance(scorecard.actual_performance);
+    setPrimaryEditMode(scorecard);
+    setPrimaryEditId(scorecard.id);
+    setPrimaryModalOpen(true);
   };
 
-  const handleInternalSaveScorecard = async () => {
+  const handlePrimarySaveScorecard = async () => {
     // Check if all fields are filled
     if (
-      !internalTargetCode ||
-      !internalOfficeTarget ||
-      !internalMetric ||
-      !internalTargetPerformance ||
-      !internalStatus ||
-      !internalKPI ||
-      !internalActualPerformance
+      !primaryTargetCode ||
+      !primaryMetric ||
+      !primaryOfficeTarget ||
+      !primaryStatus ||
+      !primaryKPI ||
+      !primaryTargetPerformance ||
+      !primaryActualPerformance
     ) {
       toast.error(
-        "Please fill in all fields and ensure performance values do not exceed 100."
+        "Please fill in all fields and ensure performance values do not exceed its limit."
       );
       return;
     }
 
     try {
-      // Send the POST request to the server
-      const response = await fetch(
-        "http://localhost:8080/bsc/internalBsc/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            department: { id: department_id },
-            target_code: internalTargetCode,
-            metric: internalMetric,
-            office_target: internalOfficeTarget,
-            status: internalStatus,
-            key_performance_indicator: internalKPI,
-            target_performance: internalTargetPerformance,
-            actual_performance: internalActualPerformance,
-          }),
-        }
-      );
+      // Save for each department including department_id (1)
+      for (const department of departments) {
+        const response = await fetch(
+          "http://localhost:8080/bsc/primaryFinancialBsc/insert",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              department: { id: department.id }, // Saving for the current department
+              target_code: primaryTargetCode,
+              metric: primaryMetric,
+              office_target: primaryOfficeTarget,
+              status: primaryStatus,
+              key_performance_indicator: primaryKPI,
+              target_performance: primaryTargetPerformance,
+              actual_performance: primaryActualPerformance,
+            }),
+          }
+        );
 
-      if (!response.ok) {
-        throw new Error("Failed to save internal scorecard");
+        if (!response.ok) {
+          throw new Error(
+            `Failed to save primary financial scorecard for department ${department.id}`
+          );
+        }
+        const savedScorecard = await response.json();
+
+        // Only update state for department 1
+        if (department.id === selectedDepartmentId) {
+          setPrimaryFinancialScorecard((prevScorecards) => [
+            ...prevScorecards,
+            savedScorecard,
+          ]);
+        }
       }
 
-      const savedScorecard = await response.json();
-      setInternalSavedScorecards([...internalSavedScorecards, savedScorecard]);
-      toast.success("Internal scorecard saved successfully");
-      handleInternalCloseModal();
+      toast.success("Primary financial scorecards saved successfully");
+      handleCloseModal();
     } catch (error) {
-      console.error("Error saving internal scorecard:", error);
-      toast.error("Error saving internal scorecard");
+      console.error("Error saving primary financial scorecard:", error);
+      toast.error("Error saving primary financial scorecard");
     }
   };
 
-  const handleInternalUpdateScorecard = async () => {
-    if (!internalEditMode) return;
+  const handlePrimaryUpdateScorecard = async () => {
+    if (!primaryEditMode) return;
 
-    const updatedScorecard: InternalScorecard = {
-      ...internalEditMode,
-      target_code: internalTargetCode,
-      metric: internalMetric,
-      office_target: internalOfficeTarget,
-      status: internalStatus,
-      key_performance_indicator: internalKPI,
-      target_performance: internalTargetPerformance,
-      actual_performance: internalActualPerformance,
+    const updatedScorecard: PrimaryFinancialScorecard = {
+      ...primaryEditMode,
+      target_code: primaryTargetCode,
+      metric: primaryMetric,
+      office_target: primaryOfficeTarget,
+      status: primaryStatus,
+      key_performance_indicator: primaryKPI,
+      target_performance: primaryTargetPerformance,
+      actual_performance: primaryActualPerformance,
     };
-
+    console.log("Priamry Edit Id", primaryEditId);
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/internal/update/${internalEditID}`,
+        `http://localhost:8080/bsc/primaryFinancialBsc/update/${primaryEditId}`,
+
         {
           method: "PUT",
           headers: {
@@ -201,21 +222,20 @@ export default function Internal() {
           body: JSON.stringify(updatedScorecard),
         }
       );
-
       if (!response.ok) {
-        throw new Error("Failed to update internal scorecard");
+        throw new Error("Failed to update financial scorecard");
       }
-
       // Update the state with the updated scorecard
-      const updatedScorecards = internalSavedScorecards.map((scorecard) =>
-        scorecard.id === internalEditID ? updatedScorecard : scorecard
+      const updatedScorecards = primaryFinancialScorecard.map((scorecard) =>
+        scorecard.id === primaryEditId ? updatedScorecard : scorecard
       );
-      setInternalSavedScorecards(updatedScorecards);
-      toast.success("Internal scorecard updated successfully");
-      handleInternalCloseModal();
+
+      setPrimaryFinancialScorecard(updatedScorecards);
+      toast.success("Primary Financial scorecard updated successfully");
+      handleCloseModal();
     } catch (error) {
-      console.error("Error updating internal scorecard:", error);
-      toast.error("Error updating internal scorecard");
+      console.error("Error updating primary financial scorecard:", error);
+      toast.error("Error updating primary financial scorecard");
     }
   };
 
@@ -225,25 +245,26 @@ export default function Internal() {
         <div className="flex flex-row">
           <div className="flex flex-row p-1 w-[85rem] h-auto">
             <img
-              src="/internal.png"
+              src="/financial.png"
               alt=""
               className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
             />
             <div className="flex flex-col">
               <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                Internal Process Scorecard Overview
+                Financial Scorecard Overview
               </span>
               <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                Assesses the efficiency and quality of internal operations.
+                Measures financial performance and profitability.
               </span>
             </div>
           </div>
-          <div className="flex flex-row self-start justify-end mt-5 mb-5">
+          <div className="flex flex-col self-start justify-end mt-5 mb-5">
             {/* Add More Scorecard Button */}
+
             <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[5rem] pl-[0.25rem] pr-1 pt-1 pb-1">
               <button
                 className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
-                onClick={handleInternalAddMoreScorecard}
+                onClick={handlePrimaryAddMoreScorecard}
               >
                 <div className="flex flex-row">
                   <svg
@@ -263,12 +284,13 @@ export default function Internal() {
             </div>
           </div>
         </div>
+
         <div className="flex flex-row p-4 bg-[#fff6d1] text-[rgb(43,43,43)] ">
           <div className="w-[10rem] flex items-center font-bold">
             Target Code
           </div>
           <div className="w-[25rem] flex items-center font-bold mr-10">
-            Internal Office Target
+            Financial Office Target
           </div>
           <div className="w-[10rem] flex items-center font-bold">Metric</div>
           <div className="w-[18rem] flex items-center font-bold">
@@ -280,32 +302,22 @@ export default function Internal() {
           <div className="w-[10rem] flex items-center font-bold">Status</div>
         </div>
       </div>
+
+      {/* Mapping of Primary Data*/}
       <div className="bg-[#ffffff] gap-2 w-[100%] h-[auto] flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg overflow-y-auto overflow-x-hidden">
-        {internalSavedScorecards &&
-          internalSavedScorecards.length > 0 &&
-          internalSavedScorecards.map((scorecard, index) => {
+        {primaryFinancialScorecard &&
+          primaryFinancialScorecard.length > 0 &&
+          primaryFinancialScorecard.map((scorecard, index) => {
             if (!scorecard) return null;
-            const levelOfAttainment = calculateInternalLevelOfAttainment(
+            const levelOfAttainment = calculateLevelOfAttainment(
               parseFloat(scorecard.actual_performance),
               parseFloat(scorecard.target_performance)
             );
 
-            // Validate the level of attainment to be between 1 and 100
             const validatedLevelOfAttainment = Math.min(
               Math.max(parseFloat(levelOfAttainment), 1),
               100
             );
-
-            // const progressColor =
-            //   parseFloat(levelOfAttainment) >= 100
-            //     ? "bg-orange-400" // A darker shade of green to indicate full completion
-            //     : parseFloat(levelOfAttainment) >= 50
-            //     ? "bg-yellow-300"
-            //     : "bg-red-600";
-
-            // const progressBarWidth = `${
-            //   (validatedLevelOfAttainment / 100) * 20
-            // }rem`; // Adjust the width of the progress bar
 
             return (
               <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
@@ -336,9 +348,7 @@ export default function Internal() {
 
                     <div className="w-[16rem] flex items-center">
                       <div className={"font-semibold"}>
-                        {scorecard.metric === "Percentage"
-                          ? `${scorecard.target_performance}%`
-                          : scorecard.target_performance || "N/A"}
+                        {scorecard.target_performance || "N/A"}
                       </div>
                     </div>
 
@@ -353,10 +363,9 @@ export default function Internal() {
                         {scorecard.status || "N/A"}
                       </div>
                     </div>
-
                     <div className="w-[5rem] flex items-center justify-end text-orange-700">
                       <button
-                        onClick={() => handleInternalEditScorecard(scorecard)}
+                        onClick={() => handlePrimaryEditScorecard(scorecard)}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -380,15 +389,17 @@ export default function Internal() {
             );
           })}
       </div>
-      {internalModalOpen && (
+
+      {/* Modal */}
+      {primaryModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-50"></div>
           <div className="bg-white p-8 rounded-lg z-10 h-[50rem] w-[96rem]">
             <div className="flex flex-row">
-              <h2 className="text-2xl mb-10 font-semibold">Internal</h2>
+              <h2 className="text-2xl mb-3 font-semibold">Financial</h2>
               <button
-                onClick={handleInternalCloseModal}
-                className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
+                onClick={handleCloseModal}
+                className="ml-[85rem] mt-[-2rem] text-gray-500 hover:text-gray-700"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -406,6 +417,12 @@ export default function Internal() {
                 </svg>
               </button>
             </div>
+            {!primaryEditMode && (
+              <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded-lg mb-8">
+                <strong>Note:</strong> When adding, this scorecard will apply to
+                all departments in financial aspect.
+              </div>
+            )}
             <div className="flex flex-row gap-32 mb-10">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
@@ -414,9 +431,9 @@ export default function Internal() {
                 </span>
                 <input
                   type="text"
-                  value={internalTargetCode}
+                  value={primaryTargetCode}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                  onChange={(e) => setInternalTargetCode(e.target.value)}
+                  onChange={(e) => setPrimaryTargetCode(e.target.value)}
                 />
               </div>
               <div className="flex flex-col">
@@ -425,9 +442,9 @@ export default function Internal() {
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
-                  value={internalMetric || ""}
+                  value={primaryMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-                  onChange={(e) => setInternalMetric(e.target.value)}
+                  onChange={(e) => setPrimaryMetric(e.target.value)}
                 >
                   <option value="" disabled>
                     Select
@@ -439,31 +456,38 @@ export default function Internal() {
                   <option value="Succession Plan">Succession Plan</option>
                 </select>
               </div>
+              {/* <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Target Completion Date
+                </span>
+                <DatePicker
+                  key={financialTargetCompletionDate?.toString()}
+                  selected={financialTargetCompletionDate}
+                  onChange={handleCompletionDateChange}
+                  placeholderText="MM-DD-YYYY"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
+                />
+              </div> */}
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
               <span className="text-[#DD1414]">*</span>
             </span>
             <textarea
-              value={internalOfficeTarget}
+              value={primaryOfficeTarget}
               className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
-              onChange={(e) => setInternalOfficeTarget(e.target.value)}
+              onChange={(e) => setPrimaryOfficeTarget(e.target.value)}
             />
             <div className=" mt-10 flex flex-row gap-36">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Status
+                  <span className="text-[#DD1414]">*</span>
                 </span>
-                {userRole !== "qualityAssurance" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    You cannot edit the status unless you are in a QA role.
-                  </span>
-                )}
                 <select
-                  value={internalStatus || ""}
+                  value={primaryStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  onChange={(e) => setInternalStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"}
+                  onChange={(e) => setPrimaryStatus(e.target.value)}
                 >
                   <option value="" disabled>
                     Select
@@ -480,9 +504,9 @@ export default function Internal() {
                 </span>
                 <input
                   type="text"
-                  value={internalKPI}
+                  value={primaryKPI}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  onChange={(e) => setInternalKPI(e.target.value)}
+                  onChange={(e) => setPrimaryKPI(e.target.value)}
                 />
               </div>
             </div>
@@ -492,30 +516,30 @@ export default function Internal() {
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                {internalMetric === "Percentage" && (
+                {primaryMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
                     including the &apos;%&apos; symbol.
                   </span>
                 )}
-                {internalMetric === "Count" && (
+                {primaryMetric === "Count" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a whole number (e.g., 10).
                   </span>
                 )}
-                {internalMetric === "Rating" && (
+                {primaryMetric === "Rating" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a number from 1 to 5, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
-                {internalMetric === "Score" && (
+                {primaryMetric === "Score" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a score from 1 to 10, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
-                {internalMetric === "Succession Plan" && (
+                {primaryMetric === "Succession Plan" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a numeric value to represent the status of the
                     succession plan. Ensure the value accurately reflects
@@ -524,15 +548,15 @@ export default function Internal() {
                 )}
                 <input
                   type="number"
-                  value={internalTargetPerformance}
+                  value={primaryTargetPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => {
                     const maxLimit =
-                      internalMetric === "Percentage"
+                      primaryMetric === "Percentage"
                         ? 100
-                        : internalMetric === "Rating"
+                        : primaryMetric === "Rating"
                         ? 10
-                        : internalMetric === "Score"
+                        : primaryMetric === "Score"
                         ? 20
                         : 1000;
 
@@ -542,14 +566,14 @@ export default function Internal() {
                     value = Math.min(value, maxLimit);
 
                     if (
-                      internalMetric === "Rating" ||
-                      internalMetric === "Score"
+                      primaryMetric === "Rating" ||
+                      primaryMetric === "Score"
                     ) {
                       value = Math.min(value, maxLimit);
                       value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
                     }
 
-                    setInternalTargetPerformance(value.toString());
+                    setPrimaryTargetPerformance(value.toString());
                   }}
                 />
               </div>
@@ -558,30 +582,30 @@ export default function Internal() {
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                {internalMetric === "Percentage" && (
+                {primaryMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
                     including the &apos;%&apos; symbol.
                   </span>
                 )}
-                {internalMetric === "Count" && (
+                {primaryMetric === "Count" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a whole number (e.g., 10).
                   </span>
                 )}
-                {internalMetric === "Rating" && (
+                {primaryMetric === "Rating" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a number from 1 to 5, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
-                {internalMetric === "Score" && (
+                {primaryMetric === "Score" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a score from 1 to 10, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
-                {internalMetric === "Succession Plan" && (
+                {primaryMetric === "Succession Plan" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter a numeric value to represent the status of the
                     succession plan. Ensure the value accurately reflects
@@ -590,15 +614,15 @@ export default function Internal() {
                 )}
                 <input
                   type="number"
-                  value={internalActualPerformance}
+                  value={primaryActualPerformance}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => {
                     const maxLimit =
-                      internalMetric === "Percentage"
+                      primaryMetric === "Percentage"
                         ? 100
-                        : internalMetric === "Rating"
+                        : primaryMetric === "Rating"
                         ? 10
-                        : internalMetric === "Score"
+                        : primaryMetric === "Score"
                         ? 20
                         : 1000;
 
@@ -607,22 +631,25 @@ export default function Internal() {
                     // Apply min/max limits for all metrics
                     value = Math.min(value, maxLimit);
 
+                    // Apply min/max limits for all metrics
+                    value = Math.min(value, maxLimit);
+
                     if (
-                      internalMetric === "Rating" ||
-                      internalMetric === "Score"
+                      primaryMetric === "Rating" ||
+                      primaryMetric === "Score"
                     ) {
                       value = Math.min(value, maxLimit);
                       value = Math.ceil(value * 10) / 10; // Rounds up to the nearest tenth
                     }
 
-                    setInternalActualPerformance(value.toString());
+                    setPrimaryActualPerformance(value.toString());
                   }}
                 />
               </div>
             </div>
-            <div className="flex flex-row justify-center mt-10 gap-10">
+            <div className="flex flex-row justify-center mt-3 gap-10">
               <button
-                onClick={handleInternalCloseModal}
+                onClick={handleCloseModal}
                 className="bg-[#ffffff] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
               >
                 Cancel
@@ -634,7 +661,7 @@ export default function Internal() {
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                 }}
               >
-                {internalEditMode ? "Edit" : "Save"}
+                {primaryEditMode ? "Edit" : "Save"}
               </button>
             </div>
           </div>

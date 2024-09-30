@@ -5,10 +5,9 @@ import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { TiLocationArrowOutline } from "react-icons/ti";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { signOut } from "next-auth/react"
+import { signOut } from "next-auth/react";
 
 export default function QANavbar() {
-  
   return (
     <div
       className="fixed top-0 left-0 flex flex-col h-screen w-[18rem] py-5 overflow-auto gap-1"
@@ -19,7 +18,7 @@ export default function QANavbar() {
         <img src="/logo.png" alt="" className=" h-[8rem] mt-3 mb-5 mr-5" />
       </div>
       <div className="w-[18rem] border-t border-white mb-5"></div>
-      
+
       <Link href="/qaprofileview">
         <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
           <svg
@@ -50,7 +49,7 @@ export default function QANavbar() {
           </div>
         </div>
       </Link>
-      <Link href="/scorecard">
+      <Link href="/qascorecard">
         <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -86,11 +85,13 @@ export default function QANavbar() {
           </div>
         </div>
       </Link>
-      
+
       <div className="w-[18rem] border-t border-white mb-5"></div>
 
-      <div className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 "
-        onClick={() => signOut({ callbackUrl: '/login' })}>
+      <div
+        className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 "
+        onClick={() => signOut({ callbackUrl: "/login" })}
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

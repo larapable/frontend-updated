@@ -1,7 +1,7 @@
 "use client";
 import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
-import DatePicker from "react-datepicker";
+import { use, useEffect, useState } from "react";
+
 import "react-datepicker/dist/react-datepicker.css";
 import { toast } from "react-toastify";
 
@@ -15,12 +15,15 @@ interface InternalScorecard {
   target_performance: string;
   actual_performance: string;
 }
-export default function Internal() {
+type QAInternalrProps = {
+  selectedDepartmentId: number;
+};
+
+export default function QAInternal({ selectedDepartmentId }: QAInternalrProps) {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
-  const department_id = user?.department_id;
   const userRole = user?.role;
 
   // open modal
@@ -32,7 +35,7 @@ export default function Internal() {
   const [internalOfficeTarget, setInternalOfficeTarget] = useState("");
   const [internalTargetPerformance, setInternalTargetPerformance] =
     useState("");
-  const [internalStatus, setInternalStatus] = useState("Not Achieved");
+  const [internalStatus, setInternalStatus] = useState("");
   const [internalKPI, setInternalKPI] = useState("");
   const [internalActualPerformance, setInternalActualPerformance] =
     useState("");
@@ -54,28 +57,6 @@ export default function Internal() {
     setInternalEditMode(null); // Reset the edit mode
   };
 
-  const handleInternalAddMoreScorecard = async () => {
-    setInternalTargetCode("");
-    setInternalMetric("");
-    setInternalOfficeTarget("");
-    setInternalTargetPerformance("");
-    setInternalStatus("Not Achieved");
-    setInternalKPI("");
-    setInternalActualPerformance("");
-    setInternalLevelOfAttainment("");
-    setInternalEditMode(null);
-    setInternalModalOpen(true);
-  };
-
-  // Determine which function to call when the save button is clicked
-  const handleSaveButtonClick = () => {
-    if (internalEditMode) {
-      handleInternalUpdateScorecard();
-    } else {
-      handleInternalSaveScorecard();
-    }
-  };
-
   const calculateInternalLevelOfAttainment = (
     actualInternalPerformance: number,
     targetInternalPerformance: number
@@ -88,27 +69,30 @@ export default function Internal() {
   // Fetch the saved financial scorecards from the server
   useEffect(() => {
     const fetchInternalScorecards = async () => {
-      if (!department_id) {
+      if (!selectedDepartmentId) {
         console.log("Department ID is not available yet.");
         return;
       }
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${department_id}`
+          `http://localhost:8080/bsc/internal/get/${selectedDepartmentId}`
         );
-        if (!response.ok) {
-          throw new Error("Failed to fetch internal scorecards");
+        if (response.ok) {
+          const data = await response.json();
+          setInternalSavedScorecards(data);
+        } else {
+          console.warn(`Warning: Received status ${response.status}`);
+          setInternalSavedScorecards([]); // Optionally clear scorecards if there’s an error
         }
-        const data = await response.json();
-        setInternalSavedScorecards(data);
       } catch (error) {
         console.error("Error fetching internal scorecards:", error);
+        setInternalSavedScorecards([]); //Clears scorecards on error
       }
     };
 
     fetchInternalScorecards();
-  }, [department_id]);
+  }, [selectedDepartmentId]);
 
   const handleInternalEditScorecard = (scorecard: InternalScorecard) => {
     setInternalTargetCode(scorecard.target_code);
@@ -121,59 +105,6 @@ export default function Internal() {
     setInternalEditMode(scorecard);
     setInternalEditID(scorecard.id);
     setInternalModalOpen(true);
-  };
-
-  const handleInternalSaveScorecard = async () => {
-    // Check if all fields are filled
-    if (
-      !internalTargetCode ||
-      !internalOfficeTarget ||
-      !internalMetric ||
-      !internalTargetPerformance ||
-      !internalStatus ||
-      !internalKPI ||
-      !internalActualPerformance
-    ) {
-      toast.error(
-        "Please fill in all fields and ensure performance values do not exceed 100."
-      );
-      return;
-    }
-
-    try {
-      // Send the POST request to the server
-      const response = await fetch(
-        "http://localhost:8080/bsc/internalBsc/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            department: { id: department_id },
-            target_code: internalTargetCode,
-            metric: internalMetric,
-            office_target: internalOfficeTarget,
-            status: internalStatus,
-            key_performance_indicator: internalKPI,
-            target_performance: internalTargetPerformance,
-            actual_performance: internalActualPerformance,
-          }),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to save internal scorecard");
-      }
-
-      const savedScorecard = await response.json();
-      setInternalSavedScorecards([...internalSavedScorecards, savedScorecard]);
-      toast.success("Internal scorecard saved successfully");
-      handleInternalCloseModal();
-    } catch (error) {
-      console.error("Error saving internal scorecard:", error);
-      toast.error("Error saving internal scorecard");
-    }
   };
 
   const handleInternalUpdateScorecard = async () => {
@@ -218,7 +149,6 @@ export default function Internal() {
       toast.error("Error updating internal scorecard");
     }
   };
-
   return (
     <div className="flex flex-col">
       <div className="flex flex-col">
@@ -236,30 +166,6 @@ export default function Internal() {
               <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                 Assesses the efficiency and quality of internal operations.
               </span>
-            </div>
-          </div>
-          <div className="flex flex-row self-start justify-end mt-5 mb-5">
-            {/* Add More Scorecard Button */}
-            <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[5rem] pl-[0.25rem] pr-1 pt-1 pb-1">
-              <button
-                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
-                onClick={handleInternalAddMoreScorecard}
-              >
-                <div className="flex flex-row">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                    className="size-8"
-                  >
-                    <path
-                      fill-rule="evenodd"
-                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                      clip-rule="evenodd"
-                    />
-                  </svg>
-                </div>
-              </button>
             </div>
           </div>
         </div>
@@ -296,19 +202,8 @@ export default function Internal() {
               100
             );
 
-            // const progressColor =
-            //   parseFloat(levelOfAttainment) >= 100
-            //     ? "bg-orange-400" // A darker shade of green to indicate full completion
-            //     : parseFloat(levelOfAttainment) >= 50
-            //     ? "bg-yellow-300"
-            //     : "bg-red-600";
-
-            // const progressBarWidth = `${
-            //   (validatedLevelOfAttainment / 100) * 20
-            // }rem`; // Adjust the width of the progress bar
-
             return (
-              <div className="relative flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
+              <div className="flex flex-col w-auto h-auto text-[rgb(43,43,43)]">
                 <div
                   key={index}
                   className={`flex flex-row p-4 ${
@@ -388,7 +283,7 @@ export default function Internal() {
               <h2 className="text-2xl mb-10 font-semibold">Internal</h2>
               <button
                 onClick={handleInternalCloseModal}
-                className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
+                className="ml-[86rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -410,24 +305,24 @@ export default function Internal() {
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Code
-                  <span className="text-[#DD1414]">*</span>
                 </span>
                 <input
                   type="text"
                   value={internalTargetCode}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => setInternalTargetCode(e.target.value)}
+                  disabled={userRole === "qualityAssurance"}
                 />
               </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Metric / Unit of Measure
-                  <span className="text-[#DD1414]">*</span>
                 </span>
                 <select
                   value={internalMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => setInternalMetric(e.target.value)}
+                  disabled={userRole === "qualityAssurance"}
                 >
                   <option value="" disabled>
                     Select
@@ -442,28 +337,29 @@ export default function Internal() {
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
-              <span className="text-[#DD1414]">*</span>
             </span>
             <textarea
               value={internalOfficeTarget}
               className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
               onChange={(e) => setInternalOfficeTarget(e.target.value)}
+              disabled={userRole === "qualityAssurance"}
             />
             <div className=" mt-10 flex flex-row gap-36">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Status
                 </span>
-                {userRole !== "qualityAssurance" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    You cannot edit the status unless you are in a QA role.
-                  </span>
+                {userRole === "qualityAssurance" && (
+                  <>
+                    <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                      Note: This is the only field you are allowed to edit.
+                    </span>
+                  </>
                 )}
                 <select
                   value={internalStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setInternalStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"}
                 >
                   <option value="" disabled>
                     Select
@@ -476,13 +372,13 @@ export default function Internal() {
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Key Performance Indicator
-                  <span className="text-[#DD1414]">*</span>
                 </span>
                 <input
                   type="text"
                   value={internalKPI}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setInternalKPI(e.target.value)}
+                  disabled={userRole === "qualityAssurance"}
                 />
               </div>
             </div>
@@ -490,7 +386,6 @@ export default function Internal() {
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Performance
-                  <span className="text-[#DD1414]">*</span>
                 </span>
                 {internalMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
@@ -551,12 +446,12 @@ export default function Internal() {
 
                     setInternalTargetPerformance(value.toString());
                   }}
+                  disabled={userRole === "qualityAssurance"}
                 />
               </div>
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Actual Performance
-                  <span className="text-[#DD1414]">*</span>
                 </span>
                 {internalMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
@@ -617,6 +512,7 @@ export default function Internal() {
 
                     setInternalActualPerformance(value.toString());
                   }}
+                  disabled={userRole === "qualityAssurance"}
                 />
               </div>
             </div>
@@ -628,7 +524,7 @@ export default function Internal() {
                 Cancel
               </button>
               <button
-                onClick={handleSaveButtonClick}
+                onClick={handleInternalUpdateScorecard}
                 className="text-[#ffffff] font-semibold px-4 py-2 mt-4 rounded-lg w-40"
                 style={{
                   background: "linear-gradient(to left, #8a252c, #AB3510)",

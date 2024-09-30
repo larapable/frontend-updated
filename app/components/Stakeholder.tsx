@@ -22,6 +22,7 @@ export default function Stakeholder() {
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
+  const userRole = user?.role;
 
   // open modal
   const [stakeholderModalOpen, setStakeholderModalOpen] = useState(false);
@@ -32,7 +33,7 @@ export default function Stakeholder() {
   const [stakeholderOfficeTarget, setStakeholderOfficeTarget] = useState("");
   const [stakeholderTargetPerformance, setStakeholderTargetPerformance] =
     useState("");
-  const [stakeholderStatus, setStakeholderStatus] = useState("");
+  const [stakeholderStatus, setStakeholderStatus] = useState("Not Achieved");
   const [stakeholderKPI, setStakeholderKPI] = useState("");
   const [stakeholderActualPerformance, setStakeholderActualPerformance] =
     useState("");
@@ -54,41 +55,12 @@ export default function Stakeholder() {
     setStakeholderEditMode(null); // Reset edit mode
   };
 
-  // const handleStartDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setStakeholderStartDate(utcDate);
-  //   } else {
-  //     setStakeholderStartDate(new Date());
-  //   }
-  // };
-
-  // const handleCompletionDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setStakeholderTargetCompletionDate(utcDate);
-  //   } else {
-  //     //@ts-ignore
-  //     setStakeholderTargetCompletionDate(null);
-  //   }
-  // };
-
   const handleStakeholderAddMoreScorecard = async () => {
     setStakeholderTargetCode("");
     setStakeholderMetric("");
-    //@ts-ignore
-    //setStakeholderTargetCompletionDate(null);
     setStakeholderOfficeTarget("");
     setStakeholderTargetPerformance("");
-    setStakeholderStatus("");
+    setStakeholderStatus("Not Achieved");
     setStakeholderKPI("");
     setStakeholderActualPerformance("");
     setStakeholderLevelOfAttainment("");
@@ -344,10 +316,7 @@ export default function Stakeholder() {
 
                     <div className="w-[25.5rem] mr-10 flex items-center ">
                       <span className="font-semibold">
-                        {scorecard.office_target &&
-                        scorecard.office_target.length > 60
-                          ? `${scorecard.office_target.substring(0, 60)}...`
-                          : scorecard.office_target || "N/A"}
+                        {scorecard.office_target || "N/A"}
                       </span>
                     </div>
 
@@ -478,13 +447,18 @@ export default function Stakeholder() {
             <div className=" mt-10 flex flex-row gap-36">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Status
-                  <span className="text-[#DD1414]">*</span>
+                  Status           
                 </span>
+                {userRole !== "qualityAssurance" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    You cannot edit the status unless you are in a QA role.
+                  </span>
+                )}
                 <select
                   value={stakeholderStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setStakeholderStatus(e.target.value)}
+                  disabled={userRole !== "qualityAssurance"}
                 >
                   <option value="" disabled>
                     Select

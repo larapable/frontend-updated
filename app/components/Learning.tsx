@@ -21,6 +21,7 @@ export default function Learning() {
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
+  const userRole = user?.role;
 
   // Open modal
   const [learningModalOpen, setLearningModalOpen] = useState(false);
@@ -31,7 +32,7 @@ export default function Learning() {
   const [learningOfficeTarget, setLearningOfficeTarget] = useState("");
   const [learningTargetPerformance, setLearningTargetPerformance] =
     useState("");
-  const [learningStatus, setLearningStatus] = useState("");
+  const [learningStatus, setLearningStatus] = useState("Not Achieved");
   const [learningKPI, setLearningKPI] = useState("");
   const [learningActualPerformance, setLearningActualPerformance] =
     useState("");
@@ -51,40 +52,12 @@ export default function Learning() {
     setLearningEditMode(null);
   };
 
-  // const handleStartDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setLearningStartDate(utcDate);
-  //   } else {
-  //     setLearningStartDate(new Date());
-  //   }
-  // };
-
-  // const handleCompletionDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setLearningTargetCompletionDate(utcDate);
-  //   } else {
-  //     //@ts-ignore
-  //     setLearningTargetCompletionDate(null);
-  //   }
-  // };
-
   const handleLearningAddMoreScorecard = async () => {
     setLearningTargetCode("");
     setLearningMetric("");
-    //@ts-ignore
-    //setLearningTargetCompletionDate(null);
+
     setLearningOfficeTarget("");
-    setLearningStatus("");
+    setLearningStatus("Not Achieved");
     setLearningKPI("");
     setLearningTargetPerformance("");
     setLearningActualPerformance("");
@@ -338,10 +311,7 @@ export default function Learning() {
 
                     <div className="w-[25.5rem] mr-10 flex items-center ">
                       <span className="font-semibold">
-                        {scorecard.office_target &&
-                        scorecard.office_target.length > 60
-                          ? `${scorecard.office_target.substring(0, 60)}...`
-                          : scorecard.office_target || "N/A"}
+                        {scorecard.office_target || "N/A"}
                       </span>
                     </div>
 
@@ -456,18 +426,6 @@ export default function Learning() {
                   <option value="Succession Plan">Succession Plan</option>
                 </select>
               </div>
-              {/* <div className="flex flex-col">
-               <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                 Target Completion Date
-               </span>
-               <DatePicker
-                 key={financialTargetCompletionDate?.toString()}
-                 selected={financialTargetCompletionDate}
-                 onChange={handleCompletionDateChange}
-                 placeholderText="MM-DD-YYYY"
-                 className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
-               />
-             </div> */}
             </div>
             <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
               Office Target
@@ -482,12 +440,17 @@ export default function Learning() {
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Status
-                  <span className="text-[#DD1414]">*</span>
                 </span>
+                {userRole !== "qualityAssurance" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    You cannot edit the status unless you are in a QA role.
+                  </span>
+                )}
                 <select
                   value={learningStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setLearningStatus(e.target.value)}
+                  disabled={userRole !== "qualityAssurance"}
                 >
                   <option value="" disabled>
                     Select

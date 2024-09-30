@@ -23,7 +23,7 @@ declare module 'jspdf' {
 
 
 const ReportsPage = () => {
-  const { data: session } = useSession();
+  const { data: session, status, update } = useSession();
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
@@ -45,7 +45,100 @@ const ReportsPage = () => {
  
   //Report Learning
   const [learningReports, setLearningReports] = useState<ReportLearningView[]>([]);
- 
+
+  const [preparedByName, setPreparedByName] = useState("");
+  const [preparedByRole, setPreparedByRole] = useState("");
+  const [acknowledgedByName, setAcknowledgedByName] = useState("");
+  const [acknowledgedByRole, setAcknowledgedByRole] = useState("");
+  const [reviewedByName, setReviewedByName] = useState("");
+  const [reviewedByRole, setReviewedByRole] = useState("");
+
+  const [department, setDepartment] = useState("");
+  const [headOfficer, setHeadOfficer] = useState("");
+  const [departmentLandline, setDepartmentLandline] = useState("");
+  const [location, setLocation] = useState("");
+  const [email, setEmail] = useState("");
+  const [university, setUniversity] = useState("");
+  const [departmentDescription, setDepartmentDescription] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    const fetchUserProfileData = async () => {
+      try {
+        const response = await fetch(`http://localhost:8080/department/${department_id}`);
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Received data:", data); // Add this line to log the received data
+          setDepartment(data.department_name);
+          setHeadOfficer(data.head_officer);
+          setDepartmentLandline(data.department_landline);
+          setLocation(data.location);
+          setEmail(data.email);
+          setUniversity(data.university);
+          setDepartmentDescription(data.description);
+          setPreparedByName(data.preparedByName || '');
+          setPreparedByRole(data.preparedByRole || '');
+          setAcknowledgedByName(data.acknowledgedByName || '');
+          setAcknowledgedByRole(data.acknowledgedByRole || '');
+          setReviewedByName(data.reviewedByName || '');
+          setReviewedByRole(data.reviewedByRole || '');
+        } else {
+          console.error(
+            "Error fetching user profile data:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching user profile data:", error);
+      }
+
+    };
+    fetchUserProfileData();
+  }, [department_id]);
+
+  const handleSave = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+
+    if (isEditing) {
+      try {
+        const res = await fetch(`http://localhost:8080/department/update/${department_id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            head_officer: headOfficer,
+            department_landline: departmentLandline,
+            location: location,
+            email: email,
+            university: university,
+            description: departmentDescription,
+            preparedByName: preparedByName,
+            preparedByRole: preparedByRole,
+            acknowledgedByName: acknowledgedByName,
+            acknowledgedByRole: acknowledgedByRole,
+            reviewedByName: reviewedByName,
+            reviewedByRole: reviewedByRole,
+            department_id: department_id,
+          }),
+        });
+
+        if (res.ok) {
+          console.log("Edit successful");
+          setIsEditing(false);
+        } else {
+          console.log("User profile update failed.");
+        }
+      } catch (error) {
+        console.log("Error during saving user Profile", error);
+      }
+    } else {
+      setIsEditing(true);
+    }
+  };
+  
 
   const changeComponent = (componentName: string) => {
     localStorage.setItem("lastComponent", componentName);
@@ -298,10 +391,10 @@ const ReportsPage = () => {
           <div className="mb-5 mt-[0rem] break-words font-bold text-[3rem]">
             REPORT
           </div>
-          <div className="flex justify-center ml-[68rem] mt-[0.5rem] border border-gray-200 bg-gray w-[16rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
+          <div className="flex justify-center lg:ml-[76rem] mt-[0.5rem] border border-gray-200 bg-gray w-[16rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
             <button
               onClick={() => setCurrentView("default")}
-              className={`rounded-lg ${
+              className={`rounded-lg font-bold ${
                 currentView === "default"
                   ? "bg-[#A43214] text-white"
                   : "border text-[#A43214]"
@@ -311,7 +404,7 @@ const ReportsPage = () => {
             </button>
             <button
               onClick={() => setCurrentView("printed")}
-              className={`rounded-lg ${
+              className={`rounded-lg font-bold ${
                 currentView === "printed"
                   ? "bg-[#A43214] text-white"
                   : "border text-[#A43214]"
@@ -390,7 +483,7 @@ const ReportsPage = () => {
               </div>
             </div>
             {/* end of perspectives toggle */}
-            <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
+            <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
               {selectedComponent === "Financial" && <ReportFinancial />}
               {selectedComponent === "Stakeholder" && <ReportStakeholder />}
               {selectedComponent === "Internal" && <ReportInternal />}
@@ -400,44 +493,110 @@ const ReportsPage = () => {
         )}
         {currentView === "printed" && (
           <div>
-            <div className="flex justify-center mt-[0.5rem] border border-gray-200 bg-gray w-[44rem] h-[4rem] rounded-xl px-1 py-1">
-             
+            <div className="flex flex-row gap-8 w-[100%] mb-16">
+              <div className="flex shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] mt-[0.5rem] border py-5 px-5 border-gray-200 bg-gray w-[48%] h-[auto] rounded-xl">
+                <div className="flex flex-col">
+                  <span className="font-bold text-2xl items-center mb-5">
+                    REPORT VISUALIZATION
+                  </span>
+                  {/* insert the chart here */}
+                </div>
+              </div>
+              <div className="flex mt-[0.5rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-200 bg-gray w-[48%] h-[auto] rounded-xl px-8 py-5">
+                <div className="flex flex-col">
+                  <div className="flex flex-row">
+                    <span className="font-bold text-2xl items-center mb-5">
+                      APPROVAL SECTION
+                    </span>
+                    <div className="justify-end ml-[23rem]">
+                      <button
+                        onClick={handleSave}
+                        className="text-white bg-[#A43214] w-[8rem] inline-block break-words font-bold transition-all rounded-lg px-4 py-2"
+                      >
+                        {isEditing ? 'Save' : 'Edit'}
+                      </button>
+                    </div>
+                  </div>
+                <div className="flex flex-col">
+                  <div className="flex flex-col">
+                    <span className="font-normal text-[1.1rem]">Prepared By:</span>
+                    <div className="flex flex-row mt-1 gap-10">
+                    <input 
+                      type="text" 
+                      placeholder="Enter name"
+                      name="preparedByName" 
+                      value={preparedByName}
+                      onChange={(e) => setPreparedByName(e.target.value)}
+                      readOnly={!isEditing}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-[28rem]" 
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Enter role"
+                      name="preparedByRole" 
+                      value={preparedByRole}
+                      onChange={(e) => setPreparedByRole(e.target.value)}
+                      readOnly={!isEditing}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-[16rem]" 
+                    />
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col mt-8">
+                    <span className="font-normal text-[1.1rem]">Acknowledged By:</span>
+                    <div className="flex flex-row mt-1 gap-10">
+                    <input 
+                      type="text" 
+                      placeholder="Enter name"
+                      name="acknowledgedByName" 
+                      value={acknowledgedByName}
+                      onChange={(e) => setAcknowledgedByName(e.target.value)}
+                      readOnly={!isEditing}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-[28rem]" 
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Enter role"
+                      name="acknowledgedByRole" 
+                      value={acknowledgedByRole}
+                      onChange={(e) => setAcknowledgedByRole(e.target.value)}
+                      readOnly={!isEditing}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-[16rem]" 
+                    />
+                    </div>
+                  </div>
+                  <div className="flex flex-col mt-8">
+                    <span className="font-normal text-[1.1rem]">Reviewed By:</span>
+                    <div className="flex flex-row mt-1 gap-10">
+                    <input 
+                      type="text" 
+                      placeholder="Enter name"
+                      name="reviewedByName" 
+                      value={reviewedByName}
+                      onChange={(e) => setReviewedByName(e.target.value)}
+                      readOnly={!isEditing}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-[28rem]" 
+                    />
+                    <input 
+                      type="text" 
+                      placeholder="Enter role"
+                      name="reviewedByRole"
+                      value={reviewedByRole}
+                      onChange={(e) => setReviewedByRole(e.target.value)}
+                      readOnly={!isEditing}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-[16rem]" 
+                    />
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            {/* end of perspectives toggle */}
-            <div className="mt-5">
-              {/* {selectedComponent === "Financial" && <ReportFinancialView />}
-              {selectedComponent === "Stakeholder" && <ReportStakeholderView />}
-              {selectedComponent === "Internal" && <ReportInternalView />}
-              {selectedComponent === "Learning" && <ReportLearningView />} */}
 
+            <div className="mt-5">
              {<ReportFinancialView/>}
              {<ReportStakeholderView/>}
              {<ReportInternalView/>}
              {<ReportLearningView/>}
-
-             <div className="flex flex-col gap-10">
-      <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-      
-      <div className="flex flex-col">
-            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-             PREPARED BY: 
-            </span>
-          </div>
-
-          <div className="flex flex-col">
-            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-             REVIEWED BY: 
-            </span>
-          </div>
-
-          <div className="flex flex-col">
-            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-            ACKNOWLEDGED BY: 
-            </span>
-          </div>
-
-      </div>
-    </div>
 
             </div>
           </div>
@@ -450,8 +609,8 @@ const ReportsPage = () => {
             <button
               onClick={handleDownload}
               className=" text-[#A43214]
-        hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white 
-        inline-block break-words font-bold transition-all rounded-lg px-4 py-3"
+              hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white 
+              inline-block break-words font-bold transition-all rounded-lg px-4 py-3"
             >
               Download Report
             </button>

@@ -22,16 +22,15 @@ export default function Financial() {
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
+  const userRole = user?.role;
 
   // open modal
   const [financialModalOpen, setFinancialModalOpen] = useState(false);
   // financial values
   const [financialTargetCode, setFinancialTargetCode] = useState("");
   const [financialMetric, setFinancialMetric] = useState("");
-  const [financialTargetCompletionDate, setFinancialTargetCompletionDate] =
-    useState(new Date());
   const [financialOfficeTarget, setFinancialOfficeTarget] = useState("");
-  const [financialStatus, setFinancialStatus] = useState("");
+  const [financialStatus, setFinancialStatus] = useState("Not Achieved");
   const [financialKPI, setFinancialKPI] = useState("");
   const [financialTargetPerformance, setFinancialTargetPerformance] =
     useState("");
@@ -55,40 +54,13 @@ export default function Financial() {
     setFinancialEditMode(null); // Reset edit mode
   };
 
-  // const handleStartDateChange = (date: Date | null) => {
-  //   console.log("Selected Start Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setFinancialStartDate(utcDate);
-  //   } else {
-  //     setFinancialStartDate(new Date());
-  //   }
-  // };
-
-  // const handleCompletionDateChange = (date: Date | null) => {
-  //   console.log("Selected Completion Date", date);
-  //   if (date) {
-  //     // Convert the selected date to UTC before saving it
-  //     const utcDate = new Date(
-  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-  //     );
-  //     setFinancialTargetCompletionDate(utcDate);
-  //   } else {
-  //     //@ts-ignore
-  //     setFinancialTargetCompletionDate(null);
-  //   }
-  // };
-
   // mo add ug scorecard : open modal
   const handleFinancialAddMoreScorecard = async () => {
     setFinancialTargetCode("");
     setFinancialMetric("");
     //setFinancialTargetCompletionDate(null);
     setFinancialOfficeTarget("");
-    setFinancialStatus("");
+    setFinancialStatus("Not Achieved");
     setFinancialKPI("");
     setFinancialTargetPerformance("");
     setFinancialActualPerformance("");
@@ -354,10 +326,7 @@ export default function Financial() {
 
                     <div className="w-[25.5rem] mr-10 flex items-center ">
                       <span className="font-semibold">
-                        {scorecard.office_target &&
-                        scorecard.office_target.length > 60
-                          ? `${scorecard.office_target.substring(0, 60)}...`
-                          : scorecard.office_target || "N/A"}
+                        {scorecard.office_target || "N/A"}
                       </span>
                     </div>
 
@@ -499,12 +468,17 @@ export default function Financial() {
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Status
-                  <span className="text-[#DD1414]">*</span>
                 </span>
+                {userRole !== "qualityAssurance" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    You cannot edit the status unless you are in a QA role.
+                  </span>
+                )}
                 <select
                   value={financialStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
                   onChange={(e) => setFinancialStatus(e.target.value)}
+                  disabled={userRole !== "qualityAssurance"} // Disable if not QA
                 >
                   <option value="" disabled>
                     Select
