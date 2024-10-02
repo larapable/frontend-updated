@@ -2,7 +2,7 @@ import React from 'react'
 
 const ContactsPage = () => {
   return (
-    <div className="flex flex-col items-center bg-[#8a252c] lg:w-full lg:ml-[10%] md:w-full hidden lg:flex">
+    <div className="flex-col items-center bg-[#8a252c] lg:w-full lg:ml-[10%] md:w-full hidden lg:flex">
       {/* number container */}
       <div className="flex flex-row items-center justify-start left-align ml-[-23rem] hover:scale-110 transition-transform">
       <img

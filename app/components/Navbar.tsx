@@ -1,14 +1,112 @@
 "use client";
 import Link from "next/link";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { TiLocationArrowOutline } from "react-icons/ti";
-import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";
 import { signOut } from "next-auth/react"
+import { useSession } from "next-auth/react";
+
+interface Department {
+  id: number;
+  department_name: string;
+  head_officer: string;
+};
+
 
 export default function Navbar() {
+
+  const { data: session, update } = useSession();
+  let user;
+  if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
+  let department_id = user?.department_id;
+  const head = user?.head;
   
+
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number | null>(null);
+  const [departments, setDepartments] = useState<Department[]>([]);
+
+//   const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+//   const selectedDeptId = parseInt(e.target.value, 10);
+//   setSelectedDepartmentId(selectedDeptId);
+
+//   update({department_id: selectedDeptId});
+// };
+// const handleDepartmentChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+//   const selectedDeptId = parseInt(e.target.value, 10);
+//   if (selectedDeptId !== department_id) {
+//     setSelectedDepartmentId(selectedDeptId);
+//   }
+// };
+
+const handleDepartmentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const selectedDeptId = parseInt(e.target.value, 10);
+  setSelectedDepartmentId(selectedDeptId);
+console.log('newid'+selectedDeptId);
+  const updateUser = {
+    ...session,
+    user: {
+      ...session?.user,
+      department_id: selectedDeptId,
+    },
+  };
+console.log('testsetsetse');
+  await update(updateUser);
+
+  console.log('updatesesh'+JSON.stringify(session));
+
+  // try {
+  //   const response = await fetch('/api/updatesession', {
+  //     method: 'PUT',
+  //     headers: {
+  //       'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify({ department_id: selectedDeptId }),
+  //   });
+
+  //   if (response.ok) {
+  //     const updatedSession = await response.json();
+
+  //     console.log('Session updated successfully', updatedSession);
+  //   } else {
+  //     console.error('Failed to update session', response.statusText);
+  //   }
+  // } catch (error) {
+  //   console.error('Error updating session:', error);
+  // }
+};
+
+  const [heads, setHeads] = useState([]);
+
+  useEffect(() => {
+    const fetchDepartments = async () => {
+      const res = await fetch(
+        "http://localhost:8080/department/getAllDepartments"
+      );
+      const data = await res.json();
+      setDepartments(data.departments);
+    };
+
+    fetchDepartments();
+  }, []);
+  
+  useEffect(() => {
+    const fetchHeadDepartments = async () => {
+      const res = await fetch(
+        "http://localhost:8080/department/getAllDepartmentsHead"
+      );
+      const data = await res.json();
+      setHeads(data.departmentsHead);
+      // console.log(data);
+    };
+
+    fetchHeadDepartments();
+  }, []);
+
+
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen(!isDropdownOpen);
+  };
   return (
     <div
       className="fixed top-0 left-0 flex flex-col h-screen w-[18rem] py-5 overflow-auto gap-1"
@@ -19,24 +117,7 @@ export default function Navbar() {
         <img src="/logo.png" alt="" className=" h-[8rem] mt-3 mb-5 mr-5" />
       </div>
       <div className="w-[18rem] border-t border-white mb-5"></div>
-      {/* <Link href="/">
-        <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            className="w-8 h-8 "
-          >
-            <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-            <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-          </svg>
-          <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
-            Dashboard
-          </div>
-        </div>
-      </Link> */}
+  
       <Link href="/profile">
         <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
           <svg
@@ -170,8 +251,61 @@ export default function Navbar() {
       </Link>
       <div className="w-[18rem] border-t border-white mb-5"></div>
 
+      {/* {added component for multiple department} */}
+        <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300"
+          onClick={toggleDropdown}
+          >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="2"
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+           
+          </svg>
+          <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
+            Department
+          </div>
+          {isDropdownOpen && (
+        <div className="absolute left-0 mt-2 w-[16rem] bg-white rounded-md shadow-lg z-10">
+                      <select
+              className="w-full p-2 border rounded-md"
+              value={selectedDepartmentId || ""}
+              onChange={handleDepartmentChange}
+            >
+               {selectedDepartmentId && departments.length > 0 && (
+        <option value={selectedDepartmentId}>
+          {
+            departments.find(
+              (department) => department.id === selectedDepartmentId
+            )?.department_name
+          }
+        </option>
+      )}
+               {departments &&
+                departments
+                  .filter((department: Department) => department.head_officer === head)
+                  .map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.department_name}
+                    </option>
+                  ))}
+              </select>
+
+
+          {/* Add more department options as needed */}
+        </div>
+      )}
+        </div>
+
+        
+    
+
       <div className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 "
         onClick={() => signOut({ callbackUrl: '/login' })}>
+        
         <svg
           xmlns="http://www.w3.org/2000/svg"
           fill="none"

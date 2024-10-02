@@ -25,6 +25,7 @@ interface ReportFinancial {
   target_performance: string;
   actual_performance: string;
   perspective: string;
+  evidence_link: string; 
 }
 
 const ReportFinancial = () => {
@@ -51,10 +52,13 @@ const ReportFinancial = () => {
   const [financialTargetPerformance, setFinancialTargetPerformance] =
     useState("");
 
+  const [financialEvidenceLink, setFinancialEvidenceLink] = useState(""); //link
+
   //Report and Scorecard
-  const [financialReports, setFinancialReports] = useState<ReportFinancial[]>(
-    []
-  );
+  const [financialReports, setFinancialReports] = useState<ReportFinancial[]>([]);
+  const [primaryFinancialReports, setPrimaryFinancialReports] = useState<ReportFinancial[]>([]);
+  const allFinancialReports = [ ...primaryFinancialReports, ...financialReports,];
+  const [isPrimaryReport, setIsPrimaryReport] = useState(false); 
 
   // Modal and edit mode
   const [openModal, setOpenModal] = useState(false); // State to control the modal
@@ -84,6 +88,32 @@ const ReportFinancial = () => {
 
     getAllFinancial(department_id);
   }, [department_id]);
+  
+          useEffect(() => {
+            const getPrimaryFinancial = async (department_id: number) => {
+              if (!department_id) {
+                console.log("Department ID is not found.");
+                return;
+              }
+
+              try {
+                const res = await fetch (
+                  `http://localhost:8080/bsc/primaryFinancialBsc/get/${department_id}`
+                );
+                if(!res.ok) {
+                  throw new Error ("Failed to fetch primary financial report.")
+                }
+                const result = await res.json();
+                console.log("response data:", result);
+                setPrimaryFinancialReports(result);
+                console.log(result);
+              } catch (error){
+                console.error("Error fetching financial reports:", error);
+              }
+            };
+            getPrimaryFinancial(department_id);
+          },[department_id]);
+   
 
   function truncateString(str: string | null | undefined, num: number): string {
     if (!str) {
@@ -100,7 +130,37 @@ const ReportFinancial = () => {
     setOpenModal(false);
   };
 
+
   const handleEditReport = (report: ReportFinancial) => {
+    const isPrimary = primaryFinancialReports.some((p) => p.id === report.id);
+    setIsPrimaryReport(isPrimary); 
+    if (isPrimary) {
+      handleEditPrimaryReport(report);
+    } else {
+      handleEditFinancialReport(report);
+    }
+  };
+
+
+  const handleEditFinancialReport = (report: ReportFinancial) => {
+    setFinancialTargetCode(report.target_code);
+    setFinancialOfficeTarget(report.office_target);
+    setFinancialKPI(report.key_performance_indicator);
+    setFinancialActualPerformance(report.actual_performance || "0");
+    setFinancialTargetPerformance(report.target_performance || "0");
+    setReportEditId(report.id);
+    setFinancialPerspective(report.perspective);
+    setFinancialActions(report.actions);
+    setFinancialBudget(report.budget);
+    setFinancialIncharge(report.incharge);
+    setFinancialOfi(report.ofi);
+    setFinancialEvidenceLink(report.evidence_link || ""); //link
+    setOpenModal(true);
+    console.log("Report ID to edit:", reportEditId);
+  };
+
+  
+  const handleEditPrimaryReport = (report: ReportFinancial) => {
     setFinancialTargetCode(report.target_code);
     setFinancialOfficeTarget(report.office_target);
     setFinancialKPI(report.key_performance_indicator);
@@ -129,6 +189,7 @@ const ReportFinancial = () => {
       key_performance_indicator: financialKPI,
       target_performance: financialTargetPerformance,
       actual_performance: financialActualPerformance,
+      evidence_link: financialEvidenceLink, //link
     };
 
     try {
@@ -160,6 +221,52 @@ const ReportFinancial = () => {
       toast.error("Failed to update report.");
     }
   };
+   
+
+  const handleSavePrimaryReport = async () => {
+    const updatedPrimaryReport: ReportFinancial = {
+      id: reportEditId,
+      actions: financialActions,
+      perspective: financialPerspective,
+      budget: financialBudget,
+      incharge: financialIncharge,
+      ofi: financialOfi,
+      target_code: financialTargetCode,
+      office_target: financialOfficeTarget,
+      key_performance_indicator: financialKPI,
+      target_performance: financialTargetPerformance,
+      actual_performance: financialActualPerformance,
+      evidence_link: financialEvidenceLink, //link
+    };
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/bsc/primaryFinancialBsc/update/${reportEditId}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updatedPrimaryReport), 
+      }
+    );
+  
+    if (!response.ok) {
+      throw new Error("Failed to update primary financial report.");
+    }
+    setPrimaryFinancialReports((prevReports) =>
+      prevReports.map((report) =>
+        report.id === reportEditId ? updatedPrimaryReport : report
+      )
+    );
+  
+    toast.success("Primary financial report updated successfully!");
+    setOpenModal(false);
+  } catch (error) {
+    console.error("Error updating primary financial report:", error);
+    toast.error("Failed to update report.");
+  }
+  };   
 
   return (
     <div>
@@ -187,8 +294,8 @@ const ReportFinancial = () => {
       </div>
 
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-        <div className="p-2 font-bold w-[10rem]">Target Code</div>
-        <div className="p-2 font-bold w-[15rem]">Office Target</div>
+        {/* <div className="p-2 font-bold w-[10rem]">Target Code</div> */}
+        <div className="p-2 font-bold w-[30rem]">Office Target</div>
         <div className="p-2 font-bold w-[8rem]">KPI</div>
         <div className="p-2 font-bold w-[10rem]">Actions</div>
         <div className="p-2 font-bold w-[10rem]">Budget</div>
@@ -202,33 +309,45 @@ const ReportFinancial = () => {
           </div>
         </div>
         <div className="p-2 w-[5rem] font-bold">OFI</div>
+        <div className="p-2 w-[13rem] font-bold">Link of Evidence</div>
       </div>
 
-      {financialReports.map((report, index) => (
+      {allFinancialReports.map((report, index) => (
         <div
           key={report.id}
           className={`flex items-center text-center ${
             index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
           }`}
         >
-          <div className="p-2 w-[10rem]">{report.target_code}</div>
-          <div className="p-2 w-[15rem]">
-            {truncateString(report.office_target, 20)}
+          {/* <div className="p-2 w-[10rem]">{report.target_code}</div> */}
+          <div className="p-3 w-[32rem] ml-[-2rem]">
+            {truncateString(report.office_target, 45)}
           </div>
-          <div className="p-2 w-[8rem]">
+          <div className="p-3 w-[8rem]">
             {truncateString(report.key_performance_indicator, 20)}
           </div>
-          <div className="p-2 w-[10rem]">{report?.actions || "..."}</div>
-          <div className="p-2 w-[10rem]">{report?.budget || "..."}</div>
-          <div className="p-2 w-[10rem]">{report?.incharge || "..."}</div>
-          <div className="p-2 w-[10rem] text-center">
+          <div className="p-4 w-[10rem]">{truncateString(report?.actions || "...", 8)}</div>
+          <div className="p-4 w-[10rem]">{report?.budget || "..."}</div>
+          <div className="p-4 w-[10rem]">{truncateString(report?.incharge || "...",8)}</div>
+          <div className="p-4 w-[10rem] text-center">
             <span className="text-start mr-2">
               {report.actual_performance}
             </span>
             <span className="text-center">|</span>
             <span className="text-end ml-2">{report.target_performance}</span>
           </div>
-          <div className="p-2 w-[5rem]">{report?.ofi || "..."}</div>
+          <div className="p-4 w-[5rem]">{truncateString(report?.ofi || "...",4)}</div>
+            <div className="p-4 w-[13rem]">
+          {report.evidence_link ? (
+            <a href={report.evidence_link} target="_blank" rel="noopener noreferrer" className="text-orange-500 underline">
+              {report.evidence_link.length > 20
+                ? `${report.evidence_link.substring(0, 15)}...`
+                : report.evidence_link}
+            </a>
+          ) : (
+            "..."
+          )}
+          </div>
           <div className="ml-5 w-[5rem] flex items-center text-orange-700">
             <button>
               <svg
@@ -304,9 +423,6 @@ const ReportFinancial = () => {
                   className="text-lg font-regular border border-gray-300 bg-gray-50 w-[23rem] h-10 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                 />
               </div>
-            </div>
-
-            <div className="flex flex-row gap-16 mb-5 items-center justify-center">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Budget
@@ -321,6 +437,10 @@ const ReportFinancial = () => {
                   }
                 />
               </div>
+            </div>
+
+            <div className="flex flex-row gap-16 mb-5 ml-8">
+              
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   In Charge
@@ -347,6 +467,18 @@ const ReportFinancial = () => {
                     financialTargetPerformance
                   }
                   className="text-lg font-regular border border-gray-300 bg-gray-50 w-[23rem] h-10 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                />
+              </div>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Link of Evidence
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <input 
+                  type="text"
+                  value={financialEvidenceLink}
+                  className="text-lg font-regular border border-gray-300 bg-gray-50 w-[23rem] h-10 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  onChange={(e) => setFinancialEvidenceLink(e.target.value)}
                 />
               </div>
             </div>
@@ -381,8 +513,8 @@ const ReportFinancial = () => {
               <div className="flex flex-col">
                   <span className="mr-3 break-words font-regular text-md text-[#000000]">
                     OFI
-                    <span className="text-[#DD1414]">*</span>
                   </span>
+                  <span className="text-[#DD1414]">*</span>
                   <textarea
                     value={financialOfi}
                     className="text-lg font-regular border border-gray-300 bg-gray-50 w-[76.8rem] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
@@ -391,22 +523,34 @@ const ReportFinancial = () => {
                 </div>
               </div>
 
-            <div className="flex flex-row justify-center mt-10 gap-10">
+            <div className="flex flex-row justify-center mt-10 gap-8">
               <button
                 onClick={() => setOpenModal(false)}
-                className="bg-[#ffffff] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                className="bg-[#ffffff] text-[1.2rem] border border-[#A43214] text-[#A43214] font-semibold hover:bg-[#A43214] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-[9rem]"
               >
                 Cancel
               </button>
-              <button
-                onClick={handleSaveReport}
-                className="text-[#ffffff] font-semibold px-4 py-2 mt-4 rounded-lg w-40"
-                style={{
-                  background: "linear-gradient(to left, #8a252c, #AB3510)",
-                }}
-              >
-                Save
-              </button>
+              {isPrimaryReport ? ( 
+            <button
+              onClick={handleSavePrimaryReport} 
+              className="text-[#ffffff] font-semibold px-4 py-2 mt-4 rounded-lg w-40"
+              style={{
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+              }}
+            >
+              Save
+            </button>
+          ) : (
+            <button
+              onClick={handleSaveReport} 
+              className="text-[#ffffff] font-semibold px-4 py-2 mt-4 rounded-lg w-40"
+              style={{
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+              }}
+            >
+              Save
+            </button>
+          )}
             </div>
           </div>
         </div>

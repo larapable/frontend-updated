@@ -8,6 +8,7 @@ import Spinner from "../components/Spinner";
 type Department = {
   id: number;
   department_name: string;
+  head_officer: string;
 };
 export default function SignupPage() {
   const [firstname, setFirstname] = useState("");
@@ -19,9 +20,11 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
+  const [heads, setHeads] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState<number | null>(
     null
   );
+  const [selectedHead, setSelectedHead] = useState<string | null>(null);
 
   const [errorModalOpen, setErrorModalOpen] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
@@ -55,6 +58,7 @@ export default function SignupPage() {
       !email ||
       !password ||
       !confirmPassword ||
+      (role === "headOfficer" && !selectedHead) ||
       (role !== "qualityAssurance" && !selectedDepartment) // department is required only for non-QA roles
     ) {
       setErrorMessage(
@@ -126,6 +130,7 @@ export default function SignupPage() {
             // department: {
             //   id: selectedDepartment, // Pass selectedDepartment as a nested object
             // },
+            head: selectedHead,
             department:
               role === "qualityAssurance" ? null : { id: selectedDepartment }, // Set department to null for QA role
           }),
@@ -143,6 +148,7 @@ export default function SignupPage() {
         setEmail("");
         setPassword("");
         setConfirmPassword("");
+        setSelectedHead("");
         setSelectedDepartment(0);
         setSuccessModal(true);
 
@@ -170,6 +176,19 @@ export default function SignupPage() {
     };
 
     fetchDepartments();
+  }, []);
+
+  useEffect(() => {
+    const fetchHeadDepartments = async () => {
+      const res = await fetch(
+        "http://localhost:8080/department/getAllDepartmentsHead"
+      );
+      const data = await res.json();
+      setHeads(data.departmentsHead);
+      // console.log(data);
+    };
+
+    fetchHeadDepartments();
   }, []);
 
   if (loading) {
@@ -211,13 +230,49 @@ export default function SignupPage() {
             onChange={(e) => setRole(e.target.value)}
             className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
           >
-            <option value="">Select a role</option>
+            <option value="" style={{ fontWeight: 'bold' }}>Select a role</option>
             <option value="headOfficer">HEAD OFFICER</option>
             <option value="faculty">FACULTY</option>
             <option value="qualityAssurance">QUALITY ASSURANCE</option>
           </select>
         </div>
         {/* Conditionally render the department dropdown based on the selected role */}
+        {role === "headOfficer" && (
+          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
+            <select
+              value={selectedHead || ""}
+              onChange={(e) => setSelectedHead(e.target.value)}
+              className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
+            >
+              <option value=""style={{ fontWeight: 'bold' }}>Select Name</option>
+              {Array.isArray(heads) &&
+                Array.from(new Set(heads)).map((headName, index) => (
+                  <option key={index} value={headName}>
+                    {headName}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
+
+          {role === "faculty" && (
+          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
+            <select
+              value={selectedHead || ""}
+              onChange={(e) => setSelectedHead(e.target.value)}
+              className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
+            >
+              <option value="" style={{ fontWeight: 'bold' }}>Select Head Officer</option>
+              {Array.isArray(heads) &&
+                Array.from(new Set(heads)).map((headName, index) => (
+                  <option key={index} value={headName}>
+                    {headName}
+                  </option>
+                ))}
+            </select>
+          </div>
+        )}
+
         {role !== "qualityAssurance" && (
           <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
             <select
@@ -225,13 +280,15 @@ export default function SignupPage() {
               onChange={(e) => setSelectedDepartment(parseInt(e.target.value))}
               className="flex-1 font-medium bg-transparent focus:outline-none text-[1rem] px-3 py-1 ml-4 mr-4"
             >
-              <option value="">Select a department</option>
+              <option value="" style={{ fontWeight: 'bold' }}>Select a default department</option>
               {departments &&
-                departments.map((department) => (
-                  <option key={department.id} value={department.id}>
-                    {department.department_name}
-                  </option>
-                ))}
+                departments
+                  .filter((department: Department) => department.head_officer === selectedHead)
+                  .map((department) => (
+                    <option key={department.id} value={department.id}>
+                      {department.department_name}
+                    </option>
+                  ))}
             </select>
           </div>
         )}

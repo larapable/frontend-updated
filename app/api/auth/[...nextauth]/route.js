@@ -23,6 +23,7 @@ export const authOptions = {
               username: "Admin",
               department: { id: 0 },
               role: "admin",
+              head: "admin"
             };
           }
 
@@ -61,24 +62,30 @@ export const authOptions = {
           return user; // Return the user if authentication succeeds
         } catch (error) {
           console.log("Error: ", error);
-          return null; // Return null in case of error
+          return null;
         }
       },
     }),
   ],
 
   callbacks: {
-    async jwt({ token, user, session }) {
+    async jwt({ token, user, session, trigger }) {
       console.log("jwt callback", { token, user, session });
-
-      if (user) {
-        token.id = user.id;
-        token.username = user.username;
-        token.department_id = user.department ? user.department.id : null; // Handle null department
-        token.role = user.role;
+     
+     if (user) {
+      token.id = user.id;
+      token.username = user.username;
+      token.department_id = user.department ? user.department.id : null; // Handle null department
+      token.role = user.role;
+      token.head = user.head;
       }
-      return token;
-    },
+      
+      if (trigger === "update" && session.user.department_id) {
+        token.department_id = session.user.department_id; 
+      }
+
+    return token;
+  },
     async session({ session, token, user }) {
       console.log("session callback", { session, token, user });
 
@@ -86,6 +93,7 @@ export const authOptions = {
       session.user.name = JSON.stringify(token);
       session.user.department_id = token.department_id; // Set department_id from token
       session.user.role = token.role; // Add role to session
+      session.user.head = token.head;
 
       // session.user.id = token.id;
       // session.user.name = JSON.stringify(token);

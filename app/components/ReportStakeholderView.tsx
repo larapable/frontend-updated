@@ -6,15 +6,16 @@ import React, { useState, useEffect } from "react";
 interface ReportStakeholderView {
   id: number;
   perspective: string;
-  target_code: string;
+  // target_code: string;
   office_target: string;
-  actions: string;
-  budget: number;
+  // actions: string;
+  // budget: number;
   incharge: string;
-  ofi: string;
+  // ofi: string;
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  evidence_link: string; //link
 }
 
 const ReportStakeholderView = () => {
@@ -26,6 +27,8 @@ const ReportStakeholderView = () => {
   console.log(department_id);
 
   const [stakeholderReport, setStakeholderReport] = useState<ReportStakeholderView[]>([]);
+  const [primaryStakeholderReports, setPrimaryStakeholderReports] = useState<ReportStakeholderView[]>([]);
+  const allStakeholderReports = [ ...primaryStakeholderReports, ...stakeholderReport,];
 
   useEffect(() => {
     const getReports = async (department_id: number) => {
@@ -46,6 +49,27 @@ const ReportStakeholderView = () => {
    
     getReports(department_id);
   }, [department_id]);
+
+  useEffect(() => {
+    const getPrimaryReports = async (department_id: number) => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch primary stakeholder reports");
+        }
+        const data = await response.json();
+        //console.log("response data:", data);
+        setPrimaryStakeholderReports(data);
+      } catch (error) {
+        console.error("Error fetching primary stakeholder reports:", error);
+      }
+    };
+    getPrimaryReports(department_id);
+  }, [department_id]);
+
+
 
   function truncateString(str: string | null | undefined, num: number): string {
     if (!str) {
@@ -78,14 +102,13 @@ const ReportStakeholderView = () => {
           </div>
         </div>
         <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
-          <div className="p-2 font-bold w-[8rem]"></div>
-          <div className="p-2 font-bold w-[10rem]">Target Code</div>
-          <div className="p-2 font-bold w-[15rem]">Office Target</div>
-          <div className="p-2 font-bold w-[8rem]">KPI</div>
-          <div className="p-2 font-bold w-[10rem]">Actions</div>
-          <div className="p-2 font-bold w-[10rem]">Budget</div>
+          {/* <div className="p-2 font-bold w-[10rem]">Target Code</div> */}
+          <div className="p-2 font-bold w-[30rem]">Office Target</div>
+          <div className="p-2 font-bold w-[18rem]">KPI</div>
+          {/* <div className="p-2 font-bold w-[10rem]">Actions</div> */}
+          {/* <div className="p-2 font-bold w-[10rem]">Budget</div> */}
           <div className="p-2 font-bold w-[10rem]">In-charge</div>
-          <div className="p-2 font-bold w-[10rem]">
+          <div className="p-2 font-bold w-[25rem]">
             Performance <br />
             <div className="font-medium ">
               <span>Actual</span>
@@ -93,20 +116,22 @@ const ReportStakeholderView = () => {
               <span>Target</span>
             </div>
           </div>
-          <div className="p-2 w-[5rem] font-bold">OFI</div>
+          {/* <div className="p-2 w-[5rem] font-bold">OFI</div> */}
+          <div className="p-2 w-[13rem] font-bold">Link of Evidence</div>
         </div>
-        {stakeholderReport
+        {allStakeholderReports
           .filter(
             (report) =>
-              report.target_code &&
+              // report.target_code &&
               report.office_target &&
               report.key_performance_indicator &&
-              report.actions &&
-              report.budget &&
+              // report.actions &&
+              // report.budget &&
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.ofi
+              // report.ofi &&
+              report.evidence_link //link
           )
           .map((report, index) => (
             <div
@@ -115,27 +140,37 @@ const ReportStakeholderView = () => {
                 index % 2 === 0 ? "bg-[#ffffff]" : "bg-[#fff6d1]"
               }`}
             >
-              <div className="p-2 w-[8rem]"></div>
-              <div className="p-2 w-[10rem]">{report.target_code}</div>
-              <div className="p-2 w-[15rem]">
-                {truncateString(report.office_target, 20)}
+              {/* <div className="p-2 w-[10rem]">{report.target_code}</div> */}
+              <div className="p-2 w-[30rem]">
+                {truncateString(report.office_target, 35)}
               </div>
-              <div className="p-2 w-[8rem]">
+              <div className="p-2 w-[18rem]">
                 {truncateString(report.key_performance_indicator, 20)}
               </div>
-              <div className="p-2 w-[10rem]">{report.actions}</div>
-              <div className="p-2 w-[10rem]">{report.budget}</div>
-              <div className="p-2 w-[10rem]">{report.incharge}</div>
-              <div className="p-2 w-[10rem] text-center">
+              {/* <div className="p-2 w-[10rem]">{truncateString(report.actions, 8)}</div> */}
+              {/* <div className="p-2 w-[10rem]">{report.budget}</div> */}
+              <div className="p-2 w-[10rem]">{truncateString(report.incharge,8)}</div>
+              <div className="p-2 w-[25rem] text-center">
                 <span className="text-start mr-2">
-                  {report.actual_performance}%
+                  {report.actual_performance}
                 </span>
                 <span className="text-center">|</span>
                 <span className="text-end ml-2">
-                  {report.target_performance}%
+                  {report.target_performance}
                 </span>
               </div>
-              <div className="p-2 w-[5rem]">{report.ofi}</div>
+              {/* <div className="p-2 w-[5rem]">{truncateString(report.ofi, 4)}</div> */}
+              <div className="p-2 w-[13rem]">
+              {report.evidence_link ? (
+                <a href={report.evidence_link} target="_blank" rel="noopener noreferrer" className="text-orange-500 underline">
+                  {report.evidence_link.length > 20
+                    ? `${report.evidence_link.substring(0, 15)}...`
+                    : report.evidence_link}
+                </a>
+              ) : (
+                "..."
+              )}
+            </div>
             </div>
           ))}
       </div>

@@ -223,13 +223,13 @@ const Page = () => {
     fetchProfileGoals();
     fetchExistingStrategies(department_id);
 
-    type Perspective = "Financial" | "Stakeholder" | "Internal Process" | "Learning & Growth";
+    type Perspective = "Financial" | "Stakeholder" | "Internal" | "Learning";
 
     const fetchFunctions: Record<Perspective, (department_id: number) => Promise<void>> = {
       "Financial": fetchPrimaryFinancialStrategies,
       "Stakeholder": fetchPrimaryStakeholderStrategies,
-      "Internal Process": fetchPrimaryInternalProcessStrategies,
-      "Learning & Growth": fetchPrimaryLearningGrowthStrategies,
+      "Internal": fetchPrimaryInternalProcessStrategies,
+      "Learning": fetchPrimaryLearningGrowthStrategies,
     };
   
     // Fetch data only if in primary view and component is valid
@@ -1619,7 +1619,7 @@ const Page = () => {
                 </div>
                 <div
                   className="flex flex-row box-sizing-border mr-2 cursor-pointer"
-                  onClick={() => changeComponent("Internal Process")}
+                  onClick={() => changeComponent("Internal")}
                 >
                   <div
                     className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
@@ -1633,7 +1633,7 @@ const Page = () => {
                 </div>
                 <div
                   className="flex flex-row box-sizing-border cursor-pointer"
-                  onClick={() => changeComponent("Learning & Growth")}
+                  onClick={() => changeComponent("Learning")}
                 >
                   <div
                     className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
@@ -1798,7 +1798,7 @@ const Page = () => {
                 </div>
               )}
 
-              {selectedComponent === "Learning & Growth" && (
+              {selectedComponent === "Learning" && (
                 <div className="flex flex-col align-middle items-center justify-center w-[100%]">
                   <div className="flex flex-row">
                   <div className="flex flex-row p-1 h-auto ml-[-1rem]">
@@ -1943,7 +1943,7 @@ const Page = () => {
                   </div>
                 </div>
               )}
-              {selectedComponent === "Internal Process" && (
+              {selectedComponent === "Internal" && (
                 <div className="flex flex-col align-middle items-center justify-center w-[100%]">
                   <div className="flex flex-row">
                   <div className="flex flex-row p-1 h-auto ml-[-1rem]">

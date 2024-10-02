@@ -10,9 +10,31 @@ import ReportStakeholderView from "../components/ReportStakeholderView";
 import ReportInternalView from "../components/ReportInternalView";
 import ReportLearningView from "../components/ReportLearningView";
 import { useSession } from "next-auth/react";
+import {Modal } from "@mui/material";
 
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable'; // Import the autoTable plugin
+import { report } from "process";
+
+import { Bar } from "react-chartjs-2";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend
+);
 
 // Type declaration for jsPDF with autoTable
 declare module 'jspdf' {
@@ -23,12 +45,12 @@ declare module 'jspdf' {
 
 
 const ReportsPage = () => {
-  const { data: session, status, update } = useSession();
+  const { data: session } = useSession();
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
   const department_id = user?.department_id;
-  console.log(department_id);
+ 
 
   // State to manage the current view
   const [currentView, setCurrentView] = useState("default");
@@ -38,7 +60,7 @@ const ReportsPage = () => {
   const [financialReports, setFinancialReports] = useState<ReportFinancialView[]>([]);
 
   //Report Stakeholder
-  const [stakeholderReports, setStakeholderReport] = useState<ReportStakeholderView[]>([]);
+  const [stakeholderReports, setStakeholderReports] = useState<ReportStakeholderView[]>([]);
 
   //Report Internal
   const [internalReports, setInternalReports] = useState<ReportInternalView[]>([]);
@@ -53,92 +75,164 @@ const ReportsPage = () => {
   const [reviewedByName, setReviewedByName] = useState("");
   const [reviewedByRole, setReviewedByRole] = useState("");
 
-  const [department, setDepartment] = useState("");
-  const [headOfficer, setHeadOfficer] = useState("");
-  const [departmentLandline, setDepartmentLandline] = useState("");
-  const [location, setLocation] = useState("");
-  const [email, setEmail] = useState("");
-  const [university, setUniversity] = useState("");
-  const [departmentDescription, setDepartmentDescription] = useState("");
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isReadOnly, setIsReadOnly] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  const [initialSavePerformed, setInitialSavePerformed] = useState(false);
+  const [chartData, setChartData] = useState({
+    labels: ["Financial", "Stakeholder", "Internal", "Learning"],
+    datasets: [
+      {
+        label: "Number of Reports",
+        data: [0, 0, 0, 0], 
+        backgroundColor: [
+          "rgba(255, 99, 132, 0.5)",
+          "rgba(54, 162, 235, 0.5)",
+          "rgba(255, 206, 86, 0.5)",
+          "rgba(75, 192, 192, 0.5)",
+        ],
+        borderColor: [
+          "rgba(255, 99, 132, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(75, 192, 192, 1)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  });
+
 
   useEffect(() => {
-    const fetchUserProfileData = async () => {
+    const fetchApproval = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/department/${department_id}`);
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Received data:", data); // Add this line to log the received data
-          setDepartment(data.department_name);
-          setHeadOfficer(data.head_officer);
-          setDepartmentLandline(data.department_landline);
-          setLocation(data.location);
-          setEmail(data.email);
-          setUniversity(data.university);
-          setDepartmentDescription(data.description);
-          setPreparedByName(data.preparedByName || '');
-          setPreparedByRole(data.preparedByRole || '');
-          setAcknowledgedByName(data.acknowledgedByName || '');
-          setAcknowledgedByRole(data.acknowledgedByRole || '');
-          setReviewedByName(data.reviewedByName || '');
-          setReviewedByRole(data.reviewedByRole || '');
+        const res = await fetch(`http://localhost:8080/approval/get/${department_id}`);
+        if (!res.ok) {
+          throw new Error("Failed to fetch approval data");
+        }
+        const data = await res.json();
+        
+        if (data.length > 0) {
+          const approvalData = data[0]; // Access the first object in the array
+          console.log("Approval data received:", approvalData);
+  
+          setPreparedByName(approvalData.preparedByName);
+          setPreparedByRole(approvalData.preparedByRole);
+          setAcknowledgedByName(approvalData.acknowledgedByName);
+          setAcknowledgedByRole(approvalData.acknowledgedByRole);
+          setReviewedByName(approvalData.reviewedByName);
+          setReviewedByRole(approvalData.reviewedByRole);
+          setIsReadOnly(true); 
+          setInitialSavePerformed(true);
         } else {
-          console.error(
-            "Error fetching user profile data:",
-            response.statusText
-          );
+          console.log("No approval data found.");
         }
       } catch (error) {
-        console.error("Error fetching user profile data:", error);
+        console.error("Error fetching approval data:", error);
       }
-
     };
-    fetchUserProfileData();
+  
+    if (department_id) {
+      fetchApproval();
+    }
   }, [department_id]);
 
-  const handleSave = async (
+  const handleSave = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault(); // Prevent the default action of the button
+  
+    if (
+      !preparedByName ||
+      !preparedByRole ||
+      !acknowledgedByName ||
+      !acknowledgedByRole ||
+      !reviewedByName ||
+      !reviewedByRole
+    ) {
+      setModalMessage('Please fill in all required fields.');
+      setShowModal(true);
+      return;
+    }
+  
+    try {
+      const response = await fetch("http://localhost:8080/approval/insert", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          preparedByName,
+          preparedByRole,
+          acknowledgedByName,
+          acknowledgedByRole,
+          reviewedByName,
+          reviewedByRole,
+          department: { id: department_id },
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || "Failed to insert approval details.");
+      }
+  
+      setModalMessage('Approval details registered successfully!');
+      setShowModal(true);
+      setIsReadOnly(true); // Disable the fields after saving
+      setInitialSavePerformed(true);
+    } catch (error) {
+      console.error("Error:", error);
+      setModalMessage('An error occurred while registering the approval details. Please try again later.');
+      setShowModal(true);
+    }
+  };
+  
+
+  const handleCancelSave = () => {
+    setShowModal(false);
+  };
+
+  
+  const handleEditSave = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
     e.preventDefault();
-
+ 
     if (isEditing) {
+      setIsReadOnly(true); // Set to read-only when done editing
       try {
-        const res = await fetch(`http://localhost:8080/department/update/${department_id}`, {
+        const res = await fetch(`http://localhost:8080/approval/update/${department_id}`, {
           method: "PUT",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            head_officer: headOfficer,
-            department_landline: departmentLandline,
-            location: location,
-            email: email,
-            university: university,
-            description: departmentDescription,
             preparedByName: preparedByName,
             preparedByRole: preparedByRole,
             acknowledgedByName: acknowledgedByName,
             acknowledgedByRole: acknowledgedByRole,
             reviewedByName: reviewedByName,
             reviewedByRole: reviewedByRole,
-            department_id: department_id,
+            department: { id: department_id },
           }),
         });
-
+ 
         if (res.ok) {
           console.log("Edit successful");
           setIsEditing(false);
         } else {
-          console.log("User profile update failed.");
+          console.log("Approval profile update failed.");
         }
       } catch (error) {
-        console.log("Error during saving user Profile", error);
+        console.log("Error during saving Approval", error);
       }
     } else {
-      setIsEditing(true);
+      setIsEditing(true); // Enable editing mode
+      setIsReadOnly(false); // Set fields to editable
     }
   };
-  
 
   const changeComponent = (componentName: string) => {
     localStorage.setItem("lastComponent", componentName);
@@ -163,21 +257,49 @@ const ReportsPage = () => {
           throw new Error("Failed to fetch financial reports");
         }
         const financialData = await financialResponse.json();
-      const completeFinancialReports = financialData.filter(
-        (report: any) =>
-          report.target_code &&
-          report.office_target &&
-          report.key_performance_indicator &&
-          report.actions &&
-          report.budget &&
-          report.incharge &&
-          report.actual_performance !== null &&
-          report.target_performance !== null &&
-          report.ofi
-      );
-
-      setFinancialReports(completeFinancialReports);
-
+  
+        // Fetch primary financial reports
+        const primaryFinancialResponse = await fetch(
+          `http://localhost:8080/bsc/primaryFinancialBsc/get/${department_id}`
+        );
+        if (!primaryFinancialResponse.ok) {
+          throw new Error("Failed to fetch primary financial reports");
+        }
+        const primaryFinancialData = await primaryFinancialResponse.json();
+  
+        // Filter out incomplete reports from both sources
+        const completeFinancialReports = [
+          ...financialData.filter(
+            (report: any) =>
+              // report.target_code &&
+              report.office_target &&
+              report.key_performance_indicator &&
+              // report.actions &&
+              // report.budget &&
+              report.incharge &&
+              report.actual_performance !== null &&
+              report.target_performance !== null &&
+              report.evidence_link
+              
+          ),
+          ...primaryFinancialData.filter(
+            (report: any) =>
+              // report.target_code &&
+              report.office_target &&
+              report.key_performance_indicator &&
+              // report.actions &&
+              // report.budget &&
+              report.incharge &&
+              report.actual_performance !== null &&
+              report.target_performance !== null  &&
+              report.evidence_link
+              // report.ofi
+          ),
+        ];
+  
+        // Set the combined reports into a single state
+        setFinancialReports(completeFinancialReports); 
+        
         const stakeholderResponse = await fetch(
           `http://localhost:8080/bsc/stakeholder/get/${department_id}`
         );
@@ -185,20 +307,48 @@ const ReportsPage = () => {
           throw new Error("Failed to fetch stakeholder reports");
         }
         const stakeholderData = await stakeholderResponse.json();
-        const completeStakeholderReports = stakeholderData.filter(
-          (report: any) =>
-            report.target_code &&
-            report.office_target &&
-            report.key_performance_indicator &&
-            report.actions &&
-            report.budget &&
-            report.incharge &&
-            report.actual_performance !== null &&
-            report.target_performance !== null &&
-            report.ofi
+
+         // Fetch primary stakeholder reports
+         const primaryStakeholderResponse = await fetch(
+          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
         );
+        if (!primaryStakeholderResponse.ok) {
+          throw new Error("Failed to fetch primary stakeholder reports");
+        }
+        const primaryStakeholderData = await primaryStakeholderResponse.json();
+
+        // Filter out incomplete reports from both sources
+        const completeStakeholderReports = [
+          ...stakeholderData.filter(
+            (report: any) =>
+              // report.target_code &&
+              report.office_target &&
+              report.key_performance_indicator &&
+              // report.actions &&
+              // report.budget &&
+              report.incharge &&
+              report.actual_performance !== null &&
+              report.target_performance !== null &&
+              report.evidence_link
+              // report.ofi
+          ),
+          ...primaryStakeholderData.filter(
+            (report: any) =>
+              // report.target_code &&
+              report.office_target &&
+              report.key_performance_indicator &&
+              // report.actions &&
+              // report.budget &&
+              report.incharge &&
+              report.actual_performance !== null &&
+              report.target_performance !== null &&
+              report.evidence_link
+              // report.ofi
+          ),
+        ];
   
-        setStakeholderReport(completeStakeholderReports);
+        // Set the combined reports into a single state
+        setStakeholderReports(completeStakeholderReports); 
   
 
         //Fetch internal reports
@@ -209,19 +359,46 @@ const ReportsPage = () => {
           throw new Error("Failed to fetch internal reports");
         }
         const internalData = await internalResponse.json();
-        setInternalReports(internalData);
-        const completeInternalReports = internalData.filter(
+
+        // Fetch primary stakeholder reports
+        const primaryInternalResponse = await fetch(
+          `http://localhost:8080/bsc/primaryInternalBsc/get/${department_id}`
+        );
+        if (!primaryInternalResponse.ok) {
+          throw new Error("Failed to fetch primary Internal reports");
+        }
+        const primaryInternalData = await primaryInternalResponse.json();
+     
+       // Filter out incomplete reports from both sources
+       const completeInternalReports = [
+        ...internalData.filter(
           (report: any) =>
-            report.target_code &&
+            // report.target_code &&
             report.office_target &&
             report.key_performance_indicator &&
-            report.actions &&
-            report.budget &&
+            // report.actions &&
+            // report.budget &&
             report.incharge &&
             report.actual_performance !== null &&
             report.target_performance !== null &&
-            report.ofi
-        );
+            report.evidence_link
+            // report.ofi
+        ),
+        ...primaryInternalData.filter(
+          (report: any) =>
+            // report.target_code &&
+            report.office_target &&
+            report.key_performance_indicator &&
+            // report.actions &&
+            // report.budget &&
+            report.incharge &&
+            report.actual_performance !== null &&
+            report.target_performance !== null &&
+            report.evidence_link
+            // report.ofi
+        ),
+      ];
+
   
         setInternalReports(completeInternalReports);
   
@@ -233,117 +410,182 @@ const ReportsPage = () => {
           throw new Error("Failed to fetch learning reports");
         }
         const learningData = await learningResponse.json();
-        const completeLearningReports = learningData.filter(
+
+         // Fetch primary stakeholder reports
+         const primaryLearningResponse = await fetch(
+          `http://localhost:8080/bsc/primaryLearningBsc/get/${department_id}`
+        );
+        if (!primaryLearningResponse.ok) {
+          throw new Error("Failed to fetch primary learning reports");
+        }
+        const primaryLearningData = await primaryLearningResponse.json();
+
+        // Filter out incomplete reports from both sources
+       const completeLearningReports = [
+        ...learningData.filter(
           (report: any) =>
-            report.target_code &&
+            // report.target_code &&
             report.office_target &&
             report.key_performance_indicator &&
-            report.actions &&
-            report.budget &&
+            // report.actions &&
+            // report.budget &&
             report.incharge &&
             report.actual_performance !== null &&
             report.target_performance !== null &&
-            report.ofi
-        );
+            report.evidence_link
+            // report.ofi
+        ),
+        ...primaryLearningData.filter(
+          (report: any) =>
+            // report.target_code &&
+            report.office_target &&
+            report.key_performance_indicator &&
+            // report.actions &&
+            // report.budget &&
+            report.incharge &&
+            report.actual_performance !== null &&
+            report.target_performance !== null &&
+            report.evidence_link
+            // report.ofi
+        ),
+      ];
         setLearningReports(completeLearningReports);
+        console.log(completeLearningReports)
+
+        setChartData({
+          ...chartData,
+          datasets: [
+            {
+              ...chartData.datasets[0], 
+              data: [
+                completeFinancialReports.length,
+                completeStakeholderReports.length,
+                completeInternalReports.length,
+                completeLearningReports.length,
+              ],
+            },
+          ],
+        });
+
        } catch (error) {
         console.error("Error fetching reports:", error);
       }
     };
     getReports(department_id);
   }, [department_id]);
+
    
   const handleDownload = async () => {
     const headers = [
-      "Target Code",
       "Office Target",
       "KPI",
-      "Actions",
-      "Budget",
       "In-charge",
       "Actual Performance",
       "Target Performance",
-      "OFI",
+      "Year",
+      "Link of Evidence",
       ];
 
       const transformData = (data: any[]) => {
         return data.map((report) => ({
-          "Target Code": report.target_code,
+          // "Target Code": report.target_code,
           "Office Target": report.office_target,
           KPI: report.key_performance_indicator,
-          Actions: report.actions,
-          Budget: report.budget,
+          // Actions: report.actions,
+          // Budget: report.budget,
           "In-charge": report.incharge,
           "Actual Performance": report.actual_performance,
           "Target Performance": report.target_performance,
-          OFI: report.ofi,
+          "Link of Evidence": report.evidence_link
+          // OFI: report.ofi,
         }));
       };
       
       const transformedFinancial = transformData(financialReports).map((report) => ({
-        "Target Code": report["Target Code"],
+        // "Target Code": report["Target Code"],
         "Office Target": report["Office Target"],
         KPI: report.KPI,
-        Actions: report.Actions,
-        Budget: report.Budget,
+        // Actions: report.Actions,
+        // Budget: report.Budget,
         "In-charge": report["In-charge"],
         "Actual Performance": report["Actual Performance"],
         "Target Performance": report["Target Performance"],
-        OFI: report.OFI,
+        "Link of Evidence": report["Link of Evidence"]
+        
+        // OFI: report.OFI,
       }));
 
       const transformedStakeholder = transformData(stakeholderReports).map((report) => ({
-        "Target Code": report["Target Code"],
+        // "Target Code": report["Target Code"],
         "Office Target": report["Office Target"],
         KPI: report.KPI,
-        Actions: report.Actions,
-        Budget: report.Budget,
+        // Actions: report.Actions,
+        // Budget: report.Budget,
         "In-charge": report["In-charge"],
         "Actual Performance": report["Actual Performance"],
         "Target Performance": report["Target Performance"],
-        OFI: report.OFI,
+        "Link of Evidence": report["Link of Evidence"]
+        // OFI: report.OFI,
       }));
 
       const transformedInternal = transformData(internalReports).map((report) => ({
-        "Target Code": report["Target Code"],
+        // "Target Code": report["Target Code"],
         "Office Target": report["Office Target"],
         KPI: report.KPI,
-        Actions: report.Actions,
-        Budget: report.Budget,
+        // Actions: report.Actions,
+        // Budget: report.Budget,
         "In-charge": report["In-charge"],
         "Actual Performance": report["Actual Performance"],
         "Target Performance": report["Target Performance"],
-        OFI: report.OFI,
+        "Link of Evidence": report["Link of Evidence"]
+        // OFI: report.OFI,
       }));
        
 
       const transformedLearning = transformData(learningReports).map((report) => ({
-        "Target Code": report["Target Code"],
+        // "Target Code": report["Target Code"],
         "Office Target": report["Office Target"],
         KPI: report.KPI,
-        Actions: report.Actions,
-        Budget: report.Budget,
+        // Actions: report.Actions,
+        // Budget: report.Budget,
         "In-charge": report["In-charge"],
         "Actual Performance": report["Actual Performance"],
         "Target Performance": report["Target Performance"],
-        OFI: report.OFI,
+        "Link of Evidence": report["Link of Evidence"]
+        // OFI: report.OFI,
       }));
 
 
     const doc = new jsPDF(); 
     let startY = 5; 
 
+    const imgProps = doc.getImageProperties('/cit.png'); // Replace with your image path
+    const imgWidth = imgProps.width;
+    const imgHeight = imgProps.height;
+
+
+doc.addImage('/cit.png', 'PNG', 10, 5, 20, 20); // Adjust position and size as needed
+doc.setFont('Helvetica','bold');
+doc.setFontSize(8); // Adjust font size as needed
+doc.text("CEBU INSTITUTE OF TECHNOLOGY - UNIVERSITY", 35, 10);
+doc.text("CENTER FOR ELEARNING AND TECHNOLOGY", 35, 15);
+doc.setFontSize(6);
+doc.setFont('Helvetica','bold');
+doc.text("office email address | office local number", 35, 20);
+doc.setFontSize(9);
+doc.setFont('Helvetica','bold');
+doc.setTextColor(170, 0, 0); // Set text color to dark red or adjust
+doc.text("BALANCED SCORECARD (BSC)", 35, 25); 
+doc.setTextColor(0, 0, 0); // Reset text color to black
+
+startY = 40;
+
     const addSection = (reportTitle: string, reportData: any[]) => {
-      
       doc.setFontSize(9);
-    
-      // Render the report title and update the starting Y position
       doc.setFont('Helvetica', 'bold'); 
-      doc.text(reportTitle, 15, startY + 10); // Render title at 'startY + 5'
-      
-      
-      // Update startY so that the table starts below the title
-      startY += 15; // Adjust the value as needed to avoid overlap
+      doc.text(reportTitle, 15, startY + 10);
+    
+      startY += 15; 
       
       // Generate the table
       autoTable(doc, {
@@ -356,7 +598,7 @@ const ReportsPage = () => {
           }
         },
         headStyles: {
-          fontSize: 7,
+          fontSize: 8,
           fontStyle: 'bold',
           fillColor: "#A43214",
           textColor: [245, 245, 17],
@@ -368,16 +610,28 @@ const ReportsPage = () => {
           fontSize: 7,
           fontStyle: 'normal',
           lineColor: [0, 0, 0],  // Black border
-          lineWidth: 0.1,        // Border thickness
+          lineWidth: 0.1,  
+          halign: 'center',       // Border thickness
+        },
+        columnStyles: {
+          0: { cellWidth: 40 }, // "Office Target" (index 0)
+          1: { cellWidth: 35 }, // KPI (index 1)
+          2: { cellWidth: 30 }, // "In-charge" (index 2)
+          3: { cellWidth: 20 }, // "Actual Performance" (index 3)
+          4: { cellWidth: 20 }, // "Target Performance" (index 4)
+          5: { cellWidth: 10 }, // "Year" (index 5)
+          6: { cellWidth: 20 }, // "Link of Evidence" (index 6)
         },
       });
     };
     
     
-    addSection("FINANCIAL PERSPECTIVE", transformedFinancial);
+    
     addSection("STAKEHOLDER PERSPECTIVE", transformedStakeholder);
     addSection("INTERNAL PERSPECTIVE", transformedInternal);
     addSection("LEARNING AND GROWTH PERSPECTIVE", transformedLearning);
+    console.log("transformed :", transformedLearning);
+    addSection("FINANCIAL PERSPECTIVE", transformedFinancial);
   
       doc.save("report.pdf");
   };
@@ -483,7 +737,7 @@ const ReportsPage = () => {
               </div>
             </div>
             {/* end of perspectives toggle */}
-            <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
+            <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
               {selectedComponent === "Financial" && <ReportFinancial />}
               {selectedComponent === "Stakeholder" && <ReportStakeholder />}
               {selectedComponent === "Internal" && <ReportInternal />}
@@ -500,21 +754,123 @@ const ReportsPage = () => {
                     REPORT VISUALIZATION
                   </span>
                   {/* insert the chart here */}
+                  <div style={{ height: "300px", width: "800px" }}> 
+                    {chartData && (
+                      <Bar
+                        data={chartData}
+                        options={{
+                          responsive: true,
+                          plugins: {
+                            legend: {
+                              position: "top" as const,
+                            },
+                            title: {
+                              display: false,
+                              text: "Report Visualization",
+                            },
+                          },
+                          elements: { 
+                            bar: {
+                              backgroundColor: [ 
+                                "#b83216",
+                                "rgba(253, 227, 167, 1)",
+                                "#b83216",
+                                "rgba(253, 227, 167, 1)"
+                              ],
+                              borderColor: [
+                                "rgba(255, 99, 132, 1)",
+                                "rgba(249, 105, 14, 1)",
+                                "rgba(249, 105, 14, 1)",
+                                "rgba(249, 105, 14, 1)"
+                              ],
+                              borderWidth: 1,
+                              borderRadius: 10,
+                            }
+                          }, 
+                          datasets: {
+                            bar: {
+                              barPercentage: 1.3, // Make bars narrower
+                              categoryPercentage: 0.6, // Increase space between categories 
+                            }
+                          },
+                          scales: {
+                            x: {
+                              grid: {
+                                lineWidth: 1,
+                                color: 'white', 
+                              }
+                            },
+                            y: {
+                              grid: {
+                                lineWidth: 1, 
+                                color: 'rgba(0, 0, 0, 0.2)',
+                              }
+                            }
+                          }
+                        }}
+                      />
+                    )}
+                  </div>
+
                 </div>
               </div>
               <div className="flex mt-[0.5rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-200 bg-gray w-[48%] h-[auto] rounded-xl px-8 py-5">
                 <div className="flex flex-col">
-                  <div className="flex flex-row">
+                  <div className="flex flex-row break-words">
                     <span className="font-bold text-2xl items-center mb-5">
                       APPROVAL SECTION
                     </span>
-                    <div className="justify-end ml-[23rem]">
-                      <button
-                        onClick={handleSave}
-                        className="text-white bg-[#A43214] w-[8rem] inline-block break-words font-bold transition-all rounded-lg px-4 py-2"
-                      >
-                        {isEditing ? 'Save' : 'Edit'}
-                      </button>
+                    <div className="justify-end ml-[26rem]">
+                      {!initialSavePerformed && (
+                        <button onClick={handleSave} disabled={isReadOnly} className="bg-[#A43214] py-2 px-5 rounded-md transition-all  text-white font-medium">Save</button>
+                      )}
+                      {(initialSavePerformed || isReadOnly) && (
+                        <button onClick={handleEditSave} className="bg-[#A43214] py-2 px-5 rounded-md transition-all  text-white font-medium">
+                          {isEditing ? 'Save' : 'Edit'}
+                        </button>
+                      )}
+
+                      
+
+                      {/* Modal */}
+                      <Modal open={showModal} onClose={() => setShowModal(false)}>
+                        <div className="flex flex-col items-center justify-center h-full">
+                          <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
+                            <button
+                              onClick={handleCancelSave}
+                              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth="2"
+                                  d="M6 18L18 6M6 6l12 12"
+                                />
+                              </svg>
+                            </button>
+                            <p className="text-3xl font-bold mb-4">Notice!</p>
+                            <p className="text-xl mb-4 mt-10">
+                              {modalMessage}
+                            </p>
+                            <div className="flex justify-center gap-10 mt-12 mb-10">
+                              <button
+                                onClick={() => setShowModal(false)}
+                                className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content]"
+                                style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                              >
+                                Close
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </Modal>
                     </div>
                   </div>
                 <div className="flex flex-col">
@@ -526,8 +882,9 @@ const ReportsPage = () => {
                       placeholder="Enter name"
                       name="preparedByName" 
                       value={preparedByName}
-                      onChange={(e) => setPreparedByName(e.target.value)}
-                      readOnly={!isEditing}
+                      onChange={(e) => setPreparedByName(e.target.value)} 
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
                       className="border border-gray-300 rounded-md px-3 py-2 w-[28rem]" 
                     />
                     <input 
@@ -536,7 +893,8 @@ const ReportsPage = () => {
                       name="preparedByRole" 
                       value={preparedByRole}
                       onChange={(e) => setPreparedByRole(e.target.value)}
-                      readOnly={!isEditing}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
                       className="border border-gray-300 rounded-md px-3 py-2 w-[16rem]" 
                     />
                     </div>
@@ -551,7 +909,8 @@ const ReportsPage = () => {
                       name="acknowledgedByName" 
                       value={acknowledgedByName}
                       onChange={(e) => setAcknowledgedByName(e.target.value)}
-                      readOnly={!isEditing}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
                       className="border border-gray-300 rounded-md px-3 py-2 w-[28rem]" 
                     />
                     <input 
@@ -560,7 +919,8 @@ const ReportsPage = () => {
                       name="acknowledgedByRole" 
                       value={acknowledgedByRole}
                       onChange={(e) => setAcknowledgedByRole(e.target.value)}
-                      readOnly={!isEditing}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
                       className="border border-gray-300 rounded-md px-3 py-2 w-[16rem]" 
                     />
                     </div>
@@ -574,7 +934,8 @@ const ReportsPage = () => {
                       name="reviewedByName" 
                       value={reviewedByName}
                       onChange={(e) => setReviewedByName(e.target.value)}
-                      readOnly={!isEditing}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
                       className="border border-gray-300 rounded-md px-3 py-2 w-[28rem]" 
                     />
                     <input 
@@ -583,7 +944,8 @@ const ReportsPage = () => {
                       name="reviewedByRole"
                       value={reviewedByRole}
                       onChange={(e) => setReviewedByRole(e.target.value)}
-                      readOnly={!isEditing}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
                       className="border border-gray-300 rounded-md px-3 py-2 w-[16rem]" 
                     />
                     </div>
