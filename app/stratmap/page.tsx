@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import { useSession } from "next-auth/react";
 import React, { ChangeEvent, useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
@@ -1521,7 +1521,7 @@ const Page = () => {
             <span className="break-words font-bold text-[3rem]">
               Strategy Mapping
             </span>
-            <div className="flex justify-center lg:ml-[55rem] md:ml-[50rem] mt-[0.5rem] border border-gray-200 bg-gray w-[24rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
+            <div className="flex justify-center lg:ml-[45rem] md:ml-[50rem] mt-[0.5rem] border border-gray-200 bg-gray w-[24rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
               <button
                 onClick={() => setCurrentView("primary")}
                 className={`rounded-lg ${
@@ -1563,8 +1563,8 @@ const Page = () => {
                 growth in today&apos;s dynamic business landscape.
               </div>
 
-              <div className="container mx-auto px-4 mb-16 sm:flex-col md:flex-col sm:mb-5 md:mb-24 lg:mb-20">
-                <div className="mt-[-3rem] grid grid-cols-1 sm:w-[80%] lg:w-[109%] sm:items-start sm:flex-col sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-4 h-[auto] w-[102rem] ml-[-6rem]">
+              <div className="container mx-auto px-4 mb-16 sm:flex-col md:flex-col sm:mb-5 md:mb-24 lg:mb-20 ml-[-1rem]">
+                <div className="mt-[-3rem] grid grid-cols-1 sm:items-start sm:flex-col sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 h-[auto]">
                   <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
                     <h1 className="text-xl font-bold mb-2">Vision</h1>
                     <p className="text-gray-700 break-words overflow-auto">
@@ -1663,14 +1663,14 @@ const Page = () => {
                     />
                     <div className="flex flex-col">
                       <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Primary: Financial Report Overview
+                        <span className="text-[#ff7b00d3]">Financial:</span> Stewardship Overview
                       </span>
                       <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                         Measures financial performance and profitability.
                       </span>
                     </div>
                   </div>
-                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[68.4rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[60rem]">
                   <button onClick={openPrimaryFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
                     
                     <div className="flex flex-row">
@@ -1698,25 +1698,6 @@ const Page = () => {
                           <h2 className="text-2xl mb-5 font-semibold">
                             Financial Strategy
                           </h2>
-                          <button
-                            onClick={closePrimaryFModal} 
-                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
                         </div>
                         <div className="flex flex-col">
                           <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
@@ -1809,14 +1790,14 @@ const Page = () => {
                     />
                     <div className="flex flex-col">
                       <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Primary: Culture & People Development Overview
+                      <span className="text-[#ff7b00d3]">Learning & Growth</span> Culture & People Development Overview
                       </span>
                       <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                         Enhances organizational culture and employee growth.
                       </span>
                     </div>
                   </div>
-                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[60.2rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[45.5rem]">
                   <button onClick={openPrimaryLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
                     
                     <div className="flex flex-row">
@@ -1844,25 +1825,6 @@ const Page = () => {
                           <h2 className="text-2xl mb-5 font-semibold">
                             Learning & Growth Strategy
                           </h2>
-                          <button
-                            onClick={closePrimaryLGModal} 
-                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
                         </div>
                         <div className="flex flex-col">
                           <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
@@ -1954,14 +1916,14 @@ const Page = () => {
                     />
                     <div className="flex flex-col">
                       <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Primary: Process & Technology Overview
+                      <span className="text-[#ff7b00d3]">Internal Process:</span> Process & Technology Overview 
                       </span>
                       <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                         Optimizes and manages internal processes and technology.
                       </span>
                     </div>
                   </div>
-                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[63.2rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[52rem]">
                   <button onClick={openPrimaryIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
                      
                     <div className="flex flex-row">
@@ -1989,25 +1951,6 @@ const Page = () => {
                           <h2 className="text-2xl mb-5 font-semibold">
                             Internal Process Strategy
                           </h2>
-                          <button
-                            onClick={closeIPModal} 
-                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
                         </div>
                         <div className="flex flex-col">
                           <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
@@ -2048,11 +1991,11 @@ const Page = () => {
                         </div>
                         <div className="flex flex-row justify-center mt-2 gap-10">
                           <button
-                            onClick={closeIPModal}
+                            onClick={closeFModal}
                             className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
                           >
                             Cancel
-                          </button>
+                          </button> 
                           <button
                             onClick={async () => { 
                               await handlePrimaryIPSave(); //change 
@@ -2099,14 +2042,14 @@ const Page = () => {
                     />
                     <div className="flex flex-col">
                       <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Primary: Client Relationship Overview
+                      <span className="text-[#ff7b00d3]">Stakeholder:</span> Client Relationship Overview
                       </span>
                       <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                         Measures client engagement quality and value.
                       </span>
                     </div>
                   </div>
-                <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[67.5rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[56rem]">
                   <button onClick={openPrimarySModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
                     
                     <div className="flex flex-row">
@@ -2134,25 +2077,6 @@ const Page = () => {
                           <h2 className="text-2xl mb-5 font-semibold">
                             Stakeholder Strategy
                           </h2>
-                          <button
-                            onClick={closePrimarySModal} 
-                            className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              className="w-6 h-6"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M6 18L18 6M6 6l12 12"
-                              />
-                            </svg>
-                          </button>
                         </div>
                         <div className="flex flex-col">
                           <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
@@ -2268,7 +2192,7 @@ const Page = () => {
                 <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
                 {selectedComponent === "Financial" && (
                   <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                    <div className="flex flex-row">
+                    <div className="flex flex-row ">
                     <div className="flex flex-row p-1 h-auto ml-[-1rem]">
                       <img
                         src="/financial.png"
@@ -2277,7 +2201,7 @@ const Page = () => {
                       />
                       <div className="flex flex-col">
                         <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Financial Report Overview
+                        <span className="text-[#ff7b00d3]">Financial:</span> Stewardship Overview
                         </span>
                         <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                           Measures financial performance and profitability.
@@ -2285,7 +2209,7 @@ const Page = () => {
                       </div>
                     </div>
                     {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[68rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[60rem]">
                     <button onClick={openFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
                       <div className="flex flex-row">
                       <svg
@@ -2312,25 +2236,6 @@ const Page = () => {
                             <h2 className="text-2xl mb-5 font-semibold">
                               Financial Strategy
                             </h2>
-                            <button
-                              onClick={closeFModal}
-                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
                           </div>
                           <div className="flex flex-col">
                             <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
@@ -2478,7 +2383,7 @@ const Page = () => {
                       />
                       <div className="flex flex-col">
                         <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Culture & People Development Overview
+                        <span className="text-[#ff7b00d3]">Learning & Growth</span> Culture & People Development Overview
                         </span>
                         <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                           Enhances organizational culture and employee growth.
@@ -2486,7 +2391,7 @@ const Page = () => {
                       </div>
                     </div>
                     {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[65.5rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[45.5rem]">
                     <button onClick={openLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
                       <div className="flex flex-row">
                       <svg
@@ -2513,25 +2418,6 @@ const Page = () => {
                             <h2 className="text-2xl mb-5 font-semibold">
                               Learning & Growth Strategy
                             </h2>
-                            <button
-                              onClick={closeLGModal}
-                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
                           </div>
                           <div className="flex flex-col">
                             <span className="mr-3 mb-2 break-words font-bold text-lg">
@@ -2673,11 +2559,11 @@ const Page = () => {
                       <img
                         src="/internal.png"
                         alt=""
-                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                        className=" h-[4.8rem] mb-5 mr-5 mt-[-0.6rem]"
                       />
                       <div className="flex flex-col">
                         <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Process & Technology Overview
+                        <span className="text-[#ff7b00d3]">Internal Process:</span> Process & Technology Overview
                         </span>
                         <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                           Optimizes and manages internal processes and technology.
@@ -2685,7 +2571,7 @@ const Page = () => {
                       </div>
                     </div>
                     {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[63rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[52rem]">
                     <button onClick={openIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
                       <div className="flex flex-row">
                       <svg
@@ -2712,25 +2598,6 @@ const Page = () => {
                             <h2 className="text-2xl mb-5 font-semibold">
                               Internal Process Strategy
                             </h2>
-                            <button
-                              onClick={closeIPModal}
-                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
                           </div>
                           <div className="flex flex-col">
                             <span className="mr-3 mb-2 break-words font-bold text-lg">
@@ -2876,7 +2743,7 @@ const Page = () => {
                       />
                       <div className="flex flex-col">
                         <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Client Relationship Overview
+                        <span className="text-[#ff7b00d3]">Stakeholder:</span> Client Relationship Overview
                         </span>
                         <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                           Measures client engagement quality and value.
@@ -2884,7 +2751,7 @@ const Page = () => {
                       </div>
                     </div>
                     {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[69rem]">
+                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[56rem]">
                     <button onClick={openSModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
                       <div className="flex flex-row">
                       <svg
@@ -2911,25 +2778,6 @@ const Page = () => {
                             <h2 className="text-2xl mb-5 font-semibold">
                               Stakeholder Strategy
                             </h2>
-                            <button
-                              onClick={closeSModal}
-                              className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
                           </div>
                           <div className="flex flex-col">
                             <span className="mr-3 mb-2 break-words font-bold text-lg">

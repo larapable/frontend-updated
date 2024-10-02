@@ -383,28 +383,9 @@ export default function Internal() {
       {internalModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="bg-white p-8 rounded-lg z-10 h-[50rem] w-[96rem]">
+          <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[96rem]">
             <div className="flex flex-row">
               <h2 className="text-2xl mb-10 font-semibold">Internal</h2>
-              <button
-                onClick={handleInternalCloseModal}
-                className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
             </div>
             <div className="flex flex-row gap-32 mb-10">
               <div className="flex flex-col">
@@ -439,39 +420,6 @@ export default function Internal() {
                   <option value="Succession Plan">Succession Plan</option>
                 </select>
               </div>
-            </div>
-            <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
-              Office Target
-              <span className="text-[#DD1414]">*</span>
-            </span>
-            <textarea
-              value={internalOfficeTarget}
-              className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
-              onChange={(e) => setInternalOfficeTarget(e.target.value)}
-            />
-            <div className=" mt-10 flex flex-row gap-36">
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Status
-                </span>
-                {userRole !== "qualityAssurance" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    You cannot edit the status unless you are in a QA role.
-                  </span>
-                )}
-                <select
-                  value={internalStatus || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  onChange={(e) => setInternalStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Not Achieved">Not Achieved</option>
-                  <option value="Achieved">Achieved</option>
-                </select>
-              </div>
               {/* add KPI here */}
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
@@ -481,51 +429,24 @@ export default function Internal() {
                 <input
                   type="text"
                   value={internalKPI}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => setInternalKPI(e.target.value)}
                 />
               </div>
+
             </div>
-            <div className=" mt-10 flex flex-row gap-36">
+            
+            
+            <div className=" mt-10 flex flex-row gap-32 mb-10">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                {internalMetric === "Percentage" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter the actual performance as a percentage without
-                    including the &apos;%&apos; symbol.
-                  </span>
-                )}
-                {internalMetric === "Count" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a whole number (e.g., 10).
-                  </span>
-                )}
-                {internalMetric === "Rating" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
-                    point (e.g., 3.5).
-                  </span>
-                )}
-                {internalMetric === "Score" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
-                    point (e.g., 7.5).
-                  </span>
-                )}
-                {internalMetric === "Succession Plan" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a numeric value to represent the status of the
-                    succession plan. Ensure the value accurately reflects
-                    readiness or progress.
-                  </span>
-                )}
                 <input
                   type="number"
                   value={internalTargetPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => {
                     const maxLimit =
                       internalMetric === "Percentage"
@@ -552,12 +473,6 @@ export default function Internal() {
                     setInternalTargetPerformance(value.toString());
                   }}
                 />
-              </div>
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Actual Performance
-                  <span className="text-[#DD1414]">*</span>
-                </span>
                 {internalMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -588,10 +503,16 @@ export default function Internal() {
                     readiness or progress.
                   </span>
                 )}
+              </div>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Actual Performance
+                  <span className="text-[#DD1414]">*</span>
+                </span>
                 <input
                   type="number"
                   value={internalActualPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => {
                     const maxLimit =
                       internalMetric === "Percentage"
@@ -618,12 +539,74 @@ export default function Internal() {
                     setInternalActualPerformance(value.toString());
                   }}
                 />
+                {internalMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {internalMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {internalMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {internalMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {internalMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Status
+                </span>
+                <select
+                  value={internalStatus || ""}
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
+                  onChange={(e) => setInternalStatus(e.target.value)}
+                  disabled={userRole !== "qualityAssurance"}
+                >
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Not Achieved">Not Achieved</option>
+                  <option value="Achieved">Achieved</option>
+                </select>
+                {userRole !== "qualityAssurance" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    You cannot edit the status unless you are in a QA role.
+                  </span>
+                )}
               </div>
             </div>
+            <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
+              Office Target
+              <span className="text-[#DD1414]">*</span>
+            </span>
+            <textarea
+              value={internalOfficeTarget}
+              className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
+              onChange={(e) => setInternalOfficeTarget(e.target.value)}
+            />
+
             <div className="flex flex-row justify-center mt-10 gap-10">
               <button
                 onClick={handleInternalCloseModal}
-                className="bg-[#ffffff] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                className="bg-[#ffffff] border border-[#AB3510] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
               >
                 Cancel
               </button>

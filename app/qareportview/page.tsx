@@ -76,12 +76,23 @@ interface LearningScorecard {
   evidence_link: string;
 }
 
+interface Approval {
+  id: number;
+  preparedByName: string;
+  preparedByRole: string;
+  acknowledgedByName: string;
+  acknowledgedByRole: string;
+  reviewedByName: string;
+  reviewedByRole: string;
+}
+
 export default  function QAReportView() {
 
   const [currentView, setCurrentView] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<
     number | null>(null);
+  const [approvalData, setApprovalData] = useState<Approval[]>([]);
 
   // Store the selected view in local storage
   const changeView = (view: string) => {
@@ -161,6 +172,29 @@ export default  function QAReportView() {
     ...primaryFinancialSavedScorecards,
     ...financialSavedScorecards,
   ];
+
+  useEffect(() => {
+    const fetchApprovalData = async () => {
+      if (!selectedDepartmentId) {
+        return;
+      }
+ 
+      try {
+        const response = await fetch(
+          `http://localhost:8080/approval/get/${selectedDepartmentId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch approval data");
+        }
+        const data = await response.json();
+        setApprovalData(data);
+      } catch (error) {
+        console.error("Error fetching approval data:", error);
+      }
+    };
+ 
+    fetchApprovalData();
+  }, [selectedDepartmentId]);
 
 
   // Fetch the saved financial scorecards from the server
@@ -864,6 +898,44 @@ export default  function QAReportView() {
                 </div>
               </div>
             </div>
+
+            <div>
+              {/* APPROVAL SECTION HERE */}
+              {approvalData.map((approval) => (
+              <div
+                className="flex items-center justify-center gap-20 mb-10 mt-10"
+              >
+                <div className="p-2 flex items-center text-center justify-center">
+                  <img
+                        src="/citlogo.png"
+                        alt=""
+                        className="h-[8rem]"
+                      />
+                </div>
+ 
+                <div className="p-2 w-[25rem] ml-[-2rem] flex flex-col items-center text-center justify-center">
+                  <span className="mb-5">Prepared By:</span>
+                  <span className="text-[1.3rem] font-bold">{approval.preparedByName}</span>
+                  <span>({approval.preparedByRole})</span>
+                </div>
+ 
+                <div className="p-2 w-[25rem] flex flex-col items-center text-center justify-center">
+                <span className="mb-5">Acknowledged By:</span>
+                  <span className="text-[1.3rem] font-bold">{approval.acknowledgedByName}</span>
+                  <span>({approval.acknowledgedByRole})</span>
+                </div>
+ 
+                <div className="p-2 w-[25rem] flex flex-col items-center text-center justify-center">
+                <span className="mb-5">Reviewed By:</span>
+                  <span className="text-[1.3rem] font-bold">{approval.reviewedByName}</span>
+                  <span>({approval.reviewedByRole})</span>
+                </div>
+              </div>
+            ))}
+ 
+            </div>
+
+            
             </div>
             ) : (
               <div className="items-center align-middle mt-10 justify-center text-center">

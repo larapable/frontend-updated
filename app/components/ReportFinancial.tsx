@@ -295,7 +295,7 @@ const ReportFinancial = () => {
 
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
         {/* <div className="p-2 font-bold w-[10rem]">Target Code</div> */}
-        <div className="p-2 font-bold w-[30rem]">Office Target</div>
+        <div className="p-2 font-bold w-[18rem]">Office Target</div>
         <div className="p-2 font-bold w-[8rem]">KPI</div>
         <div className="p-2 font-bold w-[10rem]">Actions</div>
         <div className="p-2 font-bold w-[10rem]">Budget</div>
@@ -320,7 +320,7 @@ const ReportFinancial = () => {
           }`}
         >
           {/* <div className="p-2 w-[10rem]">{report.target_code}</div> */}
-          <div className="p-3 w-[32rem] ml-[-2rem]">
+          <div className="p-3 w-[20rem] ml-[-2rem]">
             {truncateString(report.office_target, 45)}
           </div>
           <div className="p-3 w-[8rem]">
@@ -513,8 +513,9 @@ const ReportFinancial = () => {
               <div className="flex flex-col">
                   <span className="mr-3 break-words font-regular text-md text-[#000000]">
                     OFI
+                    <span className="text-[#DD1414]">*</span>
                   </span>
-                  <span className="text-[#DD1414]">*</span>
+                  
                   <textarea
                     value={financialOfi}
                     className="text-lg font-regular border border-gray-300 bg-gray-50 w-[76.8rem] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"

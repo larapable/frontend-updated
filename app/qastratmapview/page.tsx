@@ -1640,7 +1640,7 @@ export default  function QAStratmapView() {
                             />
                             <div className="flex flex-col">
                             <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                            <span className="text-[#ff7b00d3]">Financial:</span> Stewardship Overview
+                              
                             </span>
                             <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
                                 Measures financial performance and profitability.

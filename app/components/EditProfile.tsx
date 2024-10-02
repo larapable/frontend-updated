@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
 import SpinnerPages from "../components/SpinnerPages"; 
+import Link from "next/link";
 
 export default function UserEditProfile() {
   const { data: session, status, update } = useSession();
@@ -193,7 +194,7 @@ export default function UserEditProfile() {
 
   return (
     <div className="flex flex-col gap-5 items-center justify-center">
-      <Card className="w-[105rem] h-[auto] flex flex-col items-center rounded-xl bg-white shadow-xl border border-gray-150 mb-10">
+      <Card className="w-[105rem] h-[auto] flex flex-col items-center rounded-xl bg-white shadow-md border border-gray-150 mb-10">
         <div className="w-[100%]">
           <img src="/coverbg.png" alt="" className=" h-[12rem] w-[100%] bg-white object-cover" />
         </div>
@@ -266,7 +267,7 @@ export default function UserEditProfile() {
           </button>
         </div>
 
-        <div className="w-[80rem] h-[100%] border border-gray-200 px-10 py-10 rounded-xl mb-10">
+        <div className="w-[80rem] h-[100%] shadow-md border border-gray-200 px-10 py-10 rounded-xl mb-10">
           <div className="flex flex-col">
             <span className="text-2xl font-bold text-[rgb(77,76,76)] mb-5">Basic Information</span>
             <div className="flex flex-col">
@@ -372,21 +373,22 @@ export default function UserEditProfile() {
                 ? confirmationMessage
                 : "Looks like you've made changes. Do you want to save these changes?"}
             </p>
-            <div className="flex justify-center gap-10 mt-12 mb-10">
-              <Button
+            <div className="flex justify-center gap-8 mt-12 mb-10">
+              <button
                 onClick={handleCancelSave}
-                className="break-words font-semibold text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] border border-[#962203] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                className="break-words font-semibold text-[1.2rem] border border-[#AB3510] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
               >
-                No, Cancel
-              </Button>
-              <Button
-                href="/profile"
+                Cancel
+              </button>
+              <Link href="/profile">
+              <button
                 onClick={handleSave}
-                className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                 style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
               >
-                Yes, Save
-              </Button>
+                Save
+              </button>
+              </Link>
             </div>
           </div>
         </div>

@@ -81,8 +81,8 @@ const ReportFinancialView = () => {
 
 
   return (
-    <div className="flex flex-col gap-10">
-    <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
+    <div className="flex flex-col gap-10 w-[92%]">
+    <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 h-auto mb-10 rounded-lg pb-5">
       <div className="flex flex-row p-1 w-[75rem] h-auto">
         <img
           src="/financial.png"

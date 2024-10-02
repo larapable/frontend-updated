@@ -1,4 +1,4 @@
-"use client";
+  "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbar";
 import { FaPlus } from "react-icons/fa";
@@ -1565,7 +1565,7 @@ const Swot = () => {
         <div className="flex-1 flex flex-col mt-8 ml-80">
           <div className="flex flex-col mb-16">
 
-            <div className="flex flex-row">
+            <div className="flex flex-row ">
               <div className="mb-5 inline-block self-start break-words font-bold text-[3rem] text-[rgb(59,59,59)]">
                 SWOT ANALYSIS
               </div>
@@ -1651,7 +1651,7 @@ const Swot = () => {
                   )}
               </div>
               {/* END */}
-                <Card className="flex align-center rounded-lg mt-[-3rem] border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
+                <Card className="flex align-center rounded-lg mt-[-3rem] border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[98%]">
                   <div className="flex flex-col">
                     <div className="flex flex-row">
                     <div
@@ -1794,17 +1794,17 @@ const Swot = () => {
                                   <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strength? <br/>You can still restore it later if needed.</p>
                                   <div className="flex justify-center space-x-3 mt-10">
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                                      className="break-words font-semibold text-[1.2rem] border border-[#AB3510] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
                                       onClick={() => setIsStrengthModalOpen(false)}
                                     >
-                                      No, Cancel
+                                      Cancel
                                     </button>
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                                       style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                                       onClick={handleStrengthDeleteConfirm}
                                     >
-                                      Yes, Delete
+                                      Delete
                                     </button>
                                   </div>
                                 </div>
@@ -2003,17 +2003,17 @@ const Swot = () => {
                                   <p className="text-xl mb-4 mt-10">Are you sure you want to delete this weakness? <br/>You can still restore it later if needed.</p>
                                   <div className="flex justify-center space-x-3 mt-10">
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                                      className="break-words font-semibold border border-[#AB3510] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
                                       onClick={() => setIsWeaknessModalOpen(false)}
                                     >
-                                      No, Cancel
+                                      Cancel
                                     </button>
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                                       style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                                       onClick={handleWeaknessDeleteConfirm}
                                     >
-                                      Yes, Delete
+                                      Delete
                                     </button>
                                   </div>
                                 </div>
@@ -2106,7 +2106,7 @@ const Swot = () => {
                     <div className="relative ml-[-1.5rem]">
                       {opportunities.isAdding && (
                         <input
-                          placeholder="Type strength and press Enter"
+                          placeholder="Type oportunity and press Enter"
                           value={opportunities.newItem}
                           onChange={opportunities.handleChange}
                           onKeyDown={opportunities.addOpportunities}
@@ -2216,17 +2216,17 @@ const Swot = () => {
                                   <p className="text-xl mb-4 mt-10">Are you sure you want to delete this opportunity? <br/>You can still restore it later if needed.</p>
                                   <div className="flex justify-center space-x-3 mt-10">
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                                      className="break-words font-semibold border border border-[#AB3510] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
                                       onClick={() => setIsOpportunityModalOpen(false)}
                                     >
-                                      No, Cancel
+                                      Cancel
                                     </button>
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                                       style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                                       onClick={handleOpportunityDeleteConfirm}
                                     >
-                                      Yes, Delete
+                                      Delete
                                     </button>
                                   </div>
                                 </div>
@@ -2319,7 +2319,7 @@ const Swot = () => {
                     <div className="relative ml-[-1.5rem]">
                       {threats.isAdding && (
                         <input
-                          placeholder="Type strength and press Enter"
+                          placeholder="Type threat and press Enter"
                           value={threats.newItem}
                           onChange={threats.handleChange}
                           onKeyDown={threats.addThreats}
@@ -2430,17 +2430,17 @@ const Swot = () => {
                                   <p className="text-xl mb-4 mt-10">Are you sure you want to delete this threat? <br/>You can still restore it later if needed.</p>
                                   <div className="flex justify-center space-x-3 mt-10">
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                                      className="break-words font-semibold border border-[#AB3510] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
                                       onClick={() => setIsThreatModalOpen(false)}
                                     >
-                                      No, Cancel
+                                      Cancel
                                     </button>
                                     <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                                       style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                                       onClick={handleThreatDeleteConfirm}
                                     >
-                                      Yes, Delete
+                                      Delete
                                     </button>
                                   </div>
                                 </div>
@@ -2458,7 +2458,7 @@ const Swot = () => {
               <div className="flex justify-center ml-[-3rem] mb-10">
                 <button
                   onClick={generateStrategies}
-                  className="lg:mb-0 mb-6 rounded-[0.6rem] mt-10 relative flex flex-row justify-center self-center pt-3 pb-4 pl-1 w-[24.1rem] box-sizing-border"
+                  className="lg:mb-0 mb-6 rounded-[0.6rem] mt-10 flex flex-row justify-center self-center pt-3 pb-4 pl-1 w-[24.1rem] box-sizing-border"
                   style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                 >
                   <span className="break-words font-semibold text-[1.3rem] text-[#ffffff]">
@@ -2475,10 +2475,10 @@ const Swot = () => {
                       <p className="text-xl mb-4 text-center justify-center font-regular mt-10">
                         The AI has analyzed the inputted SWOT data and created strategies.
                       </p>
-                      <div className="justify-center align-middle items-center ml-20">
+                      <div className="flex justify-center items-center">
                         <button
                           onClick={closeModal}
-                          className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] rounded-[0.6rem] text-[#ffffff] break-words font-semibold text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
+                          className="shadow-md rounded-[0.6rem] text-[#ffffff] break-words font-semibold text-lg flex pt-2 pr-3 pl-5 pb-2 w-[9rem] h-[fit-content] mb-10 mt-5 items-center text-center align-middle justify-center"
                           style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                         >
                           Close
@@ -2509,7 +2509,7 @@ const Swot = () => {
                       </div>
                     </div>
                     
-                      <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
+                      <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
                         <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
                           {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
                         </div>
@@ -2564,7 +2564,7 @@ const Swot = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
+                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
                         <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
                           {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
                         </div>
@@ -2619,7 +2619,7 @@ const Swot = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
+                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
                         <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
                           {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
                         </div>
@@ -2673,7 +2673,7 @@ const Swot = () => {
                       </div>
                     </div>
 
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
+                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
                         <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
                           {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
                         </div>
@@ -2713,13 +2713,13 @@ const Swot = () => {
                         <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strategy?</p>
                         <div className="flex justify-center space-x-3 mt-10">
                           <button
-                            className="break-words font-semibold border border-[#962203] w-[11rem] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
+                            className="break-words font-semibold border border-[#962203] w-[9rem] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
                             onClick={() => setIsDeleteModalOpen(false)}
                           >
                             Cancel
                           </button>
                           <button
-                            className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                            className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                             style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
                             onClick={handleDeleteConfirm}
                           >

@@ -287,7 +287,7 @@ const ReportInternal = () => {
 
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
         {/* <div className="p-2 font-bold w-[10rem]">Target Code</div> */}
-        <div className="p-2 font-bold w-[30rem]">Office Target</div>
+        <div className="p-2 font-bold w-[18rem]">Office Target</div>
         <div className="p-2 font-bold w-[8rem]">KPI</div>
         <div className="p-2 font-bold w-[10rem]">Actions</div>
         <div className="p-2 font-bold w-[10rem]">Budget</div>
@@ -312,8 +312,8 @@ const ReportInternal = () => {
           }`}
         >
           {/* <div className="p-2 w-[10rem]">{report.target_code}</div> */}
-          <div className="p-4 w-[32rem] ml-[-2rem]">
-            {report.office_target && report.office_target.length > 35
+          <div className="p-3 w-[20rem]">
+            {report.office_target && report.office_target.length > 45
               ? `${report.office_target.substring(0, 35)}...`
               : report.office_target || "N/A"}
           </div>

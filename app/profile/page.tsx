@@ -28,7 +28,7 @@ export default  function Profile() {
       <div className="flex">
         <Navbar />
       </div>
-      <div className="flex-1">
+      <div className="flex">
         <div className="flex-1 flex flex-col mt-3 ml-80">
           <UserProfile />
         </div>

@@ -218,7 +218,7 @@ export default function UserProfile() {
   }, [user_id]);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div  >
       <div className="flex flex-row">
         <div className="flex flex-col">
           <div className="mb-5 mt-[1.1rem] break-words font-bold text-[3rem] text-[rgb(59,59,59)]">
@@ -241,7 +241,7 @@ export default function UserProfile() {
             onClick={() => setCurrentView("user")}
             className={`rounded-lg ${
               currentView === "user"
-                ? "bg-[#A43214] text-white"
+                ? "bg-[#A43214] text-white" 
                 : "border text-[#A43214]"
             } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}
           >
@@ -249,6 +249,7 @@ export default function UserProfile() {
           </button>
         </div>
       </div>
+
       <span className="break-words font font-normal text-[1.3rem] text-[#504C4C] mt-[-1rem] mb-5">
         The Profile section enables users to access comprehensive information
         about their department as well as their personal data. This centralized
@@ -258,7 +259,7 @@ export default function UserProfile() {
 
       {currentView === "department" ? (
         // =======================================================DEPARTMENT PROFILE=====================================================
-        <Card className="h-[auto] flex flex-col items-center rounded-xl bg-white shadow-xl border border-gray-150 mb-10 mr-6">
+        <Card className="h-[auto] shadow-md flex flex-col items-center rounded-xl bg-white border border-gray-150 mb-10">
           <div className="w-[100%]">
             <img
               src="/coverbg.png"
@@ -312,7 +313,7 @@ export default function UserProfile() {
               EDIT
             </div>
           </a>
-          <div className="w-[80rem] h-[100%] border border-gray-200 px-10 py-10 rounded-xl mb-10">
+          <div className="w-[80rem] shadow-md h-[100%] border border-gray-200 px-10 py-10 rounded-xl mb-10">
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-[rgb(77,76,76)] mb-5">
                 Basic Information
@@ -437,7 +438,7 @@ export default function UserProfile() {
           </a>
 
           
-          <div className="w-[80rem] h-[100%] border border-gray-200 px-10 py-10 rounded-xl mb-10">
+          <div className="w-[80rem] h-[100%] shadow-md border border-gray-200 px-10 py-10 rounded-xl mb-10">
             <div className="flex flex-col">
               <span className="text-2xl font-bold text-[rgb(77,76,76)] mb-5">
                 Basic Information

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useEffect } from "react";
 import { getSession, useSession } from "next-auth/react";
 import React from "react";
+import Link from "next/link";
 
 export default function EditProfileUsers() {
   const { data: session, status, update } = useSession();
@@ -231,7 +232,7 @@ export default function EditProfileUsers() {
 
   return (
     <div className="flex flex-col gap-5">
-      <Card className="h-[auto] flex flex-col items-center rounded-xl bg-white shadow-xl border border-gray-150 mb-10 mr-6">
+      <Card className="h-[auto] flex flex-col items-center rounded-md bg-white shadow-xl border border-gray-150 mb-10 mr-6">
         {/* background image */}
         <div className="w-[100%]">
           <img
@@ -311,7 +312,7 @@ export default function EditProfileUsers() {
           </button>
         </div>
 
-        <div className="w-[80rem] h-[100%] border border-gray-200 px-10 py-10 rounded-xl mb-10">
+        <div className="w-[80rem] h-[100%] shadow-md border border-gray-200 px-10 py-10 rounded-xl mb-10">
           <div className="flex flex-col">
             <span className="text-2xl font-bold text-[rgb(77,76,76)] mb-5">
               Basic Information
@@ -375,17 +376,6 @@ export default function EditProfileUsers() {
                 </div>
               </div>
               <div className="flex flex-row items-center justify-center w-fit mb-6 gap-20">
-                {/* Email address */}
-                {/* <div className="flex flex-col">
-                  <span className="text-lg font-medium mb-1 text-[rgb(77,76,76)]">Email Address</span>
-                  <input
-                    type="text"
-                    value={emailAddress}
-                    className="text-lg font-regular border border-gray-200 bg-gray-100 w-[35rem] h-10 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
-                    onChange={(e) => setEmailAddress(e.target.value)}
-                    placeholder="Your Email Address"
-                  />
-                </div> */}
                 <div className="flex flex-col">
                   <span className="text-lg font-normal mb-1 text-[rgb(77,76,76)]">
                     Email
@@ -448,23 +438,24 @@ export default function EditProfileUsers() {
                 ? confirmationMessage
                 : "Looks like you've made changes. Do you want to save these changes?"}
             </p>
-            <div className="flex justify-center gap-10 mt-12 mb-10">
-              <Button
+            <div className="flex justify-center gap-8 mt-12 mb-10">
+              <button
                 onClick={handleCancelSave}
                 className="break-words font-semibold text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] border border-[#962203] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
               >
-                No, Cancel
-              </Button>
-              <Button
-                href="/profile"
+                Cancel
+              </button>
+              <Link href="/profile">
+              <button
                 onClick={handleSave}
-                className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[11rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
+                className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
                 style={{
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                 }}
               >
-                Yes, Save
-              </Button>
+                Save
+              </button>
+              </Link>
             </div>
           </div>
         </div>

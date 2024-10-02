@@ -370,28 +370,9 @@ export default function Learning() {
       {learningModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center">
           <div className="absolute inset-0 bg-black opacity-50"></div>
-          <div className="bg-white p-8 rounded-lg z-10 h-[50rem] w-[96rem]">
+          <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[96rem]">
             <div className="flex flex-row">
-              <h2 className="text-2xl mb-10 font-semibold">Financial</h2>
-              <button
-                onClick={handleLearningCloseModal}
-                className="ml-[85rem] mt-[-5rem] text-gray-500 hover:text-gray-700"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
+              <h2 className="text-2xl mb-10 font-semibold">Learning</h2>
             </div>
             <div className="flex flex-row gap-32 mb-10">
               <div className="flex flex-col">
@@ -426,39 +407,6 @@ export default function Learning() {
                   <option value="Succession Plan">Succession Plan</option>
                 </select>
               </div>
-            </div>
-            <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
-              Office Target
-              <span className="text-[#DD1414]">*</span>
-            </span>
-            <textarea
-              value={learningOfficeTarget}
-              className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
-              onChange={(e) => setLearningOfficeTarget(e.target.value)}
-            />
-            <div className=" mt-10 flex flex-row gap-36">
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Status
-                </span>
-                {userRole !== "qualityAssurance" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    You cannot edit the status unless you are in a QA role.
-                  </span>
-                )}
-                <select
-                  value={learningStatus || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
-                  onChange={(e) => setLearningStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Not Achieved">Not Achieved</option>
-                  <option value="Achieved">Achieved</option>
-                </select>
-              </div>
               {/* add KPI here */}
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
@@ -468,51 +416,22 @@ export default function Learning() {
                 <input
                   type="text"
                   value={learningKPI}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => setLearningKPI(e.target.value)}
                 />
               </div>
             </div>
-            <div className=" mt-10 flex flex-row gap-36">
+
+            <div className=" mt-10 flex flex-row gap-32 mb-10">
               <div className="flex flex-col">
                 <span className="mr-3 break-words font-regular text-md text-[#000000]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                {learningMetric === "Percentage" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter the actual performance as a percentage without
-                    including the &apos;%&apos; symbol.
-                  </span>
-                )}
-                {learningMetric === "Count" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a whole number (e.g., 10).
-                  </span>
-                )}
-                {learningMetric === "Rating" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
-                    point (e.g., 3.5).
-                  </span>
-                )}
-                {learningMetric === "Score" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
-                    point (e.g., 7.5).
-                  </span>
-                )}
-                {learningMetric === "Succession Plan" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
-                    Please enter a numeric value to represent the status of the
-                    succession plan. Ensure the value accurately reflects
-                    readiness or progress.
-                  </span>
-                )}
                 <input
                   type="number"
                   value={learningTargetPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => {
                     const maxLimit =
                       learningMetric === "Percentage"
@@ -539,12 +458,6 @@ export default function Learning() {
                     setLearningTargetPerformance(value.toString());
                   }}
                 />
-              </div>
-              <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Actual Performance
-                  <span className="text-[#DD1414]">*</span>
-                </span>
                 {learningMetric === "Percentage" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -575,10 +488,16 @@ export default function Learning() {
                     readiness or progress.
                   </span>
                 )}
+              </div>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Actual Performance
+                  <span className="text-[#DD1414]">*</span>
+                </span>
                 <input
                   type="number"
                   value={learningActualPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[41rem]"
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
                   onChange={(e) => {
                     const maxLimit =
                       learningMetric === "Percentage"
@@ -605,12 +524,74 @@ export default function Learning() {
                     setLearningActualPerformance(value.toString());
                   }}
                 />
+                {learningMetric === "Percentage" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter the actual performance as a percentage without
+                    including the &apos;%&apos; symbol.
+                  </span>
+                )}
+                {learningMetric === "Count" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a whole number (e.g., 10).
+                  </span>
+                )}
+                {learningMetric === "Rating" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a number from 1 to 5, allowing one decimal
+                    point (e.g., 3.5).
+                  </span>
+                )}
+                {learningMetric === "Score" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a score from 1 to 10, allowing one decimal
+                    point (e.g., 7.5).
+                  </span>
+                )}
+                {learningMetric === "Succession Plan" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    Please enter a numeric value to represent the status of the
+                    succession plan. Ensure the value accurately reflects
+                    readiness or progress.
+                  </span>
+                )}
+              </div>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Status
+                </span>
+                <select
+                  value={learningStatus || ""}
+                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[25rem]"
+                  onChange={(e) => setLearningStatus(e.target.value)}
+                  disabled={userRole !== "qualityAssurance"}
+                >
+                  <option value="" disabled>
+                    Select
+                  </option>
+                  <option value="Not Achieved">Not Achieved</option>
+                  <option value="Achieved">Achieved</option>
+                </select>
+                {userRole !== "qualityAssurance" && (
+                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                    You cannot edit the status unless you are in a QA role.
+                  </span>
+                )}
               </div>
             </div>
+
+            <span className="mr-3 break-words font-regular text-md text-[#000000] mt-10">
+              Office Target
+              <span className="text-[#DD1414]">*</span>
+            </span>
+            <textarea
+              value={learningOfficeTarget}
+              className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg w-[91rem] h-[10rem]"
+              onChange={(e) => setLearningOfficeTarget(e.target.value)}
+            />
             <div className="flex flex-row justify-center mt-10 gap-10">
               <button
                 onClick={handleLearningCloseModal}
-                className="bg-[#ffffff] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
+                className="bg-[#ffffff] border border-[#AB3510] text-[#962203] font-semibold hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
               >
                 Cancel
               </button>

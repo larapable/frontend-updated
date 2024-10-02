@@ -83,8 +83,8 @@ const ReportLearningView = () => {
   }
 
   return (
-    <div className="flex flex-col gap-10">
-    <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] relative mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
+    <div className="flex flex-col gap-10  w-[92%]">
+    <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] flex flex-col pt-4 pr-5 pl-5 h-auto mb-10 rounded-lg pb-5">
       <div className="flex flex-row p-1 w-[75rem] h-auto">
         <img
           src="/learning.png"
@@ -104,7 +104,7 @@ const ReportLearningView = () => {
       </div>
       <div className="flex flex-row w-full bg-[#fff6d1] text-[rgb(43,43,43)] font-medium text-center items-center">
         {/* <div className="p-2 font-bold w-[10rem]">Target Code</div> */}
-        <div className="p-2 font-bold w-[30rem]">Office Target</div>
+        <div className="p-2 font-bold w-[20rem]">Office Target</div>
         <div className="p-2 font-bold w-[18rem]">KPI</div>
         {/* <div className="p-2 font-bold w-[10rem]">Actions</div>
         <div className="p-2 font-bold w-[10rem]">Budget</div> */}
@@ -142,7 +142,7 @@ const ReportLearningView = () => {
             }`}
           >
             {/* <div className="p-2 w-[10rem]">{report.target_code}</div> */}
-            <div className="p-2 w-[30rem]">
+            <div className="p-2 w-[20rem]">
               {truncateString(report.office_target, 35)}
             </div>
             <div className="p-2 w-[18rem]">
