@@ -1,6 +1,6 @@
 "use client";
-import AdminNavbar from "../components/AdminNavBar";
-import AdminListOfUsers from "../components/AdminListofUsers";
+import AdminNavbar from "../components/Admin/AdminNavBar";
+import AdminListOfUsers from "../components/Admin/AdminListofUsers";
 
 export default function AdminDashboardPage() {
   return (

@@ -1,20 +1,27 @@
 "use client";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbars/Navbar";
 import React, { useState, useEffect, use } from "react";
-import ReportFinancial from "../components/ReportFinancial";
-import ReportLearning from "../components/ReportLearning";
-import ReportStakeholder from "../components/ReportStakeholder";
-import ReportInternal from "../components/ReportInternal";
-import ReportFinancialView from "../components/ReportFinancialView";
-import ReportStakeholderView from "../components/ReportStakeholderView";
-import ReportInternalView from "../components/ReportInternalView";
-import ReportLearningView from "../components/ReportLearningView";
+import ReportFinancial from "../components/Report/ReportFinancial";
+import ReportLearning from "../components/Report/ReportLearning";
+import ReportStakeholder from "../components/Report/ReportStakeholder";
+import ReportInternal from "../components/Report/ReportInternal";
+import ReportFinancialView from "../components/Report/ReportFinancialView";
+import ReportStakeholderView from "../components/Report/ReportStakeholderView";
+import ReportInternalView from "../components/Report/ReportInternalView";
+import ReportLearningView from "../components/Report/ReportLearningView";
 import { useSession } from "next-auth/react";
-import { Modal } from "@mui/material";
+import { IconButton, Modal } from "@mui/material";
+import Box from "@mui/material/Box";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Button from "@mui/material/Button";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // Import the autoTable plugin
 import { report } from "process";
+import CloseIcon from "@mui/icons-material/Close";
 
 import { Bar } from "react-chartjs-2";
 import {
@@ -250,6 +257,7 @@ const ReportsPage = () => {
 
   useEffect(() => {
     const lastComponent = localStorage.getItem("lastComponent");
+    const lastView = localStorage.getItem("lastView");
     if (lastComponent) {
       setSelectedComponent(lastComponent);
     }
@@ -647,361 +655,589 @@ const ReportsPage = () => {
   };
 
   return (
-    <div className="flex flex-row w-full text-[rgb(59,59,59)]">
-      <Navbar />
-      <div className=" flex flex-col mt-8 ml-80">
-        <div className="flex flex-row">
-          <div className="mb-5 mt-[0rem] break-words font-bold text-[3rem]">
+    <Grid
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      <Grid>
+        <Navbar />
+      </Grid>
+      <Grid
+        container
+        direction="column"
+        sx={{
+          mt: 2, // Add some margin at the top
+          px: 2, // Optional: Add some padding on the left and right
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "4rem",
+              fontWeight: "bold",
+              color: "#3B3B3B",
+            }}
+          >
             REPORT
-          </div>
-          <div className="flex justify-center lg:ml-[66rem] mt-[0.5rem] border border-gray-200 bg-gray w-[16rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
-            <button
+          </Typography>
+
+          {/* View Buttons */}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            width="18rem"
+            height="4rem"
+            borderRadius={2}
+            sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+          >
+            <Button
               onClick={() => setCurrentView("default")}
-              className={`rounded-lg font-bold ${
-                currentView === "default"
-                  ? "bg-[#A43214] text-white"
-                  : "border text-[#A43214]"
-              } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}
+              variant={currentView === "default" ? "contained" : "outlined"}
+              fullWidth
+              sx={{
+                background:
+                  currentView === "default"
+                    ? "linear-gradient(to left, #8a252c, #AB3510)"
+                    : "transparent",
+                color: currentView === "default" ? "white" : "#A43214",
+                flexGrow: 1, // Ensure both buttons have equal size
+                height: "100%", // Match the height of the container
+                border: "1px solid transparent", // Keep border style consistent
+                transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                "&:hover": {
+                  background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                  color: "white", // Change text color on hover
+                  border:
+                    currentView === "default" ? "none" : "0.5px solid #AB3510", // Border on hover if not current
+                },
+              }}
             >
               DEFAULT
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => setCurrentView("printed")}
-              className={`rounded-lg font-bold ${
-                currentView === "printed"
-                  ? "bg-[#A43214] text-white"
-                  : "border text-[#A43214]"
-              } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}
+              variant={currentView === "printed" ? "contained" : "outlined"}
+              fullWidth
+              sx={{
+                background:
+                  currentView === "printed"
+                    ? "linear-gradient(to left, #8a252c, #AB3510)"
+                    : "transparent",
+                color: currentView === "printed" ? "white" : "#A43214",
+                flexGrow: 1, // Ensure both buttons have equal size
+                height: "100%", // Match the height of the container
+                border: "1px solid transparent", // Keep border style consistent
+                transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                "&:hover": {
+                  background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                  color: "white", // Change text color on hover
+                  border:
+                    currentView === "printed" ? "none" : "0.5px solid #AB3510", // Border on hover if not current
+                },
+              }}
             >
               REPORT
-            </button>
-          </div>
-        </div>
-        <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-10">
+            </Button>
+          </Box>
+        </Box>
+        <Typography
+          sx={{
+            fontSize: "1.4rem",
+          }}
+        >
           The Report feature in Atlas allows users to view a comprehensive
           summary of their progress over the past months. It provides a clear
-          and concise <br />
-          overview of your accomplishments and areas for improvement, helping
-          you stay on track and make informed decisions for future planning.
-        </div>
-        {/* perspectives toggle */}
+          and concise overview of your accomplishments and areas for
+          improvement, helping you stay on track and make informed decisions for
+          future planning.
+        </Typography>
+
         {currentView === "default" && (
-          <div>
-            <div className="flex justify-center mt-[0.5rem] border border-gray-200 bg-gray w-[44rem] h-[4rem] rounded-xl px-1 py-1">
-              <div
-                className="flex flex-row box-sizing-border mr-2 cursor-pointer"
+          <Grid container>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="4rem"
+              borderRadius={2}
+              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
+            >
+              <Button
                 onClick={() => changeComponent("Financial")}
-              >
-                <div
-                  className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                sx={{
+                  background:
                     selectedComponent === "Financial"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                >
-                  FINANCIAL
-                </div>
-              </div>
-              <div
-                className="flex flex-row box-sizing-border mr-2 cursor-pointer"
+                      ? "linear-gradient(to left, #8a252c, #AB3510)"
+                      : "transparent",
+                  color:
+                    selectedComponent === "Financial" ? "white" : "#AB3510",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
+                      selectedComponent === "Financial"
+                        ? "none"
+                        : "0.5px solid #AB3510", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Financial
+              </Button>
+              <Button
                 onClick={() => changeComponent("Stakeholder")}
-              >
-                <div
-                  className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                sx={{
+                  background:
                     selectedComponent === "Stakeholder"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                >
-                  STAKEHOLDER
-                </div>
-              </div>
-              <div
-                className="flex flex-row box-sizing-border mr-2 cursor-pointer"
+                      ? "linear-gradient(to left, #8a252c, #AB3510)"
+                      : "transparent",
+                  color:
+                    selectedComponent === "Stakeholder" ? "white" : "#AB3510",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
+                      selectedComponent === "Stakeholder"
+                        ? "none"
+                        : "0.5px solid #AB3510", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Stakeholder
+              </Button>
+              <Button
                 onClick={() => changeComponent("Internal")}
-              >
-                <div
-                  className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                sx={{
+                  background:
                     selectedComponent === "Internal"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                >
-                  INTERNAL PROCESS
-                </div>
-              </div>
-              <div
-                className="flex flex-row box-sizing-border cursor-pointer"
-                onClick={() => changeComponent("Learning")}
+                      ? "linear-gradient(to left, #8a252c, #AB3510)"
+                      : "transparent",
+                  color: selectedComponent === "Internal" ? "white" : "#AB3510",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
+                      selectedComponent === "Internal"
+                        ? "none"
+                        : "0.5px solid #AB3510", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
               >
-                <div
-                  className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                Internal
+              </Button>
+              <Button
+                onClick={() => changeComponent("Learning")}
+                sx={{
+                  background:
                     selectedComponent === "Learning"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                >
-                  LEARNING & GROWTH
-                </div>
-              </div>
-            </div>
-            {/* end of perspectives toggle */}
-            <div className="break-words shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pl-5 w-[92 %] h-auto mb-10 rounded-lg pb-5">
-              {selectedComponent === "Financial" && <ReportFinancial />}
-              {selectedComponent === "Stakeholder" && <ReportStakeholder />}
-              {selectedComponent === "Internal" && <ReportInternal />}
-              {selectedComponent === "Learning" && <ReportLearning />}
-            </div>
-          </div>
+                      ? "linear-gradient(to left, #8a252c, #AB3510)"
+                      : "transparent",
+                  color: selectedComponent === "Learning" ? "white" : "#AB3510",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
+                      selectedComponent === "Learning"
+                        ? "none"
+                        : "0.5px solid #AB3510", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Learning
+              </Button>
+            </Box>
+            <Box width="100%">
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                }}
+              >
+                <CardContent>
+                  {selectedComponent === "Financial" && <ReportFinancial />}
+                  {selectedComponent === "Stakeholder" && <ReportStakeholder />}
+                  {selectedComponent === "Internal" && <ReportInternal />}
+                  {selectedComponent === "Learning" && <ReportLearning />}
+                </CardContent>
+              </Card>
+            </Box>
+          </Grid>
         )}
         {currentView === "printed" && (
-          <div>
-            <div className="flex flex-row gap-8 w-[92%] mb-16">
-              <div className="flex shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] mt-[0.5rem] border py-5 px-5 border-gray-200 bg-gray w-[44%] h-[auto] rounded-xl">
-                <div className="flex flex-col">
-                  <span className="font-bold text-2xl items-center mb-5">
-                    REPORT VISUALIZATION
-                  </span>
-                  {/* insert the chart here */}
-                  <div style={{ height: "300px", width: "800px" }}>
-                    {chartData && (
-                      <Bar
-                        data={chartData}
-                        options={{
-                          responsive: true,
-                          plugins: {
-                            legend: {
-                              position: "top" as const,
-                            },
-                            title: {
-                              display: false,
-                              text: "Report Visualization",
+          <Grid item>
+            <Box
+              sx={{
+                display: "flex",
+                mt: 2,
+                mx: 2,
+                justifyContent: "space-between",
+                gap: 2,
+              }}
+            >
+              <Box
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 2,
+                  borderRadius: 2,
+                  width: "60%",
+                }}
+              >
+                <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+                  REPORT VISUALIZATION
+                </Typography>
+                <Box sx={{ padding: 1, height: "100%" }}>
+                  {chartData && (
+                    <Bar
+                      data={chartData}
+                      options={{
+                        responsive: true,
+                        plugins: {
+                          legend: {
+                            position: "top" as const,
+                          },
+                          title: {
+                            display: false,
+                            text: "Report Visualization",
+                          },
+                        },
+                        elements: {
+                          bar: {
+                            backgroundColor: [
+                              "#b83216",
+                              "rgba(253, 227, 167, 1)",
+                              "#b83216",
+                              "rgba(253, 227, 167, 1)",
+                            ],
+                            borderColor: [
+                              "rgba(255, 99, 132, 1)",
+                              "rgba(249, 105, 14, 1)",
+                              "rgba(249, 105, 14, 1)",
+                              "rgba(249, 105, 14, 1)",
+                            ],
+                            borderWidth: 1,
+                            borderRadius: 10,
+                          },
+                        },
+                        datasets: {
+                          bar: {
+                            barPercentage: 1.3, // Make bars narrower
+                            categoryPercentage: 0.6, // Increase space between categories
+                          },
+                        },
+                        scales: {
+                          x: {
+                            grid: {
+                              lineWidth: 1,
+                              color: "white",
                             },
                           },
-                          elements: {
-                            bar: {
-                              backgroundColor: [
-                                "#b83216",
-                                "rgba(253, 227, 167, 1)",
-                                "#b83216",
-                                "rgba(253, 227, 167, 1)",
-                              ],
-                              borderColor: [
-                                "rgba(255, 99, 132, 1)",
-                                "rgba(249, 105, 14, 1)",
-                                "rgba(249, 105, 14, 1)",
-                                "rgba(249, 105, 14, 1)",
-                              ],
-                              borderWidth: 1,
-                              borderRadius: 10,
+                          y: {
+                            grid: {
+                              lineWidth: 1,
+                              color: "rgba(0, 0, 0, 0.2)",
                             },
                           },
-                          datasets: {
-                            bar: {
-                              barPercentage: 1.3, // Make bars narrower
-                              categoryPercentage: 0.6, // Increase space between categories
-                            },
-                          },
-                          scales: {
-                            x: {
-                              grid: {
-                                lineWidth: 1,
-                                color: "white",
-                              },
-                            },
-                            y: {
-                              grid: {
-                                lineWidth: 1,
-                                color: "rgba(0, 0, 0, 0.2)",
-                              },
-                            },
-                          },
+                        },
+                      }}
+                      height={100}
+                    />
+                  )}
+                </Box>
+              </Box>
+              <Box
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 2,
+                  borderRadius: 2,
+                  width: "38%",
+                }}
+              >
+                <Box sx={{ display: "flex", justifyContent: "space-between" }}>
+                  <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+                    APPROVAL SECTION
+                  </Typography>
+                  <Box>
+                    {!initialSavePerformed && (
+                      <Button
+                        onClick={handleSave}
+                        disabled={isReadOnly}
+                        variant="contained"
+                        sx={{
+                          py: 1,
+                          px: 5,
+                          borderRadius: "8px",
+                          fontWeight: "500",
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
                         }}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-              <div className="flex mt-[0.5rem] shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-200 bg-gray w-[44%] h-[auto] rounded-xl px-8 py-5">
-                <div className="flex flex-col">
-                  <div className="flex flex-row break-words">
-                    <span className="font-bold text-2xl items-center mb-5">
-                      APPROVAL SECTION
-                    </span>
-                    <div className="justify-end ml-[22rem]">
-                      {!initialSavePerformed && (
-                        <button
-                          onClick={handleSave}
-                          disabled={isReadOnly}
-                          className="bg-[#A43214] py-2 px-5 rounded-md transition-all  text-white font-medium"
-                        >
-                          Save
-                        </button>
-                      )}
-                      {(initialSavePerformed || isReadOnly) && (
-                        <button
-                          onClick={handleEditSave}
-                          className="bg-[#A43214] py-2 px-5 rounded-md transition-all  text-white font-medium"
-                        >
-                          {isEditing ? "Save" : "Edit"}
-                        </button>
-                      )}
-
-                      {/* Modal */}
-                      <Modal
-                        open={showModal}
-                        onClose={() => setShowModal(false)}
                       >
-                        <div className="flex flex-col items-center justify-center h-full">
-                          <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                            <button
-                              onClick={handleCancelSave}
-                              className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-                            >
-                              <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor"
-                                className="w-6 h-6"
-                              >
-                                <path
-                                  strokeLinecap="round"
-                                  strokeLinejoin="round"
-                                  strokeWidth="2"
-                                  d="M6 18L18 6M6 6l12 12"
-                                />
-                              </svg>
-                            </button>
-                            <p className="text-3xl font-bold mb-4">Notice!</p>
-                            <p className="text-xl mb-4 mt-10">{modalMessage}</p>
-                            <div className="flex justify-center gap-10 mt-12 mb-10">
-                              <button
-                                onClick={() => setShowModal(false)}
-                                className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content]"
-                                style={{
-                                  background:
-                                    "linear-gradient(to left, #8a252c, #AB3510)",
-                                }}
-                              >
-                                Close
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      </Modal>
-                    </div>
+                        Save
+                      </Button>
+                    )}
+                    {(initialSavePerformed || isReadOnly) && (
+                      <Button
+                        onClick={handleEditSave}
+                        variant="contained"
+                        color="error"
+                        sx={{
+                          py: 1,
+                          px: 3,
+                          borderRadius: "8px",
+                          fontWeight: "500",
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                        }}
+                      >
+                        {isEditing ? "Save" : "Edit"}
+                      </Button>
+                    )}
+
+                    {/* Modal */}
+                    <Modal open={showModal} onClose={() => setShowModal(false)}>
+                      <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        height="100vh"
+                      >
+                        <Box
+                          sx={{
+                            background: "white",
+                            padding: 4,
+                            borderRadius: 2,
+                            boxShadow: 24,
+                            textAlign: "center",
+                            position: "relative",
+                            maxWidth: "50vw",
+                          }}
+                        >
+                          <Typography
+                            sx={{ fontSize: "1.875rem", fontWeight: "bold" }}
+                          >
+                            Notice!
+                          </Typography>
+                          <Typography sx={{ fontSize: "1.25rem", mb: 2 }}>
+                            {modalMessage}
+                          </Typography>
+                          <Button
+                            onClick={() => setShowModal(false)}
+                            variant="contained"
+                            sx={{
+                              background:
+                                "linear-gradient(to left, #8a252c, #AB3510)",
+                              color: "#ffffff",
+                              borderRadius: "10px",
+                              fontSize: "1rem",
+                              width: 144,
+                              py: 1,
+                            }}
+                          >
+                            Close
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Modal>
+                  </Box>
+                </Box>
+                <Box sx={{ mt: 2 }}>
+                  <span className="font-normal text-[1.1rem]">
+                    Prepared By:
+                  </span>
+                  <div className="flex flex-row mt-1 gap-10">
+                    <input
+                      type="text"
+                      placeholder="Enter name"
+                      name="preparedByName"
+                      value={preparedByName}
+                      onChange={(e) => setPreparedByName(e.target.value)}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter role"
+                      name="preparedByRole"
+                      value={preparedByRole}
+                      onChange={(e) => setPreparedByRole(e.target.value)}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                    />
                   </div>
-                  <div className="flex flex-col">
-                    <div className="flex flex-col">
-                      <span className="font-normal text-[1.1rem]">
-                        Prepared By:
-                      </span>
-                      <div className="flex flex-row mt-1 gap-10">
-                        <input
-                          type="text"
-                          placeholder="Enter name"
-                          name="preparedByName"
-                          value={preparedByName}
-                          onChange={(e) => setPreparedByName(e.target.value)}
-                          // readOnly={!isEditing}
-                          readOnly={isReadOnly}
-                          className="border border-gray-300 rounded-md px-3 py-2"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Enter role"
-                          name="preparedByRole"
-                          value={preparedByRole}
-                          onChange={(e) => setPreparedByRole(e.target.value)}
-                          // readOnly={!isEditing}
-                          readOnly={isReadOnly}
-                          className="border border-gray-300 rounded-md px-3 py-2"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col mt-8">
-                    <span className="font-normal text-[1.1rem]">
-                      Acknowledged By:
-                    </span>
-                    <div className="flex flex-row mt-1 gap-10">
-                      <input
-                        type="text"
-                        placeholder="Enter name"
-                        name="acknowledgedByName"
-                        value={acknowledgedByName}
-                        onChange={(e) => setAcknowledgedByName(e.target.value)}
-                        // readOnly={!isEditing}
-                        readOnly={isReadOnly}
-                        className="border border-gray-300 rounded-md px-3 py-2"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Enter role"
-                        name="acknowledgedByRole"
-                        value={acknowledgedByRole}
-                        onChange={(e) => setAcknowledgedByRole(e.target.value)}
-                        // readOnly={!isEditing}
-                        readOnly={isReadOnly}
-                        className="border border-gray-300 rounded-md px-3 py-2"
-                      />
-                    </div>
-                  </div>
-                  <div className="flex flex-col mt-8">
-                    <span className="font-normal text-[1.1rem]">
-                      Reviewed By:
-                    </span>
-                    <div className="flex flex-row mt-1 gap-10">
-                      <input
-                        type="text"
-                        placeholder="Enter name"
-                        name="reviewedByName"
-                        value={reviewedByName}
-                        onChange={(e) => setReviewedByName(e.target.value)}
-                        // readOnly={!isEditing}
-                        readOnly={isReadOnly}
-                        className="border border-gray-300 rounded-md px-3 py-2 "
-                      />
-                      <input
-                        type="text"
-                        placeholder="Enter role"
-                        name="reviewedByRole"
-                        value={reviewedByRole}
-                        onChange={(e) => setReviewedByRole(e.target.value)}
-                        // readOnly={!isEditing}
-                        readOnly={isReadOnly}
-                        className="border border-gray-300 rounded-md px-3 py-2 "
-                      />
-                    </div>
+                </Box>
+                <div className="flex flex-col mt-8">
+                  <span className="font-normal text-[1.1rem]">
+                    Acknowledged By:
+                  </span>
+                  <div className="flex flex-row mt-1 gap-10">
+                    <input
+                      type="text"
+                      placeholder="Enter name"
+                      name="acknowledgedByName"
+                      value={acknowledgedByName}
+                      onChange={(e) => setAcknowledgedByName(e.target.value)}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter role"
+                      name="acknowledgedByRole"
+                      value={acknowledgedByRole}
+                      onChange={(e) => setAcknowledgedByRole(e.target.value)}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                    />
                   </div>
                 </div>
-              </div>
-            </div>
-
-            <div className="mt-5">
-              {<ReportFinancialView />}
-              {<ReportStakeholderView />}
-              {<ReportInternalView />}
-              {<ReportLearningView />}
-            </div>
-          </div>
+                <div className="flex flex-col mt-8">
+                  <span className="font-normal text-[1.1rem]">
+                    Reviewed By:
+                  </span>
+                  <div className="flex flex-row mt-1 gap-10">
+                    <input
+                      type="text"
+                      placeholder="Enter name"
+                      name="reviewedByName"
+                      value={reviewedByName}
+                      onChange={(e) => setReviewedByName(e.target.value)}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full "
+                    />
+                    <input
+                      type="text"
+                      placeholder="Enter role"
+                      name="reviewedByRole"
+                      value={reviewedByRole}
+                      onChange={(e) => setReviewedByRole(e.target.value)}
+                      // readOnly={!isEditing}
+                      readOnly={isReadOnly}
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                    />
+                  </div>
+                </div>
+              </Box>
+            </Box>
+            <Card
+              sx={{
+                boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                border: "1px solid #D1D5DB",
+                bgcolor: "#FFFFFF",
+                p: 0.5,
+                borderRadius: 2,
+                mt: 3,
+              }}
+            >
+              <CardContent>{<ReportFinancialView />}</CardContent>
+            </Card>
+            <Card
+              sx={{
+                boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                border: "1px solid #D1D5DB",
+                bgcolor: "#FFFFFF",
+                p: 0.5,
+                borderRadius: 2,
+                mt: 3,
+              }}
+            >
+              <CardContent>{<ReportStakeholderView />}</CardContent>
+            </Card>
+            <Card
+              sx={{
+                boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                border: "1px solid #D1D5DB",
+                bgcolor: "#FFFFFF",
+                p: 0.5,
+                borderRadius: 2,
+                mt: 3,
+              }}
+            >
+              <CardContent>{<ReportInternalView />}</CardContent>
+            </Card>
+            <Card
+              sx={{
+                boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                border: "1px solid #D1D5DB",
+                bgcolor: "#FFFFFF",
+                p: 0.5,
+                borderRadius: 2,
+                mt: 3,
+                mb: 3,
+              }}
+            >
+              <CardContent>{<ReportLearningView />}</CardContent>
+            </Card>
+          </Grid>
         )}
-
         {currentView === "printed" && (
-          <div className="flex flex-row justify-end items-end mb-10 ">
-            <button
+          <Box className="flex flex-row justify-end items-end mb-10 ">
+            <Button
               onClick={handleDownload}
-              className=" text-[#A43214]
-              hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white 
-              inline-block break-words font-bold transition-all rounded-lg px-4 py-3"
+              variant="contained"
+              sx={{
+                py: 2,
+                px: 3,
+                borderRadius: "8px",
+                fontWeight: "500",
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+              }}
             >
               Download Report
-            </button>
-          </div>
+            </Button>
+          </Box>
         )}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

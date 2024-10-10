@@ -1,10 +1,10 @@
 "use client";
-import Navbar from "../components/Navbar";
-import Inputgoals from "../components/Inputgoals";
+import Navbar from "../components/Navbars/Navbar";
+import Inputgoals from "../components/InputGoals/Inputgoals";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/Misc/Spinner";
 
 export default function page() {
   const { data: session, status } = useSession();

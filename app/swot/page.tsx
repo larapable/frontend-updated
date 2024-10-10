@@ -1,14 +1,62 @@
-  "use client";
+"use client";
 import React, { useState, useEffect, useRef } from "react";
-import Navbar from "../components/Navbar";
+import Navbar from "../components/Navbars/Navbar";
 import { FaPlus } from "react-icons/fa";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import Card from "@mui/material/Card";
-import TextField from "@mui/material/TextField";
 import { toast } from "react-toastify";
 import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Spinner from "../components/Misc/Spinner";
+import {
+  Box,
+  Drawer,
+  Typography,
+  TextField,
+  Divider,
+  Avatar,
+  Select,
+  MenuItem,
+  Grid,
+  Button,
+  Autocomplete,
+  FormHelperText,
+  Card,
+  responsiveFontSizes,
+  Modal,
+} from "@mui/material";
+import axios from "axios";
+import styled from "@emotion/styled";
+import Image from "next/image";
+import { SelectChangeEvent } from "@mui/material/Select";
+import SpinnerPages from "../components/Misc/SpinnerPages";
+import "@/app/page.css";
 
+const drawerWidth = 280;
 
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
+const MainFont = styled(Box)({
+  fontSize: "0.9rem",
+  mt: 2,
+});
+
+const Cards = styled(Box)({
+  width: "100%",
+  height: "auto",
+  borderRadius: "20px",
+  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+  borderColor: "gray",
+});
+
+const Boxes = styled(Box)({
+  height: "auto",
+  width: "100%",
+});
 
 interface SwotItem {
   id: string;
@@ -63,22 +111,26 @@ interface Threat {
   isDelete: boolean;
 }
 
-
-
 const Swot = () => {
   const [displaySwot, setDisplaySwot] = useState(true);
   const [soApiResponse, setSoApiResponse] = useState("");
   const [woApiResponse, setWoApiResponse] = useState("");
   const [stApiResponse, setStApiResponse] = useState("");
   const [wtApiResponse, setWtApiResponse] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+  const [currentView, setCurrentView] = useState("swot");
   const [counter, setCounter] = useState(1);
   const delay = (ms: number | undefined) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
   //new for strength
-  const [strengthEditingId, setStrengthEditingId] = useState<string | null>(null); 
+  const [strengthEditingId, setStrengthEditingId] = useState<string | null>(
+    null
+  );
   const [isStrengthModalOpen, setIsStrengthModalOpen] = useState(false);
-  const [strengthToDelete, setStrengthToDelete] = useState<SwotItem | null>(null);
+  const [strengthToDelete, setStrengthToDelete] = useState<SwotItem | null>(
+    null
+  );
   const openStrengthDeleteModal = (strength: SwotItem) => {
     setStrengthToDelete(strength);
     setIsStrengthModalOpen(true);
@@ -91,9 +143,13 @@ const Swot = () => {
     setStrengthToDelete(null);
   };
   // new for weakness
-  const [weaknessEditingId, setWeaknessEditingId] = useState<string | null>(null); 
+  const [weaknessEditingId, setWeaknessEditingId] = useState<string | null>(
+    null
+  );
   const [isWeaknessModalOpen, setIsWeaknessModalOpen] = useState(false);
-  const [weaknessToDelete, setWeaknessToDelete] = useState<SwotItem | null>(null);
+  const [weaknessToDelete, setWeaknessToDelete] = useState<SwotItem | null>(
+    null
+  );
   const openWeaknessDeleteModal = (weakness: SwotItem) => {
     setWeaknessToDelete(weakness);
     setIsWeaknessModalOpen(true);
@@ -106,9 +162,12 @@ const Swot = () => {
     setWeaknessToDelete(null);
   };
   // new for opportunity
-  const [opportunityEditingId, setOpportunityEditingId] = useState<string | null>(null); 
+  const [opportunityEditingId, setOpportunityEditingId] = useState<
+    string | null
+  >(null);
   const [isOpportunityModalOpen, setIsOpportunityModalOpen] = useState(false);
-  const [opportunityToDelete, setOpportunityToDelete] = useState<SwotItem | null>(null);
+  const [opportunityToDelete, setOpportunityToDelete] =
+    useState<SwotItem | null>(null);
   const openOpportunityDeleteModal = (opportunity: SwotItem) => {
     setOpportunityToDelete(opportunity);
     setIsOpportunityModalOpen(true);
@@ -121,7 +180,7 @@ const Swot = () => {
     setOpportunityToDelete(null);
   };
   // new for threats
-  const [threatEditingId, setThreatEditingId] = useState<string | null>(null); 
+  const [threatEditingId, setThreatEditingId] = useState<string | null>(null);
   const [isThreatModalOpen, setIsThreatModalOpen] = useState(false);
   const [threatToDelete, setThreatToDelete] = useState<SwotItem | null>(null);
   const openThreatDeleteModal = (threat: SwotItem) => {
@@ -135,8 +194,6 @@ const Swot = () => {
     setIsThreatModalOpen(false);
     setThreatToDelete(null);
   };
-
-
 
   const { data: session } = useSession();
 
@@ -157,7 +214,6 @@ const Swot = () => {
   const [woApiresponse, setWoApiresponse] = useState<Strategy3[]>([]);
 
   const fetchData = async () => {
- 
     try {
       const response = await fetch(
         `http://localhost:8080/wtStrat/get/${department_id}`
@@ -170,8 +226,7 @@ const Swot = () => {
       setWtApiresponse(data);
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
-    } 
-
+    }
   };
 
   useEffect(() => {
@@ -284,7 +339,6 @@ const Swot = () => {
   };
 
   const fetchstData = async () => {
-   
     try {
       const response = await fetch(
         `http://localhost:8080/stStrat/get/${department_id}`
@@ -297,8 +351,7 @@ const Swot = () => {
       setStApiresponse(data);
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
-    } 
-
+    }
   };
 
   useEffect(() => {
@@ -411,7 +464,6 @@ const Swot = () => {
   };
 
   const fetchsoData = async () => {
- 
     try {
       const response = await fetch(
         `http://localhost:8080/soStrat/get/${department_id}`
@@ -424,8 +476,7 @@ const Swot = () => {
       setSoApiresponse(data);
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
-    } 
-
+    }
   };
 
   useEffect(() => {
@@ -516,7 +567,11 @@ const Swot = () => {
   };
 
   // Example: Modify all your deleteStrategy functions like this
-  const deletesoStrategy = async (id: string, department_id: string): Promise<Response> => { // Explicitly return Response
+  const deletesoStrategy = async (
+    id: string,
+    department_id: string
+  ): Promise<Response> => {
+    // Explicitly return Response
     try {
       const response = await fetch(
         `http://localhost:8080/soStrat/delete/${id}`,
@@ -533,11 +588,10 @@ const Swot = () => {
         throw new Error("Failed to delete strategy");
       }
 
-          // Remove the strategy from the state to update the UI
-          setSoApiresponse((prevStrategies) =>
-            prevStrategies.filter((strategy) => strategy.id !== id)
-  
-          );
+      // Remove the strategy from the state to update the UI
+      setSoApiresponse((prevStrategies) =>
+        prevStrategies.filter((strategy) => strategy.id !== id)
+      );
       return response; // Return the response object
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
@@ -550,7 +604,6 @@ const Swot = () => {
   }, [department_id]);
 
   const fetchwoData = async () => {
-  
     try {
       const response = await fetch(
         `http://localhost:8080/woStrat/get/${department_id}`
@@ -560,12 +613,10 @@ const Swot = () => {
       }
       const data = await response.json();
       console.log(data);
-        setWoApiresponse(data); // Otherwise, set the fetched data
-      
+      setWoApiresponse(data); // Otherwise, set the fetched data
     } catch (error: any) {
       console.error("Error fetching the data:", error.message);
     }
-
   };
 
   useEffect(() => {
@@ -655,7 +706,6 @@ const Swot = () => {
     }
   };
   const deletewoStrategy = async (id: string, department_id: string) => {
- 
     try {
       const response = await fetch(
         `http://localhost:8080/woStrat/delete/${id}`,
@@ -675,11 +725,9 @@ const Swot = () => {
       setWoApiresponse((prevStrategies) =>
         prevStrategies.filter((strategy) => strategy.id !== id)
       );
-      
     } catch (error: any) {
       console.error("Error deleting strategy:", error.message);
     }
-
   };
 
   // Reusable SWOT function
@@ -697,7 +745,6 @@ const Swot = () => {
     };
 
     const addStrength = async (event: React.KeyboardEvent) => {
-      
       if (event.key === "Enter" && newItem.trim()) {
         if (fetchedStrengths.length >= 5) {
           toast.error("Maximum limit of 5 items reached");
@@ -1094,7 +1141,8 @@ const Swot = () => {
       }
     };
 
-    const deleteItem = async ( //new updated
+    const deleteItem = async (
+      //new updated
       id: string,
       department_id: string,
       endpoint: string
@@ -1410,18 +1458,27 @@ const Swot = () => {
   const [isStrengthVisible, setIsStrengthVisible] = useState<boolean>(false);
 
   const [deletedWeaknesses, setDeletedWeaknesses] = useState<Strength[]>([]);
-  const [isWeaknessesVisible, setIsWeaknessesVisible] = useState<boolean>(false);
+  const [isWeaknessesVisible, setIsWeaknessesVisible] =
+    useState<boolean>(false);
 
-  const [deletedOpportunities, setDeletedOpportunities] = useState<Strength[]>([]);
-  const [isOpportunitiesVisible, setIsOpportunitiesVisible] = useState<boolean>(false);
+  const [deletedOpportunities, setDeletedOpportunities] = useState<Strength[]>(
+    []
+  );
+  const [isOpportunitiesVisible, setIsOpportunitiesVisible] =
+    useState<boolean>(false);
 
-  
   const [deletedThreats, setDeletedThreats] = useState<Strength[]>([]);
   const [isThreatsVisible, setIsThreatsVisible] = useState<boolean>(false);
 
-  const fetchSwotItems = async (type: string, endpoint: string, setter: (data: any) => void): Promise<void> => {
+  const fetchSwotItems = async (
+    type: string,
+    endpoint: string,
+    setter: (data: any) => void
+  ): Promise<void> => {
     try {
-      const response = await fetch(`http://localhost:8080/${type}/${endpoint}/${department_id}`);
+      const response = await fetch(
+        `http://localhost:8080/${type}/${endpoint}/${department_id}`
+      );
       if (!response.ok) {
         throw new Error(`Failed to fetch ${type}`);
       }
@@ -1431,7 +1488,7 @@ const Swot = () => {
       console.error(`Error fetching ${type}:`, error);
     }
   };
-  
+
   const handleRestoreItem = async (
     type: string,
     id: number,
@@ -1441,66 +1498,87 @@ const Swot = () => {
   ): Promise<void> => {
     try {
       if (currentItems.length >= 5) {
-        toast.error(`Maximum limit of 5 ${type} items reached. Delete an item first.`);
+        toast.error(
+          `Maximum limit of 5 ${type} items reached. Delete an item first.`
+        );
         return;
       }
-  
-      const response = await fetch(`http://localhost:8080/${type}/restore/${id}`, {
-        method: 'PUT',
-      });
-  
+
+      const response = await fetch(
+        `http://localhost:8080/${type}/restore/${id}`,
+        {
+          method: "PUT",
+        }
+      );
+
       if (!response.ok) {
         throw new Error(`Failed to restore ${type}`);
       }
       fetchUpdatedItems();
-      fetchDeletedItems(); 
-      toast.success('Item restored successfully');
+      fetchDeletedItems();
+      toast.success("Item restored successfully");
     } catch (error) {
       console.error(`Error restoring ${type}:`, error);
-      toast.error('An unexpected error occurred');
+      toast.error("An unexpected error occurred");
     }
   };
-  
-  
+
   useEffect(() => {
-    fetchSwotItems('strengths', 'deleted', setDeletedStrengths);
+    fetchSwotItems("strengths", "deleted", setDeletedStrengths);
   }, []);
-  
+
   useEffect(() => {
-    fetchSwotItems('weaknesses', 'deleted', setDeletedWeaknesses);
+    fetchSwotItems("weaknesses", "deleted", setDeletedWeaknesses);
   }, []);
-  
+
   useEffect(() => {
-    fetchSwotItems('threats', 'deleted', setDeletedThreats);
+    fetchSwotItems("threats", "deleted", setDeletedThreats);
   }, []);
-  
+
   useEffect(() => {
-    fetchSwotItems('opportunities', 'deleted', setDeletedOpportunities);
+    fetchSwotItems("opportunities", "deleted", setDeletedOpportunities);
   }, []);
-  
-  
+
   const handleRestoreStrength = (id: number) => {
-    handleRestoreItem('strengths', id, fetchedStrengths, fetchUpdatedStrengths, () => fetchSwotItems('strengths', 'deleted', setDeletedStrengths));
+    handleRestoreItem(
+      "strengths",
+      id,
+      fetchedStrengths,
+      fetchUpdatedStrengths,
+      () => fetchSwotItems("strengths", "deleted", setDeletedStrengths)
+    );
   };
-  
+
   const handleRestoreWeakness = (id: number) => {
-    handleRestoreItem('weaknesses', id, fetchedWeaknesses, fetchUpdatedWeaknesses, () => fetchSwotItems('weaknesses', 'deleted', setDeletedWeaknesses));
+    handleRestoreItem(
+      "weaknesses",
+      id,
+      fetchedWeaknesses,
+      fetchUpdatedWeaknesses,
+      () => fetchSwotItems("weaknesses", "deleted", setDeletedWeaknesses)
+    );
   };
-  
-  
+
   const handleRestoreOpportunity = (id: number) => {
-    handleRestoreItem('opportunities', id, fetchedOpportunities, fetchUpdatedOpportunities, () => fetchSwotItems('opportunities', 'deleted', setDeletedOpportunities));
+    handleRestoreItem(
+      "opportunities",
+      id,
+      fetchedOpportunities,
+      fetchUpdatedOpportunities,
+      () => fetchSwotItems("opportunities", "deleted", setDeletedOpportunities)
+    );
   };
-  
+
   const handleRestoreThreat = (id: number) => {
-    handleRestoreItem('threats', id, fetchedThreats, fetchUpdatedThreats, () => fetchSwotItems('threats', 'deleted', setDeletedThreats));
+    handleRestoreItem("threats", id, fetchedThreats, fetchUpdatedThreats, () =>
+      fetchSwotItems("threats", "deleted", setDeletedThreats)
+    );
   };
-  
-  
+
   const toggleVisibility = (
-    type: 'strengths' | 'weaknesses' | 'threats' | 'opportunities', 
-    isVisible: boolean, 
-    setVisible: (visible: boolean) => void, 
+    type: "strengths" | "weaknesses" | "threats" | "opportunities",
+    isVisible: boolean,
+    setVisible: (visible: boolean) => void,
     fetchItems: () => void
   ) => {
     setVisible(!isVisible);
@@ -1508,1234 +1586,1942 @@ const Swot = () => {
       fetchItems();
     }
   };
-  
- 
+
   // end
-  
-   // State for delete confirmation modals
-   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-   const [strategyToDelete, setStrategyToDelete] = useState<any>(null); 
-   const [deleteModalType, setDeleteModalType] = useState<string | null>(null); 
- 
-   // Open the delete confirmation modal
-   const openDeleteModal = (strategy: any, type: string) => {
-     setStrategyToDelete(strategy);
-     setDeleteModalType(type);
-     setIsDeleteModalOpen(true);
-   };
- 
-   // Handle delete confirmation
-   const handleDeleteConfirm = async () => {
-     if (strategyToDelete && deleteModalType) {
-       try {
-         let response;
-         switch (deleteModalType) {
-           case 'SO':
-             response = await deletesoStrategy(strategyToDelete.id, department_id);
-             break;
-           case 'WO':
-             response = await deletewoStrategy(strategyToDelete.id, department_id);
-             break;
-           case 'ST':
-             response = await deletestStrategy(strategyToDelete.id, department_id);
-             break;
-           case 'WT':
-             response = await deleteStrategy(strategyToDelete.id, department_id);
-             break;
-           default:
-             console.error("Invalid delete modal type");
-             break;
-         }
- 
-         toast.success("Strategy deleted successfully");
-       } catch (error) {
-         console.error("Error deleting strategy:", error);
-         toast.error("An error occurred");
-       }
-     }
-     setIsDeleteModalOpen(false);
-     setStrategyToDelete(null);
-     setDeleteModalType(null);
-   };
+
+  // State for delete confirmation modals
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [strategyToDelete, setStrategyToDelete] = useState<any>(null);
+  const [deleteModalType, setDeleteModalType] = useState<string | null>(null);
+
+  // Open the delete confirmation modal
+  const openDeleteModal = (strategy: any, type: string) => {
+    setStrategyToDelete(strategy);
+    setDeleteModalType(type);
+    setIsDeleteModalOpen(true);
+  };
+
+  // Handle delete confirmation
+  const handleDeleteConfirm = async () => {
+    if (strategyToDelete && deleteModalType) {
+      try {
+        let response;
+        switch (deleteModalType) {
+          case "SO":
+            response = await deletesoStrategy(
+              strategyToDelete.id,
+              department_id
+            );
+            break;
+          case "WO":
+            response = await deletewoStrategy(
+              strategyToDelete.id,
+              department_id
+            );
+            break;
+          case "ST":
+            response = await deletestStrategy(
+              strategyToDelete.id,
+              department_id
+            );
+            break;
+          case "WT":
+            response = await deleteStrategy(strategyToDelete.id, department_id);
+            break;
+          default:
+            console.error("Invalid delete modal type");
+            break;
+        }
+
+        toast.success("Strategy deleted successfully");
+      } catch (error) {
+        console.error("Error deleting strategy:", error);
+        toast.error("An error occurred");
+      }
+    }
+    setIsDeleteModalOpen(false);
+    setStrategyToDelete(null);
+    setDeleteModalType(null);
+  };
 
   return (
-    <div className="flex flex-row">
-      <Navbar />
-      {/* <div className="flex-1"> */}
-        <div className="flex-1 flex flex-col mt-8 ml-80">
-          <div className="flex flex-col mb-16">
-
-            <div className="flex flex-row ">
-              <div className="mb-5 inline-block self-start break-words font-bold text-[3rem] text-[rgb(59,59,59)]">
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#4D4C4C",
+      }}
+    >
+      <Box
+        sx={{
+          width: isMobile ? "100%" : drawerWidth,
+          flexShrink: 0,
+          position: isMobile ? "static" : "fixed",
+          height: isMobile ? "auto" : "100vh",
+          overflowY: "auto",
+        }}
+      >
+        <Navbar />
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+        }}
+      >
+        <StyledBox>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                }}
+              >
                 SWOT ANALYSIS
-              </div>
-              {/* IF I HOVER OR ICLICK ANG SWOT OR STRATEGIES KAY NAAY UNDERLINE MAG STAY BELOW SA WORD, PWEDE KA MAG INSERT UG ICON BEFORE SA WORDS */}
-              <div className="flex justify-center ml-[63.5rem] mt-[0.5rem] border border-gray-200 bg-gray w-[14.7rem] h-[4rem] rounded-xl px-1 py-1">
-              <div
-                className="flex flex-row box-sizing-border cursor-pointer mr-2"
-                onClick={() => setDisplaySwot(true)}
+              </Typography>
+            </Grid>
+            <Grid item>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                border={1}
+                borderColor="#e9e8e8"
+                width="auto"
+                height="auto"
+                borderRadius={2}
+                fontSize={12}
+                sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
               >
-                <div
-                  className={`inline-block break-words font-semibold transition-all rounded-lg px-4 py-3 ${
-                    displaySwot ? "bg-[#A43214] text-white" : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                >
-                  SWOT
+                <div onClick={() => setDisplaySwot(true)}>
+                  <button
+                    className={`rounded-lg transition-all ${
+                      displaySwot
+                        ? "bg-[#A43214] text-white"
+                        : "border text-[#A43214]"
+                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                  >
+                    SWOT
+                  </button>
                 </div>
-              </div>
-              <div
-                className="flex flex-row box-sizing-border cursor-pointer"
-                onClick={() => setDisplaySwot(false)}
-              >
-                <div
-                  className={`inline-block break-words font-semibold transition-all rounded-lg px-4 py-3 ${
-                    !displaySwot ? "bg-[#A43214] text-white" : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                >
-                  STRATEGIES
+                <div onClick={() => setDisplaySwot(false)}>
+                  <button
+                    className={`rounded-lg transition-all ${
+                      !displaySwot
+                        ? "bg-[#A43214] text-white"
+                        : "border text-[#A43214]"
+                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                  >
+                    STRATEGIES
+                  </button>
                 </div>
-              </div>
-            </div>
-            </div>
+              </Box>
+            </Grid>
+          </Grid>
 
-            <span className="break-words font font-normal text-[1.3rem] text-[#504C4C]">
-              Assess your project&#39;s strengths, weaknesses, opportunities,
-              and threats effortlessly. Our AI-powered tool generates insightful
-              strategies tailored to your analysis, empowering you to make
-              informed decisions and drive your project forward with confidence.
-            </span>
-          </div>
-
+          {/* <StyledBox sx={{background: 'white', borderRadius: 5}}> */}
           {displaySwot ? (
-            <div className="flex flex-col">
-              {/* SWOT CONTAINER */}
-              <div className=" flex flex-col gap-10 ml-2 mt-[-1.3rem]">
-                {/* FOR RESTORING DELETED STRENGTHS */}
-                <div>
-                    <div className="flex flex-row box-sizing-border mr-2 cursor-pointer">
-                      <button 
-                        className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.2rem] font-bold text-center items-center rounded-lg px-2 py-2"
-                        onClick={() => toggleVisibility('strengths', isStrengthVisible, setIsStrengthVisible, () => fetchSwotItems('strengths', 'deleted', setDeletedStrengths))}>
-                        {isStrengthVisible ? 'Hide Strength History' : 'Show Strength History'}
-                      </button>
-                    </div>
-                    {isStrengthVisible && (
-                    <div className="bg-white shadow-md rounded-lg p-6 w-[103rem] border border-gray-200">
-                      <h2 className="text-xl font-semibold mb-4">Deleted Strengths</h2>
-                      {deletedStrengths.length === 0 ? (
-                        <p className="text-gray-500">No deleted strengths found.</p>
-                      ) : (
-                        <ul className="space-y-3">
-                          {deletedStrengths.map((strength,index) => (
-                              <li 
-                                key={strength.id} 
-                                className={`flex items-center justify-between p-3 ${
-                                  index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
+            <>
+              {/* STRENGTH */}
+              <Box>
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  }}
+                  onClick={() =>
+                    toggleVisibility(
+                      "strengths",
+                      isStrengthVisible,
+                      setIsStrengthVisible,
+                      () =>
+                        fetchSwotItems(
+                          "strengths",
+                          "deleted",
+                          setDeletedStrengths
+                        )
+                    )
+                  }
+                >
+                  {isStrengthVisible
+                    ? "Hide Strength History"
+                    : "Show Strength History"}
+                </Button>
+                {isStrengthVisible && (
+                  <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
+                    <Typography sx={{ fontWeight: "bolder", mb: 1 }}>
+                      Deleted Strengths
+                    </Typography>
+                    {deletedStrengths.length === 0 ? (
+                      <Typography variant="body2" className="text-gray-500">
+                        No deleted strengths found.
+                      </Typography>
+                    ) : (
+                      <ul className="space-y-3">
+                        {deletedStrengths.map((strength, index) => (
+                          <li
+                            key={strength.id}
+                            className={`flex items-center justify-between p-3 ${
+                              index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                            }`}
+                          >
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                overflowWrap: "break-word", // Allow long words to break
+                                wordBreak: "break-word", // Break words at any character
+                              }}
+                            >
+                              {strength.value}
+                            </Typography>
+                            <button
+                              onClick={() => handleRestoreStrength(strength.id)}
+                              className="text-[#A43214] hover:text-[#7A2812] transition-colors"
+                              title="Restore strength"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="w-6 h-6"
                               >
-                              <span className="text-gray-800 font-semibold">{strength.value}</span>
-                              <button 
-                                onClick={() => handleRestoreStrength(strength.id)}
-                                className="text-[#A43214] hover:text-[#7A2812] transition-colors"
-                                title="Restore strength"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                                  <path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clipRule="evenodd" />
-                                </svg>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-              </div>
-              {/* END */}
-                <Card className="flex align-center rounded-lg mt-[-3rem] border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[98%]">
-                  <div className="flex flex-col">
-                    <div className="flex flex-row">
-                    <div
-                      className="flex flex-row p-1 w-[95rem] h-auto"
-                    >
-                      <img src="/strength.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Strengths
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </Box>
+
+              <Cards>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/strength.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
+                          Strength
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
                           An internal advantage or resource.
-                        </span>
-                      </div>
-                    </div>
-                      <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.25rem] pr-1 pt-1 pb-1">
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <button
                           className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
                           onClick={strengths.handleAddClick}
                         >
                           <div className="flex flex-row">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
-                          </svg>
-
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
                           </div>
                         </button>
-                      </div>
-                      </div>
-                    <div className="relative ml-[-1.5rem]">
+                      </Box>
+                    </Grid>
+                  </Grid>
+
+                  <Grid
+                    container
+                    alignItems="center"
+                    py={-3}
+                    px={2}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {strengths.isAdding && (
-                        <input
+                        <TextField
+                          fullWidth
+                          variant="outlined"
                           placeholder="Type strength and press Enter"
                           value={strengths.newItem}
                           onChange={strengths.handleChange}
                           onKeyDown={strengths.addStrength}
-                          className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md"
-                          style={{
-                            width: "calc(100% - 1.5rem)",
-                            marginLeft: "1.5rem",
+                          sx={{
+                            height: "35px",
+                            "& .MuiInputBase-root": { height: "35px" },
                           }}
                         />
                       )}
-                    </div>
+                    </Grid>
+                  </Grid>
 
-                    <div className="flex flex-col overflow-auto mt-[-1rem]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {fetchedStrengths.map((strength, index: number) => (
                         <div
                           key={strength.id}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex flex-row text-[1.1rem] overflow-y-auto">
-                            <div className="pt-1 pb-1 pr-2 pl-2 font-semibold">
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "bold", mr: 1 }}
+                            >
                               {"S" + (index + 1)}:
-                            </div>
-                            <div className="pr-2 pl-2 break-words overflow-y-auto font-medium">
-                            {strengthEditingId === strength.id ? ( //new added
-                            <input
-                              value={strength.value}
-                              className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem]"
-                              style={{
-                                width: "calc(70% - 0.5rem)"
-                              }}
-                              onChange={(e) => {
-                                const updatedStrengths = fetchedStrengths.map(
-                                  (s) =>
-                                    s.id === strength.id
-                                      ? { ...s, value: e.target.value }
-                                      : s
-                                );
-                                setFetchedStrengths(updatedStrengths);
-                              }}
-                              onBlur={() => {
-                                setStrengthEditingId(null);
-                                strengths.EditStrength(
-                                  strength.id,
-                                  strength.value,
-                                  department_id
-                                );
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
+                            </Typography>
+
+                            {strengthEditingId === strength.id ? (
+                              <input
+                                value={strength.value}
+                                className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem] w-full"
+                                style={{
+                                  maxWidth: "70%", // Limit the maximum width to 70%
+                                }}
+                                onChange={(e) => {
+                                  const updatedStrengths = fetchedStrengths.map(
+                                    (s) =>
+                                      s.id === strength.id
+                                        ? { ...s, value: e.target.value }
+                                        : s
+                                  );
+                                  setFetchedStrengths(updatedStrengths);
+                                }}
+                                onBlur={() => {
                                   setStrengthEditingId(null);
                                   strengths.EditStrength(
                                     strength.id,
                                     strength.value,
                                     department_id
                                   );
-                                }
-                              }}
-                              autoFocus
-                            />
-                          ) : (
-                            <div>
-                              {strength.value.length > 110
-                                ? strength.value.slice(0, 110) + "..."
-                                : strength.value}
-                            </div>
-                          )}
-                          {/* end */}
-                            </div>
-                          </div>
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    setStrengthEditingId(null);
+                                    strengths.EditStrength(
+                                      strength.id,
+                                      strength.value,
+                                      department_id
+                                    );
+                                  }
+                                }}
+                                autoFocus
+                              />
+                            ) : (
+                              <Typography variant="body2">
+                                {strength.value.length > 110
+                                  ? strength.value.slice(0, 110) + "..."
+                                  : strength.value}
+                              </Typography>
+                            )}
+                          </Box>
 
                           <div className="flex">
-                              <div className="flex flex-row justify-center items-center">
-                                  <button
-                                    className="font-bold py-2 px-2 rounded text-orange-600"
-                                    onClick={() => setStrengthEditingId(strength.id)} //new added edit button
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth="1.5"
-                                      stroke="currentColor"
-                                      className="w-6 h-6"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    onClick={() => openStrengthDeleteModal(strength)}
-                                  >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                    </svg>
-                                  </button>
-                              </div>
-                          </div>
-                            {/* new added */}
-                            {isStrengthModalOpen && strengthToDelete && (
-                              <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                                <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                                  <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
-                                  <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strength? <br/>You can still restore it later if needed.</p>
-                                  <div className="flex justify-center space-x-3 mt-10">
-                                    <button
-                                      className="break-words font-semibold text-[1.2rem] border border-[#AB3510] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-                                      onClick={() => setIsStrengthModalOpen(false)}
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-                                      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                                      onClick={handleStrengthDeleteConfirm}
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                            {/* end */}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Restore weaknesses start */}
-                <div>
-                    <div className="flex flex-row box-sizing-border mr-2 cursor-pointer">
-                      <button 
-                        className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.2rem] font-bold text-center items-center rounded-lg px-2 py-2"
-                        onClick={() => toggleVisibility('weaknesses', isWeaknessesVisible, setIsWeaknessesVisible, () => fetchSwotItems('weaknesses', 'deleted', setDeletedWeaknesses))}>
-                        {isWeaknessesVisible ? 'Hide Weakness History' : 'Show Weakness History'}
-                      </button>
-                    </div>
-                    {isWeaknessesVisible && (
-                    <div className="bg-white shadow-md rounded-lg p-6 w-[103rem] border border-gray-200">
-                      <h2 className="text-xl font-semibold mb-4">Deleted Weaknesses</h2>
-                      {deletedWeaknesses.length === 0 ? (
-                        <p className="text-gray-500">No deleted weaknesses found.</p>
-                      ) : (
-                        <ul className="space-y-">
-                          {deletedWeaknesses.map((weakness,index) => (
-                              <li 
-                                key={weakness.id} 
-                                className={`flex items-center justify-between p-3 ${
-                                  index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
+                            <div className="flex flex-row justify-center items-center">
+                              <button
+                                className="font-bold py-2 px-2 rounded text-orange-600"
+                                onClick={() =>
+                                  setStrengthEditingId(strength.id)
+                                }
                               >
-                              <span className="text-gray-800 font-semibold">{weakness.value}</span>
-                              <button 
-                                onClick={() => handleRestoreWeakness(weakness.id)}
-                                className="text-[#A43214] hover:text-[#7A2812] transition-colors"
-                                title="Restore weakness"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                                  <path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clipRule="evenodd" />
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
                                 </svg>
                               </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-              </div>
-       
-            {/* Restore weaknesses end */}
-                <Card className="flex align-center rounded-lg mt-[-3rem] border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                    <div className="flex flex-row">
-                    <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
-                    >
-                      <img src="/weakness.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                              <button
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                onClick={() =>
+                                  openStrengthDeleteModal(strength)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          {isStrengthModalOpen && strengthToDelete && (
+                            <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                              <Box
+                                className="bg-white p-8 rounded-lg shadow-md text-center relative"
+                                sx={{
+                                  width: "auto",
+                                  maxWidth: "80vw", // Limit the width of the modal
+                                  maxHeight: "80vh", // Limit the height of the modal
+                                }}
+                              >
+                                <p className="text-xl font-bold mb-4">
+                                  Confirm Deletion
+                                </p>
+                                <p className="text-sm mb-4 mt-5">
+                                  Are you sure you want to delete this strength?{" "}
+                                  <br />
+                                  You can still restore it later if needed.
+                                </p>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: 2,
+                                    mt: 3,
+                                    flexWrap: "wrap", // Allow buttons to wrap
+                                  }}
+                                >
+                                  <Button
+                                    variant="contained"
+                                    onClick={() =>
+                                      setIsStrengthModalOpen(false)
+                                    }
+                                    sx={{ width: 150, color: "#AB3510" }}
+                                    style={{
+                                      background: "white",
+                                      border: "1px solid #AB3510",
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    onClick={handleStrengthDeleteConfirm}
+                                    style={{
+                                      background:
+                                        "linear-gradient(to left, #8a252c, #AB3510)",
+                                      width: 150,
+                                    }}
+                                  >
+                                    Delete
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </Box>
+                          )}
+                        </div>
+                      ))}
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
+
+              {/* WEAKNESS */}
+              <Box sx={{ mt: 5 }}>
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  }}
+                  onClick={() =>
+                    toggleVisibility(
+                      "weaknesses",
+                      isWeaknessesVisible,
+                      setIsWeaknessesVisible,
+                      () =>
+                        fetchSwotItems(
+                          "weaknesses",
+                          "deleted",
+                          setDeletedWeaknesses
+                        )
+                    )
+                  }
+                >
+                  {isWeaknessesVisible
+                    ? "Hide Weakness History"
+                    : "Show Weakness History"}
+                </Button>
+                {isWeaknessesVisible && (
+                  <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
+                    <Typography sx={{ fontWeight: "bolder", mb: 1 }}>
+                      Deleted Weaknesses
+                    </Typography>
+                    {deletedWeaknesses.length === 0 ? (
+                      <Typography variant="body2" className="text-gray-500">
+                        No deleted weaknesses found.
+                      </Typography>
+                    ) : (
+                      <ul className="space-y-3">
+                        {deletedWeaknesses.map((weakness, index) => (
+                          <li
+                            key={weakness.id}
+                            className={`flex items-center justify-between p-3 ${
+                              index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                            }`}
+                          >
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                overflowWrap: "break-word", // Allow long words to break
+                                wordBreak: "break-word", // Break words at any character
+                              }}
+                            >
+                              {weakness.value}
+                            </Typography>
+                            <button
+                              onClick={() => handleRestoreWeakness(weakness.id)}
+                              className="text-[#A43214] hover:text-[#7A2812] transition-colors"
+                              title="Restore weakness"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </Box>
+
+              <Cards>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/weakness.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           Weakness
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
                           An internal limitation or deficiency.
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.25rem] pr-1 pt-1 pb-1">
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <button
                           className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
                           onClick={weaknesses.handleAddClick}
                         >
                           <div className="flex flex-row">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
-                          </svg>
-
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
                           </div>
                         </button>
-                      </div>
-                    </div>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    <div className="relative ml-[-1.5rem]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    py={-3}
+                    px={2}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {weaknesses.isAdding && (
-                        <input
+                        <TextField
+                          fullWidth
+                          variant="outlined"
                           placeholder="Type weakness and press Enter"
                           value={weaknesses.newItem}
                           onChange={weaknesses.handleChange}
                           onKeyDown={weaknesses.addWeakness}
-                          className="mt-10 bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md"
-                          style={{
-                            width: "calc(100% - 1.5rem)",
-                            marginLeft: "1.5rem",
+                          sx={{
+                            height: "35px",
+                            "& .MuiInputBase-root": { height: "35px" },
                           }}
                         />
                       )}
-                    </div>
+                    </Grid>
+                  </Grid>
 
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {fetchedWeaknesses.map((weakness, index: number) => (
                         <div
                           key={weakness.id}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex flex-row text-[1.1rem] overflow-y-auto">
-                            <div className="pt-1 pb-1 pr-2 pl-2 font-semibold ">
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "bold", mr: 1 }}
+                            >
                               {"W" + (index + 1)}:
-                            </div>
-                            <div className="pr-2 pt-[-0.10rem] pl-2 break-words overflow-y-auto font-medium">
-                            {weaknessEditingId === weakness.id ? ( //new added
-                            <input
-                              value={weakness.value}
-                              className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem]"
-                              style={{
-                                width: "calc(70% - 0.5rem)"
-                              }}
-                              onChange={(e) => {
-                                const updatedWeaknesses = fetchedWeaknesses.map(
-                                  (w) =>
-                                    w.id === weakness.id
-                                      ? { ...w, value: e.target.value }
-                                      : w
-                                );
-                                setFetchedWeaknesses(updatedWeaknesses);
-                              }}
-                              onBlur={() => {
-                                setWeaknessEditingId(null);
-                                weaknesses.EditWeakness(
-                                  weakness.id,
-                                  weakness.value,
-                                  department_id
-                                );
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
+                            </Typography>
+
+                            {weaknessEditingId === weakness.id ? (
+                              <input
+                                value={weakness.value}
+                                className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem] w-full"
+                                style={{
+                                  maxWidth: "70%", // Limit the maximum width to 70%
+                                }}
+                                onChange={(e) => {
+                                  const updatedWeaknesses =
+                                    fetchedWeaknesses.map((w) =>
+                                      w.id === weakness.id
+                                        ? { ...w, value: e.target.value }
+                                        : w
+                                    );
+                                  setFetchedWeaknesses(updatedWeaknesses);
+                                }}
+                                onBlur={() => {
                                   setWeaknessEditingId(null);
                                   weaknesses.EditWeakness(
                                     weakness.id,
                                     weakness.value,
                                     department_id
                                   );
-                                }
-                              }}
-                              autoFocus
-                            />
-                          ) : (
-                            <div>
-                              {weakness.value.length > 110
-                                ? weakness.value.slice(0, 110) + "..."
-                                : weakness.value}
-                            </div>
-                          )}
-                          {/* end */}
-                            </div>
-                          </div>
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    setWeaknessEditingId(null);
+                                    weaknesses.EditWeakness(
+                                      weakness.id,
+                                      weakness.value,
+                                      department_id
+                                    );
+                                  }
+                                }}
+                                autoFocus
+                              />
+                            ) : (
+                              <Typography variant="body2">
+                                {weakness.value.length > 110
+                                  ? weakness.value.slice(0, 110) + "..."
+                                  : weakness.value}
+                              </Typography>
+                            )}
+                          </Box>
 
                           <div className="flex">
-                              <div className="flex flex-row justify-center items-center ml-5">
-                                  <button
-                                    className="font-bold py-2 px-2 rounded text-orange-600"
-                                    onClick={() => setWeaknessEditingId(weakness.id)} //new added edit button
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth="1.5"
-                                      stroke="currentColor"
-                                      className="w-6 h-6"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    onClick={() => openWeaknessDeleteModal(weakness)} //new added
-                                  >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                    </svg>
-                                  </button>
-                              </div>
-                          </div>
-                          {/* new added */}
-                          {isWeaknessModalOpen && weaknessToDelete && (
-                              <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                                <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                                  <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
-                                  <p className="text-xl mb-4 mt-10">Are you sure you want to delete this weakness? <br/>You can still restore it later if needed.</p>
-                                  <div className="flex justify-center space-x-3 mt-10">
-                                    <button
-                                      className="break-words font-semibold border border-[#AB3510] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-                                      onClick={() => setIsWeaknessModalOpen(false)}
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-                                      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                                      onClick={handleWeaknessDeleteConfirm}
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                            {/* end */}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-
-                {/* Restore opportunities start */}
-                
-                <div>
-                    <div className="flex flex-row box-sizing-border mr-2 cursor-pointer">
-                      <button 
-                        className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.2rem] font-bold text-center items-center rounded-lg px-2 py-2"
-                        onClick={() => toggleVisibility('opportunities', isOpportunitiesVisible, setIsOpportunitiesVisible, () => fetchSwotItems('opportunities', 'deleted', setDeletedOpportunities))}>
-                        {isOpportunitiesVisible ? 'Hide Opportunities History' : 'Show Opportunities History'}
-                      </button>
-                    </div>
-                    {isOpportunitiesVisible && (
-                    <div className="bg-white shadow-md rounded-lg p-6 w-[103rem] border border-gray-200">
-                      <h2 className="text-xl font-semibold mb-4">Deleted Opportunities</h2>
-                      {deletedOpportunities.length === 0 ? (
-                        <p className="text-gray-500">No deleted opportunities found.</p>
-                      ) : (
-                        <ul className="space-y-3">
-                          {deletedOpportunities.map((opportunity,index) => (
-                              <li 
-                                key={opportunity.id} 
-                                className={`flex items-center justify-between p-3 ${
-                                  index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
+                            <div className="flex flex-row justify-center items-center">
+                              <button
+                                className="font-bold py-2 px-2 rounded text-orange-600"
+                                onClick={() =>
+                                  setWeaknessEditingId(weakness.id)
+                                }
                               >
-                              <span className="text-gray-800 font-semibold">{opportunity.value}</span>
-                              <button 
-                                onClick={() => handleRestoreOpportunity(opportunity.id)}
-                                className="text-[#A43214] hover:text-[#7A2812] transition-colors"
-                                title="Restore opportunity"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                                  <path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clipRule="evenodd" />
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
                                 </svg>
                               </button>
-                            </li>
-                          ))}
-                        </ul>
-                      )}
-                    </div>
-                  )}
-              </div>
+                              <button
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                onClick={() =>
+                                  openWeaknessDeleteModal(weakness)
+                                }
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
+                          </div>
+                          {isWeaknessModalOpen && weaknessToDelete && (
+                            <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                              <Box
+                                className="bg-white p-8 rounded-lg shadow-md text-center relative"
+                                sx={{
+                                  width: "auto",
+                                  maxWidth: "80vw", // Limit the width of the modal
+                                  maxHeight: "80vh", // Limit the height of the modal
+                                }}
+                              >
+                                <p className="text-xl font-bold mb-4">
+                                  Confirm Deletion
+                                </p>
+                                <p className="text-sm mb-4 mt-5">
+                                  Are you sure you want to delete this weakness?{" "}
+                                  <br />
+                                  You can still restore it later if needed.
+                                </p>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: 2,
+                                    mt: 3,
+                                    flexWrap: "wrap", // Allow buttons to wrap
+                                  }}
+                                >
+                                  <Button
+                                    variant="contained"
+                                    onClick={() =>
+                                      setIsWeaknessModalOpen(false)
+                                    }
+                                    sx={{ width: 150, color: "#AB3510" }}
+                                    style={{
+                                      background: "white",
+                                      border: "1px solid #AB3510",
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    onClick={handleWeaknessDeleteConfirm}
+                                    style={{
+                                      background:
+                                        "linear-gradient(to left, #8a252c, #AB3510)",
+                                      width: 150,
+                                    }}
+                                  >
+                                    Delete
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </Box>
+                          )}
+                        </div>
+                      ))}
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
+              {/* OPPORTUNITIES */}
+              <Box sx={{ mt: 5 }}>
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  }}
+                  onClick={() =>
+                    toggleVisibility(
+                      "opportunities",
+                      isOpportunitiesVisible,
+                      setIsOpportunitiesVisible,
+                      () =>
+                        fetchSwotItems(
+                          "opportunities",
+                          "deleted",
+                          setDeletedOpportunities
+                        )
+                    )
+                  }
+                >
+                  {isOpportunitiesVisible
+                    ? "Hide Opportunities History"
+                    : "Show Opportunities History"}
+                </Button>
+                {isOpportunitiesVisible && (
+                  <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
+                    <Typography sx={{ fontWeight: "bolder", mb: 1 }}>
+                      Deleted Opportunities
+                    </Typography>
+                    {deletedOpportunities.length === 0 ? (
+                      <Typography variant="body2" className="text-gray-500">
+                        No deleted opportunities found.
+                      </Typography>
+                    ) : (
+                      <ul className="space-y-3">
+                        {deletedOpportunities.map((opportunity, index) => (
+                          <li
+                            key={opportunity.id}
+                            className={`flex items-center justify-between p-3 ${
+                              index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                            }`}
+                          >
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                overflowWrap: "break-word", // Allow long words to break
+                                wordBreak: "break-word", // Break words at any character
+                              }}
+                            >
+                              {opportunity.value}
+                            </Typography>
+                            <button
+                              onClick={() =>
+                                handleRestoreOpportunity(opportunity.id)
+                              }
+                              className="text-[#A43214] hover:text-[#7A2812] transition-colors"
+                              title="Restore opportunity"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </Box>
 
-                {/* Restore opportunities end */}
-
-
-
-                <Card className="flex align-center rounded-lg mt-[-3rem] border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                    <div className="flex flex-row">
-                    <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
-                    >
-                      <img src="/opportunity.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              <Cards>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img
+                          src="/opportunity.png"
+                          alt=""
+                          className="h-[5rem]"
+                        />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           Opportunity
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
                           An external chance for growth or improvement.
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.25rem] pr-1 pt-1 pb-1">
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <button
                           className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
                           onClick={opportunities.handleAddClick}
                         >
                           <div className="flex flex-row">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
-                          </svg>
-
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
                           </div>
                         </button>
-                      </div>
-                    </div>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    <div className="relative ml-[-1.5rem]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    py={-3}
+                    px={2}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {opportunities.isAdding && (
-                        <input
-                          placeholder="Type oportunity and press Enter"
+                        <TextField
+                          fullWidth
+                          variant="outlined"
+                          placeholder="Type opportunity and press Enter"
                           value={opportunities.newItem}
                           onChange={opportunities.handleChange}
                           onKeyDown={opportunities.addOpportunities}
-                          className=" mt-10 border border-orange-400 bg-white absolute p-4 shadow-2xl font-semibold rounded-md"
-                          style={{
-                            width: "calc(100% - 1.5rem)",
-                            marginLeft: "1.5rem",
+                          sx={{
+                            height: "35px",
+                            "& .MuiInputBase-root": { height: "35px" },
                           }}
                         />
                       )}
-                    </div>
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%]">
-                      {fetchedOpportunities.map((opportunity, index: number) => (
-                        <div
-                          key={opportunity.id}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                        >
-                          <div className="flex flex-row text-[1.1rem] overflow-y-auto">
-                            <div className="pt-1 pb-1 pr-2 pl-2 font-semibold ">
-                              {"O" + (index + 1)}:
-                            </div>
-                            <div className="pr-2 pt-[-0.5rem] pl-2 break-words overflow-y-auto font-medium">
-                            {opportunityEditingId === opportunity.id ? ( //new added
-                            <input
-                              value={opportunity.value}
-                              className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem]"
-                              style={{
-                                width: "calc(70% - 0.5rem)"
-                              }}
-                              onChange={(e) => {
-                                const updatedOpportunities = fetchedOpportunities.map(
-                                  (o) =>
-                                    o.id === opportunity.id
-                                      ? { ...o, value: e.target.value }
-                                      : o
-                                );
-                                setFetchedOpportunities(updatedOpportunities);
-                              }}
-                              onBlur={() => {
-                                setOpportunityEditingId(null);
-                                opportunities.EditOpportunities(
-                                  opportunity.id,
-                                  opportunity.value,
-                                  department_id
-                                );
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
-                                  setOpportunityEditingId(null);
-                                  opportunities.EditOpportunities(
-                                    opportunity.id,
-                                    opportunity.value,
-                                    department_id
-                                  );
-                                }
-                              }}
-                              autoFocus
-                            />
-                          ) : (
-                            <div>
-                              {opportunity.value.length > 110
-                                ? opportunity.value.slice(0, 110) + "..."
-                                : opportunity.value}
-                            </div>
-                          )}
-                          {/* end */}
-                            </div>
-                          </div>
+                    </Grid>
+                  </Grid>
 
-                          <div className="flex">
-                              <div className="flex flex-row">
-                                  <button
-                                    className="font-bold py-2 px-2 rounded text-orange-600"
-                                    onClick={() => setOpportunityEditingId(opportunity.id)} //new added edit button
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
+                      {fetchedOpportunities.map(
+                        (opportunity, index: number) => (
+                          <div
+                            key={opportunity.id}
+                            className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                              index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                            }`}
+                          >
+                            <Box className="flex flex-row overflow-y-auto">
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "bold", mr: 1 }}
+                              >
+                                {"O" + (index + 1)}:
+                              </Typography>
+
+                              {opportunityEditingId === opportunity.id ? (
+                                <input
+                                  value={opportunity.value}
+                                  className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem] w-full"
+                                  style={{
+                                    maxWidth: "70%", // Limit the maximum width to 70%
+                                  }}
+                                  onChange={(e) => {
+                                    const updatedOpportunities =
+                                      fetchedOpportunities.map((o) =>
+                                        o.id === opportunity.id
+                                          ? { ...o, value: e.target.value }
+                                          : o
+                                      );
+                                    setFetchedOpportunities(
+                                      updatedOpportunities
+                                    );
+                                  }}
+                                  onBlur={() => {
+                                    setOpportunityEditingId(null);
+                                    opportunities.EditOpportunities(
+                                      opportunity.id,
+                                      opportunity.value,
+                                      department_id
+                                    );
+                                  }}
+                                  onKeyDown={(e) => {
+                                    if (e.key === "Enter") {
+                                      setOpportunityEditingId(null);
+                                      opportunities.EditOpportunities(
+                                        opportunity.id,
+                                        opportunity.value,
+                                        department_id
+                                      );
+                                    }
+                                  }}
+                                  autoFocus
+                                />
+                              ) : (
+                                <Typography variant="body2">
+                                  {opportunity.value.length > 110
+                                    ? opportunity.value.slice(0, 110) + "..."
+                                    : opportunity.value}
+                                </Typography>
+                              )}
+                            </Box>
+
+                            <div className="flex">
+                              <div className="flex flex-row justify-center items-center">
+                                <button
+                                  className="font-bold py-2 px-2 rounded text-orange-600"
+                                  onClick={() =>
+                                    setOpportunityEditingId(opportunity.id)
+                                  }
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    strokeWidth="1.5"
+                                    stroke="currentColor"
+                                    className="w-6 h-6"
                                   >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth="1.5"
-                                      stroke="currentColor"
-                                      className="w-6 h-6"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    //KANI MODAL
-                                    className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    onClick={() => openOpportunityDeleteModal(opportunity)}
+                                    <path
+                                      strokeLinecap="round"
+                                      strokeLinejoin="round"
+                                      d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                    />
+                                  </svg>
+                                </button>
+                                <button
+                                  className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                  onClick={() =>
+                                    openOpportunityDeleteModal(opportunity)
+                                  }
+                                >
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke-width="1.5"
+                                    stroke="currentColor"
+                                    className="size-6"
                                   >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                    </svg>
-                                  </button>
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                    />
+                                  </svg>
+                                </button>
                               </div>
-                          </div>
-                          {/* new added */}
-                          {isOpportunityModalOpen && opportunityToDelete && (
-                              <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                                <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                                  <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
-                                  <p className="text-xl mb-4 mt-10">Are you sure you want to delete this opportunity? <br/>You can still restore it later if needed.</p>
-                                  <div className="flex justify-center space-x-3 mt-10">
-                                    <button
-                                      className="break-words font-semibold border border border-[#AB3510] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-                                      onClick={() => setIsOpportunityModalOpen(false)}
+                            </div>
+                            {isOpportunityModalOpen && opportunityToDelete && (
+                              <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                                <Box
+                                  className="bg-white p-8 rounded-lg shadow-md text-center relative"
+                                  sx={{
+                                    width: "auto",
+                                    maxWidth: "80vw", // Limit the width of the modal
+                                    maxHeight: "80vh", // Limit the height of the modal
+                                  }}
+                                >
+                                  <p className="text-xl font-bold mb-4">
+                                    Confirm Deletion
+                                  </p>
+                                  <p className="text-sm mb-4 mt-5">
+                                    Are you sure you want to delete this
+                                    opportunity? <br />
+                                    You can still restore it later if needed.
+                                  </p>
+                                  <Box
+                                    sx={{
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      gap: 2,
+                                      mt: 3,
+                                      flexWrap: "wrap", // Allow buttons to wrap
+                                    }}
+                                  >
+                                    <Button
+                                      variant="contained"
+                                      onClick={() =>
+                                        setIsOpportunityModalOpen(false)
+                                      }
+                                      sx={{ width: 150, color: "#AB3510" }}
+                                      style={{
+                                        background: "white",
+                                        border: "1px solid #AB3510",
+                                      }}
                                     >
                                       Cancel
-                                    </button>
-                                    <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-                                      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                                    </Button>
+                                    <Button
+                                      variant="contained"
                                       onClick={handleOpportunityDeleteConfirm}
+                                      style={{
+                                        background:
+                                          "linear-gradient(to left, #8a252c, #AB3510)",
+                                        width: 150,
+                                      }}
                                     >
                                       Delete
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
+                                    </Button>
+                                  </Box>
+                                </Box>
+                              </Box>
                             )}
-                            {/* end */}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </Card>
-
-                 {/* Restore threats start */}
-
-                 <div>
-                    <div className="flex flex-row box-sizing-border mr-2 cursor-pointer">
-                      <button 
-                        className="bg-[#A43214] text-white hover:bg-red-500 border border-none hover:border-red-500 hover:text-white text-[1.2rem] font-bold text-center items-center rounded-lg px-2 py-2"
-                        onClick={() => toggleVisibility('threats', isThreatsVisible, setIsThreatsVisible, () => fetchSwotItems('threats', 'deleted', setDeletedThreats))}>
-                        {isThreatsVisible ? 'Hide Threats History' : 'Show Threats History'}
-                      </button>
-                    </div>
-                    {isThreatsVisible && (
-                    <div className="bg-white shadow-md rounded-lg p-6 w-[103rem] border border-gray-200">
-                      <h2 className="text-xl font-semibold mb-4">Deleted Threats</h2>
-                      {deletedThreats.length === 0 ? (
-                        <p className="text-gray-500">No deleted threats found.</p>
-                      ) : (
-                        <ul className="space-y-3">
-                          {deletedThreats.map((threat,index) => (
-                              <li 
-                                key={threat.id} 
-                                className={`flex items-center justify-between p-3 ${
-                                  index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
-                              >
-                              <span className="text-gray-800 font-semibold">{threat.value}</span>
-                              <button 
-                                onClick={() => handleRestoreThreat(threat.id)}
-                                className="text-[#A43214] hover:text-[#7A2812] transition-colors"
-                                title="Restore threat"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                                  <path fillRule="evenodd" d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z" clipRule="evenodd" />
-                                </svg>
-                              </button>
-                            </li>
-                          ))}
-                        </ul>
+                          </div>
+                        )
                       )}
-                    </div>
-                  )}
-              </div>
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
+              {/* THREATS */}
+              <Box sx={{ mt: 5 }}>
+                <Button
+                  variant="contained"
+                  style={{
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  }}
+                  onClick={() =>
+                    toggleVisibility(
+                      "threats",
+                      isThreatsVisible,
+                      setIsThreatsVisible,
+                      () =>
+                        fetchSwotItems("threats", "deleted", setDeletedThreats)
+                    )
+                  }
+                >
+                  {isThreatsVisible
+                    ? "Hide Threats History"
+                    : "Show Threats History"}
+                </Button>
+                {isThreatsVisible && (
+                  <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
+                    <Typography sx={{ fontWeight: "bolder", mb: 1 }}>
+                      Deleted Threats
+                    </Typography>
+                    {deletedThreats.length === 0 ? (
+                      <Typography variant="body2" className="text-gray-500">
+                        No deleted threats found.
+                      </Typography>
+                    ) : (
+                      <ul className="space-y-3">
+                        {deletedThreats.map((threat, index) => (
+                          <li
+                            key={threat.id}
+                            className={`flex items-center justify-between p-3 ${
+                              index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                            }`}
+                          >
+                            <Typography
+                              variant="body2"
+                              sx={{
+                                overflowWrap: "break-word", // Allow long words to break
+                                wordBreak: "break-word", // Break words at any character
+                              }}
+                            >
+                              {threat.value}
+                            </Typography>
+                            <button
+                              onClick={() => handleRestoreThreat(threat.id)}
+                              className="text-[#A43214] hover:text-[#7A2812] transition-colors"
+                              title="Restore threat"
+                            >
+                              <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                viewBox="0 0 24 24"
+                                fill="currentColor"
+                                className="w-6 h-6"
+                              >
+                                <path
+                                  fillRule="evenodd"
+                                  d="M4.755 10.059a7.5 7.5 0 0 1 12.548-3.364l1.903 1.903h-3.183a.75.75 0 1 0 0 1.5h4.992a.75.75 0 0 0 .75-.75V4.356a.75.75 0 0 0-1.5 0v3.18l-1.9-1.9A9 9 0 0 0 3.306 9.67a.75.75 0 1 0 1.45.388Zm15.408 3.352a.75.75 0 0 0-.919.53 7.5 7.5 0 0 1-12.548 3.364l-1.902-1.903h3.183a.75.75 0 0 0 0-1.5H2.984a.75.75 0 0 0-.75.75v4.992a.75.75 0 0 0 1.5 0v-3.18l1.9 1.9a9 9 0 0 0 15.059-4.035.75.75 0 0 0-.53-.918Z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                )}
+              </Box>
 
-                {/* Restore threat end */}
-
-
-
-                <Card className="flex align-center rounded-lg border mt-[-3rem] border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                    <div className="flex flex-row">
-                    <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
-                    >
-                      <img src="/threats.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              <Cards>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/threats.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           Threat
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
                           An external risk or challenge.
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] ml-[3rem] pl-[0.25rem] pr-1 pt-1 pb-1">
+                        </Typography>
+                      </Box>
+                    </Grid>
+
+                    <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
                         <button
                           className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
                           onClick={threats.handleAddClick}
                         >
                           <div className="flex flex-row">
-                          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="size-8">
-                            <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z" clip-rule="evenodd" />
-                          </svg>
-
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
                           </div>
                         </button>
-                      </div>
-                    </div>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    <div className="relative ml-[-1.5rem]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    py={-3}
+                    px={2}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {threats.isAdding && (
-                        <input
+                        <TextField
+                          fullWidth
+                          variant="outlined"
                           placeholder="Type threat and press Enter"
                           value={threats.newItem}
                           onChange={threats.handleChange}
                           onKeyDown={threats.addThreats}
-                          className=" mt-10 border border-orange-400 bg-white absolute p-4 shadow-2xl font-semibold rounded-md"
-                          style={{
-                            width: "calc(100% - 1.5rem)",
-                            marginLeft: "1.5rem",
+                          sx={{
+                            height: "35px",
+                            "& .MuiInputBase-root": { height: "35px" },
                           }}
                         />
                       )}
-                    </div>
+                    </Grid>
+                  </Grid>
 
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%] ">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {fetchedThreats.map((threat, index: number) => (
                         <div
                           key={threat.id}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex flex-row text-[1.1rem] overflow-y-auto">
-                            <div className="pt-1 pb-1 pr-2 pl-2 font-semibold ">
-                              {"T" + (index+1)}:
-                            </div>
-                            <div className="pr-2 pt-[0.2rem] pl-2 break-words overflow-y-auto font-medium">
-                            {threatEditingId === threat.id ? ( //new added
-                            <input
-                              value={threat.value}
-                              className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem]"
-                              style={{
-                                width: "calc(70% - 0.5rem)"
-                              }}
-                              onChange={(e) => {
-                                const updatedThreats = fetchedThreats.map(
-                                  (t) =>
-                                    t.id === threat.id
-                                      ? { ...t, value: e.target.value }
-                                      : t
-                                );
-                                setFetchedThreats(updatedThreats);
-                              }}
-                              onBlur={() => {
-                                setThreatEditingId(null);
-                                threats.EditThreats(
-                                  threat.id,
-                                  threat.value,
-                                  department_id
-                                );
-                              }}
-                              onKeyDown={(e) => {
-                                if (e.key === "Enter") {
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "bold", mr: 1 }}
+                            >
+                              {"T" + (index + 1)}:
+                            </Typography>
+
+                            {threatEditingId === threat.id ? (
+                              <input
+                                value={threat.value}
+                                className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem] w-full"
+                                style={{
+                                  maxWidth: "70%", // Limit the maximum width to 70%
+                                }}
+                                onChange={(e) => {
+                                  const updatedThreats = fetchedThreats.map(
+                                    (t) =>
+                                      t.id === threat.id
+                                        ? { ...t, value: e.target.value }
+                                        : t
+                                  );
+                                  setFetchedThreats(updatedThreats);
+                                }}
+                                onBlur={() => {
                                   setThreatEditingId(null);
                                   threats.EditThreats(
                                     threat.id,
                                     threat.value,
                                     department_id
                                   );
-                                }
-                              }}
-                              autoFocus
-                            />
-                          ) : (
-                            <div>
-                              {threat.value.length > 110
-                                ? threat.value.slice(0, 110) + "..."
-                                : threat.value}
-                            </div>
-                          )}
-                          {/* end */}
-                            </div>
-                          </div>
+                                }}
+                                onKeyDown={(e) => {
+                                  if (e.key === "Enter") {
+                                    setThreatEditingId(null);
+                                    threats.EditThreats(
+                                      threat.id,
+                                      threat.value,
+                                      department_id
+                                    );
+                                  }
+                                }}
+                                autoFocus
+                              />
+                            ) : (
+                              <Typography variant="body2">
+                                {threat.value.length > 110
+                                  ? threat.value.slice(0, 110) + "..."
+                                  : threat.value}
+                              </Typography>
+                            )}
+                          </Box>
 
                           <div className="flex">
-                              <div className="flex flex-row">
-                                  <button
-                                    className="font-bold py-2 px-2 rounded text-orange-600"
-                                    onClick={() => setThreatEditingId(threat.id)} //new added edit button
-                                  >
-                                    <svg
-                                      xmlns="http://www.w3.org/2000/svg"
-                                      fill="none"
-                                      viewBox="0 0 24 24"
-                                      strokeWidth="1.5"
-                                      stroke="currentColor"
-                                      className="w-6 h-6"
-                                    >
-                                      <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                      />
-                                    </svg>
-                                  </button>
-                                  <button
-                                    //KANI MODAL
-                                    className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    onClick={() => openThreatDeleteModal(threat)}
-                                  >
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                      <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                    </svg>
-                                  </button>
-                              </div>
+                            <div className="flex flex-row justify-center items-center">
+                              <button
+                                className="font-bold py-2 px-2 rounded text-orange-600"
+                                onClick={() => setThreatEditingId(threat.id)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  className="w-6 h-6"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                  />
+                                </svg>
+                              </button>
+                              <button
+                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                onClick={() => openThreatDeleteModal(threat)}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
+                                </svg>
+                              </button>
+                            </div>
                           </div>
-                          {/* new added */}
                           {isThreatModalOpen && threatToDelete && (
-                              <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                                <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                                  <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
-                                  <p className="text-xl mb-4 mt-10">Are you sure you want to delete this threat? <br/>You can still restore it later if needed.</p>
-                                  <div className="flex justify-center space-x-3 mt-10">
-                                    <button
-                                      className="break-words font-semibold border border-[#AB3510] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-                                      onClick={() => setIsThreatModalOpen(false)}
-                                    >
-                                      Cancel
-                                    </button>
-                                    <button
-                                      className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-                                      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                                      onClick={handleThreatDeleteConfirm}
-                                    >
-                                      Delete
-                                    </button>
-                                  </div>
-                                </div>
-                              </div>
-                            )}
-                            {/* end */}
+                            <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                              <Box
+                                className="bg-white p-8 rounded-lg shadow-md text-center relative"
+                                sx={{
+                                  width: "auto",
+                                  maxWidth: "80vw", // Limit the width of the modal
+                                  maxHeight: "80vh", // Limit the height of the modal
+                                }}
+                              >
+                                <p className="text-xl font-bold mb-4">
+                                  Confirm Deletion
+                                </p>
+                                <p className="text-sm mb-4 mt-5">
+                                  Are you sure you want to delete this threat?{" "}
+                                  <br />
+                                  You can still restore it later if needed.
+                                </p>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: 2,
+                                    mt: 3,
+                                    flexWrap: "wrap", // Allow buttons to wrap
+                                  }}
+                                >
+                                  <Button
+                                    variant="contained"
+                                    onClick={() => setIsThreatModalOpen(false)}
+                                    sx={{ width: 150, color: "#AB3510" }}
+                                    style={{
+                                      background: "white",
+                                      border: "1px solid #AB3510",
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    onClick={handleThreatDeleteConfirm}
+                                    style={{
+                                      background:
+                                        "linear-gradient(to left, #8a252c, #AB3510)",
+                                      width: 150,
+                                    }}
+                                  >
+                                    Delete
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </Box>
+                          )}
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </Card>
-              </div>
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
 
-              {/* Generate Strategies Button */}
-              <div className="flex justify-center ml-[-3rem] mb-10">
-                <button
+              <Box
+                sx={{
+                  display: "flex",
+                  justifyContent: "center",
+                  gap: 2,
+                  mt: 5,
+                  flexWrap: "wrap", // Allow buttons to wrap
+                }}
+              >
+                <Button
+                  variant="contained"
                   onClick={generateStrategies}
-                  className="lg:mb-0 mb-6 rounded-[0.6rem] mt-10 flex flex-row justify-center self-center pt-3 pb-4 pl-1 w-[24.1rem] box-sizing-border"
-                  style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
+                  sx={{
+                    p: 2,
+                  }}
+                  style={{
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                    width: 250,
+                  }}
                 >
-                  <span className="break-words font-semibold text-[1.3rem] text-[#ffffff]">
-                    Generate Strategies
-                  </span>
-                </button>
+                  Generate Strategies
+                </Button>
+              </Box>
 
-                {isModalVisible && (
-                  <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
-                    <div className="bg-white p-8 rounded-lg z-10 h-[18rem] w-[32rem]">
-                      <p className="text-2xl mb-4 justify-center font-semibold mt-5 text-center">
-                        Strategies Successfully Generated
-                      </p>
-                      <p className="text-xl mb-4 text-center justify-center font-regular mt-10">
-                        The AI has analyzed the inputted SWOT data and created strategies.
-                      </p>
-                      <div className="flex justify-center items-center">
-                        <button
-                          onClick={closeModal}
-                          className="shadow-md rounded-[0.6rem] text-[#ffffff] break-words font-semibold text-lg flex pt-2 pr-3 pl-5 pb-2 w-[9rem] h-[fit-content] mb-10 mt-5 items-center text-center align-middle justify-center"
-                          style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                        >
-                          Close
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            // STRATEGIES CONTAINER (similar structure to SWOT CONTAINER)
-            <div className="flex flex-col gap-10 ml-2 mb-10">
-                <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                    <div className="flex flex-row">
-                    <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
+              {isModalVisible && (
+                <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                  <Box
+                    className="bg-white p-8 rounded-lg shadow-md text-center relative"
+                    sx={{
+                      width: "auto",
+                      maxWidth: "80vw", // Limit the width of the modal
+                      maxHeight: "80vh", // Limit the height of the modal
+                    }}
+                  >
+                    <p className="text-xl font-bold mb-4">
+                      Strategies Successfully Generated
+                    </p>
+                    <p className="text-sm mb-4 mt-5">
+                      The AI has analyzed the inputted SWOT data and created
+                      strategies.
+                    </p>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                        mt: 3,
+                        flexWrap: "wrap", // Allow buttons to wrap
+                      }}
                     >
-                      <img src="/so.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                      <Button
+                        variant="contained"
+                        onClick={closeModal}
+                        style={{
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          width: 150,
+                        }}
+                      >
+                        Close
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
+              )}
+            </>
+          ) : (
+            <>
+              {/* insert strategies here */}
+              {/* STRENGTH */}
+              <Cards sx={{ mt: 1 }}>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/so.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           S-O Strategies
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Leveraging internal advantages to capitalize on external chances.
-                        </span>
-                      </div>
-                    </div>
-                    
-                      <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
-                        <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
-                          {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
-                        </div>
-                      </div>
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
+                          Leveraging internal advantages to capitalize on
+                          external chances.
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    </div>
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {soApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex break-words justify-between w-full">
-                            <p className="pr-2 pt-[-0.10rem] text-[1.1rem] font-medium pl-2 break-words overflow-y-auto">
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography variant="body2">
                               {strategy["s_oResponses"]}
-                            </p>
-                            <div className=" flex justify-end">
+                            </Typography>
+                          </Box>
+
+                          <div className="flex">
+                            <div className="flex flex-row justify-center items-center">
                               <button
-                                //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                onClick={() =>
-                                openDeleteModal(strategy, 'SO')
-                                }
+                                onClick={() => openDeleteModal(strategy, "SO")}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
                                 </svg>
                               </button>
                             </div>
-                            
                           </div>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </Card>
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
 
-                <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                  <div className="flex flex-row">
-                  <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
-                    >
-                      <img src="/wo.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              {/* WEAKNESS */}
+
+              <Cards sx={{ mt: 5 }}>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/wo.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           W-O Strategies
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Addressing internal deficiencies to seize external opportunities.
-                        </span>
-                      </div>
-                    </div>
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
+                          Addressing internal deficiencies to seize external
+                          opportunities.
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
-                        <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
-                          {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {woApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex break-words justify-between w-full">
-                            <p className="pr-2 pt-[-0.10rem] text-[1.1rem] font-medium pl-2 break-words overflow-y-auto">
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography variant="body2">
                               {strategy["w_oResponses"]}
-                              
-                              
-                            </p>
-                            <div className=" flex justify-end">
+                            </Typography>
+                          </Box>
+
+                          <div className="flex">
+                            <div className="flex flex-row justify-center items-center">
                               <button
-                                //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                onClick={() =>
-                                  openDeleteModal(strategy, 'WO')
-                                }
+                                onClick={() => openDeleteModal(strategy, "WO")}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
                                 </svg>
                               </button>
                             </div>
                           </div>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </Card>
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
+              {/* OPPORTUNITIES */}
 
-                <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                  <div className="flex flex-row">
-                  <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
-                    >
-                      <img src="/st.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              <Cards sx={{ mt: 5 }}>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/st.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           S-T Strategies
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
                           Using internal strengths to mitigate external risks.
-                        </span>
-                      </div>
-                    </div>
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
-                        <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
-                          {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {stApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex break-words justify-between w-full">
-                            <p className="pr-2 pt-[-0.10rem] text-[1.1rem] font-medium pl-2 break-words overflow-y-auto">
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography variant="body2">
                               {strategy["s_tResponses"]}
-                              
-                            </p>
-                            <div className=" flex justify-end">
+                            </Typography>
+                          </Box>
+
+                          <div className="flex">
+                            <div className="flex flex-row justify-center items-center">
                               <button
-                                //kani modal
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                onClick={() =>
-                                  openDeleteModal(strategy, 'ST')
-                                }
+                                onClick={() => openDeleteModal(strategy, "ST")}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
                                 </svg>
                               </button>
                             </div>
                           </div>
                         </div>
                       ))}
-                    </div>
-                  </div>
-                </Card>
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
+              {/* THREATS */}
 
-                <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-5 px-2 bg-white h-[30rem] w-[103rem]">
-                  <div className="flex flex-col">
-                  <div className="flex flex-row">
-                  <div
-                      className="flex flex-row rounded-lg h-10 p-1 w-[95rem]"
-                    >
-                      <img src="/wt.png" alt="" className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]" />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
+              <Cards sx={{ mt: 5 }}>
+                <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    sx={{
+                      ml: 1,
+                      height: "85px",
+                      "& .MuiInputBase-root": { height: "85px" },
+                    }}
+                  >
+                    <Grid item sm={11.3} container alignItems="center">
+                      <Box>
+                        <img src="/wt.png" alt="" className="h-[5rem]" />
+                      </Box>
+                      <Box sx={{ ml: 1 }}>
+                        <Typography sx={{ fontWeight: "bolder" }}>
                           W-T Strategies
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Vulnerabilities that may be exploited by external challenges.
-                        </span>
-                      </div>
-                    </div>
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontWeight: "500" }}>
+                          Vulnerabilities that may be exploited by external
+                          challenges.
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  </Grid>
 
-                    <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[white] ml-[3rem] pl-[0.3rem] pr-1 pt-[0.3rem] pb-1">
-                        <div className="rounded-full w-[1.8rem] h-[1.6rem] bg-[#ffffff] pl-[0.5rem] pr-1 pt-1 pb-1 align-middle items-center mt-1">
-                          {/* <FaPlus className="text-orange-600 w-3 h-6 cursor-pointer mt-[-0.2rem] relative"/> */}
-                        </div>
-                      </div>
-                    
-                    </div>
-                    <div className="flex flex-col overflow-auto mt-12 w-[100%]">
+                  <Grid
+                    container
+                    alignItems="center"
+                    p={1}
+                    justifyContent="space-between"
+                  >
+                    <Grid item xs={12}>
                       {wtApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center ml-1 pb-2 pt-3 pl-2 w-auto ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-1 w-auto ${
+                            index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                          }`}
                         >
-                          <div className="flex break-words justify-between w-full">
-                            <p className="pr-2 pt-[-0.10rem] text-[1.1rem] font-medium pl-2 break-words overflow-y-auto">
+                          <Box className="flex flex-row overflow-y-auto">
+                            <Typography variant="body2">
                               {strategy["w_tResponses"]}
-                              
-                            </p>
-                            <button
+                            </Typography>
+                          </Box>
+
+                          <div className="flex">
+                            <div className="flex flex-row justify-center items-center">
+                              <button
                                 className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                onClick={() =>
-                                  openDeleteModal(strategy, 'WT') //added ni
-                                }
+                                onClick={() => openDeleteModal(strategy, "WT")}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="size-6">
-                                  <path stroke-linecap="round" stroke-linejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  stroke-width="1.5"
+                                  stroke="currentColor"
+                                  className="size-6"
+                                >
+                                  <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
                                 </svg>
                               </button>
+                            </div>
                           </div>
                         </div>
                       ))}
-                    </div>
-                    {/* added ni */}
-                    {isDeleteModalOpen && strategyToDelete && (
-                    <div className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                      <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-                        <p className="text-3xl font-bold mb-4">Confirm Deletion</p>
-                        <p className="text-xl mb-4 mt-10">Are you sure you want to delete this strategy?</p>
-                        <div className="flex justify-center space-x-3 mt-10">
-                          <button
-                            className="break-words font-semibold border border-[#962203] w-[9rem] text-[1.2rem] text-[#962203] rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] bg-[#ffffff] cursor-pointer hover:bg-[#962203] hover:text-[#ffffff]"
-                            onClick={() => setIsDeleteModalOpen(false)}
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            className="break-words font-semibold text-[1.2rem] text-[#ffffff] w-[9rem] border-none rounded-[0.6rem] pt-[0.5rem] pb-[0.5rem] pr-[2.2rem] pl-[2.2rem] cursor-pointer"
-                            style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                            onClick={handleDeleteConfirm}
-                          >
-                            Delete
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  </div>
-                </Card>
-            </div>
+                    </Grid>
+                  </Grid>
+                </StyledBox>
+              </Cards>
+
+              {isDeleteModalOpen && strategyToDelete && (
+                <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                  <Box
+                    className="bg-white p-8 rounded-lg shadow-md text-center relative"
+                    sx={{
+                      width: "auto",
+                      maxWidth: "80vw", // Limit the width of the modal
+                      maxHeight: "80vh", // Limit the height of the modal
+                    }}
+                  >
+                    <p className="text-xl font-bold mb-4">Confirm Deletion</p>
+                    <p className="text-sm mb-4 mt-5">
+                      Are you sure you want to delete this strategy?
+                    </p>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                        mt: 3,
+                        flexWrap: "wrap", // Allow buttons to wrap
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={() => setIsDeleteModalOpen(false)}
+                        sx={{ width: 150, color: "#AB3510" }}
+                        style={{
+                          background: "white",
+                          border: "1px solid #AB3510",
+                        }}
+                      >
+                        Cancel
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        onClick={handleDeleteConfirm}
+                        style={{
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          width: 150,
+                        }}
+                      >
+                        Delete
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
+              )}
+            </>
           )}
-        </div>
-      {/* </div> */}
-    </div>
+        </StyledBox>
+      </Box>
+    </Box>
   );
 };
 

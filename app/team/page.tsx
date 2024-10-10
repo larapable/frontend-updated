@@ -1,108 +1,179 @@
-import TeamsPage from '../components/TeamsPage'
-import React from 'react'
-import Link from 'next/link'
-import { Button } from "@mui/material";
+import React from "react";
+import Link from "next/link";
+import { Box, Button, Typography } from "@mui/material";
+import TeamsPage from "../components/LandingPage/TeamsPage";
 
 const page = () => {
   return (
-    <div className='text-[rgb(59,59,59)] items-center justify-center text-center'>
-      <div className='flex flex-col'>
-        <div className="font-bold lg:text-[3.5rem] mt-10">Meet our team</div>
-        <div className='font-medium text-[1.3rem] mt-5'>Our team comprises highly skilled professionals with expertise in their respective fields, <br/>ensuring top-notch quality and results for our clients.</div>
+    <Box
+      sx={{
+        color: "rgb(59,59,59)",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        textAlign: "center",
+        marginBottom: "5rem",
+      }}
+    >
+      <Typography
+        variant="h2"
+        sx={{
+          fontWeight: "bold",
+          marginTop: "2.5rem",
+          fontSize: { lg: "3.5rem", xs: "2.5rem" },
+        }}
+      >
+        Meet our team
+      </Typography>
+      <Typography
+        variant="body1"
+        sx={{ fontWeight: "medium", fontSize: "1.3rem", marginTop: "1rem" }}
+      >
+        Our team comprises highly skilled professionals with expertise in their
+        respective fields,
+        <br />
+        ensuring top-notch quality and results for our clients.
+      </Typography>
 
-        <div className='flex flex-row items-center justify-center text-center gap-5 mt-10'>
-          <button 
-            className="rounded-[0.6rem] text-[#AB3510] border border-[#AB3510] hover:text-white hover:bg-[#AB3510] font-medium text-lg py-3 px-3 w-[10rem] h-[fit-content] mb-10 items-center"
-          >
-              <Link href="/">Home</Link>
-          </button>
-          <button 
-            className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-3 px-3 w-[10rem] h-[fit-content] mb-10 items-center"
-            style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}>
-              <Link href="/contact">Contact</Link>
-          </button>
-        </div>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          gap: 2,
+          marginTop: "2.5rem",
+          marginBottom: "3rem",
+        }}
+      >
+        <Button
+          variant="outlined"
+          sx={{
+            borderColor: "#AB3510", // Initial border color
+            color: "#AB3510", // Text color
+            fontWeight: "medium",
+            fontSize: "1rem",
+            padding: "0.5rem 1.5rem",
+            "&:hover": {
+              backgroundColor: "#AB3510", // Background color on hover
+              color: "white", // Text color on hover
+              borderColor: "#AB3510", // Border color on hover
+            },
+          }}
+        >
+          <Link href="/">Home</Link>
+        </Button>
+        <Button
+          variant="contained"
+          sx={{
+            background: "linear-gradient(to left, #8a252c, #AB3510)",
+            color: "#ffffff",
+            fontWeight: "medium",
+            fontSize: "1rem",
+            padding: "0.5rem 1.5rem",
+          }}
+        >
+          <Link href="/contact">Contact</Link>
+        </Button>
+      </Box>
 
-        <div style={{
+      <Box
+        sx={{
           backgroundImage: 'url("landingbg.png")',
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          width: '100%',
-          height: '46vh',  // Adjust height as needed
-        }}>
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          backgroundRepeat: "no-repeat",
+          width: "100%",
+          height: "56vh",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center", // Change from 'flex-end' to 'center'
+          padding: "2rem",
+          position: "relative",
+        }}
+      >
+        <Box sx={{ display: "flex", justifyContent: "center", gap: 3 }}>
+          {[
+            {
+              name: "Genevieve Miao",
+              role: "Developer / Designer",
+              img: "profile-ebeb.png",
+            },
+            {
+              name: "Lara Pable",
+              role: "Developer / Designer",
+              img: "profile-lara.png",
+            },
+            {
+              name: "Arziel Mae Lawas",
+              role: "Developer / Designer",
+              img: "profile-arziel.png",
+            },
+            {
+              name: "Arvin Santillan",
+              role: "Developer / Designer",
+              img: "profile-arvin.png",
+            },
+            {
+              name: "Lyndon Trocio",
+              role: "Developer / Designer",
+              img: "profile-lyndon.png",
+            },
+          ].map((member) => (
+            <Box
+              key={member.name}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+            >
+              <img
+                src={member.img}
+                alt={member.name}
+                style={{ width: "15rem", height: "17rem", marginTop: "1rem" }}
+              />
+              <Box
+                sx={{
+                  backgroundColor: "white",
+                  height: "5rem",
+                  width: "17rem",
+                  borderRadius: "1rem",
+                  marginTop: "-1rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                }}
+              >
+                <Box sx={{ textAlign: "center" }}>
+                  <Typography
+                    variant="h6"
+                    sx={{ fontSize: "1rem", fontWeight: "bold" }}
+                  >
+                    {member.name}
+                  </Typography>
+                  <Typography variant="body2">{member.role}</Typography>
+                </Box>
+              </Box>
+            </Box>
+          ))}
+        </Box>
+      </Box>
 
-          <div className='flex flex-row items-center justify-center gap-10'>
-            <div className='flex flex-col'>
-              <img className="w-[18rem] h-[20rem] mt-5" 
-                src="profile-ebeb.png"
-                alt=""
-              />
-              <div className='bg-white h-[5rem] w-[19rem] rounded-lg mt-[-2rem] ml-[-0.5rem] items-center justify-center'>
-                <div className='flex flex-col'>
-                  <div className='text-[1.3rem] font-bold mt-3'>Genevieve Miao</div>
-                  <div className='text-[1rem]'>Developer / Designer</div>
-                </div>
-              </div>
-            </div>
-            <div className='flex flex-col'>
-              <img className="w-[18rem] h-[20rem] mt-5" 
-                src="profile-lara.png"
-                alt=""
-              />
-              <div className='bg-white h-[5rem] w-[19rem] rounded-lg mt-[-2rem] ml-[-0.5rem] items-center justify-center'>
-                <div className='flex flex-col'>
-                  <div className='text-[1.3rem] font-bold mt-3'>Lara Pable</div>
-                  <div className='text-[1rem]'>Developer / Designer</div>
-                </div>
-              </div>
-            </div>
-            <div className='flex flex-col'>
-              <img className="w-[18rem] h-[20rem] mt-5" 
-                src="profile-arziel.png"
-                alt=""
-              />
-              <div className='bg-white h-[5rem] w-[19rem] rounded-lg mt-[-2rem] ml-[-0.5rem] items-center justify-center'>
-                <div className='flex flex-col'>
-                  <div className='text-[1.3rem] font-bold mt-3'>Arziel Mae Lawas</div>
-                  <div className='text-[1rem]'>Developer / Designer</div>
-                </div>
-              </div>
-            </div>
-            <div className='flex flex-col'>
-              <img className="w-[18rem] h-[20rem] mt-5" 
-                src="profile-arvin.png"
-                alt=""
-              />
-              <div className='bg-white h-[5rem] w-[19rem] rounded-lg mt-[-2rem] ml-[-0.5rem] items-center justify-center'>
-                <div className='flex flex-col'>
-                  <div className='text-[1.3rem] font-bold mt-3'>Arvin Santillan</div>
-                  <div className='text-[1rem]'>Developer / Designer</div>
-                </div>
-              </div>
-            </div>
-            <div className='flex flex-col'>
-              <img className="w-[18rem] h-[20rem] mt-5" 
-                src="profile-lyndon.png"
-                alt=""
-              />
-              <div className='bg-white h-[5rem] w-[19rem] rounded-lg mt-[-2rem] ml-[-0.5rem] items-center justify-center'>
-                <div className='flex flex-col'>
-                  <div className='text-[1.3rem] font-bold mt-3'>Lyndon Trocio</div>
-                  <div className='text-[1rem]'>Developer / Designer</div>
-                </div>
-              </div>
-            </div>
-          </div>
+      <Typography
+        variant="body1"
+        sx={{
+          fontWeight: "medium",
+          fontStyle: "italic",
+          fontSize: "1rem",
+          marginTop: "3rem",
+        }}
+      >
+        'Your goals, our journey. Together, we achieve.'
+      </Typography>
+      <Typography variant="body2" sx={{ marginTop: "1rem", color: "#504B4B" }}>
+        Copyright. All rights reserved.
+      </Typography>
+    </Box>
+  );
+};
 
-        </div>
-
-        <div className='font-medium italic text-[1rem] mt-12'>'Your goals, our journey. Together, we achieve.'</div>
-        <div className="inline-block break-words font-normal text-[1rem] text-[#504B4B]">
-          Copyright. All rights reserved.
-        </div>
-      </div>
-    </div>
-  )
-}
-
-export default page
+export default page;

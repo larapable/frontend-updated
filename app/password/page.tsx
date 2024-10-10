@@ -2,7 +2,7 @@
 
 import { useSession } from "next-auth/react";
 import { useState, useEffect } from "react";
-import Navbar from '../components/Navbar';
+import Navbar from '../components/Navbars/Navbar';
 import Link from 'next/link';
 
 export default function Password() {

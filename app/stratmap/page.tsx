@@ -1,14 +1,78 @@
-  "use client";
-import { useSession } from "next-auth/react";
-import React, { ChangeEvent, useEffect, useState } from "react";
-import Navbar from "../components/Navbar";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@mui/material";
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import Navbar from "../components/Navbars/Navbar";
+import { FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Spinner from "../components/Misc/Spinner";
+import {
+  Box,
+  Drawer,
+  Typography,
+  TextField,
+  Divider,
+  Avatar,
+  Select,
+  MenuItem,
+  Grid,
+  Button,
+  Autocomplete,
+  FormHelperText,
+  Card,
+  responsiveFontSizes,
+  Modal,
+} from "@mui/material";
+import axios from "axios";
+import styled from "@emotion/styled";
+import Image from "next/image";
+import { SelectChangeEvent } from "@mui/material/Select";
+import SpinnerPages from "../components/Misc/SpinnerPages";
+import "@/app/page.css";
+import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
+import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
+
+const drawerWidth = 280;
+
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
+const MainFont = styled(Box)({
+  fontSize: "0.9rem",
+  mt: 2,
+});
+
+const Cards = styled(Box)({
+  width: "100%",
+  height: "100%",
+  borderRadius: "10px",
+  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+  borderColor: "#e9e8e8",
+  borderStyle: "solid", // Add border style (e.g., solid, dashed, dotted)
+  borderWidth: "1px",
+});
+
+const Boxes = styled(Box)({
+  height: "auto",
+  width: "100%",
+});
 
 const Page = () => {
   const { data: session } = useSession();
   const [selectedComponent, setSelectedComponent] = useState("");
   const [currentView, setCurrentView] = useState("primary");
   const [hasPrimaryStrats, setHasPrimaryStrats] = useState<string | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
@@ -27,7 +91,9 @@ const Page = () => {
     let isMounted = true;
 
     const postToPrimaryStrategies = async () => {
-      const response = await fetch(`http://localhost:8080/user/getHasPrimaryStrats/${username}`);
+      const response = await fetch(
+        `http://localhost:8080/user/getHasPrimaryStrats/${username}`
+      );
       const data = await response.json();
 
       console.log("data:", data);
@@ -38,138 +104,169 @@ const Page = () => {
           const primaryStrategiesData = [
             {
               perspective: "financial", // Added perspective field
-              office_target: "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
+              office_target:
+                "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
+              office_target:
+                "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
+              office_target:
+                "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
+              office_target:
+                "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
+              office_target:
+                "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
+              office_target:
+                "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
+              office_target:
+                "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
+              office_target:
+                "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
+              office_target:
+                "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
+              office_target:
+                "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
+              office_target:
+                "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
+              office_target:
+                "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
+              office_target:
+                "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
+              office_target:
+                "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
               department: { id: department_id },
             },
             {
               perspective: "learning", // Added perspective field
-              office_target: "A7.1: At least 90% participation in CIT-sponsored events",
+              office_target:
+                "A7.1: At least 90% participation in CIT-sponsored events",
               department: { id: department_id },
             },
             {
               perspective: "learning", // Added perspective field
-              office_target: "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
+              office_target:
+                "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
               department: { id: department_id },
             },
             {
               perspective: "learning", // Added perspective field
-              office_target: "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
+              office_target:
+                "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
+              office_target:
+                "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
+              office_target:
+                "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
+              office_target:
+                "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
+              office_target:
+                "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
+              office_target:
+                "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
+              office_target:
+                "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
               department: { id: department_id },
-            }
+            },
           ];
-      
+
           // Post each strategy individually
-          const postPromises = primaryStrategiesData.map(async (strategyData) => {
-            const endpoint = `http://localhost:8080/stratmap/primary${strategyData.perspective.charAt(0).toUpperCase() + strategyData.perspective.slice(1)}/insert`;
-            console.log("Endpoint:", endpoint); // Log the endpoint for debugging
-            const response = await fetch(endpoint, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(strategyData),
-            });
-      
-            if (!response.ok) {
-              console.error(`Error posting ${strategyData.perspective} strategy:`, response.status);
+          const postPromises = primaryStrategiesData.map(
+            async (strategyData) => {
+              const endpoint = `http://localhost:8080/stratmap/primary${
+                strategyData.perspective.charAt(0).toUpperCase() +
+                strategyData.perspective.slice(1)
+              }/insert`;
+              console.log("Endpoint:", endpoint); // Log the endpoint for debugging
+              const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(strategyData),
+              });
+
+              if (!response.ok) {
+                console.error(
+                  `Error posting ${strategyData.perspective} strategy:`,
+                  response.status
+                );
+              }
             }
-          });
-      
+          );
+
           await Promise.all(postPromises);
-      
+
           // Update hasPrimaryStrats in the user entity
           if (username) {
             const response = await fetch(
@@ -180,22 +277,21 @@ const Page = () => {
                 body: JSON.stringify({ hasPrimaryStrats: 1 }),
               }
             );
-      
+
             if (!response.ok) {
               console.error(
                 "Error updating hasPrimaryStrats in user session:",
                 response.status
               );
               // Handle the error appropriately (e.g., show an error message)
-            }
-            else {
-              localStorage.setItem('hasPrimaryStrats', '1');
-              setHasPrimaryStrats('1'); // Store in local storage
+            } else {
+              localStorage.setItem("hasPrimaryStrats", "1");
+              setHasPrimaryStrats("1"); // Store in local storage
             }
           } else {
             console.error("Username not found in session data.");
           }
-      
+
           // Re-fetch primary strategies to update the UI
           fetchPrimaryFinancialStrategies(department_id);
           fetchPrimaryStakeholderStrategies(department_id);
@@ -207,37 +303,39 @@ const Page = () => {
         }
       }
     };
-  
+
     postToPrimaryStrategies();
 
-    return () => { 
+    return () => {
       isMounted = false; // Cleanup: set isMounted to false on unmount
     };
-
   }, []);
 
   useEffect(() => {
+    setHasPrimaryStrats(localStorage.getItem("hasPrimaryStrats"));
 
-    setHasPrimaryStrats(localStorage.getItem('hasPrimaryStrats'));
-    
     fetchProfileGoals();
     fetchExistingStrategies(department_id);
 
     type Perspective = "Financial" | "Stakeholder" | "Internal" | "Learning";
 
-    const fetchFunctions: Record<Perspective, (department_id: number) => Promise<void>> = {
-      "Financial": fetchPrimaryFinancialStrategies,
-      "Stakeholder": fetchPrimaryStakeholderStrategies,
-      "Internal": fetchPrimaryInternalProcessStrategies,
-      "Learning": fetchPrimaryLearningGrowthStrategies,
+    const fetchFunctions: Record<
+      Perspective,
+      (department_id: number) => Promise<void>
+    > = {
+      Financial: fetchPrimaryFinancialStrategies,
+      Stakeholder: fetchPrimaryStakeholderStrategies,
+      Internal: fetchPrimaryInternalProcessStrategies,
+      Learning: fetchPrimaryLearningGrowthStrategies,
     };
-  
+
     // Fetch data only if in primary view and component is valid
-    if (currentView === "primary" && (selectedComponent as Perspective) in fetchFunctions) {
+    if (
+      currentView === "primary" &&
+      (selectedComponent as Perspective) in fetchFunctions
+    ) {
       fetchFunctions[selectedComponent as Perspective](department_id);
     }
-
-
   }, [session, currentView, selectedComponent, hasPrimaryStrats]);
 
   interface GeneratedSentence {
@@ -258,10 +356,17 @@ const Page = () => {
   const [newStrategyValue, setNewStrategyValue] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [primaryFinancialStrategies, setPrimaryFinancialStrategies] = useState<GeneratedSentence[]>([]);
-  const [primaryStakeholderStrategies, setPrimaryStakeholderStrategies] = useState<GeneratedSentence[]>([]);
-  const [primaryInternalProcessStrategies, setPrimaryInternalProcessStrategies] = useState<GeneratedSentence[]>([]);
-  const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] = useState<GeneratedSentence[]>([]);
+  const [primaryFinancialStrategies, setPrimaryFinancialStrategies] = useState<
+    GeneratedSentence[]
+  >([]);
+  const [primaryStakeholderStrategies, setPrimaryStakeholderStrategies] =
+    useState<GeneratedSentence[]>([]);
+  const [
+    primaryInternalProcessStrategies,
+    setPrimaryInternalProcessStrategies,
+  ] = useState<GeneratedSentence[]>([]);
+  const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] =
+    useState<GeneratedSentence[]>([]);
 
   // @ts-ignore
   const handleEditClick = (strategy) => {
@@ -279,10 +384,18 @@ const Page = () => {
 
     try {
       // Call the API endpoints to clear the tables
-      await fetch("http://localhost:8080/stratmap/financial/clear", { method: "DELETE" });
-      await fetch("http://localhost:8080/stratmap/stakeholder/clear", { method: "DELETE" });
-      await fetch("http://localhost:8080/stratmap/learning/clear", { method: "DELETE" });
-      await fetch("http://localhost:8080/stratmap/internal/clear", { method: "DELETE" });
+      await fetch("http://localhost:8080/stratmap/financial/clear", {
+        method: "DELETE",
+      });
+      await fetch("http://localhost:8080/stratmap/stakeholder/clear", {
+        method: "DELETE",
+      });
+      await fetch("http://localhost:8080/stratmap/learning/clear", {
+        method: "DELETE",
+      });
+      await fetch("http://localhost:8080/stratmap/internal/clear", {
+        method: "DELETE",
+      });
 
       // Re-fetch the data and categorize after clearing the tables
       await fetchAllData(department_id);
@@ -481,19 +594,23 @@ const Page = () => {
   const handleInternalProcessSaveEdit = async (
     fID: number,
     office_target: string,
-    department_id: number) => {
+    department_id: number
+  ) => {
     try {
       const details = {
         office_target: office_target,
         department: { id: department_id }, // Include the department ID in the payload
       };
-      const response = await fetch(`http://localhost:8080/stratmap/internal/edit/${fID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      });
+      const response = await fetch(
+        `http://localhost:8080/stratmap/internal/edit/${fID}`,
+        {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(details),
+        }
+      );
 
       if (!response.ok) {
         console.error("Failed to update strategy");
@@ -536,7 +653,6 @@ const Page = () => {
     `http://localhost:8080/soStrat/get/${department_id}`,
     `http://localhost:8080/wtStrat/get/${department_id}`,
     `http://localhost:8080/woStrat/get/${department_id}`,
-
   ];
 
   const SYSTEM_PROMPT = `Categorize the following responses into the following categories:
@@ -559,35 +675,35 @@ const Page = () => {
     "Make sure not to output any double strategies with the same target code"
     `;
 
-    const fetchProfileGoals = async () => {
-      console.log("Fetching profile goals...");
-      try {
-        const response = await fetch(
-          `http://localhost:8080/goals/get/department/${department_id}`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          console.log("Received data:", data);
-  
-          // Update all states related to profile goals 
-          setOfficeVision(data.vision);
-          setValueProposition(data.proposition);
-          setMission(data.mission); 
-  
-          // Update the system prompt with fetched data
-          const fetchedData = `
+  const fetchProfileGoals = async () => {
+    console.log("Fetching profile goals...");
+    try {
+      const response = await fetch(
+        `http://localhost:8080/goals/get/department/${department_id}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Received data:", data);
+
+        // Update all states related to profile goals
+        setOfficeVision(data.vision);
+        setValueProposition(data.proposition);
+        setMission(data.mission);
+
+        // Update the system prompt with fetched data
+        const fetchedData = `
             Office Vision: ${data.vision}
             Value Proposition: ${data.proposition}
           `;
-          const updatedSystemPrompt = `${SYSTEM_PROMPT}\n${fetchedData}`;
-          console.log("Updated System Prompt:", updatedSystemPrompt);
-        } else {
-          console.error("Error fetching user profile data:", response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching user profile data:", error);
+        const updatedSystemPrompt = `${SYSTEM_PROMPT}\n${fetchedData}`;
+        console.log("Updated System Prompt:", updatedSystemPrompt);
+      } else {
+        console.error("Error fetching user profile data:", response.statusText);
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user profile data:", error);
+    }
+  };
 
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
 
@@ -615,7 +731,7 @@ const Page = () => {
       const data = {
         office_target: newFStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/financial/insert",
@@ -647,9 +763,9 @@ const Page = () => {
         office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryFinancial/insert", // Use the correct endpoint
         {
@@ -660,12 +776,15 @@ const Page = () => {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimaryFModal();
         fetchPrimaryFinancialStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary financial strategy:", response.status);
+        console.error(
+          "Error saving primary financial strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -680,9 +799,9 @@ const Page = () => {
         office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryStakeholder/insert", // Use the correct endpoint
         {
@@ -693,12 +812,15 @@ const Page = () => {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimarySModal();
         fetchPrimaryStakeholderStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary stakeholder strategy:", response.status);
+        console.error(
+          "Error saving primary stakeholder strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -713,9 +835,9 @@ const Page = () => {
         office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryLearning/insert", // Use the correct endpoint
         {
@@ -726,12 +848,15 @@ const Page = () => {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimaryLGModal();
         fetchPrimaryLearningGrowthStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary learning strategy:", response.status);
+        console.error(
+          "Error saving primary learning strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -746,9 +871,9 @@ const Page = () => {
         office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryInternal/insert", // Use the correct endpoint
         {
@@ -759,12 +884,15 @@ const Page = () => {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimaryIPModal();
         fetchPrimaryInternalProcessStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary internal strategy:", response.status);
+        console.error(
+          "Error saving primary internal strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -829,7 +957,7 @@ const Page = () => {
       const data = {
         office_target: newSStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/stakeholder/insert",
@@ -895,7 +1023,7 @@ const Page = () => {
       const data = {
         office_target: newIPStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/internal/insert",
@@ -961,7 +1089,7 @@ const Page = () => {
       const data = {
         office_target: newLGStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/learning/insert",
@@ -987,98 +1115,103 @@ const Page = () => {
     setSavedFStrategies([...savedLGStrategies, strategyLGWithCode]);
   };
 
-    const fetchDataAndCategorize = async (apiEndpoint: string) => {
-      try {
-        const response = await fetch(apiEndpoint);
-        const data = await response.json();
-        console.log("swot data: ", data);
-    
-        const inputText = data
-          .map((row: any) => {
-            if (row["s_oResponses"]) return row["s_oResponses"];
-            else if (row["s_tResponses"]) return row["s_tResponses"];
-            else if (row["w_oResponses"]) return row["w_oResponses"];
-            else if (row["w_tResponses"]) return row["w_tResponses"];
-            else return "";
-          })
-          .join("\n");
-    
-        console.log("inputText: ", inputText);
-    
-        const geminiResponse = await fetch(GEMINI_API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
-              },
-            ],
-          }),
-        });
-        const geminiData = await geminiResponse.json();
-        const apiResponse =
-          geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "No response received";
-        console.log("api response: ", apiResponse);
-    
-        const generatedSentences: string[] = apiResponse
-          .split("\n")
-          .filter((sentence: string) => sentence.trim() !== "");
-    
-          const categorizedSentences: GeneratedSentence[] = await Promise.all( // Use Promise.all to handle async operations within map
-            generatedSentences.map(async (sentence) => {
-              const match = sentence.match(/^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/);
-      
-              if (match) {
-                const [, idStr, strategicTheme, code, content] = match;
-                const id = parseInt(idStr, 10);
-                const fID = id;
-      
-                // POST target code to backend 
-                if (id === 1) { // Assuming id 1 represents Financial perspective 
-                  try {
-                    const response = await fetch( // Make the fetch call asynchronous with await
-                      "http://localhost:8080/bsc/financialBsc/insert",
-                      {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          target_code: code, // Send the extracted target code
-                          office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
-                          department: { id: department_id }, // Assuming department_id is available
-                        }),
-                      }
-                    );
-      
-                    if (!response.ok) {
-                      console.error("Error POSTing target code:", response.status); 
-                    }
-                  } catch (error) {
-                    console.error("Error POSTing target code:", error);
+  const fetchDataAndCategorize = async (apiEndpoint: string) => {
+    try {
+      const response = await fetch(apiEndpoint);
+      const data = await response.json();
+      console.log("swot data: ", data);
+
+      const inputText = data
+        .map((row: any) => {
+          if (row["s_oResponses"]) return row["s_oResponses"];
+          else if (row["s_tResponses"]) return row["s_tResponses"];
+          else if (row["w_oResponses"]) return row["w_oResponses"];
+          else if (row["w_tResponses"]) return row["w_tResponses"];
+          else return "";
+        })
+        .join("\n");
+
+      console.log("inputText: ", inputText);
+
+      const geminiResponse = await fetch(GEMINI_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
+            },
+          ],
+        }),
+      });
+      const geminiData = await geminiResponse.json();
+      const apiResponse =
+        geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "No response received";
+      console.log("api response: ", apiResponse);
+
+      const generatedSentences: string[] = apiResponse
+        .split("\n")
+        .filter((sentence: string) => sentence.trim() !== "");
+
+      const categorizedSentences: GeneratedSentence[] = await Promise.all(
+        // Use Promise.all to handle async operations within map
+        generatedSentences.map(async (sentence) => {
+          const match = sentence.match(
+            /^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/
+          );
+
+          if (match) {
+            const [, idStr, strategicTheme, code, content] = match;
+            const id = parseInt(idStr, 10);
+            const fID = id;
+
+            // POST target code to backend
+            if (id === 1) {
+              // Assuming id 1 represents Financial perspective
+              try {
+                const response = await fetch(
+                  // Make the fetch call asynchronous with await
+                  "http://localhost:8080/bsc/financialBsc/insert",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      target_code: code, // Send the extracted target code
+                      office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
+                      department: { id: department_id }, // Assuming department_id is available
+                    }),
                   }
+                );
+
+                if (!response.ok) {
+                  console.error("Error POSTing target code:", response.status);
                 }
-      
-                return { id, fID, value: `${strategicTheme} ${code}: ${content}` }; 
-              } else {
-                console.warn("Invalid sentence format:", sentence);
-                return { id: -1, fID: -1, value: sentence }; 
+              } catch (error) {
+                console.error("Error POSTing target code:", error);
               }
             }
-          ));
-        return categorizedSentences;
-      } catch (error) {
-        console.error(
-          `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
-          error
-        );
-        return []; 
-      }
-    };
+
+            return { id, fID, value: `${strategicTheme} ${code}: ${content}` };
+          } else {
+            console.warn("Invalid sentence format:", sentence);
+            return { id: -1, fID: -1, value: sentence };
+          }
+        })
+      );
+      return categorizedSentences;
+    } catch (error) {
+      console.error(
+        `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
+        error
+      );
+      return [];
+    }
+  };
 
   const fetchAllData = async (department_id: number) => {
     const promises = API_ENDPOINTS.map((apiEndpoint) =>
@@ -1218,9 +1351,10 @@ const Page = () => {
       console.log("primary financial data: ", data);
 
       // Update the strategies state with the fetched primary financial strategies
-      setPrimaryFinancialStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryFinancialStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
@@ -1241,9 +1375,10 @@ const Page = () => {
       const data = await response.json();
 
       // Update the strategies state with the fetched primary stakeholder strategies
-      setPrimaryStakeholderStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryStakeholderStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
@@ -1253,7 +1388,9 @@ const Page = () => {
     }
   };
 
-  const fetchPrimaryInternalProcessStrategies = async (department_id: number) => {
+  const fetchPrimaryInternalProcessStrategies = async (
+    department_id: number
+  ) => {
     try {
       const response = await fetch(
         `http://localhost:8080/stratmap/primaryInternal/get/${department_id}` // Assuming this is your API endpoint
@@ -1264,19 +1401,25 @@ const Page = () => {
       const data = await response.json();
 
       // Update the strategies state with the fetched primary internal process strategies
-      setPrimaryInternalProcessStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryInternalProcessStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
       );
     } catch (error) {
-      console.error("Error fetching primary internal process strategies:", error);
+      console.error(
+        "Error fetching primary internal process strategies:",
+        error
+      );
     }
   };
 
-  const fetchPrimaryLearningGrowthStrategies = async (department_id: number) => {
+  const fetchPrimaryLearningGrowthStrategies = async (
+    department_id: number
+  ) => {
     try {
       const response = await fetch(
         `http://localhost:8080/stratmap/primaryLearning/get/${department_id}` // Assuming this is your API endpoint
@@ -1287,18 +1430,21 @@ const Page = () => {
       const data = await response.json();
 
       // Update the strategies state with the fetched primary learning and growth strategies
-      setPrimaryLearningGrowthStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryLearningGrowthStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
       );
     } catch (error) {
-      console.error("Error fetching primary learning and growth strategies:", error);
+      console.error(
+        "Error fetching primary learning and growth strategies:",
+        error
+      );
     }
   };
-
 
   const fetchExistingStrategies = async (department_id: number) => {
     try {
@@ -1422,12 +1568,15 @@ const Page = () => {
 
   const handleInternalDelete = async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/stratmap/internal/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/stratmap/internal/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const updatedStrategies = strategies.internalProcess.filter(
@@ -1444,7 +1593,6 @@ const Page = () => {
   };
 
   const checkGeneratedAiStrats = async (username: string) => {
-
     console.log("checking generatedAiStrats");
 
     try {
@@ -1513,1413 +1661,2665 @@ const Page = () => {
   const [mission, setMission] = useState("");
 
   return (
-    <div className="flex flex-row w-full text-[rgb(59,59,59)]">
-      <Navbar />
-      <div className="flex-1 h-screen">
-        <div className="flex-1 flex flex-col mt-8 ml-80">
-          <div className="flex flex-row">
-            <span className="break-words font-bold text-[3rem]">
-              Strategy Mapping
-            </span>
-            <div className="flex justify-center lg:ml-[45rem] md:ml-[50rem] mt-[0.5rem] border border-gray-200 bg-gray w-[24rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
-              <button
-                onClick={() => setCurrentView("primary")}
-                className={`rounded-lg ${
-                  currentView === "primary"
-                    ? "bg-[#A43214] text-white"
-                    : "border text-[#A43214]"
-                } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#4D4C4C",
+      }}
+    >
+      <Box
+        sx={{
+          width: isMobile ? "100%" : drawerWidth,
+          flexShrink: 0,
+          position: isMobile ? "static" : "fixed",
+          height: isMobile ? "auto" : "100vh",
+          overflowY: "auto",
+        }}
+      >
+        <Navbar />
+      </Box>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+        }}
+      >
+        <StyledBox>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                }}
+              >
+                STRATEGY MAPPING
+              </Typography>
+            </Grid>
+            {/* SORT BUTTON HERE */}
+
+            {/* TOGGLE BUTTON HERE */}
+            <Grid item>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                border={1}
+                borderColor="#e9e8e8"
+                width="auto"
+                height="auto"
+                borderRadius={2}
+                fontSize={12}
+                sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+              >
+                <button
+                  onClick={() => setCurrentView("primary")}
+                  className={`rounded-lg transition-all ${
+                    currentView === "primary"
+                      ? "bg-[#A43214] text-white"
+                      : "border text-[#A43214]"
+                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                >
                   PRIMARY
-              </button>
-              <button
-                onClick={() => setCurrentView("secondary")}
-                className={`rounded-lg ${
-                  currentView === "secondary"
-                    ? "bg-[#A43214] text-white"
-                    : "border text-[#A43214]"
-                } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}>
+                </button>
+                <button
+                  onClick={() => setCurrentView("secondary")}
+                  className={`rounded-lg transition-all ${
+                    currentView === "secondary"
+                      ? "bg-[#A43214] text-white"
+                      : "border text-[#A43214]"
+                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                >
                   SECONDARY
-              </button>
-              
-              {role !== "FACULTY" && (
+                </button>
+                {currentView === "secondary" && role !== "FACULTY" && (
                   <button
                     onClick={() => handleButtonClick(department_id)}
                     disabled={isButtonDisabled}
-                    className="bg-[#ffffff] text-[#A43214] hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white text-center items-center rounded-lg px-6 py-2"
+                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-6 py-2"
                   >
-                    SORT
+                    <SwapVertRoundedIcon />
                   </button>
                 )}
-            </div>
-          </div>
+              </Box>
+            </Grid>
+          </Grid>
 
-          <div className="mt-8 grid grid-cols-3">
-            <div className="col-span-3">
-              <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-[6rem] mt-[-1.1rem]">
-                Strategy mapping empowers organizations to translate their
-                vision into actionable strategies, align resources, and drive
-                performance across all aspects of the business. Navigate
-                complexity, capitalize on opportunities, and achieve sustainable
-                growth in today&apos;s dynamic business landscape.
-              </div>
-
-              <div className="container mx-auto px-4 mb-16 sm:flex-col md:flex-col sm:mb-5 md:mb-24 lg:mb-20 ml-[-1rem]">
-                <div className="mt-[-3rem] grid grid-cols-1 sm:items-start sm:flex-col sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-5 h-[auto]">
-                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-                    <h1 className="text-xl font-bold mb-2">Vision</h1>
-                    <p className="text-gray-700 break-words overflow-auto">
-                      {officeVision}
-                    </p>
-                  </div>
-                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-                    <h1 className="text-xl font-bold mb-2">Value</h1>
-                    <p className="text-gray-700">
-                      {valueProposition}
-                    </p>
-                  </div>
-                  <div className="p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-                    <h1 className="text-xl font-bold mb-2">Mission</h1>
-                    <p className="text-gray-700">
-                      {mission}
-                    </p>
+          <StyledBox
+            sx={{ flex: 1, background: "white", borderRadius: 2, mt: 2 }}
+          >
+            <div className="flex gap-5">
+              <div
+                className="w-1/3 p-4 bg-white rounded-lg shadow-md overflow-y-auto"
+                style={{
+                  maxHeight: "200px",
+                  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+                  borderColor: "#e9e8e8",
+                  borderStyle: "solid",
+                  borderWidth: "1px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      top: 0,
+                      left: 0, // Move to the left edge
+                      height: "50px", // Adjust height to match "Vision" text height
+                      width: "8px",
+                      backgroundColor: "#A43214",
+                      marginRight: 10,
+                      borderRadius: 5,
+                      marginBottom: 5,
+                    }}
+                  ></div>
+                  <div className="flex flex-col">
+                    <Typography sx={{ fontWeight: "bold" }}>Vision</Typography>
+                    <Typography>Define what you hope to achieve.</Typography>
                   </div>
                 </div>
+                <Divider />
+                <MainFont sx={{mt:1}}>{officeVision}</MainFont>
               </div>
-
-
-              {/* perspectives toggle */}
-              <div className="flex justify-center mt-[0.5rem] border border-gray-200 bg-gray w-[44rem] h-[4rem] rounded-xl px-1 py-1">
-                <div
-                  className="flex flex-row box-sizing-border mr-2 cursor-pointer"
-                  onClick={() => changeComponent("Financial")}
-                >
+              <div
+                className="w-1/3 p-4 bg-white rounded-lg shadow-md overflow-y-auto"
+                style={{
+                  maxHeight: "200px",
+                  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+                  borderColor: "#e9e8e8",
+                  borderStyle: "solid",
+                  borderWidth: "1px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
                   <div
-                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                    style={{
+                      top: 0,
+                      left: 0, // Move to the left edge
+                      height: "50px", // Adjust height to match "Vision" text height
+                      width: "8px",
+                      backgroundColor: "#A43214",
+                      marginRight: 10,
+                      borderRadius: 5,
+                      marginBottom: 5,
+                    }}
+                  ></div>
+                  <div className="flex flex-col">
+                    <Typography sx={{ fontWeight: "bold" }}>Value</Typography>
+                    <Typography>Define what makes you unique.</Typography>
+                  </div>
+                </div>
+                <Divider />
+                <MainFont sx={{mt:1}}>{valueProposition}</MainFont>
+              </div>
+              <div
+                className="w-1/3 p-4 bg-white rounded-lg shadow-md overflow-y-auto"
+                style={{
+                  maxHeight: "200px",
+                  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+                  borderColor: "#e9e8e8",
+                  borderStyle: "solid",
+                  borderWidth: "1px",
+                }}
+              >
+                <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      top: 0,
+                      left: 0, // Move to the left edge
+                      height: "50px", // Adjust height to match "Vision" text height
+                      width: "8px",
+                      backgroundColor: "#A43214",
+                      marginRight: 10,
+                      borderRadius: 5,
+                      marginBottom: 5,
+                    }}
+                  ></div>
+                  <div className="flex flex-col">
+                    <Typography sx={{ fontWeight: "bold" }}>Mission</Typography>
+                    <Typography>Define your purpose.</Typography>
+                  </div>
+                </div>
+                <Divider />
+                <MainFont sx={{mt:1}}>{mission}</MainFont>
+              </div>
+            </div>
+          </StyledBox>
+
+          <Grid container sx={{ mt: 5 }}>
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="4rem"
+              borderRadius={2}
+              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
+            >
+              <Button
+                onClick={() => changeComponent("Financial")}
+                sx={{
+                  bgcolor:
+                    selectedComponent === "Financial"
+                      ? "#A43214"
+                      : "transparent",
+                  color:
+                    selectedComponent === "Financial" ? "white" : "#A43214",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    bgcolor: "#A43214", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
                       selectedComponent === "Financial"
-                        ? "bg-[#A43214] text-white"
-                        : "border text-[#A43214]"
-                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                  >
-                    FINANCIAL
-                  </div>
-                </div>
-                <div
-                  className="flex flex-row box-sizing-border mr-2 cursor-pointer"
-                  onClick={() => changeComponent("Stakeholder")}
-                >
-                  <div
-                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                        ? "none"
+                        : "0.5px solid #A43214", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Financial
+              </Button>
+              <Button
+                onClick={() => changeComponent("Stakeholder")}
+                sx={{
+                  bgcolor:
+                    selectedComponent === "Stakeholder"
+                      ? "#A43214"
+                      : "transparent",
+                  color:
+                    selectedComponent === "Stakeholder" ? "white" : "#A43214",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    bgcolor: "#A43214", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
                       selectedComponent === "Stakeholder"
-                        ? "bg-[#A43214] text-white"
-                        : "border text-[#A43214]"
-                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                  >
-                    STAKEHOLDER
-                  </div>
-                </div>
-                <div
-                  className="flex flex-row box-sizing-border mr-2 cursor-pointer"
-                  onClick={() => changeComponent("Internal")}
-                >
-                  <div
-                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                        ? "none"
+                        : "0.5px solid #A43214", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Stakeholder
+              </Button>
+              <Button
+                onClick={() => changeComponent("Internal")}
+                sx={{
+                  bgcolor:
+                    selectedComponent === "Internal"
+                      ? "#A43214"
+                      : "transparent",
+                  color: selectedComponent === "Internal" ? "white" : "#A43214",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    bgcolor: "#A43214", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
                       selectedComponent === "Internal"
-                        ? "bg-[#A43214] text-white"
-                        : "border text-[#A43214]"
-                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                  >
-                    INTERNAL PROCESS
-                  </div>
-                </div>
-                <div
-                  className="flex flex-row box-sizing-border cursor-pointer"
-                  onClick={() => changeComponent("Learning")}
-                >
-                  <div
-                    className={`inline-block break-words font-bold transition-all rounded-lg px-4 py-3 ${
+                        ? "none"
+                        : "0.5px solid #A43214", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Internal
+              </Button>
+              <Button
+                onClick={() => changeComponent("Learning")}
+                sx={{
+                  bgcolor:
+                    selectedComponent === "Learning"
+                      ? "#A43214"
+                      : "transparent",
+                  color: selectedComponent === "Learning" ? "white" : "#A43214",
+                  fontWeight: "bold",
+                  height: "100%", // Match the height of the container
+                  border: "1px solid transparent", // Keep border style consistent
+                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                  "&:hover": {
+                    bgcolor: "#A43214", // Change background on hover
+                    color: "white", // Change text color on hover
+                    border:
                       selectedComponent === "Learning"
-                        ? "bg-[#A43214] text-white"
-                        : "border text-[#A43214]"
-                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white`}
-                  >
-                    LEARNING & GROWTH
-                  </div>
-                </div>
-            </div>
-            {/* end of perspectives toggle */}
+                        ? "none"
+                        : "0.5px solid #A43214", // Border on hover if not current
+                  },
+                  paddingX: 4,
+                  paddingY: 3,
+                  borderRadius: 2,
+                }}
+              >
+                Learning
+              </Button>
+            </Box>
 
-
-            {/* PRIMARY VIEW */}
-            {currentView === "primary" && (
-              <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
-                {selectedComponent === "Financial" && (
-                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                  <div className="flex flex-row">
-                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                    <img
-                      src="/financial.png"
-                      alt=""
-                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        <span className="text-[#ff7b00d3]">Financial:</span> Stewardship Overview
-                      </span>
-                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Measures financial performance and profitability.
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[60rem]">
-                  <button onClick={openPrimaryFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                    
-                    <div className="flex flex-row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-8"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  </button>
-                </div>
-                </div>
-                  {isPrimaryFModalOpen && ( 
-                    <div className="fixed inset-0 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-black opacity-50"></div>
-                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                        <div className="flex flex-row">
-                          <h2 className="text-2xl mb-5 font-semibold">
-                            Financial Strategy
-                          </h2>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Target Code
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={newPrimaryFTargetCode} 
-                          onChange={(e) => setNewPrimaryFTargetCode(e.target.value)}  
-                          className="border border-gray-300 rounded px-3 py-2 mb-4"
-                        />
-                        <div className="flex flex-col">
-                          
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Strategy
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-
-                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                          <ul className="list-disc ml-10 mb-2">
-                            <li className="font-bold">Excellence in Service Quality</li>
-                            <li className="font-bold">Excellence in Internal Service Systems</li>
-                            <li className="font-bold">Excellence in Organizational Stewardship</li>
-                          </ul>
-                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                          <textarea
-                            value={newPrimaryFStrategy} 
-                            onChange={(e) => setNewPrimaryFStrategy(e.target.value)}  
-                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                          />
-                        </div>
-                        <div className="flex flex-row justify-center mt-2 gap-10">
-                          <button
-                            onClick={closePrimaryFModal}
-                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={async () => { 
-                              await handlePrimaryFSave(); //change 
-                              fetchPrimaryFinancialStrategies(department_id); //change 
-                            }}
-                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                            style={{
-                              background: "linear-gradient(to left, #8a252c, #AB3510)",
-                            }}
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                    {primaryFinancialStrategies.map( // Map the fetched primary data directly
-                      (strategy: GeneratedSentence, index: number) => (
-                        <div
-                          key={strategy.id}
-                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                            index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                          }`}
+            <Box width="100%" sx={{ mt: -1 }}>
+              {currentView === "primary" && (
+                <>
+                  {selectedComponent === "Financial" && ( //remove the border
+                    <Cards>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
                         >
-                            <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                              {strategy.value}   
-                              {/* change */}
-                            </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {selectedComponent === "Learning" && (
-                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                  <div className="flex flex-row">
-                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                    <img
-                      src="/learning.png"
-                      alt=""
-                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                      <span className="text-[#ff7b00d3]">Learning & Growth</span> Culture & People Development Overview
-                      </span>
-                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Enhances organizational culture and employee growth.
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[45.5rem]">
-                  <button onClick={openPrimaryLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                    
-                    <div className="flex flex-row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-8"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  </button>
-                </div>
-                </div>
-                  {isPrimaryLGModalOpen && ( 
-                    <div className="fixed inset-0 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-black opacity-50"></div>
-                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                        <div className="flex flex-row">
-                          <h2 className="text-2xl mb-5 font-semibold">
-                            Learning & Growth Strategy
-                          </h2>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Target Code
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={newPrimaryLGTargetCode} 
-                          onChange={(e) => setNewPrimaryLGTargetCode(e.target.value)}  
-                          className="border border-gray-300 rounded px-3 py-2 mb-4"
-                        />
-                        <div className="flex flex-col">
-                          
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Strategy
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-
-                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                          <ul className="list-disc ml-10 mb-2">
-                            <li className="font-bold">Excellence in Service Quality</li>
-                            <li className="font-bold">Excellence in Internal Service Systems</li>
-                            <li className="font-bold">Excellence in Organizational Stewardship</li>
-                          </ul>
-                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                          <textarea
-                            value={newPrimaryLGStrategy} 
-                            onChange={(e) => setNewPrimaryLGStrategy(e.target.value)}  
-                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                          />
-                        </div>
-                        <div className="flex flex-row justify-center mt-2 gap-10">
-                          <button
-                            onClick={closePrimaryLGModal}
-                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={async () => { 
-                              await handlePrimaryLGSave(); //change
-                              fetchPrimaryLearningGrowthStrategies(department_id); //change 
-                            }}
-                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                            style={{
-                              background: "linear-gradient(to left, #8a252c, #AB3510)",
-                            }}
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                    {primaryLearningGrowthStrategies.map( // Map the fetched primary data directly
-                      (strategy: GeneratedSentence, index: number) => (
-                        <div
-                          key={strategy.id}
-                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                            index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                          }`}
-                        >
-                            <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                              {strategy.value}   
-                              {/* change */}
-                            </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-              {selectedComponent === "Internal" && (
-                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                  <div className="flex flex-row">
-                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                    <img
-                      src="/internal.png"
-                      alt=""
-                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                      <span className="text-[#ff7b00d3]">Internal Process:</span> Process & Technology Overview 
-                      </span>
-                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Optimizes and manages internal processes and technology.
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[52rem]">
-                  <button onClick={openPrimaryIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                     
-                    <div className="flex flex-row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-8"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  </button>
-                </div>
-                </div>
-                  {isPrimaryIPModalOpen && (  
-                    <div className="fixed inset-0 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-black opacity-50"></div>
-                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                        <div className="flex flex-row">
-                          <h2 className="text-2xl mb-5 font-semibold">
-                            Internal Process Strategy
-                          </h2>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Target Code
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={newPrimaryIPTargetCode} 
-                          onChange={(e) => setNewPrimaryIPTargetCode(e.target.value)}  
-                          className="border border-gray-300 rounded px-3 py-2 mb-4"
-                        />
-                        <div className="flex flex-col">
-                          
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Strategy
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-
-                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                          <ul className="list-disc ml-10 mb-2">
-                            <li className="font-bold">Excellence in Service Quality</li>
-                            <li className="font-bold">Excellence in Internal Service Systems</li>
-                            <li className="font-bold">Excellence in Organizational Stewardship</li>
-                          </ul>
-                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                          <textarea
-                            value={newPrimaryIPStrategy} 
-                            onChange={(e) => setNewPrimaryIPStrategy(e.target.value)}  
-                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                          />
-                        </div>
-                        <div className="flex flex-row justify-center mt-2 gap-10">
-                          <button
-                            onClick={closeFModal}
-                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                          >
-                            Cancel
-                          </button> 
-                          <button
-                            onClick={async () => { 
-                              await handlePrimaryIPSave(); //change 
-                              fetchExistingStrategies(department_id); //change 
-                            }}
-                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                            style={{
-                              background: "linear-gradient(to left, #8a252c, #AB3510)",
-                            }}
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                    {primaryInternalProcessStrategies.map( // Map the fetched primary data directly
-                        (strategy: GeneratedSentence, index: number) => (
-                          <div
-                            key={strategy.id}
-                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                              index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                            }`}
-                          >
-                            <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                              {strategy.value}   
-                              {/* change */}
-                            </div>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
-              )}
-              {selectedComponent === "Stakeholder" && (
-                <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                  <div className="flex flex-row">
-                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                    <img
-                      src="/stakeholder.png"
-                      alt=""
-                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                      <span className="text-[#ff7b00d3]">Stakeholder:</span> Client Relationship Overview
-                      </span>
-                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        Measures client engagement quality and value.
-                      </span>
-                    </div>
-                  </div>
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[56rem]">
-                  <button onClick={openPrimarySModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                    
-                    <div className="flex flex-row">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                      className="size-8"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </div>
-                  </button>
-                </div>
-                </div>
-                  {isPrimarySModalOpen && (  
-                    <div className="fixed inset-0 flex items-center justify-center">
-                      <div className="absolute inset-0 bg-black opacity-50"></div>
-                      <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                        <div className="flex flex-row">
-                          <h2 className="text-2xl mb-5 font-semibold">
-                            Stakeholder Strategy
-                          </h2>
-                        </div>
-                        <div className="flex flex-col">
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Target Code
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-                        </div>
-                        <input
-                          type="text"
-                          value={newPrimarySTargetCode} 
-                          onChange={(e) => setNewPrimarySTargetCode(e.target.value)}  
-                          className="border border-gray-300 rounded px-3 py-2 mb-4"
-                        />
-                        <div className="flex flex-col">
-                          
-                          <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                            Strategy
-                            <span className="text-[#DD1414]">*</span>
-                          </span>
-
-                          <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                          <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                          <ul className="list-disc ml-10 mb-2">
-                            <li className="font-bold">Excellence in Service Quality</li>
-                            <li className="font-bold">Excellence in Internal Service Systems</li>
-                            <li className="font-bold">Excellence in Organizational Stewardship</li>
-                          </ul>
-                          <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                          <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                          <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                          <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                          <textarea
-                            value={newPrimarySStrategy}  
-                            onChange={(e) => setNewPrimarySStrategy(e.target.value)}  
-                            className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                          />
-                        </div>
-                        <div className="flex flex-row justify-center mt-2 gap-10">
-                          <button
-                            onClick={closeSModal}
-                            className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                          >
-                            Cancel
-                          </button>
-                          <button
-                            onClick={async () => { 
-                              await handlePrimarySSave(); //change 
-                              fetchExistingStrategies(department_id); //change 
-                            }}
-                            className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                            style={{
-                              background: "linear-gradient(to left, #8a252c, #AB3510)",
-                            }}
-                          >
-                            Save
-                          </button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                  {primaryStakeholderStrategies.map( // Map the correct array
-                    (strategy: GeneratedSentence, index: number) => (
-                      <div
-                        key={strategy.id}
-                        className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                          index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                        }`}
-                      >
-                        <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                          {strategy.value}   
-                        </div>
-                      </div>
-                    )
-                  )}
-                  </div>
-                </div>
-              )}
-              </div>
-            )}
-
-              {/* Warning Dialog */}
-              <Dialog open={showWarning} onClose={handleCancelClear} className="rounded-xl">
-                <DialogTitle className="text-2xl mb-4 justify-center font-semibold mt-5 text-center">Warning: Clear Tables</DialogTitle>
-                <DialogContent>
-                  <p className="text-xl mb-4 text-center justify-center font-regular">
-                    Are you sure you want to sort? This will clear any existing data in the Financial, Stakeholder, Internal Process, and Learning & Growth tables. 
-                  </p>
-                </DialogContent>
-                <div className="flex items-center justify-center">
-                  <DialogActions className="mt-[-2rem] mb-5 ml-[-3rem]">
-                    <button 
-                      onClick={handleCancelClear} 
-                      className="rounded-[0.6rem] text-[#AB3510] border border-[#AB3510] hover:text-white hover:bg-[#AB3510] break-words font-regular text-lg flex pt-2 pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 justify-center"
-                    >
-                      Cancel
-                    </button>
-                    <button 
-                      onClick={() => handleConfirmClear(department_id)} 
-                      className="rounded-[0.6rem] text-[#ffffff] break-words font-regular text-lg flex pt-[0.60rem] pr-3 pl-5 pb-2 w-36 h-[fit-content] ml-14 mb-2 mt-8 items-center text-center align-middle justify-center"
-                      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                    >
-                      Confirm
-                    </button>
-                  </DialogActions>
-                </div>
-              </Dialog>
-
-              {/* SECONDARY VIEW */}
-              {/* main container */}
-              {currentView === "secondary" && (
-                <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[96%] h-auto mb-10 rounded-lg">
-                {selectedComponent === "Financial" && (
-                  <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                    <div className="flex flex-row ">
-                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                      <img
-                        src="/financial.png"
-                        alt=""
-                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        <span className="text-[#ff7b00d3]">Financial:</span> Stewardship Overview
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Measures financial performance and profitability.
-                        </span>
-                      </div>
-                    </div>
-                    {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[60rem]">
-                    <button onClick={openFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
-                      <div className="flex flex-row">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-8"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    </button>
-                  </div>
-                  </div>
-                    {isFModalOpen && (
-                      <div className="fixed inset-0 flex items-center justify-center">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                          <div className="flex flex-row">
-                            <h2 className="text-2xl mb-5 font-semibold">
-                              Financial Strategy
-                            </h2>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                              Target Code
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                          </div>
-                          <input
-                            type="text"
-                            value={newFTargetCode}
-                            onChange={(e) => setNewFTargetCode(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-2 mb-4"
-                          />
-                          <div className="flex flex-col">
-                            
-                            <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                              Strategy
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-
-                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                            <ul className="list-disc ml-10 mb-2">
-                              <li className="font-bold">Excellence in Service Quality</li>
-                              <li className="font-bold">Excellence in Internal Service Systems</li>
-                              <li className="font-bold">Excellence in Organizational Stewardship</li>
-                            </ul>
-                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                            <textarea
-                              value={newFStrategy}
-                              onChange={(e) => setNewFStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                            />
-                          </div>
-                          <div className="flex flex-row justify-center mt-2 gap-10">
-                            <button
-                              onClick={closeFModal}
-                              className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={async () => { 
-                                await handleFSave();
-                                fetchExistingStrategies(department_id); 
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/financial.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Financial:
+                                </span>{" "}
+                                Stewardship Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Measures financial performance and
+                                profitability.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          {/* <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
+                          > */}
+                            {/* <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
                               }}
-                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                              style={{
-                                background: "linear-gradient(to left, #8a252c, #AB3510)",
-                              }}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                      {strategies.financial.map(
-                        (strategy: GeneratedSentence,  index: number) => (
-                          <div
-                            key={strategy.id}
-                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                          >
-                            {/* edit div */}
-                            {editingStrategy === strategy ? (
-                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
-                                <input
-                                  type="text"
-                                  value={newStrategyValue}
+                            > */}
+                              {/* <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openPrimaryFModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button> */}
+                            {/* </Box> */}
+                          {/* </Grid> */}
+                        </Grid>
+                        {/* add modal here */}
+                          {/* {isPrimaryFModalOpen && (
+                            <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                              <Box
+                                className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                                sx={{
+                                  width: "60%",
+                                  height: "85%",
+                                  maxWidth: "95vw",
+                                  maxHeight: "95vh",
+                                  // maxHeight: '100vh',
+                                }}
+                              >
+                                <p className="text-xl font-bold mb-4">
+                                  Financial Strategy
+                                </p>
+                                <div className="flex flex-col mb-1">
+                                  <Typography sx={{ fontWeight: 800 }}>
+                                    Target Code
+                                    <span className="text-[#DD1414]">*</span>
+                                  </Typography>
+                                </div>
+                                <TextField
+                                  variant="outlined"
+                                  value={newPrimaryFTargetCode}
                                   onChange={(e) =>
-                                    setNewStrategyValue(e.target.value)
+                                    setNewPrimaryFTargetCode(e.target.value)
                                   }
-                                  className="w-full rounded-lg border border-orange-400 px-2"
-                                />
-                                <button
-                                  onClick={() => {
-                                    handleFinancialSaveEdit(
-                                      // @ts-ignore
-                                      strategy.fID,
-                                      newStrategyValue,
-                                      department_id
-                                    );
+                                  sx={{
+                                    height: "35px",
+                                    "& .MuiInputBase-root": { height: "35px" },
                                   }}
-                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
-                                >
-                                  Save
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                {strategy.value}
-                              </div>
-                            )}
-                            <div className="flex">
-                              <button
-                                onClick={() => handleEditClick(strategy)}
-                                className="font-bold py-2 px-2 rounded text-orange-600"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="w-6 h-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                  />
-                                </svg>
-                              </button>
-
-                              <button
-                                onClick={() =>handleFinancialDelete(strategy.fID)}
-                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {selectedComponent === "Learning" && (
-                  // LEARNING & GROWTH
-                  <div className="flex flex-col align-middle items-center justify-center  w-[100%]">
-                    <div className="flex flex-row">
-                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                      <img
-                        src="/learning.png"
-                        alt=""
-                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        <span className="text-[#ff7b00d3]">Learning & Growth</span> Culture & People Development Overview
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Enhances organizational culture and employee growth.
-                        </span>
-                      </div>
-                    </div>
-                    {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[45.5rem]">
-                    <button onClick={openLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
-                      <div className="flex flex-row">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-8"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    </button>
-                  </div>
-                  </div>
-                    {isLGModalOpen && (
-                      <div className="fixed inset-0 flex items-center justify-center">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[77rem]">
-                          <div className="flex flex-row">
-                            <h2 className="text-2xl mb-5 font-semibold">
-                              Learning & Growth Strategy
-                            </h2>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-bold text-lg">
-                              Target Code
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                          </div>
-                          <input
-                            type="text"
-                            value={newLGTargetCode}
-                            onChange={(e) => setNewLGTargetCode(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-2 mb-4"
-                          />
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-bold text-lg">
-                              Strategy
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                            <ul className="list-disc ml-10 mb-2">
-                              <li className="font-bold">Excellence in Service Quality</li>
-                              <li className="font-bold">Excellence in Internal Service Systems</li>
-                              <li className="font-bold">Excellence in Organizational Stewardship</li>
-                            </ul>
-                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                            <textarea
-                              value={newLGStrategy}
-                              onChange={(e) => setNewLGStrategy(e.target.value)}
-                              className="border border-gray-300 mt-5 pl-2 pr-2 rounded-lg w-[73rem] h-[10rem]"
-                            />
-                          </div>
-                          <div className="flex flex-row justify-center mt-2 gap-10">
-                            <button
-                              onClick={closeLGModal}
-                              className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={async () => { 
-                                await handleLGSave();
-                                fetchExistingStrategies(department_id); 
-                              }}
-                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                              style={{
-                                background: "linear-gradient(to left, #8a252c, #AB3510)",
-                              }}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                      {strategies.learningGrowth.map(
-                        (strategy: GeneratedSentence,  index: number) => (
-                          <div
-                            key={strategy.id}
-                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                          >
-                            {/* edit div */}
-                            {editingStrategy === strategy ? (
-                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
-                                <input
-                                  type="text"
-                                  value={newStrategyValue}
-                                  onChange={(e) =>
-                                    setNewStrategyValue(e.target.value)
-                                  }
-                                  className="w-full rounded-lg border border-orange-400 px-2"
                                 />
-                                <button
-                                  onClick={() =>
-                                    handleLearningGrowthSaveEdit(
-                                      // @ts-ignore
-                                      strategy.fID,
-                                      newStrategyValue,
-                                      department_id
-                                    )
-                                  }
-                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                <Box>
+                                  <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                    Strategy
+                                    <span className="text-[#DD1414]">*</span>
+                                  </Typography>
+                                  <span className="mb-3">
+                                    Before inputting a strategy, please follow
+                                    this format.
+                                  </span>
+                                  <span>
+                                    <br />
+                                    1. Choose one of the following{" "}
+                                    <span className="font-bold">
+                                      strategic themes
+                                    </span>
+                                    :
+                                  </span>
+                                  <ul className="list-disc ml-10 mb-2">
+                                    <li className="font-bold">
+                                      Excellence in Service Quality
+                                    </li>
+                                    <li className="font-bold">
+                                      Excellence in Internal Service Systems
+                                    </li>
+                                    <li className="font-bold">
+                                      Excellence in Organizational Stewardship
+                                    </li>
+                                  </ul>
+                                  <span>
+                                    2. After selecting the theme, leave a space
+                                    and then input the{" "}
+                                    <span className="font-bold">target code</span>{" "}
+                                    followed by a colon{" "}
+                                    <span className="font-bold">(:)</span>
+                                  </span>
+                                  <span>
+                                    <br />
+                                    3. Finally, write the{" "}
+                                    <span className="font-bold">strategy.</span>
+                                  </span>
+                                  <br />
+                                  <span>
+                                    <br />
+                                    The correct format should be:{" "}
+                                    <span className="font-bold">
+                                      Strategic Theme Target Code: Strategy
+                                    </span>
+                                  </span>
+                                  <span className="font-bold">
+                                    <br />
+                                    Example:{" "}
+                                    <span className="font-bold text-red-500">
+                                      Excellence in Service Quality T001: Improve
+                                      customer response time.
+                                    </span>
+                                  </span>
+
+                                  <Grid item sx={{ mt: 2 }}>
+                                    <TextField
+                                      value={newPrimaryFStrategy}
+                                      onChange={(e) =>
+                                        setNewPrimaryFStrategy(e.target.value)
+                                      }
+                                      multiline
+                                      rows={3}
+                                      sx={{
+                                        width: "100%",
+                                        overflowY: "auto",
+                                        "& .MuiInputBase-root": {},
+                                      }}
+                                    />
+                                  </Grid>
+                                </Box>
+
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    justifyContent: "center",
+                                    gap: 2,
+                                    mt: 3,
+                                    flexWrap: "wrap", // Allow buttons to wrap
+                                  }}
                                 >
-                                  Save
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                {strategy.value}
-                              </div>
+                                  <Button
+                                    variant="contained"
+                                    onClick={closePrimaryFModal}
+                                    sx={{ width: 150, color: "#AB3510" }}
+                                    style={{
+                                      background: "white",
+                                      border: "1px solid #AB3510",
+                                    }}
+                                  >
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    variant="contained"
+                                    onClick={async () => {
+                                      await handlePrimaryFSave(); //change
+                                      fetchPrimaryFinancialStrategies(
+                                        department_id
+                                      ); //change
+                                    }}
+                                    style={{
+                                      background:
+                                        "linear-gradient(to left, #8a252c, #AB3510)",
+                                      width: 150,
+                                    }}
+                                  >
+                                    Save
+                                  </Button>
+                                </Box>
+                              </Box>
+                            </Box>
+                          )} */}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {primaryFinancialStrategies.map(
+                              // Map the fetched primary data directly
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  <Typography>{strategy.value}</Typography>
+                                </div>
+                              )
                             )}
-                            <div className="flex">
-                              <button
-                                onClick={() => handleEditClick(strategy)}
-                                className="font-bold py-2 px-2 rounded text-orange-600"
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                  {selectedComponent === "Learning" && ( //remove the border
+                    <Cards sx={{ borderColor: "black", borderWidth: 1 }}>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/learning.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Learning & Growth:
+                                </span>{" "}
+                                Culture & People Development Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
                               >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="w-6 h-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                  />
-                                </svg>
-                              </button>
-
-                              <button
-                                onClick={() =>handleLGDelete(strategy.fID)}
-                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                              >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {selectedComponent === "Internal" && (
-                  // INTERNAL PROCESS
-                  <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                    <div className="flex flex-row">
-                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                      <img
-                        src="/internal.png"
-                        alt=""
-                        className=" h-[4.8rem] mb-5 mr-5 mt-[-0.6rem]"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        <span className="text-[#ff7b00d3]">Internal Process:</span> Process & Technology Overview
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Optimizes and manages internal processes and technology.
-                        </span>
-                      </div>
-                    </div>
-                    {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[52rem]">
-                    <button onClick={openIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
-                      <div className="flex flex-row">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-8"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    </button>
-                  </div>
-                  </div>
-                    {isIPModalOpen && (
-                      <div className="fixed inset-0 flex items-center justify-center">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[75rem]">
-                          <div className="flex flex-row">
-                            <h2 className="text-2xl mb-5 font-semibold">
-                              Internal Process Strategy
-                            </h2>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-bold text-lg">
-                              Target Code
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                          </div>
-                          <input
-                            type="text"
-                            value={newIPTargetCode}
-                            onChange={(e) => setNewIPTargetCode(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-2 mb-4"
-                          />
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-bold text-lg">
-                              Strategy
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                            <ul className="list-disc ml-10 mb-2">
-                              <li className="font-bold">Excellence in Service Quality</li>
-                              <li className="font-bold">Excellence in Internal Service Systems</li>
-                              <li className="font-bold">Excellence in Organizational Stewardship</li>
-                            </ul>
-                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                            <textarea
-                              value={newIPStrategy}
-                              onChange={(e) => setNewIPStrategy(e.target.value)}
-                              className="border border-gray-300 mt-5 pl-2 pr-2 rounded-lg w-[71rem] h-[10rem]"
-                            />
-                          </div>
-                          <div className="flex flex-row justify-center mt-2 gap-10">
-                            <button
-                              onClick={closeIPModal}
-                              className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={async () => { 
-                                await handleIPSave();
-                                fetchExistingStrategies(department_id); 
-                              }}
-                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                              style={{
-                                background: "linear-gradient(to left, #8a252c, #AB3510)",
-                              }}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                      {strategies.internalProcess.map(
-                        (strategy: GeneratedSentence,  index: number) => (
-                          <div
-                            key={strategy.id}
-                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                                Enhances organizational culture and employee
+                                growth.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          {/* <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
                           >
-                            {/* edit div */}
-                            {editingStrategy === strategy ? (
-                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
-                                <input
-                                  type="text"
-                                  value={newStrategyValue}
-                                  onChange={(e) =>
-                                    setNewStrategyValue(e.target.value)
-                                  }
-                                  className="w-full rounded-lg border border-orange-400 px-2"
-                                />
-                                <button
-                                  onClick={() =>
-                                    handleInternalProcessSaveEdit(
-                                      // @ts-ignore
-                                      strategy.fID,
-                                      newStrategyValue,
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openPrimaryLGModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button>
+                            </Box>
+                          </Grid> */}
+                        </Grid>
+                        {/* add modal here */}
+                        {/* {isPrimaryLGModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Learning & Growth Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newPrimaryLGTargetCode}
+                                onChange={(e) =>
+                                  setNewPrimaryLGTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newPrimaryLGStrategy}
+                                    onChange={(e) =>
+                                      setNewPrimaryLGStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closePrimaryLGModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handlePrimaryLGSave(); //change
+                                    fetchPrimaryLearningGrowthStrategies(
                                       department_id
-                                    )
-                                  }
-                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                    ); //change
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
                                 >
                                   Save
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                {strategy.value}
-                              </div>
-                            )}
-                            <div className="flex">
-                              <button
-                                onClick={() => handleEditClick(strategy)}
-                                className="font-bold py-2 px-2 rounded text-orange-600"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="w-6 h-6"
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )} */}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {primaryLearningGrowthStrategies.map(
+                              // Map the fetched primary data directly
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
                                 >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                  />
-                                </svg>
-                              </button>
-
-                              <button
-                                onClick={() =>handleInternalDelete(strategy.fID)}
-                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                  <Typography>{strategy.value}</Typography>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                  {selectedComponent === "Internal" && ( //remove the border
+                    <Cards sx={{ borderColor: "black", borderWidth: 1 }}>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/internal.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Internal Process:
+                                </span>{" "}
+                                Process & Technology Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
-                              </button>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-
-                {selectedComponent === "Stakeholder" && (
-                  // STAKEHOLDER
-                  <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                    <div className="flex flex-row">
-                    <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                      <img
-                        src="/stakeholder.png"
-                        alt=""
-                        className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                        <span className="text-[#ff7b00d3]">Stakeholder:</span> Client Relationship Overview
-                        </span>
-                        <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                          Measures client engagement quality and value.
-                        </span>
-                      </div>
-                    </div>
-                    {/* add button here */}
-                  <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[56rem]">
-                    <button onClick={openSModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer">
-                      <div className="flex flex-row">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-8"
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </div>
-                    </button>
-                  </div>
-                  </div>
-                    {isSModalOpen && (
-                      <div className="fixed inset-0 flex items-center justify-center">
-                        <div className="absolute inset-0 bg-black opacity-50"></div>
-                        <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[71.9rem]">
-                          <div className="flex flex-row">
-                            <h2 className="text-2xl mb-5 font-semibold">
-                              Stakeholder Strategy
-                            </h2>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-bold text-lg">
-                              Target Code
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                          </div>
-                          <input
-                            type="text"
-                            value={newSTargetCode}
-                            onChange={(e) => setNewSTargetCode(e.target.value)}
-                            className="border border-gray-300 rounded px-3 py-2 mb-4"
-                          />
-                          <div className="flex flex-col">
-                            <span className="mr-3 mb-2 break-words font-bold text-lg ">
-                              Strategy
-                              <span className="text-[#DD1414]">*</span>
-                            </span>
-                            <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                            <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                            <ul className="list-disc ml-10 mb-2">
-                              <li className="font-bold">Excellence in Service Quality</li>
-                              <li className="font-bold">Excellence in Internal Service Systems</li>
-                              <li className="font-bold">Excellence in Organizational Stewardship</li>
-                            </ul>
-                            <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                            <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                            <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                            <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                            <textarea
-                              value={newSStrategy}
-                              onChange={(e) => setNewSStrategy(e.target.value)}
-                              className="border border-gray-300 pl-2 pr-2 mt-5 rounded-lg w-[68rem] h-[10rem]"
-                            />
-                          </div>
-                          <div className="flex flex-row justify-center mt-2 gap-10">
-                            <button
-                              onClick={closeSModal}
-                              className=" text-[#AB3510] font-semibold text-lg border border-[#AB3510] hover:bg-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                            >
-                              Cancel
-                            </button>
-                            <button
-                              onClick={async () => { 
-                                await handleSSave();
-                                fetchExistingStrategies(department_id); 
-                              }}
-                              className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                              style={{
-                                background: "linear-gradient(to left, #8a252c, #AB3510)",
-                              }}
-                            >
-                              Save
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    )}
-                    <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                      {strategies.stakeholder.map(
-                        (strategy: GeneratedSentence,  index: number) => (
-                          <div
-                            key={strategy.id}
-                            className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
+                                Optimizes and manages internal processes and
+                                technology.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          {/* <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
                           >
-                            {/* edit div */}
-                            {editingStrategy === strategy ? (
-                              <div className="pr-3 pl-3 w-[100%] h-10 flex">
-                                <input
-                                  type="text"
-                                  value={newStrategyValue}
-                                  onChange={(e) =>
-                                    setNewStrategyValue(e.target.value)
-                                  }
-                                  className="w-full rounded-lg border border-orange-400 px-2"
-                                />
-                                <button
-                                  onClick={() =>
-                                    handleStakeholderSaveEdit(
-                                      // @ts-ignore
-                                      strategy.fID,
-                                      newStrategyValue,
-                                      department_id
-                                    )
-                                  }
-                                  className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openPrimaryIPModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button>
+                            </Box>
+                          </Grid> */}
+                        </Grid>
+                        {/* add modal here */}
+                        {/* {isPrimaryIPModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Internal Process Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newPrimaryIPTargetCode}
+                                onChange={(e) =>
+                                  setNewPrimaryIPTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newPrimaryIPStrategy}
+                                    onChange={(e) =>
+                                      setNewPrimaryIPStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closePrimaryIPModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handlePrimaryIPSave(); //change
+                                    fetchExistingStrategies(department_id); //change
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
                                 >
                                   Save
-                                </button>
-                              </div>
-                            ) : (
-                              <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                {strategy.value}
-                              </div>
-                            )}
-                            <div className="flex">
-                              <button
-                                onClick={() => handleEditClick(strategy)}
-                                className="font-bold py-2 px-2 rounded text-orange-600"
-                              >
-                                <svg
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                  strokeWidth="1.5"
-                                  stroke="currentColor"
-                                  className="w-6 h-6"
-                                >
-                                  <path
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                    d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                                  />
-                                </svg>
-                              </button>
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )} */}
 
-                              <button
-                                onClick={() =>handleStakeholderDelete(strategy.fID)}
-                                className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {primaryInternalProcessStrategies.map(
+                              // Map the fetched primary data directly
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  <Typography>{strategy.value}</Typography>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                  {selectedComponent === "Stakeholder" && ( //remove the border
+                    <Cards sx={{ borderColor: "black", borderWidth: 1 }}>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/stakeholder.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Stakeholder:
+                                </span>{" "}
+                                Client Relationship Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
                               >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="1.5" stroke="currentColor" className="size-6">
-                                  <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                </svg>
+                                Measures client engagement quality and value.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          {/* <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openPrimarySModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
                               </button>
-                            </div>
-                          </div>
-                        )
-                      )}
-                    </div>
-                  </div>
-                )}
-              </div>
+                            </Box>
+                          </Grid> */}
+                        </Grid>
+                        {/* add modal here */}
+                        {/* {isPrimarySModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Stakeholder Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newPrimarySTargetCode}
+                                onChange={(e) =>
+                                  setNewPrimarySTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newPrimarySStrategy}
+                                    onChange={(e) =>
+                                      setNewPrimarySStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap",
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closePrimarySModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handlePrimarySSave(); //change
+                                    fetchExistingStrategies(department_id); //change
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )} */}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {primaryStakeholderStrategies.map(
+                              // Map the fetched primary data directly
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  <Typography>{strategy.value}</Typography>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                </>
               )}
-              {/* end of main container */}
-              
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <Modal open={showWarning} onClose={handleCancelClear}>
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh", // Occupy full viewport height
+                  }}
+                >
+                  <Box
+                    sx={{
+                      background: "white",
+                      padding: 4,
+                      borderRadius: 2,
+                      boxShadow: 24,
+                      textAlign: "center",
+                      position: "relative",
+                      maxWidth: "30vw", // Limit modal width to 80% of viewport width
+                    }}
+                  >
+                    <Typography
+                      variant="h6"
+                      component="h2"
+                      sx={{ fontWeight: "bold", mb: 2 }}
+                    >
+                      Warning: Clear Tables
+                    </Typography>
+                    <Typography variant="body2" sx={{ mb: 3 }}>
+                      Are you sure you want to sort? This will clear any
+                      existing data in the Financial, Stakeholder, Internal
+                      Process, and Learning & Growth tables.
+                    </Typography>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                        mt: 3,
+                        flexWrap: "wrap", // Allow buttons to wrap on smaller screens
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={handleCancelClear}
+                        sx={{
+                          width: "auto",
+                          color: "#AB3510",
+                        }}
+                        style={{
+                          background: "white",
+                          border: "1px solid #AB3510",
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={() => handleConfirmClear(department_id)}
+                        sx={{
+                          width: "auto",
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                        }}
+                      >
+                        Confirm
+                      </Button>
+                    </Box>
+                  </Box>
+                </Box>
+              </Modal>
+
+              {currentView === "secondary" && (
+                <>
+                  {selectedComponent === "Financial" && ( //remove the border
+                    <Cards>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/financial.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Financial:
+                                </span>{" "}
+                                Stewardship Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Measures financial performance and
+                                profitability.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openFModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                        {/* add modal here */}
+                        {isFModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Financial Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newFTargetCode}
+                                onChange={(e) =>
+                                  setNewFTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newFStrategy}
+                                    onChange={(e) =>
+                                      setNewFStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap", // Allow buttons to wrap
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closeFModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handleFSave();
+                                    fetchExistingStrategies(department_id);
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {strategies.financial.map(
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  {/* edit div */}
+                                  {editingStrategy === strategy ? (
+                                    <div className="pr-3 pl-3 w-[100%] flex">
+                                      <input
+                                        type="text"
+                                        value={newStrategyValue}
+                                        onChange={(e) =>
+                                          setNewStrategyValue(e.target.value)
+                                        }
+                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                      />
+                                      <button
+                                        onClick={() => {
+                                          handleFinancialSaveEdit(
+                                            // @ts-ignore
+                                            strategy.fID,
+                                            newStrategyValue,
+                                            department_id
+                                          );
+                                        }}
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <Typography>{strategy.value}</Typography>
+                                  )}
+                                  <div className="flex">
+                                    <button
+                                      onClick={() => handleEditClick(strategy)}
+                                      className="font-bold py-2 px-2 rounded text-orange-600"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="w-6 h-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                        />
+                                      </svg>
+                                    </button>
+
+                                    <button
+                                      onClick={() =>
+                                        handleFinancialDelete(strategy.fID)
+                                      }
+                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="size-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                  {selectedComponent === "Learning" && ( //remove the border
+                    <Cards>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/learning.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Learning & Growth:
+                                </span>{" "}
+                                Culture & People Development Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Enhances organizational culture and employee
+                                growth.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openLGModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                        {/* add modal here */}
+                        {isLGModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Learning & Growth Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newLGTargetCode}
+                                onChange={(e) =>
+                                  setNewLGTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newLGStrategy}
+                                    onChange={(e) =>
+                                      setNewLGStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap", // Allow buttons to wrap
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closeLGModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handleLGSave();
+                                    fetchExistingStrategies(department_id);
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {strategies.learningGrowth.map(
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  {/* edit div */}
+                                  {editingStrategy === strategy ? (
+                                    <div className="pr-3 pl-3 w-[100%] flex">
+                                      <input
+                                        type="text"
+                                        value={newStrategyValue}
+                                        onChange={(e) =>
+                                          setNewStrategyValue(e.target.value)
+                                        }
+                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                      />
+                                      <button
+                                        onClick={() => {
+                                          handleLearningGrowthSaveEdit(
+                                            // @ts-ignore
+                                            strategy.fID,
+                                            newStrategyValue,
+                                            department_id
+                                          );
+                                        }}
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <Typography>{strategy.value}</Typography>
+                                  )}
+                                  <div className="flex">
+                                    <button
+                                      onClick={() => handleEditClick(strategy)}
+                                      className="font-bold py-2 px-2 rounded text-orange-600"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="w-6 h-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                        />
+                                      </svg>
+                                    </button>
+
+                                    <button
+                                      onClick={() =>
+                                        handleLGDelete(strategy.fID)
+                                      }
+                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="size-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                  {selectedComponent === "Internal" && ( //remove the border
+                    <Cards>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/internal.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Internal Process:
+                                </span>{" "}
+                                Process & Technology Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Optimizes and manages internal processes and
+                                technology.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openIPModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                        {/* add modal here */}
+                        {isIPModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Internal Process Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newIPTargetCode}
+                                onChange={(e) =>
+                                  setNewIPTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newIPStrategy}
+                                    onChange={(e) =>
+                                      setNewIPStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap", // Allow buttons to wrap
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closeIPModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handleIPSave();
+                                    fetchExistingStrategies(department_id);
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {strategies.internalProcess.map(
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  {/* edit div */}
+                                  {editingStrategy === strategy ? (
+                                    <div className="pr-3 pl-3 w-[100%] flex">
+                                      <input
+                                        type="text"
+                                        value={newStrategyValue}
+                                        onChange={(e) =>
+                                          setNewStrategyValue(e.target.value)
+                                        }
+                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                      />
+                                      <button
+                                        onClick={() => {
+                                          handleInternalProcessSaveEdit(
+                                            // @ts-ignore
+                                            strategy.fID,
+                                            newStrategyValue,
+                                            department_id
+                                          );
+                                        }}
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <Typography>{strategy.value}</Typography>
+                                  )}
+                                  <div className="flex">
+                                    <button
+                                      onClick={() => handleEditClick(strategy)}
+                                      className="font-bold py-2 px-2 rounded text-orange-600"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="w-6 h-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                        />
+                                      </svg>
+                                    </button>
+
+                                    <button
+                                      onClick={() =>
+                                        handleInternalDelete(strategy.fID)
+                                      }
+                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="size-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                  {selectedComponent === "Stakeholder" && ( //remove the border
+                    <Cards>
+                      <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          sx={{
+                            ml: 1,
+                            height: "85px",
+                            "& .MuiInputBase-root": { height: "85px" },
+                          }}
+                        >
+                          <Grid item sm={11.3} container alignItems="center">
+                            <Box>
+                              <img
+                                src="/stakeholder.png"
+                                alt=""
+                                className="h-[5rem]"
+                              />
+                            </Box>
+                            <Box sx={{ ml: 1 }}>
+                              <Typography sx={{ fontWeight: "bolder" }}>
+                                <span className="text-[#ff7b00d3]">
+                                  Stakeholder:
+                                </span>{" "}
+                                Client Relationship Overview
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Measures client engagement quality and value.
+                              </Typography>
+                            </Box>
+                          </Grid>
+                          <Grid
+                            item
+                            sm={0.7}
+                            style={{ justifyContent: "flex-end" }}
+                          >
+                            <Box
+                              sx={{
+                                p: 1,
+                                background: "#ff7b00d3",
+                                borderRadius: "50%",
+                                width: "3rem",
+                                height: "3rem",
+                                alignItems: "center",
+                                justifyContent: "center",
+                              }}
+                            >
+                              <button
+                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                                onClick={openSModal}
+                              >
+                                <div className="flex flex-row">
+                                  <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="size-8"
+                                  >
+                                    <path
+                                      fill-rule="evenodd"
+                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                      clip-rule="evenodd"
+                                    />
+                                  </svg>
+                                </div>
+                              </button>
+                            </Box>
+                          </Grid>
+                        </Grid>
+                        {/* add modal here */}
+                        {isSModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "85%",
+                                maxWidth: "95vw",
+                                maxHeight: "95vh",
+                                // maxHeight: '100vh',
+                              }}
+                            >
+                              <p className="text-xl font-bold mb-4">
+                                Stakeholder Strategy
+                              </p>
+                              <div className="flex flex-col mb-1">
+                                <Typography sx={{ fontWeight: 800 }}>
+                                  Target Code
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                              </div>
+                              <TextField
+                                variant="outlined"
+                                value={newSTargetCode}
+                                onChange={(e) =>
+                                  setNewSTargetCode(e.target.value)
+                                }
+                                sx={{
+                                  height: "35px",
+                                  "& .MuiInputBase-root": { height: "35px" },
+                                }}
+                              />
+                              <Box>
+                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                  Strategy
+                                  <span className="text-[#DD1414]">*</span>
+                                </Typography>
+                                <span className="mb-3">
+                                  Before inputting a strategy, please follow
+                                  this format.
+                                </span>
+                                <span>
+                                  <br />
+                                  1. Choose one of the following{" "}
+                                  <span className="font-bold">
+                                    strategic themes
+                                  </span>
+                                  :
+                                </span>
+                                <ul className="list-disc ml-10 mb-2">
+                                  <li className="font-bold">
+                                    Excellence in Service Quality
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Internal Service Systems
+                                  </li>
+                                  <li className="font-bold">
+                                    Excellence in Organizational Stewardship
+                                  </li>
+                                </ul>
+                                <span>
+                                  2. After selecting the theme, leave a space
+                                  and then input the{" "}
+                                  <span className="font-bold">target code</span>{" "}
+                                  followed by a colon{" "}
+                                  <span className="font-bold">(:)</span>
+                                </span>
+                                <span>
+                                  <br />
+                                  3. Finally, write the{" "}
+                                  <span className="font-bold">strategy.</span>
+                                </span>
+                                <br />
+                                <span>
+                                  <br />
+                                  The correct format should be:{" "}
+                                  <span className="font-bold">
+                                    Strategic Theme Target Code: Strategy
+                                  </span>
+                                </span>
+                                <span className="font-bold">
+                                  <br />
+                                  Example:{" "}
+                                  <span className="font-bold text-red-500">
+                                    Excellence in Service Quality T001: Improve
+                                    customer response time.
+                                  </span>
+                                </span>
+
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newSStrategy}
+                                    onChange={(e) =>
+                                      setNewSStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+
+                              <Box
+                                sx={{
+                                  display: "flex",
+                                  justifyContent: "center",
+                                  gap: 2,
+                                  mt: 3,
+                                  flexWrap: "wrap", // Allow buttons to wrap
+                                }}
+                              >
+                                <Button
+                                  variant="contained"
+                                  onClick={closeSModal}
+                                  sx={{ width: 150, color: "#AB3510" }}
+                                  style={{
+                                    background: "white",
+                                    border: "1px solid #AB3510",
+                                  }}
+                                >
+                                  Cancel
+                                </Button>
+                                <Button
+                                  variant="contained"
+                                  onClick={async () => {
+                                    await handleSSave();
+                                    fetchExistingStrategies(department_id);
+                                  }}
+                                  style={{
+                                    background:
+                                      "linear-gradient(to left, #8a252c, #AB3510)",
+                                    width: 150,
+                                  }}
+                                >
+                                  Save
+                                </Button>
+                              </Box>
+                            </Box>
+                          </Box>
+                        )}
+
+                        <Grid
+                          container
+                          alignItems="center"
+                          p={1}
+                          justifyContent="space-between"
+                        >
+                          <Grid item xs={12}>
+                            {strategies.stakeholder.map(
+                              (strategy: GeneratedSentence, index: number) => (
+                                <div
+                                  key={strategy.id}
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index % 2 === 0
+                                      ? "bg-[#fff6d1]"
+                                      : "bg-white"
+                                  }`}
+                                >
+                                  {/* edit div */}
+                                  {editingStrategy === strategy ? (
+                                    <div className="pr-3 pl-3 w-[100%] flex">
+                                      <input
+                                        type="text"
+                                        value={newStrategyValue}
+                                        onChange={(e) =>
+                                          setNewStrategyValue(e.target.value)
+                                        }
+                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                      />
+                                      <button
+                                        onClick={() => {
+                                          handleStakeholderSaveEdit(
+                                            // @ts-ignore
+                                            strategy.fID,
+                                            newStrategyValue,
+                                            department_id
+                                          );
+                                        }}
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                      >
+                                        Save
+                                      </button>
+                                    </div>
+                                  ) : (
+                                    <Typography>{strategy.value}</Typography>
+                                  )}
+                                  <div className="flex">
+                                    <button
+                                      onClick={() => handleEditClick(strategy)}
+                                      className="font-bold py-2 px-2 rounded text-orange-600"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="w-6 h-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                                        />
+                                      </svg>
+                                    </button>
+
+                                    <button
+                                      onClick={() =>
+                                        handleStakeholderDelete(strategy.fID)
+                                      }
+                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
+                                    >
+                                      <svg
+                                        xmlns="http://www.w3.org/2000/svg"
+                                        fill="none"
+                                        viewBox="0 0 24 24"
+                                        strokeWidth="1.5"
+                                        stroke="currentColor"
+                                        className="size-6"
+                                      >
+                                        <path
+                                          strokeLinecap="round"
+                                          strokeLinejoin="round"
+                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                        />
+                                      </svg>
+                                    </button>
+                                  </div>
+                                </div>
+                              )
+                            )}
+                          </Grid>
+                        </Grid>
+                      </StyledBox>
+                    </Cards>
+                  )}
+                </>
+              )}
+            </Box>
+          </Grid>
+        </StyledBox>
+      </Box>
+    </Box>
   );
 };
-
 export default Page;

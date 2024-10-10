@@ -1,24 +1,78 @@
 "use client";
-import QANavbar from "../components/QANavbar";
-import QADepartmentView from "@/app/components/QADepartmentView";
-import { useSession } from "next-auth/react";
-import { useCallback, useEffect, useState } from "react";
+import QANavbar from "../components/Navbars/QANavbar";
+import QADepartmentView from "../components/QAProfile/QADepartmentView";
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import Spinner from "../components/Spinner";
-import SpinnerPages from "../components/SpinnerPages";
+import Spinner from "../components/Misc/Spinner";
+import {
+  Box,
+  Drawer,
+  Typography,
+  TextField,
+  Divider,
+  Avatar,
+  Select,
+  MenuItem,
+  Grid,
+  Button,
+  Autocomplete,
+  FormHelperText,
+  Card,
+  responsiveFontSizes,
+  Modal,
+} from "@mui/material";
+import axios from "axios";
+import styled from "@emotion/styled";
+import Image from "next/image";
+import { SelectChangeEvent } from "@mui/material/Select";
+import SpinnerPages from "../components/Misc/SpinnerPages";
+import "@/app/page.css";
 
 interface Department {
-    id: number;
-    department_name: string;
+  id: number;
+  department_name: string;
 }
 
-export default  function QAStratmapView() {
-    //   stratmap original code
+const drawerWidth = 280;
+
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
+const MainFont = styled(Box)({
+  fontSize: "0.9rem",
+  mt: 2,
+});
+
+const Cards = styled(Box)({
+  width: "100%",
+  height: "auto",
+  borderRadius: "10px",
+  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+  borderColor: "#e9e8e8",
+  borderStyle: "solid", // Add border style (e.g., solid, dashed, dotted)
+  borderWidth: "1px",
+});
+
+const Boxes = styled(Box)({
+  height: "auto",
+  width: "100%",
+});
+
+export default function QAStratmapView() {
+  //   stratmap original code
   const { data: session } = useSession();
   const [selectedComponent, setSelectedComponent] = useState("");
   const [currentView, setCurrentView] = useState("primary");
   const [hasPrimaryStrats, setHasPrimaryStrats] = useState<string | null>(null);
-
+  const [isMobile, setIsMobile] = useState(false);
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
@@ -30,7 +84,9 @@ export default  function QAStratmapView() {
     let isMounted = true;
 
     const postToPrimaryStrategies = async () => {
-      const response = await fetch(`http://localhost:8080/user/getHasPrimaryStrats/${username}`);
+      const response = await fetch(
+        `http://localhost:8080/user/getHasPrimaryStrats/${username}`
+      );
       const data = await response.json();
 
       console.log("data:", data);
@@ -41,138 +97,169 @@ export default  function QAStratmapView() {
           const primaryStrategiesData = [
             {
               perspective: "financial", // Added perspective field
-              office_target: "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
+              office_target:
+                "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
+              office_target:
+                "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
+              office_target:
+                "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
+              office_target:
+                "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
+              office_target:
+                "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
+              office_target:
+                "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
               department: { id: department_id },
             },
             {
               perspective: "stakeholder", // Added perspective field
-              office_target: "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
+              office_target:
+                "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
+              office_target:
+                "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
+              office_target:
+                "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
+              office_target:
+                "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
+              office_target:
+                "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
+              office_target:
+                "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
+              office_target:
+                "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
               department: { id: department_id },
             },
             {
               perspective: "internal", // Added perspective field
-              office_target: "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
+              office_target:
+                "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
               department: { id: department_id },
             },
             {
               perspective: "learning", // Added perspective field
-              office_target: "A7.1: At least 90% participation in CIT-sponsored events",
+              office_target:
+                "A7.1: At least 90% participation in CIT-sponsored events",
               department: { id: department_id },
             },
             {
               perspective: "learning", // Added perspective field
-              office_target: "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
+              office_target:
+                "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
               department: { id: department_id },
             },
             {
               perspective: "learning", // Added perspective field
-              office_target: "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
+              office_target:
+                "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
+              office_target:
+                "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
+              office_target:
+                "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
+              office_target:
+                "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
+              office_target:
+                "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
+              office_target:
+                "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
               department: { id: department_id },
             },
             {
               perspective: "learning",
-              office_target: "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
+              office_target:
+                "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
               department: { id: department_id },
-            }
+            },
           ];
-      
+
           // Post each strategy individually
-          const postPromises = primaryStrategiesData.map(async (strategyData) => {
-            const endpoint = `http://localhost:8080/stratmap/primary${strategyData.perspective.charAt(0).toUpperCase() + strategyData.perspective.slice(1)}/insert`;
-            console.log("Endpoint:", endpoint); // Log the endpoint for debugging
-            const response = await fetch(endpoint, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(strategyData),
-            });
-      
-            if (!response.ok) {
-              console.error(`Error posting ${strategyData.perspective} strategy:`, response.status);
+          const postPromises = primaryStrategiesData.map(
+            async (strategyData) => {
+              const endpoint = `http://localhost:8080/stratmap/primary${
+                strategyData.perspective.charAt(0).toUpperCase() +
+                strategyData.perspective.slice(1)
+              }/insert`;
+              console.log("Endpoint:", endpoint); // Log the endpoint for debugging
+              const response = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(strategyData),
+              });
+
+              if (!response.ok) {
+                console.error(
+                  `Error posting ${strategyData.perspective} strategy:`,
+                  response.status
+                );
+              }
             }
-          });
-      
+          );
+
           await Promise.all(postPromises);
-      
+
           // Update hasPrimaryStrats in the user entity
           if (username) {
             const response = await fetch(
@@ -183,22 +270,21 @@ export default  function QAStratmapView() {
                 body: JSON.stringify({ hasPrimaryStrats: 1 }),
               }
             );
-      
+
             if (!response.ok) {
               console.error(
                 "Error updating hasPrimaryStrats in user session:",
                 response.status
               );
               // Handle the error appropriately (e.g., show an error message)
-            }
-            else {
-              localStorage.setItem('hasPrimaryStrats', '1');
-              setHasPrimaryStrats('1'); // Store in local storage
+            } else {
+              localStorage.setItem("hasPrimaryStrats", "1");
+              setHasPrimaryStrats("1"); // Store in local storage
             }
           } else {
             console.error("Username not found in session data.");
           }
-      
+
           // Re-fetch primary strategies to update the UI
           fetchPrimaryFinancialStrategies(department_id);
           fetchPrimaryStakeholderStrategies(department_id);
@@ -210,18 +296,16 @@ export default  function QAStratmapView() {
         }
       }
     };
-  
+
     postToPrimaryStrategies();
 
-    return () => { 
+    return () => {
       isMounted = false; // Cleanup: set isMounted to false on unmount
     };
-
   }, []);
 
   useEffect(() => {
-
-    setHasPrimaryStrats(localStorage.getItem('hasPrimaryStrats'));
+    setHasPrimaryStrats(localStorage.getItem("hasPrimaryStrats"));
 
     fetchExistingStrategies(department_id);
 
@@ -229,28 +313,59 @@ export default  function QAStratmapView() {
       if (currentView === "primary" && department_id) {
         setIsLoading(true);
         try {
-          const [financial, stakeholder, internal, learning] = await Promise.all([
-            fetch(`http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`).then(res => res.json()),
-            fetch(`http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}`).then(res => res.json()),
-            fetch(`http://localhost:8080/stratmap/primaryInternal/get/${department_id}`).then(res => res.json()),
-            fetch(`http://localhost:8080/stratmap/primaryLearning/get/${department_id}`).then(res => res.json()),
-          ]);
-  
-          setPrimaryFinancialStrategies(financial.map((item: any) => ({ id: 1, fID: item.id, value: item.office_target })));
-          setPrimaryStakeholderStrategies(stakeholder.map((item: any) => ({ id: 1, fID: item.id, value: item.office_target })));
-          setPrimaryInternalProcessStrategies(internal.map((item: any) => ({ id: 1, fID: item.id, value: item.office_target })));
-          setPrimaryLearningGrowthStrategies(learning.map((item: any) => ({ id: 1, fID: item.id, value: item.office_target }))); 
+          const [financial, stakeholder, internal, learning] =
+            await Promise.all([
+              fetch(
+                `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
+              ).then((res) => res.json()),
+              fetch(
+                `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}`
+              ).then((res) => res.json()),
+              fetch(
+                `http://localhost:8080/stratmap/primaryInternal/get/${department_id}`
+              ).then((res) => res.json()),
+              fetch(
+                `http://localhost:8080/stratmap/primaryLearning/get/${department_id}`
+              ).then((res) => res.json()),
+            ]);
+
+          setPrimaryFinancialStrategies(
+            financial.map((item: any) => ({
+              id: 1,
+              fID: item.id,
+              value: item.office_target,
+            }))
+          );
+          setPrimaryStakeholderStrategies(
+            stakeholder.map((item: any) => ({
+              id: 1,
+              fID: item.id,
+              value: item.office_target,
+            }))
+          );
+          setPrimaryInternalProcessStrategies(
+            internal.map((item: any) => ({
+              id: 1,
+              fID: item.id,
+              value: item.office_target,
+            }))
+          );
+          setPrimaryLearningGrowthStrategies(
+            learning.map((item: any) => ({
+              id: 1,
+              fID: item.id,
+              value: item.office_target,
+            }))
+          );
         } catch (error) {
           console.error("Error fetching primary strategies:", error);
-        }
-        finally {
+        } finally {
           setIsLoading(false);
         }
       }
     };
 
     fetchPrimaryStrategies();
-
   }, [session, currentView, selectedComponent, hasPrimaryStrats]);
 
   interface GeneratedSentence {
@@ -267,14 +382,22 @@ export default  function QAStratmapView() {
   }
 
   // for vision values mission
-  const [editingStrategy, setEditingStrategy] = useState<GeneratedSentence | null>(null);
+  const [editingStrategy, setEditingStrategy] =
+    useState<GeneratedSentence | null>(null);
   const [newStrategyValue, setNewStrategyValue] = useState("");
   const [isButtonDisabled, setIsButtonDisabled] = useState(false);
   const [showWarning, setShowWarning] = useState(false);
-  const [primaryFinancialStrategies, setPrimaryFinancialStrategies] = useState<GeneratedSentence[]>([]);
-  const [primaryStakeholderStrategies, setPrimaryStakeholderStrategies] = useState<GeneratedSentence[]>([]);
-  const [primaryInternalProcessStrategies, setPrimaryInternalProcessStrategies] = useState<GeneratedSentence[]>([]);
-  const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] = useState<GeneratedSentence[]>([]);
+  const [primaryFinancialStrategies, setPrimaryFinancialStrategies] = useState<
+    GeneratedSentence[]
+  >([]);
+  const [primaryStakeholderStrategies, setPrimaryStakeholderStrategies] =
+    useState<GeneratedSentence[]>([]);
+  const [
+    primaryInternalProcessStrategies,
+    setPrimaryInternalProcessStrategies,
+  ] = useState<GeneratedSentence[]>([]);
+  const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] =
+    useState<GeneratedSentence[]>([]);
 
   // @ts-ignore
   const handleEditClick = (strategy: GeneratedSentence) => {
@@ -293,238 +416,237 @@ export default  function QAStratmapView() {
     learningGrowth: [],
   });
 
-  const handleFinancialSaveEdit =  useCallback(async (
-    fID: number,
-    office_target: string,
-    department_id: number
-  ) => {
-    try {
-      const details = {
-        id: fID,
-        office_target: office_target,
-        department: { id: department_id }, // Include the department ID in the payload
-      };
-      const response = await fetch(
-        `http://localhost:8080/stratmap/financial/edit/${fID}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(details),
-        }
-      );
-
-      if (!response.ok) {
-        console.error("Failed to update strategy", response.status);
-        return;
-      }
-
-      const result = await response.json();
-      const updatedStrategy = result.updatedFinancial;
-
-      setStrategies((prevStrategies) => {
-        const newStrategies = { ...prevStrategies };
-        const financial = newStrategies.financial || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-        if (updatedStrategy) {
-          const strategyIndex = financial.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            financial[strategyIndex] = updatedStrategy;
-            newStrategies.financial = financial;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
+  const handleFinancialSaveEdit = useCallback(
+    async (fID: number, office_target: string, department_id: number) => {
+      try {
+        const details = {
+          id: fID,
+          office_target: office_target,
+          department: { id: department_id }, // Include the department ID in the payload
+        };
+        const response = await fetch(
+          `http://localhost:8080/stratmap/financial/edit/${fID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(details),
           }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
+        );
+
+        if (!response.ok) {
+          console.error("Failed to update strategy", response.status);
+          return;
         }
 
-        return newStrategies;
-      });
+        const result = await response.json();
+        const updatedStrategy = result.updatedFinancial;
 
-      fetchExistingStrategies(department_id);
-    } catch (error) {
-      console.error("An error occurred while updating the strategy:", error);
-    }
-  }, []);
+        setStrategies((prevStrategies) => {
+          const newStrategies = { ...prevStrategies };
+          const financial = newStrategies.financial || [];
+          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
-  const handleLearningGrowthSaveEdit = useCallback( async (
-    fID: number,
-    office_target: string,
-    department_id: number
-  ) => {
-    try {
-      const details = {
-        id: fID,
-        office_target: office_target,
-        department: { id: department_id }, // Include the department ID in the payload
-      };
-      const response = await fetch(
-        `http://localhost:8080/stratmap/learning/edit/${fID}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(details),
-        }
-      );
-
-      if (!response.ok) {
-        console.error("Failed to update strategy");
-        return;
-      }
-
-      const result = await response.json();
-      const updatedStrategy = result.updatedLG;
-
-      setStrategies((prevStrategies) => {
-        const newStrategies = { ...prevStrategies };
-        const learningGrowth = newStrategies.learningGrowth || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-        if (updatedStrategy) {
-          const strategyIndex = learningGrowth.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            learningGrowth[strategyIndex] = updatedStrategy;
-            newStrategies.learningGrowth = learningGrowth;
+          if (updatedStrategy) {
+            const strategyIndex = financial.findIndex(
+              (strategy) => strategy.id === fID
+            );
+            if (strategyIndex !== -1) {
+              financial[strategyIndex] = updatedStrategy;
+              newStrategies.financial = financial;
+            } else {
+              console.error(`Strategy with id ${fID} not found`);
+            }
           } else {
-            console.error(`Strategy with id ${fID} not found`);
+            console.error(`updatedStrategy for fID ${fID} is undefined`);
           }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
-        }
 
-        return newStrategies;
-      });
+          return newStrategies;
+        });
 
-      fetchExistingStrategies(department_id);
-    } catch (error) {
-      console.error("An error occurred while updating the strategy:", error);
-    }
-  }, []);
-
-  const handleStakeholderSaveEdit = useCallback(async (
-    fID: number,
-    office_target: string,
-    department_id: number
-  ) => {
-    try {
-      const details = {
-        office_target: office_target,
-        department: { id: department_id }, // Include the department ID in the payload
-      };
-      const response = await fetch(
-        `http://localhost:8080/stratmap/stakeholder/edit/${fID}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(details),
-        }
-      );
-
-      if (!response.ok) {
-        console.error("Failed to update strategy");
-        return;
+        fetchExistingStrategies(department_id);
+      } catch (error) {
+        console.error("An error occurred while updating the strategy:", error);
       }
+    },
+    []
+  );
 
-      const result = await response.json();
-      const updatedStrategy = result.stakeholderUpdated;
-
-      setStrategies((prevStrategies) => {
-        const newStrategies = { ...prevStrategies };
-        const stakeholder = newStrategies.stakeholder || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-        if (updatedStrategy) {
-          const strategyIndex = stakeholder.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            stakeholder[strategyIndex] = updatedStrategy;
-            newStrategies.stakeholder = stakeholder;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
+  const handleLearningGrowthSaveEdit = useCallback(
+    async (fID: number, office_target: string, department_id: number) => {
+      try {
+        const details = {
+          id: fID,
+          office_target: office_target,
+          department: { id: department_id }, // Include the department ID in the payload
+        };
+        const response = await fetch(
+          `http://localhost:8080/stratmap/learning/edit/${fID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(details),
           }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
+        );
+
+        if (!response.ok) {
+          console.error("Failed to update strategy");
+          return;
         }
 
-        return newStrategies;
-      });
+        const result = await response.json();
+        const updatedStrategy = result.updatedLG;
 
-      fetchExistingStrategies(department_id);
-    } catch (error) {
-      console.error("An error occurred while updating the strategy:", error);
-    }
-  }, []);
+        setStrategies((prevStrategies) => {
+          const newStrategies = { ...prevStrategies };
+          const learningGrowth = newStrategies.learningGrowth || [];
+          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
-  const handleInternalProcessSaveEdit = useCallback(async (
-    fID: number,
-    office_target: string,
-    department_id: number) => {
-    try {
-      const details = {
-        office_target: office_target,
-        department: { id: department_id }, // Include the department ID in the payload
-      };
-      const response = await fetch(`http://localhost:8080/stratmap/internal/edit/${fID}`, {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(details),
-      });
+          if (updatedStrategy) {
+            const strategyIndex = learningGrowth.findIndex(
+              (strategy) => strategy.id === fID
+            );
+            if (strategyIndex !== -1) {
+              learningGrowth[strategyIndex] = updatedStrategy;
+              newStrategies.learningGrowth = learningGrowth;
+            } else {
+              console.error(`Strategy with id ${fID} not found`);
+            }
+          } else {
+            console.error(`updatedStrategy for fID ${fID} is undefined`);
+          }
 
-      if (!response.ok) {
-        console.error("Failed to update strategy");
-        return;
+          return newStrategies;
+        });
+
+        fetchExistingStrategies(department_id);
+      } catch (error) {
+        console.error("An error occurred while updating the strategy:", error);
       }
+    },
+    []
+  );
 
-      const result = await response.json();
-      const updatedStrategy = result.updatedIP;
-
-      setStrategies((prevStrategies) => {
-        const newStrategies = { ...prevStrategies };
-        const internalProcess = newStrategies.internalProcess || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-        if (updatedStrategy) {
-          const strategyIndex = internalProcess.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            internalProcess[strategyIndex] = updatedStrategy;
-            newStrategies.internalProcess = internalProcess;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
+  const handleStakeholderSaveEdit = useCallback(
+    async (fID: number, office_target: string, department_id: number) => {
+      try {
+        const details = {
+          office_target: office_target,
+          department: { id: department_id }, // Include the department ID in the payload
+        };
+        const response = await fetch(
+          `http://localhost:8080/stratmap/stakeholder/edit/${fID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(details),
           }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
+        );
+
+        if (!response.ok) {
+          console.error("Failed to update strategy");
+          return;
         }
 
-        return newStrategies;
-      });
+        const result = await response.json();
+        const updatedStrategy = result.stakeholderUpdated;
 
-      fetchExistingStrategies(department_id);
-    } catch (error) {
-      console.error("An error occurred while updating the strategy:", error);
-    }
-  }, []);
+        setStrategies((prevStrategies) => {
+          const newStrategies = { ...prevStrategies };
+          const stakeholder = newStrategies.stakeholder || [];
+          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
+
+          if (updatedStrategy) {
+            const strategyIndex = stakeholder.findIndex(
+              (strategy) => strategy.id === fID
+            );
+            if (strategyIndex !== -1) {
+              stakeholder[strategyIndex] = updatedStrategy;
+              newStrategies.stakeholder = stakeholder;
+            } else {
+              console.error(`Strategy with id ${fID} not found`);
+            }
+          } else {
+            console.error(`updatedStrategy for fID ${fID} is undefined`);
+          }
+
+          return newStrategies;
+        });
+
+        fetchExistingStrategies(department_id);
+      } catch (error) {
+        console.error("An error occurred while updating the strategy:", error);
+      }
+    },
+    []
+  );
+
+  const handleInternalProcessSaveEdit = useCallback(
+    async (fID: number, office_target: string, department_id: number) => {
+      try {
+        const details = {
+          office_target: office_target,
+          department: { id: department_id }, // Include the department ID in the payload
+        };
+        const response = await fetch(
+          `http://localhost:8080/stratmap/internal/edit/${fID}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(details),
+          }
+        );
+
+        if (!response.ok) {
+          console.error("Failed to update strategy");
+          return;
+        }
+
+        const result = await response.json();
+        const updatedStrategy = result.updatedIP;
+
+        setStrategies((prevStrategies) => {
+          const newStrategies = { ...prevStrategies };
+          const internalProcess = newStrategies.internalProcess || [];
+          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
+
+          if (updatedStrategy) {
+            const strategyIndex = internalProcess.findIndex(
+              (strategy) => strategy.id === fID
+            );
+            if (strategyIndex !== -1) {
+              internalProcess[strategyIndex] = updatedStrategy;
+              newStrategies.internalProcess = internalProcess;
+            } else {
+              console.error(`Strategy with id ${fID} not found`);
+            }
+          } else {
+            console.error(`updatedStrategy for fID ${fID} is undefined`);
+          }
+
+          return newStrategies;
+        });
+
+        fetchExistingStrategies(department_id);
+      } catch (error) {
+        console.error("An error occurred while updating the strategy:", error);
+      }
+    },
+    []
+  );
 
   const API_ENDPOINTS = [
     `http://localhost:8080/stStrat/get/${department_id}`,
     `http://localhost:8080/soStrat/get/${department_id}`,
     `http://localhost:8080/wtStrat/get/${department_id}`,
     `http://localhost:8080/woStrat/get/${department_id}`,
-
   ];
 
   const SYSTEM_PROMPT = `Categorize the following responses into the following categories:
@@ -546,7 +668,6 @@ export default  function QAStratmapView() {
     "category number 1-4. (whichever strategic theme you think fits the response, DO NOT ADD THE CATEGORY NAMES OR ANY PRETEXT ASIDE FROM THE STRATEGIC THEME HERE.) (strategy here)" DO NOT ADD ANY MARKUP.
     "Make sure not to output any double strategies with the same target code"
     `;
-
 
   const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
 
@@ -574,7 +695,7 @@ export default  function QAStratmapView() {
       const data = {
         office_target: newFStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/financial/insert",
@@ -606,9 +727,9 @@ export default  function QAStratmapView() {
         office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryFinancial/insert", // Use the correct endpoint
         {
@@ -619,12 +740,15 @@ export default  function QAStratmapView() {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimaryFModal();
         fetchPrimaryFinancialStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary financial strategy:", response.status);
+        console.error(
+          "Error saving primary financial strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -639,9 +763,9 @@ export default  function QAStratmapView() {
         office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryStakeholder/insert", // Use the correct endpoint
         {
@@ -652,12 +776,15 @@ export default  function QAStratmapView() {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimarySModal();
         fetchPrimaryStakeholderStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary stakeholder strategy:", response.status);
+        console.error(
+          "Error saving primary stakeholder strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -672,9 +799,9 @@ export default  function QAStratmapView() {
         office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryLearning/insert", // Use the correct endpoint
         {
@@ -685,12 +812,15 @@ export default  function QAStratmapView() {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimaryLGModal();
         fetchPrimaryLearningGrowthStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary learning strategy:", response.status);
+        console.error(
+          "Error saving primary learning strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -705,9 +835,9 @@ export default  function QAStratmapView() {
         office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`, // Combine target code and strategy
         department: { id: department_id },
       };
-  
+
       console.log("Data to be sent:", data); // Log the data for debugging
-  
+
       const response = await fetch(
         "http://localhost:8080/stratmap/primaryInternal/insert", // Use the correct endpoint
         {
@@ -718,12 +848,15 @@ export default  function QAStratmapView() {
           body: JSON.stringify(data),
         }
       );
-  
+
       if (response.ok) {
         closePrimaryIPModal();
         fetchPrimaryInternalProcessStrategies(department_id); // Refresh the list after saving
       } else {
-        console.error("Error saving primary internal strategy:", response.status);
+        console.error(
+          "Error saving primary internal strategy:",
+          response.status
+        );
         // Handle error, e.g., display an error message to the user
       }
     } catch (error) {
@@ -788,7 +921,7 @@ export default  function QAStratmapView() {
       const data = {
         office_target: newSStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/stakeholder/insert",
@@ -854,7 +987,7 @@ export default  function QAStratmapView() {
       const data = {
         office_target: newIPStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/internal/insert",
@@ -920,7 +1053,7 @@ export default  function QAStratmapView() {
       const data = {
         office_target: newLGStrategy,
         department: { id: department_id },
-        user_generated: 1
+        user_generated: 1,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/learning/insert",
@@ -946,98 +1079,103 @@ export default  function QAStratmapView() {
     setSavedFStrategies([...savedLGStrategies, strategyLGWithCode]);
   };
 
-    const fetchDataAndCategorize = async (apiEndpoint: string) => {
-      try {
-        const response = await fetch(apiEndpoint);
-        const data = await response.json();
-        console.log("swot data: ", data);
-    
-        const inputText = data
-          .map((row: any) => {
-            if (row["s_oResponses"]) return row["s_oResponses"];
-            else if (row["s_tResponses"]) return row["s_tResponses"];
-            else if (row["w_oResponses"]) return row["w_oResponses"];
-            else if (row["w_tResponses"]) return row["w_tResponses"];
-            else return "";
-          })
-          .join("\n");
-    
-        console.log("inputText: ", inputText);
-    
-        const geminiResponse = await fetch(GEMINI_API_URL, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            contents: [
-              {
-                parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
-              },
-            ],
-          }),
-        });
-        const geminiData = await geminiResponse.json();
-        const apiResponse =
-          geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
-          "No response received";
-        console.log("api response: ", apiResponse);
-    
-        const generatedSentences: string[] = apiResponse
-          .split("\n")
-          .filter((sentence: string) => sentence.trim() !== "");
-    
-          const categorizedSentences: GeneratedSentence[] = await Promise.all( // Use Promise.all to handle async operations within map
-            generatedSentences.map(async (sentence) => {
-              const match = sentence.match(/^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/);
-      
-              if (match) {
-                const [, idStr, strategicTheme, code, content] = match;
-                const id = parseInt(idStr, 10);
-                const fID = id;
-      
-                // POST target code to backend 
-                if (id === 1) { // Assuming id 1 represents Financial perspective 
-                  try {
-                    const response = await fetch( // Make the fetch call asynchronous with await
-                      "http://localhost:8080/bsc/financialBsc/insert",
-                      {
-                        method: "POST",
-                        headers: {
-                          "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                          target_code: code, // Send the extracted target code
-                          office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
-                          department: { id: department_id }, // Assuming department_id is available
-                        }),
-                      }
-                    );
-      
-                    if (!response.ok) {
-                      console.error("Error POSTing target code:", response.status); 
-                    }
-                  } catch (error) {
-                    console.error("Error POSTing target code:", error);
+  const fetchDataAndCategorize = async (apiEndpoint: string) => {
+    try {
+      const response = await fetch(apiEndpoint);
+      const data = await response.json();
+      console.log("swot data: ", data);
+
+      const inputText = data
+        .map((row: any) => {
+          if (row["s_oResponses"]) return row["s_oResponses"];
+          else if (row["s_tResponses"]) return row["s_tResponses"];
+          else if (row["w_oResponses"]) return row["w_oResponses"];
+          else if (row["w_tResponses"]) return row["w_tResponses"];
+          else return "";
+        })
+        .join("\n");
+
+      console.log("inputText: ", inputText);
+
+      const geminiResponse = await fetch(GEMINI_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          contents: [
+            {
+              parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
+            },
+          ],
+        }),
+      });
+      const geminiData = await geminiResponse.json();
+      const apiResponse =
+        geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
+        "No response received";
+      console.log("api response: ", apiResponse);
+
+      const generatedSentences: string[] = apiResponse
+        .split("\n")
+        .filter((sentence: string) => sentence.trim() !== "");
+
+      const categorizedSentences: GeneratedSentence[] = await Promise.all(
+        // Use Promise.all to handle async operations within map
+        generatedSentences.map(async (sentence) => {
+          const match = sentence.match(
+            /^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/
+          );
+
+          if (match) {
+            const [, idStr, strategicTheme, code, content] = match;
+            const id = parseInt(idStr, 10);
+            const fID = id;
+
+            // POST target code to backend
+            if (id === 1) {
+              // Assuming id 1 represents Financial perspective
+              try {
+                const response = await fetch(
+                  // Make the fetch call asynchronous with await
+                  "http://localhost:8080/bsc/financialBsc/insert",
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                      target_code: code, // Send the extracted target code
+                      office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
+                      department: { id: department_id }, // Assuming department_id is available
+                    }),
                   }
+                );
+
+                if (!response.ok) {
+                  console.error("Error POSTing target code:", response.status);
                 }
-      
-                return { id, fID, value: `${strategicTheme} ${code}: ${content}` }; 
-              } else {
-                console.warn("Invalid sentence format:", sentence);
-                return { id: -1, fID: -1, value: sentence }; 
+              } catch (error) {
+                console.error("Error POSTing target code:", error);
               }
             }
-          ));
-        return categorizedSentences;
-      } catch (error) {
-        console.error(
-          `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
-          error
-        );
-        return []; 
-      }
-    };
+
+            return { id, fID, value: `${strategicTheme} ${code}: ${content}` };
+          } else {
+            console.warn("Invalid sentence format:", sentence);
+            return { id: -1, fID: -1, value: sentence };
+          }
+        })
+      );
+      return categorizedSentences;
+    } catch (error) {
+      console.error(
+        `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
+        error
+      );
+      return [];
+    }
+  };
 
   const fetchAllData = async (department_id: number) => {
     const promises = API_ENDPOINTS.map((apiEndpoint) =>
@@ -1177,9 +1315,10 @@ export default  function QAStratmapView() {
       console.log("primary financial data: ", data);
 
       // Update the strategies state with the fetched primary financial strategies
-      setPrimaryFinancialStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryFinancialStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
@@ -1200,9 +1339,10 @@ export default  function QAStratmapView() {
       const data = await response.json();
 
       // Update the strategies state with the fetched primary stakeholder strategies
-      setPrimaryStakeholderStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryStakeholderStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
@@ -1212,7 +1352,9 @@ export default  function QAStratmapView() {
     }
   };
 
-  const fetchPrimaryInternalProcessStrategies = async (department_id: number) => {
+  const fetchPrimaryInternalProcessStrategies = async (
+    department_id: number
+  ) => {
     try {
       const response = await fetch(
         `http://localhost:8080/stratmap/primaryInternal/get/${department_id}` // Assuming this is your API endpoint
@@ -1223,19 +1365,25 @@ export default  function QAStratmapView() {
       const data = await response.json();
 
       // Update the strategies state with the fetched primary internal process strategies
-      setPrimaryInternalProcessStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryInternalProcessStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
       );
     } catch (error) {
-      console.error("Error fetching primary internal process strategies:", error);
+      console.error(
+        "Error fetching primary internal process strategies:",
+        error
+      );
     }
   };
 
-  const fetchPrimaryLearningGrowthStrategies = async (department_id: number) => {
+  const fetchPrimaryLearningGrowthStrategies = async (
+    department_id: number
+  ) => {
     try {
       const response = await fetch(
         `http://localhost:8080/stratmap/primaryLearning/get/${department_id}` // Assuming this is your API endpoint
@@ -1246,18 +1394,21 @@ export default  function QAStratmapView() {
       const data = await response.json();
 
       // Update the strategies state with the fetched primary learning and growth strategies
-      setPrimaryLearningGrowthStrategies( // Update the primaryFinancialStrategies state
+      setPrimaryLearningGrowthStrategies(
+        // Update the primaryFinancialStrategies state
         data.map((item: any) => ({
-          id: 1, 
+          id: 1,
           fID: item.id,
           value: item.office_target,
         }))
       );
     } catch (error) {
-      console.error("Error fetching primary learning and growth strategies:", error);
+      console.error(
+        "Error fetching primary learning and growth strategies:",
+        error
+      );
     }
   };
-
 
   const fetchExistingStrategies = async (department_id: number) => {
     if (department_id) {
@@ -1385,12 +1536,15 @@ export default  function QAStratmapView() {
 
   const handleInternalDelete = useCallback(async (id: number) => {
     try {
-      const response = await fetch(`http://localhost:8080/stratmap/internal/delete/${id}`, {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      const response = await fetch(
+        `http://localhost:8080/stratmap/internal/delete/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       if (response.ok) {
         const updatedStrategies = strategies.internalProcess.filter(
@@ -1407,7 +1561,6 @@ export default  function QAStratmapView() {
   }, []);
 
   const checkGeneratedAiStrats = async (username: string) => {
-
     console.log("checking generatedAiStrats");
 
     try {
@@ -1471,1004 +1624,1594 @@ export default  function QAStratmapView() {
     setSelectedComponent(componentName);
   };
 
-    const [departments, setDepartments] = useState<Department[]>([]);
-    const [isLoading, setIsLoading] = useState(true);
-    const [selectedDepartment, setSelectedDepartment] = useState<Department | null>(null);
+  const [departments, setDepartments] = useState<Department[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<Department | null>(null);
 
-    const handleDepartmentChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const selectedDepartmentId = parseInt(event.target.value, 10);
-      const selected = departments.find(
-        (department) => department.id === selectedDepartmentId
+  const handleDepartmentChange = (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    const selectedDepartmentId = parseInt(event.target.value, 10);
+    const selected = departments.find(
+      (department) => department.id === selectedDepartmentId
+    );
+
+    setStrategies({
+      financial: [],
+      stakeholder: [],
+      internalProcess: [],
+      learningGrowth: [],
+    });
+
+    setSelectedDepartment(selected || null);
+    if (selected) {
+      localStorage.setItem("selectedDepartmentId", selected.id.toString()); // Store in local storage
+      fetchStrategiesForDepartment(selected.id);
+    }
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          "http://localhost:8080/department/getAllDepartments",
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setDepartments(data.departments);
+
+        // Fetch strategies for the first department initially if available
+        if (data.departments.length > 0) {
+          setSelectedDepartment(data.departments[0]);
+          fetchStrategiesForDepartment(data.departments[0].id);
+        }
+
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching departments:", error);
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const fetchStrategiesForDepartment = async (departmentId: number) => {
+    try {
+      const perspectives = ["financial", "internal", "learning", "stakeholder"];
+      const promises = perspectives.map((perspective) =>
+        fetch(
+          `http://localhost:8080/stratmap/${perspective}/get/${departmentId}`
+        )
+          .then((res) => res.json())
+          .then((data) => ({ perspective, data }))
       );
-  
+
+      const results = await Promise.all(promises);
+
+      const newStrategies: StrategyCategories = {
+        financial: [],
+        stakeholder: [],
+        internalProcess: [],
+        learningGrowth: [],
+      };
+
+      results.forEach(({ perspective, data }) => {
+        switch (perspective) {
+          case "financial":
+            newStrategies.financial = data.map((item: any) => ({
+              id: 1,
+              fID: item.id,
+              value: item.office_target,
+            })); // Map data to correct format
+            break;
+          case "stakeholder":
+            newStrategies.stakeholder = data.map((item: any) => ({
+              id: 2,
+              fID: item.id,
+              value: item.office_target,
+            })); // Map data to correct format
+            break;
+          case "internal":
+            newStrategies.internalProcess = data.map((item: any) => ({
+              id: 3,
+              fID: item.id,
+              value: item.office_target,
+            })); // Map data to correct format
+            break;
+          case "learning":
+            newStrategies.learningGrowth = data.map((item: any) => ({
+              id: 4,
+              fID: item.id,
+              value: item.office_target,
+            })); // Map data to correct format
+            break;
+        }
+      });
+
+      setStrategies(newStrategies);
+    } catch (error) {
+      console.error("Error fetching strategies for department:", error);
       setStrategies({
         financial: [],
         stakeholder: [],
         internalProcess: [],
         learningGrowth: [],
       });
-  
-      setSelectedDepartment(selected || null);
-      if (selected) {
-        localStorage.setItem('selectedDepartmentId', selected.id.toString()); // Store in local storage
-        fetchStrategiesForDepartment(selected.id); 
-      }
-    };
-
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            "http://localhost:8080/department/getAllDepartments",
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const data = await response.json();
-          setDepartments(data.departments);
-  
-          // Fetch strategies for the first department initially if available
-          if (data.departments.length > 0) {
-            setSelectedDepartment(data.departments[0]); 
-            fetchStrategiesForDepartment(data.departments[0].id);
-          }
-  
-          setIsLoading(false);
-        } catch (error) {
-          console.error("Error fetching departments:", error);
-          setIsLoading(false);
-        }
-      };
-      fetchData();
-    }, []);
-
-    const fetchStrategiesForDepartment = async (departmentId: number) => {
-      try {
-        const perspectives = ["financial", "internal", "learning", "stakeholder"];
-        const promises = perspectives.map(perspective => 
-          fetch(`http://localhost:8080/stratmap/${perspective}/get/${departmentId}`)
-            .then(res => res.json())
-            .then(data => ({ perspective, data }))
-        );
-  
-        const results = await Promise.all(promises);
-  
-        const newStrategies: StrategyCategories = {
-          financial: [],
-          stakeholder: [],
-          internalProcess: [],
-          learningGrowth: [],
-        };
-  
-        results.forEach(({ perspective, data }) => {
-          switch (perspective) {
-            case "financial":
-              newStrategies.financial = data.map((item: any) => ({ id: 1, fID: item.id, value: item.office_target })); // Map data to correct format
-              break;
-            case "stakeholder":
-              newStrategies.stakeholder = data.map((item: any) => ({ id: 2, fID: item.id, value: item.office_target })); // Map data to correct format
-              break;
-            case "internal":
-              newStrategies.internalProcess = data.map((item: any) => ({ id: 3, fID: item.id, value: item.office_target })); // Map data to correct format
-              break;
-            case "learning":
-              newStrategies.learningGrowth = data.map((item: any) => ({ id: 4, fID: item.id, value: item.office_target })); // Map data to correct format
-              break;
-          }
-        });
-  
-        setStrategies(newStrategies);
-  
-      } catch (error) {
-        console.error("Error fetching strategies for department:", error);
-        setStrategies({
-
-          financial: [],
-          stakeholder: [],
-          internalProcess: [],
-          learningGrowth: [],
-
-        }); 
-      }
-    };
-
-    if (isLoading) {
-      return <SpinnerPages />;
     }
+  };
 
+  if (isLoading) {
+    return <SpinnerPages />;
+  }
 
-    return (
-      <div className="flex flex-row w-full h-screen">
-        <div className="flex">
-          <QANavbar />
-        </div>
-        <div className="flex-1">
-          <div className="flex-1 flex flex-col mt-8 ml-80 text-[rgb(59,59,59)]">
-            {/* insert info here */}
-            <div className="flex flex-row">
-                <span className="break-words font-bold text-[3rem]">
-                    Strategy Mapping
-                </span>
-                <div className="flex justify-center lg:ml-[61rem] md:ml-[50rem] shadow-sm mt-[0.5rem] border border-gray-200 bg-gray w-[18rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
+  return (
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#4D4C4C",
+      }}
+    >
+      <Box
+        sx={{
+          width: isMobile ? "100%" : drawerWidth,
+          flexShrink: 0,
+          position: isMobile ? "static" : "fixed",
+          height: isMobile ? "auto" : "100vh",
+          overflowY: "auto",
+        }}
+      >
+        <QANavbar />
+      </Box>
+
+      <Box
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+        }}
+      >
+        <StyledBox>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                }}
+              >
+                STRATEGY MAPPING
+              </Typography>
+            </Grid>
+
+            {/* TOGGLE BUTTON HERE */}
+            <Grid item>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                border={1}
+                borderColor="#e9e8e8"
+                width="auto"
+                height="auto"
+                borderRadius={2}
+                fontSize={12}
+                sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+              >
                 <button
-                    onClick={() => setCurrentView("primary")}
-                    className={`rounded-lg ${
+                  onClick={() => setCurrentView("primary")}
+                  className={`rounded-lg transition-all ${
                     currentView === "primary"
-                        ? "bg-[#A43214] text-white"
-                        : "border text-[#A43214]"
-                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}>
-                    PRIMARY
+                      ? "bg-[#A43214] text-white"
+                      : "border text-[#A43214]"
+                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                >
+                  PRIMARY
                 </button>
                 <button
-                    onClick={() => setCurrentView("secondary")}
-                    className={`rounded-lg ${
+                  onClick={() => setCurrentView("secondary")}
+                  className={`rounded-lg transition-all ${
                     currentView === "secondary"
-                        ? "bg-[#A43214] text-white"
-                        : "border text-[#A43214]"
-                    } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}>
-                    SECONDARY
+                      ? "bg-[#A43214] text-white"
+                      : "border text-[#A43214]"
+                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                >
+                  SECONDARY
                 </button>
-                </div>
-            </div>
+              </Box>
+            </Grid>
+          </Grid>
 
-                <div className="mt-8 col-span-3">
-                    <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-5 mt-[-1.1rem]">
-                        Strategy mapping empowers organizations to translate their
-                        vision into actionable strategies, align resources, and drive
-                        performance across all aspects of the business. Navigate
-                        complexity, capitalize on opportunities, and achieve sustainable
-                        growth in today&apos;s dynamic business landscape.
-                    </div>
-                </div>
-
-            {currentView === "primary" && (
-                <div>
-                    <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                    <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                        <div className="flex flex-row">
-                        <div className="flex flex-row p-1 h-auto ml-[-1rem]">
+          <Grid container sx={{ mt: 5 }}>
+            <Box width="100%" sx={{ mt: -1 }}>
+              {currentView === "primary" && (
+                <>
+                  {/* FINANCIAL PRIMARY */}
+                  <Cards>
+                    <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        sx={{
+                          ml: 1,
+                          height: "85px",
+                          "& .MuiInputBase-root": { height: "85px" },
+                        }}
+                      >
+                        <Grid item sm={11.3} container alignItems="center">
+                          <Box>
                             <img
-                            src="/financial.png"
-                            alt=""
-                            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
+                              src="/financial.png"
+                              alt=""
+                              className="h-[5rem]"
                             />
-                            <div className="flex flex-col">
-                            <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                              
-                            </span>
-                            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                Measures financial performance and profitability.
-                            </span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[71rem]">
-                        <button onClick={openPrimaryFModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                            
-                            <div className="flex flex-row">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="size-8"
+                          </Box>
+                          <Box sx={{ ml: 1 }}>
+                            <Typography sx={{ fontWeight: "bolder" }}>
+                              <span className="text-[#ff7b00d3]">
+                                Financial:
+                              </span>{" "}
+                              Stewardship Overview
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "500" }}
                             >
-                            <path
-                                fillRule="evenodd"
-                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                clipRule="evenodd"
-                            />
-                            </svg>
-                        </div>
-                        </button>
-                        </div>
-                        </div>
-                        {isPrimaryFModalOpen && ( 
-                            <div className="fixed inset-0 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-black opacity-50"></div>
-                            <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                                <div className="flex flex-row">
-                                <h2 className="text-2xl mb-5 font-semibold">
-                                    Financial Strategy
-                                </h2>
-                                <button
-                                    onClick={closePrimaryFModal} 
-                                    className="ml-[51rem] mt-[-4rem] text-gray-500 hover:text-gray-700"
-                                >
-                                    <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    className="w-6 h-6"
-                                    >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                    </svg>
-                                </button>
-                                </div>
-                                <div className="flex flex-col">
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Target Code
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-                                </div>
-                                <input
-                                type="text"
-                                value={newPrimaryFTargetCode} 
-                                onChange={(e) => setNewPrimaryFTargetCode(e.target.value)}  
-                                className="border border-gray-300 rounded px-3 py-2 mb-4"
-                                />
-                                <div className="flex flex-col">
-                                
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Strategy
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-
-                                <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                                <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                                <ul className="list-disc ml-10 mb-2">
-                                    <li className="font-bold">Excellence in Service Quality</li>
-                                    <li className="font-bold">Excellence in Internal Service Systems</li>
-                                    <li className="font-bold">Excellence in Organizational Stewardship</li>
-                                </ul>
-                                <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                                <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                                <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                                <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                                <textarea
-                                    value={newPrimaryFStrategy} 
-                                    onChange={(e) => setNewPrimaryFStrategy(e.target.value)}  
-                                    className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                                />
-                                </div>
-                                <div className="flex flex-row justify-center mt-2 gap-10">
-                                <button
-                                    onClick={closePrimaryFModal}
-                                    className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={async () => { 
-                                    await handlePrimaryFSave(); //change 
-                                    fetchPrimaryFinancialStrategies(department_id); //change 
-                                    }}
-                                    className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                                    style={{
-                                    background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                    }}
-                                >
-                                    Save
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        )}
-                        <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                            {primaryFinancialStrategies.map( // Map the fetched primary data directly
-                            (strategy: GeneratedSentence, index: number) => (
-                                <div
-                                key={strategy.id}
-                                className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                                    index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
-                                >
-                                    <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                    {strategy.value}   
-                                    {/* change */}
-                                    </div>
-                                </div>
-                            )
-                            )}
-                        </div>
-                        </div>
-                    </div>
-
-
-                        {/* LEARNING */}
-                    <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                        <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                        <div className="flex flex-row">
-                        <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                            <img
-                            src="/learning.png"
-                            alt=""
-                            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                            />
-                            <div className="flex flex-col">
-                            <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                            <span className="text-[#ff7b00d3]">Learning & Growth</span> Culture & People Development Overview
-                            </span>
-                            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                Enhances organizational culture and employee growth.
-                            </span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[56rem]">
-                        <button onClick={openPrimaryLGModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                            
-                            <div className="flex flex-row">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="size-8"
-                            >
-                            <path
-                                fillRule="evenodd"
-                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                clipRule="evenodd"
-                            />
-                            </svg>
-                        </div>
-                        </button>
-                        </div>
-                        </div>
-                        {isPrimaryLGModalOpen && ( 
-                            <div className="fixed inset-0 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-black opacity-50"></div>
-                            <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                                <div className="flex flex-row">
-                                <h2 className="text-2xl mb-5 font-semibold">
-                                    Learning & Growth Strategy
-                                </h2>
-                                <button
-                                    onClick={closePrimaryLGModal} 
-                                    className="ml-[43rem] mt-[-3rem] text-gray-500 hover:text-gray-700"
-                                >
-                                    <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    className="w-6 h-6"
-                                    >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                    </svg>
-                                </button>
-                                </div>
-                                <div className="flex flex-col">
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Target Code
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-                                </div>
-                                <input
-                                type="text"
-                                value={newPrimaryLGTargetCode} 
-                                onChange={(e) => setNewPrimaryLGTargetCode(e.target.value)}  
-                                className="border border-gray-300 rounded px-3 py-2 mb-4"
-                                />
-                                <div className="flex flex-col">
-                                
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Strategy
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-
-                                <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                                <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                                <ul className="list-disc ml-10 mb-2">
-                                    <li className="font-bold">Excellence in Service Quality</li>
-                                    <li className="font-bold">Excellence in Internal Service Systems</li>
-                                    <li className="font-bold">Excellence in Organizational Stewardship</li>
-                                </ul>
-                                <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                                <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                                <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                                <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                                <textarea
-                                    value={newPrimaryLGStrategy} 
-                                    onChange={(e) => setNewPrimaryLGStrategy(e.target.value)}  
-                                    className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                                />
-                                </div>
-                                <div className="flex flex-row justify-center mt-2 gap-10">
-                                <button
-                                    onClick={closePrimaryLGModal}
-                                    className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={async () => { 
-                                    await handlePrimaryLGSave(); //change
-                                    fetchPrimaryLearningGrowthStrategies(department_id); //change 
-                                    }}
-                                    className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                                    style={{
-                                    background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                    }}
-                                >
-                                    Save
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        )}
-                        <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                            {primaryLearningGrowthStrategies.map( // Map the fetched primary data directly
-                            (strategy: GeneratedSentence, index: number) => (
-                                <div
-                                key={strategy.id}
-                                className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                                    index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
-                                >
-                                    <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                    {strategy.value}   
-                                    {/* change */}
-                                    </div>
-                                </div>
-                            )
-                            )}
-                        </div>
-                        </div>
-                    </div>
-                    
-                    {/* INTERNAL */}
-                    <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                        <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                        <div className="flex flex-row">
-                        <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                            <img
-                            src="/internal.png"
-                            alt=""
-                            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                            />
-                            <div className="flex flex-col">
-                            <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                            <span className="text-[#ff7b00d3]">Internal Process:</span> Process & Technology Overview
-                            </span>
-                            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                Optimizes and manages internal processes and technology.
-                            </span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[62rem]">
-                        <button onClick={openPrimaryIPModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                            
-                            <div className="flex flex-row">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="size-8"
-                            >
-                            <path
-                                fillRule="evenodd"
-                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                clipRule="evenodd"
-                            />
-                            </svg>
-                        </div>
-                        </button>
-                        </div>
-                        </div>
-                        {isPrimaryIPModalOpen && (  
-                            <div className="fixed inset-0 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-black opacity-50"></div>
-                            <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                                <div className="flex flex-row">
-                                <h2 className="text-2xl mb-5 font-semibold">
-                                    Internal Process Strategy
-                                </h2>
-                                <button
-                                    onClick={closePrimaryIPModal} 
-                                    className="ml-[45rem] mt-[-3rem] text-gray-500 hover:text-gray-700"
-                                >
-                                    <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    className="w-6 h-6"
-                                    >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                    </svg>
-                                </button>
-                                </div>
-                                <div className="flex flex-col">
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Target Code
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-                                </div>
-                                <input
-                                type="text"
-                                value={newPrimaryIPTargetCode} 
-                                onChange={(e) => setNewPrimaryIPTargetCode(e.target.value)}  
-                                className="border border-gray-300 rounded px-3 py-2 mb-4"
-                                />
-                                <div className="flex flex-col">
-                                
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Strategy
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-
-                                <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                                <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                                <ul className="list-disc ml-10 mb-2">
-                                    <li className="font-bold">Excellence in Service Quality</li>
-                                    <li className="font-bold">Excellence in Internal Service Systems</li>
-                                    <li className="font-bold">Excellence in Organizational Stewardship</li>
-                                </ul>
-                                <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                                <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                                <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                                <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                                <textarea
-                                    value={newPrimaryIPStrategy} 
-                                    onChange={(e) => setNewPrimaryIPStrategy(e.target.value)}  
-                                    className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                                />
-                                </div>
-                                <div className="flex flex-row justify-center mt-2 gap-10">
-                                <button
-                                    onClick={closePrimaryIPModal}
-                                    className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={async () => { 
-                                    await handlePrimaryIPSave(); //change 
-                                    fetchExistingStrategies(department_id); //change 
-                                    }}
-                                    className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                                    style={{
-                                    background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                    }}
-                                >
-                                    Save
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        )}
-                        <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                            {primaryInternalProcessStrategies.map( // Map the fetched primary data directly
-                                (strategy: GeneratedSentence, index: number) => (
-                                <div
-                                    key={strategy.id}
-                                    className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                                    index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                    }`}
-                                >
-                                    <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                    {strategy.value}   
-                                    {/* change */}
-                                    </div>
-                                </div>
-                            )
-                            )}
-                        </div>
-                        </div>
-                    </div>
-                    
-                    {/* STAKEHOLDER */}
-                    <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                        <div className="flex flex-col align-middle items-center justify-center w-[100%]">
-                        <div className="flex flex-row">
-                        <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                            <img
-                            src="/stakeholder.png"
-                            alt=""
-                            className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                            />
-                            <div className="flex flex-col">
-                            <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                            <span className="text-[#ff7b00d3]">Stakeholder:</span> Client Relationship Overview
-                            </span>
-                            <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                Measures client engagement quality and value.
-                            </span>
-                            </div>
-                        </div>
-                        <div className="flex flex-row gap-5 rounded-full w-[2.5rem] h-[2.5rem] bg-[#ff7b00d3] pl-[0.25rem] pr-1 pt-1 pb-1 mt-2 ml-[67rem]">
-                        <button onClick={openPrimarySModal} className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"> 
-                            
-                            <div className="flex flex-row">
-                            <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            viewBox="0 0 24 24"
-                            fill="currentColor"
-                            className="size-8"
-                            >
-                            <path
-                                fillRule="evenodd"
-                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                clipRule="evenodd"
-                            />
-                            </svg>
-                        </div>
-                        </button>
-                        </div>
-                        </div>
-                        {isPrimarySModalOpen && (  
-                            <div className="fixed inset-0 flex items-center justify-center">
-                            <div className="absolute inset-0 bg-black opacity-50"></div>
-                            <div className="bg-white p-8 rounded-lg z-10 h-[auto] w-[70rem]">
-                                <div className="flex flex-row">
-                                <h2 className="text-2xl mb-5 font-semibold">
-                                    Stakeholder Strategy
-                                </h2>
-                                <button
-                                    onClick={closePrimarySModal} 
-                                    className="ml-[48rem] mt-[-3rem] text-gray-500 hover:text-gray-700"
-                                >
-                                    <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    fill="none"
-                                    viewBox="0 0 24 24"
-                                    stroke="currentColor"
-                                    className="w-6 h-6"
-                                    >
-                                    <path
-                                        strokeLinecap="round"
-                                        strokeLinejoin="round"
-                                        strokeWidth="2"
-                                        d="M6 18L18 6M6 6l12 12"
-                                    />
-                                    </svg>
-                                </button>
-                                </div>
-                                <div className="flex flex-col">
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Target Code
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-                                </div>
-                                <input
-                                type="text"
-                                value={newPrimarySTargetCode} 
-                                onChange={(e) => setNewPrimarySTargetCode(e.target.value)}  
-                                className="border border-gray-300 rounded px-3 py-2 mb-4"
-                                />
-                                <div className="flex flex-col">
-                                
-                                <span className="mr-3 mb-2 font-bold break-words font-regular text-lg">
-                                    Strategy
-                                    <span className="text-[#DD1414]">*</span>
-                                </span>
-
-                                <span className="mb-3">Before inputting a strategy, please follow this format.</span>
-                                <span>1. Choose one of the following <span className="font-bold">strategic themes</span>:</span>
-                                <ul className="list-disc ml-10 mb-2">
-                                    <li className="font-bold">Excellence in Service Quality</li>
-                                    <li className="font-bold">Excellence in Internal Service Systems</li>
-                                    <li className="font-bold">Excellence in Organizational Stewardship</li>
-                                </ul>
-                                <span>2. After selecting the theme, leave a space and then input the <span className="font-bold">target code</span> followed by a colon <span className="font-bold">(:)</span></span>
-                                <span className="mt-2">3. Finally, write the <span className="font-bold">strategy.</span></span>
-                                <span className="mt-5">The correct fomat should be: <span className="font-bold">Strategic Theme Target Code: Strategy</span></span>
-                                <span className="font-bold">Example: <span className="font-bold text-red-500">Excellence in Service Quality T001: Improve customer response time.</span></span>
-
-                                <textarea
-                                    value={newPrimarySStrategy}  
-                                    onChange={(e) => setNewPrimarySStrategy(e.target.value)}  
-                                    className="border border-gray-300 pl-2 pr-2 mt-3 rounded-lg w-[66.4rem] h-[10rem]"
-                                />
-                                </div>
-                                <div className="flex flex-row justify-center mt-2 gap-10">
-                                <button
-                                    onClick={closeSModal}
-                                    className=" text-[#AB3510] font-semibold text-lg hover:bg-[#AB3510] border border-[#AB3510] hover:text-[#ffffff] px-4 py-2 mt-4 rounded-lg w-40"
-                                >
-                                    Cancel
-                                </button>
-                                <button
-                                    onClick={async () => { 
-                                    await handlePrimarySSave(); //change 
-                                    fetchExistingStrategies(department_id); //change 
-                                    }}
-                                    className="text-[#ffffff] text-lg font-semibold px-4 py-3 mt-4 rounded-lg w-40"
-                                    style={{
-                                    background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                    }}
-                                >
-                                    Save
-                                </button>
-                                </div>
-                            </div>
-                            </div>
-                        )}
-                        <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                        {primaryStakeholderStrategies.map( // Map the correct array
-                            (strategy: GeneratedSentence, index: number) => (
-                            <div
-                                key={strategy.id}
-                                className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${
-                                index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'
-                                }`}
-                            >
-                                <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                {strategy.value}   
-                                </div>
-                            </div>
-                            )
-                        )}
-                        </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* SECONDARY */}
-            {currentView === "secondary" && (
-                <div>
-                    <select
-                        id="departmentSelect"
-                        className="border border-gray-200 shadow-sm rounded-xl mb-8 px-3 py-2 w-[18rem] h-[4rem] ml-[87rem]"
-                        onChange={handleDepartmentChange}
+                              Measures financial performance and profitability.
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          item
+                          sm={0.7}
+                          style={{ justifyContent: "flex-end" }}
                         >
-                        <option value="">Select a department</option>
-                        {departments.map((department) => (
-                            <option key={department.id} value={department.id}>
-                            {department.department_name}
-                            </option>
-                        ))}
-                    </select>
-                    {!selectedDepartment && (
-                        <div className="items-center align-middle mt-10 justify-center text-center">
-                        <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[97%] h-[30rem]"> 
-                            <div className="flex flex-col mt-28">
-                                <span className="font-bold text-[3rem] text-gray-300 text-center">
-                                    Please Select a Department
-                                </span>
-                                <span className="font-medium mt-5 text-[1.3rem] text-gray-300">
-                                    Please select a department from the dropdown menu<br/> to view the mapped strategies.
-                                </span>
+                          <Box
+                            sx={{
+                              p: 1,
+                              background: "#ff7b00d3",
+                              borderRadius: "50%",
+                              width: "3rem",
+                              height: "3rem",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button
+                              className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                              onClick={openPrimaryFModal}
+                            >
+                              <div className="flex flex-row">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  className="size-8"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      {/* add modal here */}
+                      {isPrimaryFModalOpen && (
+                        <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                          <Box
+                            className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                            sx={{
+                              width: "60%",
+                              height: "85%",
+                              maxWidth: "95vw",
+                              maxHeight: "95vh",
+                              // maxHeight: '100vh',
+                            }}
+                          >
+                            <p className="text-xl font-bold mb-4">
+                              Financial Strategy
+                            </p>
+                            <div className="flex flex-col mb-1">
+                              <Typography sx={{ fontWeight: 800 }}>
+                                Target Code
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
                             </div>
+                            <TextField
+                              variant="outlined"
+                              value={newPrimaryFTargetCode}
+                              onChange={(e) =>
+                                setNewPrimaryFTargetCode(e.target.value)
+                              }
+                              sx={{
+                                height: "35px",
+                                "& .MuiInputBase-root": { height: "35px" },
+                              }}
+                            />
+                            <Box>
+                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                Strategy
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                              <span className="mb-3">
+                                Before inputting a strategy, please follow this
+                                format.
+                              </span>
+                              <span>
+                                <br />
+                                1. Choose one of the following{" "}
+                                <span className="font-bold">
+                                  strategic themes
+                                </span>
+                                :
+                              </span>
+                              <ul className="list-disc ml-10 mb-2">
+                                <li className="font-bold">
+                                  Excellence in Service Quality
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Internal Service Systems
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Organizational Stewardship
+                                </li>
+                              </ul>
+                              <span>
+                                2. After selecting the theme, leave a space and
+                                then input the{" "}
+                                <span className="font-bold">target code</span>{" "}
+                                followed by a colon{" "}
+                                <span className="font-bold">(:)</span>
+                              </span>
+                              <span>
+                                <br />
+                                3. Finally, write the{" "}
+                                <span className="font-bold">strategy.</span>
+                              </span>
+                              <br />
+                              <span>
+                                <br />
+                                The correct format should be:{" "}
+                                <span className="font-bold">
+                                  Strategic Theme Target Code: Strategy
+                                </span>
+                              </span>
+                              <span className="font-bold">
+                                <br />
+                                Example:{" "}
+                                <span className="font-bold text-red-500">
+                                  Excellence in Service Quality T001: Improve
+                                  customer response time.
+                                </span>
+                              </span>
+
+                              <Grid item sx={{ mt: 2 }}>
+                                <TextField
+                                  value={newPrimaryFStrategy}
+                                  onChange={(e) =>
+                                    setNewPrimaryFStrategy(e.target.value)
+                                  }
+                                  multiline
+                                  rows={3}
+                                  sx={{
+                                    width: "100%",
+                                    overflowY: "auto",
+                                    "& .MuiInputBase-root": {},
+                                  }}
+                                />
+                              </Grid>
+                            </Box>
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                                mt: 3,
+                                flexWrap: "wrap", // Allow buttons to wrap
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                onClick={closePrimaryFModal}
+                                sx={{ width: 150, color: "#AB3510" }}
+                                style={{
+                                  background: "white",
+                                  border: "1px solid #AB3510",
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={async () => {
+                                  await handlePrimaryFSave(); //change
+                                  fetchPrimaryFinancialStrategies(
+                                    department_id
+                                  ); //change
+                                }}
+                                style={{
+                                  background:
+                                    "linear-gradient(to left, #8a252c, #AB3510)",
+                                  width: 150,
+                                }}
+                              >
+                                Save
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Box>
+                      )}
+
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        justifyContent="space-between"
+                      >
+                        <Grid item xs={12}>
+                          {primaryFinancialStrategies.map(
+                            // Map the fetched primary data directly
+                            (strategy: GeneratedSentence, index: number) => (
+                              <div
+                                key={strategy.id}
+                                className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                }`}
+                              >
+                                <Typography>{strategy.value}</Typography>
+                              </div>
+                            )
+                          )}
+                        </Grid>
+                      </Grid>
+                    </StyledBox>
+                  </Cards>
+                  {/* LEARNING PRIMARY */}
+                  <Cards sx={{ borderColor: "black", borderWidth: 1, mt: 5 }}>
+                    <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        sx={{
+                          ml: 1,
+                          height: "85px",
+                          "& .MuiInputBase-root": { height: "85px" },
+                        }}
+                      >
+                        <Grid item sm={11.3} container alignItems="center">
+                          <Box>
+                            <img
+                              src="/learning.png"
+                              alt=""
+                              className="h-[5rem]"
+                            />
+                          </Box>
+                          <Box sx={{ ml: 1 }}>
+                            <Typography sx={{ fontWeight: "bolder" }}>
+                              <span className="text-[#ff7b00d3]">
+                                Learning & Growth:
+                              </span>{" "}
+                              Culture & People Development Overview
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "500" }}
+                            >
+                              Enhances organizational culture and employee
+                              growth.
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          item
+                          sm={0.7}
+                          style={{ justifyContent: "flex-end" }}
+                        >
+                          <Box
+                            sx={{
+                              p: 1,
+                              background: "#ff7b00d3",
+                              borderRadius: "50%",
+                              width: "3rem",
+                              height: "3rem",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button
+                              className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                              onClick={openPrimaryLGModal}
+                            >
+                              <div className="flex flex-row">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  className="size-8"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      {/* add modal here */}
+                      {isPrimaryLGModalOpen && (
+                        <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                          <Box
+                            className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                            sx={{
+                              width: "60%",
+                              height: "85%",
+                              maxWidth: "95vw",
+                              maxHeight: "95vh",
+                              // maxHeight: '100vh',
+                            }}
+                          >
+                            <p className="text-xl font-bold mb-4">
+                              Learning & Growth Strategy
+                            </p>
+                            <div className="flex flex-col mb-1">
+                              <Typography sx={{ fontWeight: 800 }}>
+                                Target Code
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                            </div>
+                            <TextField
+                              variant="outlined"
+                              value={newPrimaryLGTargetCode}
+                              onChange={(e) =>
+                                setNewPrimaryLGTargetCode(e.target.value)
+                              }
+                              sx={{
+                                height: "35px",
+                                "& .MuiInputBase-root": { height: "35px" },
+                              }}
+                            />
+                            <Box>
+                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                Strategy
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                              <span className="mb-3">
+                                Before inputting a strategy, please follow this
+                                format.
+                              </span>
+                              <span>
+                                <br />
+                                1. Choose one of the following{" "}
+                                <span className="font-bold">
+                                  strategic themes
+                                </span>
+                                :
+                              </span>
+                              <ul className="list-disc ml-10 mb-2">
+                                <li className="font-bold">
+                                  Excellence in Service Quality
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Internal Service Systems
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Organizational Stewardship
+                                </li>
+                              </ul>
+                              <span>
+                                2. After selecting the theme, leave a space and
+                                then input the{" "}
+                                <span className="font-bold">target code</span>{" "}
+                                followed by a colon{" "}
+                                <span className="font-bold">(:)</span>
+                              </span>
+                              <span>
+                                <br />
+                                3. Finally, write the{" "}
+                                <span className="font-bold">strategy.</span>
+                              </span>
+                              <br />
+                              <span>
+                                <br />
+                                The correct format should be:{" "}
+                                <span className="font-bold">
+                                  Strategic Theme Target Code: Strategy
+                                </span>
+                              </span>
+                              <span className="font-bold">
+                                <br />
+                                Example:{" "}
+                                <span className="font-bold text-red-500">
+                                  Excellence in Service Quality T001: Improve
+                                  customer response time.
+                                </span>
+                              </span>
+
+                              <Grid item sx={{ mt: 2 }}>
+                                <TextField
+                                  value={newPrimaryLGStrategy}
+                                  onChange={(e) =>
+                                    setNewPrimaryLGStrategy(e.target.value)
+                                  }
+                                  multiline
+                                  rows={3}
+                                  sx={{
+                                    width: "100%",
+                                    overflowY: "auto",
+                                    "& .MuiInputBase-root": {},
+                                  }}
+                                />
+                              </Grid>
+                            </Box>
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                                mt: 3,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                onClick={closePrimaryLGModal}
+                                sx={{ width: 150, color: "#AB3510" }}
+                                style={{
+                                  background: "white",
+                                  border: "1px solid #AB3510",
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={async () => {
+                                  await handlePrimaryLGSave(); //change
+                                  fetchPrimaryLearningGrowthStrategies(
+                                    department_id
+                                  ); //change
+                                }}
+                                style={{
+                                  background:
+                                    "linear-gradient(to left, #8a252c, #AB3510)",
+                                  width: 150,
+                                }}
+                              >
+                                Save
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Box>
+                      )}
+
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        justifyContent="space-between"
+                      >
+                        <Grid item xs={12}>
+                          {primaryLearningGrowthStrategies.map(
+                            // Map the fetched primary data directly
+                            (strategy: GeneratedSentence, index: number) => (
+                              <div
+                                key={strategy.id}
+                                className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                }`}
+                              >
+                                <Typography>{strategy.value}</Typography>
+                              </div>
+                            )
+                          )}
+                        </Grid>
+                      </Grid>
+                    </StyledBox>
+                  </Cards>
+
+                  {/* INTERNAL PRIMARY */}
+                  <Cards sx={{ borderColor: "black", borderWidth: 1, mt: 5 }}>
+                    <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        sx={{
+                          ml: 1,
+                          height: "85px",
+                          "& .MuiInputBase-root": { height: "85px" },
+                        }}
+                      >
+                        <Grid item sm={11.3} container alignItems="center">
+                          <Box>
+                            <img
+                              src="/internal.png"
+                              alt=""
+                              className="h-[5rem]"
+                            />
+                          </Box>
+                          <Box sx={{ ml: 1 }}>
+                            <Typography sx={{ fontWeight: "bolder" }}>
+                              <span className="text-[#ff7b00d3]">
+                                Internal Process:
+                              </span>{" "}
+                              Process & Technology Overview
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "500" }}
+                            >
+                              Optimizes and manages internal processes and
+                              technology.
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          item
+                          sm={0.7}
+                          style={{ justifyContent: "flex-end" }}
+                        >
+                          <Box
+                            sx={{
+                              p: 1,
+                              background: "#ff7b00d3",
+                              borderRadius: "50%",
+                              width: "3rem",
+                              height: "3rem",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button
+                              className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                              onClick={openPrimaryIPModal}
+                            >
+                              <div className="flex flex-row">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  className="size-8"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      {/* add modal here */}
+                      {isPrimaryIPModalOpen && (
+                        <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                          <Box
+                            className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                            sx={{
+                              width: "60%",
+                              height: "85%",
+                              maxWidth: "95vw",
+                              maxHeight: "95vh",
+                              // maxHeight: '100vh',
+                            }}
+                          >
+                            <p className="text-xl font-bold mb-4">
+                              Internal Process Strategy
+                            </p>
+                            <div className="flex flex-col mb-1">
+                              <Typography sx={{ fontWeight: 800 }}>
+                                Target Code
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                            </div>
+                            <TextField
+                              variant="outlined"
+                              value={newPrimaryIPTargetCode}
+                              onChange={(e) =>
+                                setNewPrimaryIPTargetCode(e.target.value)
+                              }
+                              sx={{
+                                height: "35px",
+                                "& .MuiInputBase-root": { height: "35px" },
+                              }}
+                            />
+                            <Box>
+                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                Strategy
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                              <span className="mb-3">
+                                Before inputting a strategy, please follow this
+                                format.
+                              </span>
+                              <span>
+                                <br />
+                                1. Choose one of the following{" "}
+                                <span className="font-bold">
+                                  strategic themes
+                                </span>
+                                :
+                              </span>
+                              <ul className="list-disc ml-10 mb-2">
+                                <li className="font-bold">
+                                  Excellence in Service Quality
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Internal Service Systems
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Organizational Stewardship
+                                </li>
+                              </ul>
+                              <span>
+                                2. After selecting the theme, leave a space and
+                                then input the{" "}
+                                <span className="font-bold">target code</span>{" "}
+                                followed by a colon{" "}
+                                <span className="font-bold">(:)</span>
+                              </span>
+                              <span>
+                                <br />
+                                3. Finally, write the{" "}
+                                <span className="font-bold">strategy.</span>
+                              </span>
+                              <br />
+                              <span>
+                                <br />
+                                The correct format should be:{" "}
+                                <span className="font-bold">
+                                  Strategic Theme Target Code: Strategy
+                                </span>
+                              </span>
+                              <span className="font-bold">
+                                <br />
+                                Example:{" "}
+                                <span className="font-bold text-red-500">
+                                  Excellence in Service Quality T001: Improve
+                                  customer response time.
+                                </span>
+                              </span>
+
+                              <Grid item sx={{ mt: 2 }}>
+                                <TextField
+                                  value={newPrimaryIPStrategy}
+                                  onChange={(e) =>
+                                    setNewPrimaryIPStrategy(e.target.value)
+                                  }
+                                  multiline
+                                  rows={3}
+                                  sx={{
+                                    width: "100%",
+                                    overflowY: "auto",
+                                    "& .MuiInputBase-root": {},
+                                  }}
+                                />
+                              </Grid>
+                            </Box>
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                                mt: 3,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                onClick={closePrimaryIPModal}
+                                sx={{ width: 150, color: "#AB3510" }}
+                                style={{
+                                  background: "white",
+                                  border: "1px solid #AB3510",
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={async () => {
+                                  await handlePrimaryIPSave(); //change
+                                  fetchExistingStrategies(department_id); //change
+                                }}
+                                style={{
+                                  background:
+                                    "linear-gradient(to left, #8a252c, #AB3510)",
+                                  width: 150,
+                                }}
+                              >
+                                Save
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Box>
+                      )}
+
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        justifyContent="space-between"
+                      >
+                        <Grid item xs={12}>
+                          {primaryInternalProcessStrategies.map(
+                            // Map the fetched primary data directly
+                            (strategy: GeneratedSentence, index: number) => (
+                              <div
+                                key={strategy.id}
+                                className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                }`}
+                              >
+                                <Typography>{strategy.value}</Typography>
+                              </div>
+                            )
+                          )}
+                        </Grid>
+                      </Grid>
+                    </StyledBox>
+                  </Cards>
+
+                  {/* STAKEHOLDER PRIMARY */}
+                  <Cards sx={{ borderColor: "black", borderWidth: 1, mt: 5 }}>
+                    <StyledBox sx={{ background: "white", borderRadius: 2 }}>
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        sx={{
+                          ml: 1,
+                          height: "85px",
+                          "& .MuiInputBase-root": { height: "85px" },
+                        }}
+                      >
+                        <Grid item sm={11.3} container alignItems="center">
+                          <Box>
+                            <img
+                              src="/stakeholder.png"
+                              alt=""
+                              className="h-[5rem]"
+                            />
+                          </Box>
+                          <Box sx={{ ml: 1 }}>
+                            <Typography sx={{ fontWeight: "bolder" }}>
+                              <span className="text-[#ff7b00d3]">
+                                Stakeholder:
+                              </span>{" "}
+                              Client Relationship Overview
+                            </Typography>
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: "500" }}
+                            >
+                              Measures client engagement quality and value.
+                            </Typography>
+                          </Box>
+                        </Grid>
+                        <Grid
+                          item
+                          sm={0.7}
+                          style={{ justifyContent: "flex-end" }}
+                        >
+                          <Box
+                            sx={{
+                              p: 1,
+                              background: "#ff7b00d3",
+                              borderRadius: "50%",
+                              width: "3rem",
+                              height: "3rem",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            <button
+                              className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                              onClick={openPrimarySModal}
+                            >
+                              <div className="flex flex-row">
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  viewBox="0 0 24 24"
+                                  fill="currentColor"
+                                  className="size-8"
+                                >
+                                  <path
+                                    fill-rule="evenodd"
+                                    d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                    clip-rule="evenodd"
+                                  />
+                                </svg>
+                              </div>
+                            </button>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                      {/* add modal here */}
+                      {isPrimarySModalOpen && (
+                        <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                          <Box
+                            className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                            sx={{
+                              width: "60%",
+                              height: "85%",
+                              maxWidth: "95vw",
+                              maxHeight: "95vh",
+                              // maxHeight: '100vh',
+                            }}
+                          >
+                            <p className="text-xl font-bold mb-4">
+                              Stakeholder Strategy
+                            </p>
+                            <div className="flex flex-col mb-1">
+                              <Typography sx={{ fontWeight: 800 }}>
+                                Target Code
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                            </div>
+                            <TextField
+                              variant="outlined"
+                              value={newPrimarySTargetCode}
+                              onChange={(e) =>
+                                setNewPrimarySTargetCode(e.target.value)
+                              }
+                              sx={{
+                                height: "35px",
+                                "& .MuiInputBase-root": { height: "35px" },
+                              }}
+                            />
+                            <Box>
+                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                                Strategy
+                                <span className="text-[#DD1414]">*</span>
+                              </Typography>
+                              <span className="mb-3">
+                                Before inputting a strategy, please follow this
+                                format.
+                              </span>
+                              <span>
+                                <br />
+                                1. Choose one of the following{" "}
+                                <span className="font-bold">
+                                  strategic themes
+                                </span>
+                                :
+                              </span>
+                              <ul className="list-disc ml-10 mb-2">
+                                <li className="font-bold">
+                                  Excellence in Service Quality
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Internal Service Systems
+                                </li>
+                                <li className="font-bold">
+                                  Excellence in Organizational Stewardship
+                                </li>
+                              </ul>
+                              <span>
+                                2. After selecting the theme, leave a space and
+                                then input the{" "}
+                                <span className="font-bold">target code</span>{" "}
+                                followed by a colon{" "}
+                                <span className="font-bold">(:)</span>
+                              </span>
+                              <span>
+                                <br />
+                                3. Finally, write the{" "}
+                                <span className="font-bold">strategy.</span>
+                              </span>
+                              <br />
+                              <span>
+                                <br />
+                                The correct format should be:{" "}
+                                <span className="font-bold">
+                                  Strategic Theme Target Code: Strategy
+                                </span>
+                              </span>
+                              <span className="font-bold">
+                                <br />
+                                Example:{" "}
+                                <span className="font-bold text-red-500">
+                                  Excellence in Service Quality T001: Improve
+                                  customer response time.
+                                </span>
+                              </span>
+
+                              <Grid item sx={{ mt: 2 }}>
+                                <TextField
+                                  value={newPrimarySStrategy}
+                                  onChange={(e) =>
+                                    setNewPrimarySStrategy(e.target.value)
+                                  }
+                                  multiline
+                                  rows={3}
+                                  sx={{
+                                    width: "100%",
+                                    overflowY: "auto",
+                                    "& .MuiInputBase-root": {},
+                                  }}
+                                />
+                              </Grid>
+                            </Box>
+
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                                mt: 3,
+                                flexWrap: "wrap",
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                onClick={closePrimarySModal}
+                                sx={{ width: 150, color: "#AB3510" }}
+                                style={{
+                                  background: "white",
+                                  border: "1px solid #AB3510",
+                                }}
+                              >
+                                Cancel
+                              </Button>
+                              <Button
+                                variant="contained"
+                                onClick={async () => {
+                                  await handlePrimarySSave(); //change
+                                  fetchExistingStrategies(department_id); //change
+                                }}
+                                style={{
+                                  background:
+                                    "linear-gradient(to left, #8a252c, #AB3510)",
+                                  width: 150,
+                                }}
+                              >
+                                Save
+                              </Button>
+                            </Box>
+                          </Box>
+                        </Box>
+                      )}
+
+                      <Grid
+                        container
+                        alignItems="center"
+                        p={1}
+                        justifyContent="space-between"
+                      >
+                        <Grid item xs={12}>
+                          {primaryStakeholderStrategies.map(
+                            // Map the fetched primary data directly
+                            (strategy: GeneratedSentence, index: number) => (
+                              <div
+                                key={strategy.id}
+                                className={`flex justify-between items-center p-7 m-5 w-auto ${
+                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                }`}
+                              >
+                                <Typography>{strategy.value}</Typography>
+                              </div>
+                            )
+                          )}
+                        </Grid>
+                      </Grid>
+                    </StyledBox>
+                  </Cards>
+                </>
+              )}
+              {currentView === "secondary" && (
+                <>
+                  {/* ADD DROPDOWN HERE */}
+                  <Box sx={{ display: "flex", alignItems: "center", mt: -2 }}>
+                    <select
+                      id="departmentSelect"
+                      className="border border-gray-200 shadow-sm rounded-xl mb-8 px-3 py-2 w-full md:w-[full] h-[4rem]"
+                      onChange={handleDepartmentChange}
+                    >
+                      <option value="">Select a department</option>
+                      {departments.map((department) => (
+                        <option key={department.id} value={department.id}>
+                          {department.department_name}
+                        </option>
+                      ))}
+                    </select>
+                  </Box>
+                  {/* ADD !SELECTED DEP HERE */}
+                  {!selectedDepartment && (
+                    <div className="items-center align-middle mt-10 justify-center text-center">
+                      <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[97%] h-auto md:h-[30rem]">
+                        <div className="flex flex-col mt-28">
+                          <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                            Please Select a Department
+                          </span>
+                          <span className="font-medium mt-5 text-base md:text-[1.3rem] text-gray-300">
+                            Please select a department from the dropdown menu
+                            <br /> to view the mapped strategies.
+                          </span>
                         </div>
                       </div>
-                    )}
-                    {/* kung unsay giselect nga dep, ari mopakita ang info */}
-                    {selectedDepartment && (
-                        <div>
-                            {/* FINANCIAL */}
-                            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                              <div className="flex flex-col w-[100%]">
-                                <div className="flex flex-row">
-                                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                                    <img
-                                      src="/financial.png"
-                                      alt=""
-                                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        <span className="text-[#ff7b00d3]">Financial:</span> Stewardship Overview
-                                      </span>
-                                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        Measures financial performance and profitability.
+                    </div>
+                  )}
+                  {selectedDepartment && (
+                    <>
+                      <Cards>
+                        <StyledBox
+                          sx={{ background: "white", borderRadius: 2 }}
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            sx={{
+                              ml: 1,
+                              height: "85px",
+                              "& .MuiInputBase-root": { height: "85px" },
+                            }}
+                          >
+                            <Grid item sm={11.3} container alignItems="center">
+                              <Box>
+                                <img
+                                  src="/financial.png"
+                                  alt=""
+                                  className="h-[5rem]"
+                                />
+                              </Box>
+                              <Box sx={{ ml: 1 }}>
+                                <Typography sx={{ fontWeight: "bolder" }}>
+                                  <span className="text-[#ff7b00d3]">
+                                    Financial:
+                                  </span>{" "}
+                                  Stewardship Overview
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: "500" }}
+                                >
+                                  Measures financial performance and
+                                  profitability.
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          </Grid>
+
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            justifyContent="space-between"
+                          >
+                            <Grid item xs={12}>
+                              {strategies.financial.length > 0 ? (
+                                <>
+                                  {strategies.financial.map(
+                                    (
+                                      strategy: GeneratedSentence,
+                                      index: number
+                                    ) => (
+                                      <div
+                                        key={strategy.id}
+                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                          index % 2 === 0
+                                            ? "bg-[#fff6d1]"
+                                            : "bg-white"
+                                        }`}
+                                      >
+                                        <Typography>
+                                          {strategy.value}
+                                        </Typography>
+                                      </div>
+                                    )
+                                  )}
+                                </>
+                              ) : (
+                                <div className="items-center align-middle justify-center text-center">
+                                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
+                                    <div className="flex flex-col mt-28">
+                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                        No strategies exist for this
+                                        perspective... yet.
                                       </span>
                                     </div>
                                   </div>
                                 </div>
+                              )}
+                            </Grid>
+                          </Grid>
+                        </StyledBox>
+                      </Cards>
 
-                                {/* Check if strategies exist for this perspective */}
-                                {strategies.financial.length > 0 ? (
-                                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                                    {strategies.financial.map(
-                                      (strategy: GeneratedSentence,  index: number) => (
-                                        <div
-                                          key={strategy.fID} 
-                                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                                        >
-                                          {/* Display mode only */}
-                                          <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium flex items-center"> 
-                                            {strategy.value} 
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  // Display "No Strategies" message if no strategies exist
-                                  <div className="items-center align-middle mt-10 justify-center text-center">
-                                    <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[97%] h-[30rem]"> 
-                                      <div className="flex flex-col mt-28">
-                                        <span className="font-bold text-[3rem] text-gray-300 text-center">
-                                          No strategies exist for this perspective... yet.
-                                        </span>
+                      <Cards sx={{ mt: 5 }}>
+                        <StyledBox
+                          sx={{ background: "white", borderRadius: 2 }}
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            sx={{
+                              ml: 1,
+                              height: "85px",
+                              "& .MuiInputBase-root": { height: "85px" },
+                            }}
+                          >
+                            <Grid item sm={11.3} container alignItems="center">
+                              <Box>
+                                <img
+                                  src="/learning.png"
+                                  alt=""
+                                  className="h-[5rem]"
+                                />
+                              </Box>
+                              <Box sx={{ ml: 1 }}>
+                                <Typography sx={{ fontWeight: "bolder" }}>
+                                  <span className="text-[#ff7b00d3]">
+                                    Learning & Growth:
+                                  </span>{" "}
+                                  Culture & People Development Overview
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: "500" }}
+                                >
+                                  Enhances organizational culture and employee
+                                  growth.
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          </Grid>
+
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            justifyContent="space-between"
+                          >
+                            <Grid item xs={12}>
+                              {strategies.learningGrowth.length > 0 ? (
+                                <>
+                                  {strategies.learningGrowth.map(
+                                    (
+                                      strategy: GeneratedSentence,
+                                      index: number
+                                    ) => (
+                                      <div
+                                        key={strategy.id}
+                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                          index % 2 === 0
+                                            ? "bg-[#fff6d1]"
+                                            : "bg-white"
+                                        }`}
+                                      >
+                                        <Typography>
+                                          {strategy.value}
+                                        </Typography>
                                       </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                              </div>
-                            </div>
-
-                            {/* // STAKEHOLDER */}
-                            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                              <div className="flex flex-col w-[100%]">
-                                <div className="flex flex-row">
-                                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                                    <img
-                                      src="/stakeholder.png" // Updated image source
-                                      alt=""
-                                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        <span className="text-[#ff7b00d3]">Stakeholder:</span> Client Relationship Overview
-                                      </span>
-                                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        Measures client engagement quality and value.
+                                    )
+                                  )}
+                                </>
+                              ) : (
+                                <div className="items-center align-middle justify-center text-center">
+                                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
+                                    <div className="flex flex-col mt-28">
+                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                        No strategies exist for this
+                                        perspective... yet.
                                       </span>
                                     </div>
                                   </div>
                                 </div>
+                              )}
+                            </Grid>
+                          </Grid>
+                        </StyledBox>
+                      </Cards>
 
-                                {/* Check if strategies exist for this perspective */}
-                                {strategies.stakeholder.length > 0 ? ( // Updated strategies array
-                                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                                    {strategies.stakeholder.map( // Updated strategies array
-                                      (strategy: GeneratedSentence, index: number) => (
-                                        <div
-                                          key={strategy.id}
-                                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                                        >
-                                          <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                            {strategy.value}
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  // Display "No Strategies" message if no strategies exist
-                                  <div className="items-center align-middle mt-10 justify-center text-center">
-                                    <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[97%] h-[30rem]"> 
-                                      <div className="flex flex-col mt-28">
-                                        <span className="font-bold text-[3rem] text-gray-300 text-center">
-                                          No strategies exist for this perspective... yet.
-                                        </span>
+                      <Cards sx={{ mt: 5 }}>
+                        <StyledBox
+                          sx={{ background: "white", borderRadius: 2 }}
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            sx={{
+                              ml: 1,
+                              height: "85px",
+                              "& .MuiInputBase-root": { height: "85px" },
+                            }}
+                          >
+                            <Grid item sm={11.3} container alignItems="center">
+                              <Box>
+                                <img
+                                  src="/internal.png"
+                                  alt=""
+                                  className="h-[5rem]"
+                                />
+                              </Box>
+                              <Box sx={{ ml: 1 }}>
+                                <Typography sx={{ fontWeight: "bolder" }}>
+                                  <span className="text-[#ff7b00d3]">
+                                    Internal Process:
+                                  </span>{" "}
+                                  Process & Technology Overview
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: "500" }}
+                                >
+                                  Optimizes and manages internal processes and
+                                  technology.
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          </Grid>
+
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            justifyContent="space-between"
+                          >
+                            <Grid item xs={12}>
+                              {strategies.internalProcess.length > 0 ? (
+                                <>
+                                  {strategies.internalProcess.map(
+                                    (
+                                      strategy: GeneratedSentence,
+                                      index: number
+                                    ) => (
+                                      <div
+                                        key={strategy.id}
+                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                          index % 2 === 0
+                                            ? "bg-[#fff6d1]"
+                                            : "bg-white"
+                                        }`}
+                                      >
+                                        <Typography>
+                                          {strategy.value}
+                                        </Typography>
                                       </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                              </div>
-                            </div>
-                            
-                            {/* // INTERNAL PROCESS */}
-                            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                              <div className="flex flex-col w-[100%]">
-                                <div className="flex flex-row">
-                                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                                    <img
-                                      src="/internal.png" // Updated image source
-                                      alt=""
-                                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        <span className="text-[#ff7b00d3]">Internal Process:</span> Process & Technology Overview
-                                      </span>
-                                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        Optimizes and manages internal processes and technology.
+                                    )
+                                  )}
+                                </>
+                              ) : (
+                                <div className="items-center align-middle justify-center text-center">
+                                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
+                                    <div className="flex flex-col mt-28">
+                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                        No strategies exist for this
+                                        perspective... yet.
                                       </span>
                                     </div>
                                   </div>
                                 </div>
+                              )}
+                            </Grid>
+                          </Grid>
+                        </StyledBox>
+                      </Cards>
 
-                                {/* Check if strategies exist for this perspective */}
-                                {strategies.internalProcess.length > 0 ? ( // Updated strategies array
-                                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                                    {strategies.internalProcess.map( // Updated strategies array
-                                      (strategy: GeneratedSentence, index: number) => (
-                                        <div
-                                          key={strategy.id}
-                                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                                        >
-                                          <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                            {strategy.value}
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  // Display "No Strategies" message if no strategies exist
-                                  <div className="items-center align-middle mt-10 justify-center text-center">
-                                    <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[97%] h-[30rem]"> 
-                                      <div className="flex flex-col mt-28">
-                                        <span className="font-bold text-[3rem] text-gray-300 text-center">
-                                          No strategies exist for this perspective... yet.
-                                        </span>
+                      <Cards sx={{ mt: 5 }}>
+                        <StyledBox
+                          sx={{ background: "white", borderRadius: 2 }}
+                        >
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            sx={{
+                              ml: 1,
+                              height: "85px",
+                              "& .MuiInputBase-root": { height: "85px" },
+                            }}
+                          >
+                            <Grid item sm={11.3} container alignItems="center">
+                              <Box>
+                                <img
+                                  src="/stakeholder.png"
+                                  alt=""
+                                  className="h-[5rem]"
+                                />
+                              </Box>
+                              <Box sx={{ ml: 1 }}>
+                                <Typography sx={{ fontWeight: "bolder" }}>
+                                  <span className="text-[#ff7b00d3]">
+                                    Stakeholder:
+                                  </span>{" "}
+                                  Client Relationship Overview
+                                </Typography>
+                                <Typography
+                                  variant="body2"
+                                  sx={{ fontWeight: "500" }}
+                                >
+                                  Measures client engagement quality and value.
+                                </Typography>
+                              </Box>
+                            </Grid>
+                          </Grid>
+
+                          <Grid
+                            container
+                            alignItems="center"
+                            p={1}
+                            justifyContent="space-between"
+                          >
+                            <Grid item xs={12}>
+                              {strategies.stakeholder.length > 0 ? (
+                                <>
+                                  {strategies.stakeholder.map(
+                                    (
+                                      strategy: GeneratedSentence,
+                                      index: number
+                                    ) => (
+                                      <div
+                                        key={strategy.id}
+                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                          index % 2 === 0
+                                            ? "bg-[#fff6d1]"
+                                            : "bg-white"
+                                        }`}
+                                      >
+                                        <Typography>
+                                          {strategy.value}
+                                        </Typography>
                                       </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                              </div>
-                            </div>
-
-                            {/* // LEARNING & GROWTH */}
-                            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF]  mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98.5%] h-auto mb-10 rounded-lg">
-                              <div className="flex flex-col w-[100%]">
-                                <div className="flex flex-row">
-                                  <div className="flex flex-row p-1 h-auto ml-[-1rem]">
-                                    <img
-                                      src="/learning.png" // Updated image source
-                                      alt=""
-                                      className=" h-[5rem] mb-5 mr-5 mt-[-0.6rem]"
-                                    />
-                                    <div className="flex flex-col">
-                                      <span className="font-bold text-[1.3rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        <span className="text-[#ff7b00d3]">Learning & Growth:</span> Culture & People Development Overview
-                                      </span>
-                                      <span className="font-regular text-[1rem] text-[rgb(59,59,59)] ml-[-0.5rem]">
-                                        Enhances organizational culture and employee growth.
+                                    )
+                                  )}
+                                </>
+                              ) : (
+                                <div className="items-center align-middle justify-center text-center">
+                                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
+                                    <div className="flex flex-col mt-28">
+                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                        No strategies exist for this
+                                        perspective... yet.
                                       </span>
                                     </div>
                                   </div>
                                 </div>
+                              )}
+                            </Grid>
+                          </Grid>
+                        </StyledBox>
+                      </Cards>
 
-                                {/* Check if strategies exist for this perspective */}
-                                {strategies.learningGrowth.length > 0 ? ( // Updated strategies array
-                                  <div className="bg-[#ffffff] mt-[-1rem] w-[100%] h-auto flex flex-col pt-4 pr-3 pb-6 box-sizing-border rounded-lg mb-10 overflow-y-auto overflow-x-hidden">
-                                    {strategies.learningGrowth.map( // Updated strategies array
-                                      (strategy: GeneratedSentence, index: number) => (
-                                        <div
-                                          key={strategy.id}
-                                          className={`flex items-center flex-row pt-4 pr-5 pb-4 w-[100%] ${index % 2 === 0 ? 'bg-[#fff6d1]' : 'bg-white'}`}
-                                        >
-                                          <div className="pr-3 pl-3 w-[100%] h-10 mt-2 font-medium">
-                                            {strategy.value}
-                                          </div>
-                                        </div>
-                                      )
-                                    )}
-                                  </div>
-                                ) : (
-                                  // Display "No Strategies" message if no strategies exist
-                                  <div className="items-center align-middle mt-10 justify-center text-center">
-                                    <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[97%] h-[30rem]"> 
-                                      <div className="flex flex-col mt-28">
-                                        <span className="font-bold text-[3rem] text-gray-300 text-center">
-                                          No strategies exist for this perspective... yet.
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                )}
-
-                              </div>
-                            </div>
-                        </div>
-                    )}
-                </div>
-            )}
-
-          </div>
-        </div>
-      </div>
-    );
-  }
+                      {/* end here */}
+                    </>
+                  )}
+                </>
+              )}
+            </Box>
+          </Grid>
+        </StyledBox>
+      </Box>
+    </Box>
+  );
+}

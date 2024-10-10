@@ -1,17 +1,27 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import QANavbar from "../components/QANavbar";
-import QAPrimaryFinancial from "../components/QAPrimaryFinancial";
-import QAPrimaryStakeholder from "../components/QAPrimaryStakeholder";
-import QAPrimaryInternal from "../components/QAPrimaryInternal";
-import QAPrimaryLearning from "../components/QAPrimaryLearning";
+import QANavbar from "../components/Navbars/QANavbar";
+import QAPrimaryFinancial from "../components/QABSC/QAPrimaryFinancial";
+import QAPrimaryStakeholder from "../components/QABSC/QAPrimaryStakeholder";
+import QAPrimaryInternal from "../components/QABSC/QAPrimaryInternal";
+import QAPrimaryLearning from "../components/QABSC/QAPrimaryLearning";
 import { toast } from "react-toastify";
 import Select from "react-select"; // Import react-select
 import { useSession } from "next-auth/react";
-import QAFinancial from "../components/QAFinancial";
-import QAStakeholder from "../components/QAStakeholder";
-import QAInternal from "../components/QAInternal";
-import QALearning from "../components/QALearning";
+import QAFinancial from "../components/QABSC/QAFinancial";
+import QAStakeholder from "../components/QABSC/QAStakeholder";
+import QAInternal from "../components/QABSC/QAInternal";
+import QALearning from "../components/QABSC/QALearning";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Grid,
+  ListItem,
+  Typography,
+} from "@mui/material";
+import Navbar from "../components/Navbars/Navbar";
 
 interface Department {
   id: number;
@@ -82,180 +92,300 @@ const QAScorecard = () => {
     value: department.id,
     label: department.department_name,
   }));
- 
+
   return (
-    <div className="flex flex-row w-full h-screen">
-      <QANavbar />
-      <div className="flex-1 flex flex-col mt-8 ml-80">
-        <div className="flex flex-row">
-          <div className="mb-5 mt-[0rem] inline-block break-words font-bold text-[3rem] text-[rgb(59,59,59)]">
-            BALANCE SCORECARD
-          </div>
-          <div className="flex justify-center lg:ml-[46rem] md:ml-[40rem] mt-[0.5rem] border border-gray-200 bg-gray w-[18rem] h-[4rem] rounded-xl gap-2 px-1 py-1 text-md font-medium">
-            <button
+    <Grid
+      sx={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "row",
+      }}
+    >
+      <Grid>
+        <QANavbar />
+      </Grid>
+      <Grid
+        container
+        direction="column"
+        sx={{
+          mt: 2, // Add some margin at the top
+          px: 4, // Optional: Add some padding on the left and right
+        }}
+      >
+        <Box
+          sx={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Typography
+            sx={{
+              fontSize: "4rem",
+              fontWeight: "bold",
+              color: "#3B3B3B",
+            }}
+          >
+            Balanced Scorecard
+          </Typography>
+
+          {/* View Buttons */}
+          <Box
+            display="flex"
+            justifyContent="center"
+            alignItems="center"
+            width="18rem"
+            height="4rem"
+            borderRadius={2}
+            sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+          >
+            <Button
               onClick={() => changeView("primary")}
-              className={`rounded-lg w-[15rem] ${
-                currentView === "primary"
-                  ? "bg-[#A43214] text-white"
-                  : "border text-[#A43214]"
-              } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}
+              variant={currentView === "primary" ? "contained" : "outlined"}
+              fullWidth
+              sx={{
+                background:
+                  currentView === "primary"
+                    ? "linear-gradient(to left, #8a252c, #AB3510)"
+                    : "transparent",
+                color: currentView === "primary" ? "white" : "#AB3510",
+                flexGrow: 1, // Ensure both buttons have equal size
+                height: "100%", // Match the height of the container
+                border: "1px solid transparent", // Keep border style consistent
+                transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                "&:hover": {
+                  background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  color: "white", // Change text color on hover
+                  border:
+                    currentView === "primary" ? "none" : "0.5px solid #AB3510", // Border on hover if not current
+                },
+              }}
             >
               PRIMARY
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => changeView("secondary")}
-              className={`rounded-lg w-[10rem] ${
-                currentView === "secondary"
-                  ? "bg-[#A43214] text-white"
-                  : "border text-[#A43214]"
-              } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white px-6`}
+              variant={currentView === "secondary" ? "contained" : "outlined"}
+              fullWidth
+              sx={{
+                background:
+                  currentView === "secondary"
+                    ? "linear-gradient(to left, #8a252c, #AB3510)"
+                    : "transparent",
+                color: currentView === "secondary" ? "white" : "#AB3510",
+                flexGrow: 1, // Ensure both buttons have equal size
+                height: "100%", // Match the height of the container
+                border: "1px solid transparent", // Keep border style consistent
+                transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                "&:hover": {
+                  background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                  color: "white", // Change text color on hover
+                  border:
+                    currentView === "secondary"
+                      ? "none"
+                      : "0.5px solid #AB3510", // Border on hover if not current
+                },
+              }}
             >
               SECONDARY
-            </button>
-          </div>
-        </div>
-
-        <div className="break-words font font-normal text-[1.3rem] text-[#504C4C] mb-10">
+            </Button>
+          </Box>
+        </Box>
+        <Typography
+          sx={{
+            fontSize: "1.4rem",
+          }}
+        >
           Explore the Balanced Scorecard feature to gain a comprehensive view of
           your organization&apos;s performance across different dimensions. Use
           it to set clear objectives, track progress, and drive strategic
           initiatives for success.
-        </div>
+        </Typography>
+
+        <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
+          <Select
+            options={departmentOptions}
+            onChange={handleDepartmentChange}
+            placeholder="Select Department"
+            value={
+              selectedDepartmentId
+                ? departmentOptions.find(
+                    (option) => option.value === selectedDepartmentId
+                  )
+                : null
+            }
+            className="w-80 border border-gray-300 rounded-lg"
+            styles={{
+              option: (provided, state) => ({
+                ...provided,
+                backgroundColor: state.isFocused ? "#A43214" : "white", // Background color when focused
+                color: state.isFocused ? "white" : "black", // Text color when focused
+                cursor: "pointer",
+                "&:active": {
+                  backgroundColor: "#A43214", // Background color when selected
+                  color: "white", // Text color when selected
+                },
+              }),
+              control: (provided) => ({
+                ...provided,
+                borderColor: "gray", // Border color for the select control
+                boxShadow: "none", // Remove the default blue outline
+                "&:hover": {
+                  borderColor: "#A43214", // Border color on hover
+                },
+              }),
+              menu: (provided) => ({
+                ...provided,
+                zIndex: 9999, // Ensure dropdown appears above other elements
+              }),
+              menuList: (provided) => ({
+                ...provided,
+                padding: 0, // Remove padding for menu list
+              }),
+            }}
+          />
+        </Box>
 
         {currentView === "primary" && (
-          <div>
-            <div className="flex mb-5 justify-end font-medium mr-[2rem]">
-              <Select
-                options={departmentOptions}
-                onChange={handleDepartmentChange}
-                placeholder="Select Department"
-                value={
-                  selectedDepartmentId
-                    ? departmentOptions.find(
-                        (option) => option.value === selectedDepartmentId
-                      )
-                    : null
-                }
-                className="w-[20rem] border border-gray-300 rounded-lg"
-                styles={{
-                  option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isFocused ? "#A43214" : "white", // Background color when focused
-                    color: state.isFocused ? "white" : "black", // Text color when focused
-                    cursor: "pointer",
-                    "&:active": {
-                      backgroundColor: "#A43214", // Background color when selected
-                      color: "white", // Text color when selected
-                    },
-                  }),
-                  control: (provided) => ({
-                    ...provided,
-                    borderColor: "gray", // Border color for the select control
-                    boxShadow: "none", // Remove the default blue outline
-                    "&:hover": {
-                      borderColor: "#A43214", // Border color on hover
-                    },
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 9999, // Ensure dropdown appears above other elements
-                  }),
-                  menuList: (provided) => ({
-                    ...provided,
-                    padding: 0, // Remove padding for menu list
-                  }),
+          <Grid container>
+            <Box width="100%">
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
                 }}
-              />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAPrimaryFinancial
-                selectedDepartmentId={selectedDepartmentId}
-                departments={departments}
-              />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAPrimaryStakeholder
-                selectedDepartmentId={selectedDepartmentId}
-                departments={departments}
-              />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAPrimaryInternal
-                selectedDepartmentId={selectedDepartmentId}
-                departments={departments}
-              />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAPrimaryLearning
-                selectedDepartmentId={selectedDepartmentId}
-                departments={departments}
-              />
-            </div>
-          </div>
+              >
+                <CardContent>
+                  <QAPrimaryFinancial
+                    selectedDepartmentId={selectedDepartmentId}
+                    departments={departments}
+                  />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAPrimaryStakeholder
+                    selectedDepartmentId={selectedDepartmentId}
+                    departments={departments}
+                  />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAPrimaryInternal
+                    selectedDepartmentId={selectedDepartmentId}
+                    departments={departments}
+                  />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAPrimaryLearning
+                    selectedDepartmentId={selectedDepartmentId}
+                    departments={departments}
+                  />
+                </CardContent>
+              </Card>
+            </Box>
+          </Grid>
         )}
-
         {currentView === "secondary" && (
-          <div>
-            {/* Department selection dropdown with react-select */}
-            <div className="flex mb-5 justify-end font-medium mr-[2rem]">
-              <Select
-                options={departmentOptions}
-                onChange={handleDepartmentChange}
-                value={
-                  selectedDepartmentId
-                    ? departmentOptions.find(
-                        (option) => option.value === selectedDepartmentId
-                      )
-                    : null
-                }
-                placeholder="Select Department"
-                className="w-[20rem] border border-gray-300 rounded-lg"
-                styles={{
-                  option: (provided, state) => ({
-                    ...provided,
-                    backgroundColor: state.isFocused ? "#A43214" : "white", // Background color when focused
-                    color: state.isFocused ? "white" : "black", // Text color when focused
-                    cursor: "pointer",
-                    "&:active": {
-                      backgroundColor: "#A43214", // Background color when selected
-                      color: "white", // Text color when selected
-                    },
-                  }),
-                  control: (provided) => ({
-                    ...provided,
-                    borderColor: "gray", // Border color for the select control
-                    boxShadow: "none", // Remove the default blue outline
-                    "&:hover": {
-                      borderColor: "#A43214", // Border color on hover
-                    },
-                  }),
-                  menu: (provided) => ({
-                    ...provided,
-                    zIndex: 9999, // Ensure dropdown appears above other elements
-                  }),
-                  menuList: (provided) => ({
-                    ...provided,
-                    padding: 0, // Remove padding for menu list
-                  }),
+          <Grid container>
+            <Box width="100%">
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
                 }}
-              />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAFinancial selectedDepartmentId={selectedDepartmentId} />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAStakeholder selectedDepartmentId={selectedDepartmentId} />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QAInternal selectedDepartmentId={selectedDepartmentId} />
-            </div>
-            <div className="shadow-[0rem_0.3rem_0.3rem_0rem_rgba(0,0,0,0.25)] border border-gray-300 bg-[#FFFFFF] mr-10 flex flex-col pt-4 pr-5 pl-5 w-[98%] h-auto mb-10 rounded-lg pb-5">
-              <QALearning selectedDepartmentId={selectedDepartmentId} />
-            </div>
-          </div>
+              >
+                <CardContent>
+                  <QAFinancial selectedDepartmentId={selectedDepartmentId} />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAStakeholder selectedDepartmentId={selectedDepartmentId} />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAInternal selectedDepartmentId={selectedDepartmentId} />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QALearning selectedDepartmentId={selectedDepartmentId} />
+                </CardContent>
+              </Card>
+            </Box>
+          </Grid>
         )}
-      </div>
-    </div>
+      </Grid>
+    </Grid>
   );
 };
 

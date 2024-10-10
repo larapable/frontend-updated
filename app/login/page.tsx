@@ -1,12 +1,21 @@
 "use client";
 
-import { Button, Modal } from "@mui/material";
+import {
+  Box,
+  Button,
+  Divider,
+  IconButton,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/Misc/Spinner";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ReCAPTCHA from "react-google-recaptcha";
+import CloseIcon from "@mui/icons-material/Close";
 
 declare global {
   interface Window {
@@ -57,11 +66,11 @@ export default function LoginPage() {
       return;
     }
 
-    if (!captchaVerified) {
-      setErrorMessage("Please verify the reCAPTCHA.");
-      setErrorModalOpen(true);
-      return;
-    }
+    // if (!captchaVerified) {
+    //   setErrorMessage("Please verify the reCAPTCHA.");
+    //   setErrorModalOpen(true);
+    //   return;
+    // }
 
     try {
       setLoading(true);
@@ -79,11 +88,11 @@ export default function LoginPage() {
         setErrorModalOpen(true);
         setLoading(false);
         // Reset reCAPTCHA after failed login
-        if (reCaptchaRef.current) {
-          // Use the reset method from the grecaptcha object
-          window.grecaptcha.reset(reCaptchaRef.current.getValue());
-          setCaptchaVerified(false);
-        }
+        // if (reCaptchaRef.current) {
+        //   // Use the reset method from the grecaptcha object
+        //   window.grecaptcha.reset(reCaptchaRef.current.getValue());
+        //   setCaptchaVerified(false);
+        // }
         return;
       } else {
         const user = JSON.parse(session?.user?.name as string);
@@ -122,159 +131,272 @@ export default function LoginPage() {
   }
 
   return (
-    <>
-      <div className="h-screen flex lg:flex-row md:flex-col ">
-        <div className="flex flex-col items-center lg:mt-32 lg:ml-60 md:mt-16 md:ml-13">
-          <div className=" font-bold lg:text-[4.1rem] lg:mb-18 md:mt-10 md:text-[4rem] md:mb-10 ">
-            Login
-          </div>
-          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
-            <img src="/usernamelogo.png" className=" ml-4 w-7 h-7" />
-            <input
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              type="text"
-              placeholder="Username"
-              className="flex-1 font-medium placeholder-[#807979] bg-transparent focus:outline-none text-[1rem] px-3 py-1 mr-4"
-            />
-          </div>
-          <div className="border-[0.1rem] border-solid border-black border-opacity-60 rounded-lg w-[38rem] flex items-center mb-6 py-4">
-            <img src="/passwordlogo.png" className=" ml-4 w-7 h-7" />
-            <input
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              type="password"
-              placeholder="Password"
-              className="flex-1 font-medium placeholder-[#807979] bg-transparent focus:outline-none text-[1rem] px-3 py-1 mr-4"
-            />
-          </div>
-
-          <div className="flex flex-row gap-[3rem]">
-            <ReCAPTCHA
-              ref={reCaptchaRef}
-              sitekey="6LdT5T0qAAAAADX-EG0m12My_ZFX1PlPYZzLLwZf"
-              onChange={(token: string | null) => {
-                // Handle both string and null
-                if (token) {
-                  setCaptchaVerified(true);
-                  console.log("reCAPTCHA verified:", token);
-                } else {
-                  setCaptchaVerified(false);
-                  console.log("reCAPTCHA not verified");
-                }
-              }}
-              onExpired={handleCaptchaExpired}
-            />
-            <div className="flex justify-end">
-              <button
-                style={{
-                  background: "linear-gradient(to left, #8a252c, #AB3510)",
-                }}
-                className="rounded-lg text-white font-semibold text-xl w-[16rem] px-12 py-6 border[0.1rem] border-white mb-6 hover:bg-[#eec160] hover:text-white "
-                onClick={handleSubmit}
-              >
-                Login
-              </button>
-            </div>
-          </div>
-          <div className="text-lg mb-2 font-light">
-            Dont have an account?{" "}
-            <a href="/signup" className="font-bold text-black hover:underline">
-              Click here!
-            </a>
-          </div>
-          <div className="flex flex-row items-center">
-            <div className="flex-1 bg-[#807979] h-0.5 w-[17.3rem]"></div>
-            <div className="mx-4 text-bold">or</div>
-            <div className="flex-1 bg-[#807979] h-0.5 w-[17.3rem]"></div>
-          </div>
-          <a
-            href="/"
-            className="text-2xl text-[#8a252c] font-bold lg:mt-4 md:mt-4 md:mb-56 hover:underline"
+    <Box
+      justifyContent="center"
+      height="100vh"
+      display="flex"
+      flexDirection={{ lg: "row", md: "column" }}
+    >
+      <Box
+          display="flex"
+          flexDirection="column"
+          justifyContent="center"
+          alignItems="center"
+          // mt={{ lg: 20, md: 10 }}
+          // ml={{ lg: 15, md: 3 }}
+          mx="auto" // Center the Box horizontally
+      >
+        <Typography variant="h3" fontWeight="bold" mb={4}>
+          Login
+        </Typography>
+        <Box
+          display="flex"
+          alignItems="center"
+          mb={2}
+          py={1}
+          px={2}
+          width="35rem"
+          border="1px solid rgba(0, 0, 0, 0.6)"
+          borderRadius="8px"
+        >
+          <img
+            src="/usernamelogo.png"
+            alt="Username"
+            width={28}
+            height={28}
+            style={{ marginRight: 16 }}
+          />
+          <TextField
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="Username"
+            variant="standard"
+            InputProps={{ disableUnderline: true }}
+            fullWidth
+          />
+        </Box>
+        <Box
+          display="flex"
+          alignItems="center"
+          mb={2}
+          py={1}
+          px={2}
+          width="35rem"
+          border="1px solid rgba(0, 0, 0, 0.6)"
+          borderRadius="8px"
+        >
+          <img
+            src="/passwordlogo.png"
+            alt="Password"
+            width={28}
+            height={28}
+            style={{ marginRight: 16 }}
+          />
+          <TextField
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            type="password"
+            placeholder="Password"
+            variant="standard"
+            InputProps={{ disableUnderline: true }}
+            fullWidth
+          />
+        </Box>
+        <Box display="flex" gap={3} mb={2}>
+          {/* <ReCAPTCHA
+            ref={reCaptchaRef}
+            sitekey="6LdT5T0qAAAAADX-EG0m12My_ZFX1PlPYZzLLwZf"
+            onChange={(token) => {
+              setCaptchaVerified(!!token);
+              console.log("reCAPTCHA verified:", token);
+            }}
+            onExpired={handleCaptchaExpired}
+          /> */}
+          <Button
+            variant="contained"
+            style={{
+              background: "linear-gradient(to left, #8a252c, #AB3510)",
+              fontWeight: "bold",
+            }}
+            onClick={handleSubmit}
+            sx={{
+              background: "linear-gradient(to left, #8a252c, #AB3510)",
+              borderRadius: "8px",
+              padding: "12px 24px",
+              width: "14rem",
+              height: "3rem",
+              "&:hover": {
+                backgroundColor: "#eec160",
+              },
+            }}
           >
-            Back Home
-          </a>
-        </div>
-        <div
-          style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-          className="flex flex-col items-center lg:w-full lg:ml-[12%] md:w-full"
+            Login
+          </Button>
+        </Box>
+        <Typography variant="body1" mb={2}>
+          Don't have an account?{" "}
+          <Typography
+            component="a"
+            href="/signup"
+            fontWeight="bold"
+            sx={{ textDecoration: "underline", color: "black" }}
+          >
+            Click here!
+          </Typography>
+        </Typography>
+        <Box display="flex" alignItems="center" width="100%">
+          <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
+          <Typography sx={{ mx: 2 }}>or</Typography>
+          <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
+        </Box>
+        <Button
+          href="/"
+          sx={{
+            mt: 2,
+            color: "#8a252c",
+            fontWeight: "bold",
+            fontSize: "20px",
+            textDecoration: "underline",
+          }}
         >
-          <img
-            src="wc-screen-scorecard.png"
-            className="w-28 h-28 mt-24 lg:mr-96 md:mr-[60%] mb-4 hover:scale-110 transition-transform"
-            alt="Scorecard"
-          />
-          <p className="text-white ml-40 mr-20 mb-16 font-bold text-2xl">
-            <span className="text-[#fad655]">Track key metrics</span>
-            <span>
-              , analyze trends, and make informed decisions to drive success.
-            </span>
-          </p>
-          <img
-            src="wc-screen-swot.png"
-            className="w-28 h-28 mt-4 lg:mr-96 md:mr-[60%] mb-4 hover:scale-110 transition-transform"
-            alt="SWOT"
-          />
-          <p className="text-white ml-40 mr-20 mb-16 font-bold text-2xl">
-            <span className="text-[#fad655]">
-              Identify strength, weaknesses, opportunities, and threats{" "}
-            </span>
-            <span>to your business.</span>
-          </p>
-          <img
-            src="wc-screen-stratmap.png"
-            className="w-28 h-28 mt-4 lg:mr-96 md:mr-[60%] mb-4 hover:scale-110 transition-transform"
-            alt="Strategy"
-          />
-          <p className="text-white ml-40 mr-20 mb-4 md:mb-16 font-bold text-2xl">
-            <span className="text-[#fad655]">Define objectives</span>
-            <span>
-              , outline initiatives, and map out your path to success.
-            </span>
-          </p>
-        </div>
-        <Modal
-          open={errorModalOpen}
-          onClose={handleCloseErrorModal}
-          aria-labelledby="error-modal-title"
-          aria-describedby="error-modal-description"
+          Back Home
+        </Button>
+      </Box>
+      <Box
+        sx={{
+          background: "linear-gradient(to left, #8a252c, #AB3510)",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "justify",
+          justifyContent: "center",
+          height: "auto",
+        }}
+      >
+        <img
+          src="wc-screen-scorecard.png"
+          alt="Scorecard"
+          style={{ width: 100, height: 100, marginLeft: 50 }}
+        />
+        <Typography
+          variant="h6"
+          color="white"
+          sx={{
+            px: 4,
+            mb: 4,
+            textAlign: "justify",
+            fontWeight: "bold",
+            mt: 4,
+            mr: 4,
+            ml: 4,
+          }}
         >
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className=" bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-              <button
-                onClick={handleCancelSave}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <p id="error-modal-title" className=" text-3xl font-bold mb-4">
-                Attention!
-              </p>
-              <p id="error-modal-description" className=" text-xl mb-4 mt-8">
-                {errorMessage}
-              </p>
-              <button
-                className="rounded-[0.6rem] bg-[#A43214] text-white text-lg py-2 px-3 w-36 border[0.1rem] border-white hover:bg-[#a8444b] font-medium hover:text-[#fffff] focus:outline-none h-12 mt-5"
-                onClick={handleCloseErrorModal}
-              >
-                Enter again
-              </button>
-            </div>
-          </div>
-        </Modal>
-      </div>
-    </>
+          <span style={{ color: "#fad655" }}>Track key metrics</span>, analyze
+          trends, and make informed decisions to drive success.
+        </Typography>
+        <img
+          src="wc-screen-swot.png"
+          alt="SWOT"
+          style={{ width: 100, height: 100, marginLeft: 50 }}
+        />
+        <Typography
+          variant="h6"
+          color="white"
+          sx={{
+            px: 4,
+            mb: 4,
+            textAlign: "justify",
+            fontWeight: "bold",
+            mt: 4,
+            mr: 4,
+            ml: 4,
+          }}
+        >
+          <span style={{ color: "#fad655" }}>
+            Identify strength, weaknesses, opportunities, and threats
+          </span>{" "}
+          to your business.
+        </Typography>
+        <img
+          src="wc-screen-stratmap.png"
+          alt="Strategy"
+          style={{ width: 100, height: 100, marginLeft: 50 }}
+        />
+        <Typography
+          variant="h6"
+          color="white"
+          sx={{
+            px: 4,
+            mb: 4,
+            textAlign: "justify",
+            fontWeight: "bold",
+            mt: 4,
+            mr: 4,
+            ml: 4,
+          }}
+        >
+          <span style={{ color: "#fad655" }}>Define objectives</span>, outline
+          initiatives, and map out your path to success.
+        </Typography>
+      </Box>
+
+      <Modal
+        open={errorModalOpen}
+        onClose={handleCloseErrorModal}
+        aria-labelledby="error-modal-title"
+        aria-describedby="error-modal-description"
+      >
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
+          <Box
+            sx={{
+              bgcolor: "white",
+              p: 4,
+              borderRadius: 2,
+              width: "40rem",
+              textAlign: "center",
+              position: "relative",
+            }}
+          >
+            <IconButton
+              onClick={handleCancelSave}
+              sx={{ position: "absolute", top: 8, right: 8 }}
+            ></IconButton>
+            <Typography
+              id="error-modal-title"
+              variant="h4"
+              fontWeight="bold"
+              mb={2}
+            >
+              Attention!
+            </Typography>
+            <Typography id="error-modal-description" variant="body1" mb={2}>
+              {errorMessage}
+            </Typography>
+            <Button
+              variant="contained"
+              sx={{
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                borderRadius: "8px",
+                padding: "12px 24px",
+                width: "14rem",
+                height: "2.5rem",
+                color: "white",
+                mt: 2,
+                "&:hover": {
+                  backgroundColor: "#eec160",
+                },
+              }}
+              onClick={handleCloseErrorModal}
+            >
+              Enter again
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </Box>
   );
 }

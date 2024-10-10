@@ -1,18 +1,17 @@
 "use client";
-import Navbar from "../components/Navbar";
-import UserProfile from "@/app/components/UserProfile";
+import UserProfile from "../components/Profile/UserProfile";
 import { useSession } from "next-auth/react";
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Spinner from "../components/Spinner";
+import Spinner from "../components/Misc/Spinner";
 
-export default  function Profile() {
+export default function Profile() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login"); 
+      router.push("/login");
     }
   }, [status, router]);
 
@@ -21,18 +20,11 @@ export default  function Profile() {
   }
 
   if (status === "unauthenticated") {
-    return null; 
+    return null;
   }
   return (
-    <div className="flex flex-row w-full h-screen">
-      <div className="flex">
-        <Navbar />
-      </div>
-      <div className="flex">
-        <div className="flex-1 flex flex-col mt-3 ml-80">
-          <UserProfile />
-        </div>
-      </div>
-    </div>
+    <>
+      <UserProfile />
+    </>
   );
 }

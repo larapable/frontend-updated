@@ -1,108 +1,138 @@
 import TeamsPage from '../components/TeamsPage'
 import React from 'react'
 import Link from 'next/link'
-import { Button } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 
 const page = () => {
   return (
-    <div className='text-[rgb(59,59,59)] items-center justify-center text-center'>
-      <div className='flex flex-col'>
-        <div className="font-bold lg:text-[3.5rem] mt-10">Contact our team</div>
-        <div className='font-medium text-[1.3rem] mt-5'>We value collaboration and work closely with our clients every step of the way, <br/>ensuring their vision and goals are met with precision and excellence.</div>
+    <Box sx={{ color: 'rgb(59,59,59)', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: '5rem' }}>
+      <Typography variant="h2" sx={{ fontWeight: 'bold', marginTop: '2.5rem', fontSize: { lg: '3.5rem', xs: '2.5rem' } }}>
+        Contact our team
+      </Typography>
+      <Typography variant="body1" sx={{ fontWeight: 'medium', fontSize: '1.3rem', marginTop: '1rem' }}>
+        We value collaboration and work closely with our clients every step of the way,
+        <br />
+        ensuring their vision and goals are met with precision and excellence.
+      </Typography>
 
-        <div className='flex flex-row items-center justify-center text-center gap-5 mt-10'>
-          <button 
-            className="rounded-[0.6rem] text-[#AB3510] border border-[#AB3510] hover:text-white hover:bg-[#AB3510] font-medium text-lg py-3 px-3 w-[10rem] h-[fit-content] mb-10 items-center"
-          >
-              <Link href="/">Home</Link>
-          </button>
-          <button 
-            className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-3 px-3 w-[10rem] h-[fit-content] mb-10 items-center"
-            style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}>
-              <Link href="/team">Team</Link>
-          </button>
-        </div>
+      <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, marginTop: '2.5rem', marginBottom: '3rem' }}>
+        <Button
+          variant="outlined"
+          sx={{
+            borderColor: '#AB3510', // Initial border color
+            color: '#AB3510', // Text color
+            fontWeight: 'medium',
+            fontSize: '1rem',
+            padding: '0.5rem 1.5rem',
+            '&:hover': {
+              backgroundColor: '#AB3510', // Background color on hover
+              color: 'white', // Text color on hover
+              borderColor: '#AB3510', // Border color on hover
+            },
+          }}
+        >
+          <Link href="/">Home</Link>
+        </Button>
+        <Button
+          variant="contained"
+          sx={{
+            background: 'linear-gradient(to left, #8a252c, #AB3510)',
+            color: '#ffffff',
+            fontWeight: 'medium',
+            fontSize: '1rem',
+            padding: '0.5rem 1.5rem',
+          }}
+        >
+          <Link href="/team">Team</Link>
+        </Button>
+      </Box>
 
-        <div style={{
+      <Box
+        sx={{
           backgroundImage: 'url("landingbg.png")',
           backgroundSize: 'cover',
           backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
           width: '100%',
-          height: '46vh',  // Adjust height as needed
-        }}>
-          
-          <div className='flex flex-row gap-10 items-center justify-center mt-10'>
-            <div className='bg-white h-[21rem] w-[35rem] rounded-md'>
-              <div className='flex flex-col'>
-                <div className='text-[1.5rem] font-bold mt-10'>Talk to the Team</div>
-                <div className='flex flex-row mt-5'>
-                  <div className='flex flex-col mt-5 ml-16 items-start'>
-                    <div className='text-[1.3rem] font-medium'>Genevieve:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Lara:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Arziel:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Arvin:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Lyndon:</div>
-                  </div>
-                  <div className='flex flex-col mt-5 ml-[11rem] items-end'>
-                  <div className='text-[1.3rem] font-medium'>+63123456789</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>+63123456789</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='bg-white h-[21rem] w-[35rem] rounded-md'>
-              <div className='flex flex-col'>
-                <div className='text-[1.5rem] font-bold mt-10'>Browse the Team</div>
-                <div className='flex flex-row mt-5'>
-                  <div className='flex flex-col mt-5 ml-16 items-start'>
-                    <div className='text-[1.3rem] font-medium'>Facebook:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Instagram:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Twitter:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>MS Teams:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Gmail:</div>
-                  </div>
-                  <div className='flex flex-col mt-5 ml-[12rem] items-end'>
-                  <div className='text-[1.3rem] font-medium'>atlas.official</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>atlas.official</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div className='bg-white h-[21rem] w-[35rem] rounded-md'>
-              <div className='flex flex-col'>
-                <div className='text-[1.5rem] font-bold mt-10'>Visit the Team</div>
-                <div className='flex flex-row mt-5'>
-                  <div className='flex flex-col mt-5 ml-16 items-start'>
-                    <div className='text-[1.3rem] font-medium'>Address:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Building:</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>Business Hours:</div>
-                  </div>
-                  <div className='flex flex-col mt-5 ml-[8rem] items-end'>
-                  <div className='text-[1.3rem] font-medium'>Tabok Mandaue</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>North Wing 2nd</div>
-                    <div className='text-[1.3rem] mt-1 font-medium'>9:00am - 6:00pm</div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          
+          height: '56vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center', // Change from 'flex-end' to 'center'
+          padding: '2rem',
+          position: 'relative',
+        }}
+      >
+        <Box sx={{ display: 'flex', gap: 3 }}>
+          <Box sx={{ backgroundColor: 'white', borderRadius: '1rem', p: 2, width: '30rem' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 2 }}>
+              Talk to the Team
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1, mb: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                {['Genevieve', 'Lara', 'Arziel', 'Arvin', 'Lyndon'].map((name) => (
+                  <Typography key={name} variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>
+                    {name}:
+                  </Typography>
+                ))}
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
+                {['+63123456789', '+63123456789', '+63123456789', '+63123456789', '+63123456789'].map((number) => (
+                  <Typography key={number} variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>
+                    {number}
+                  </Typography>
+                ))}
+              </Box>
+            </Box>
+          </Box>
 
-        </div>
+          {/* Browse Team Box */}
+          <Box sx={{ backgroundColor: 'white', borderRadius: '1rem', p: 2, width: '30rem' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+              Browse the Team
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, mb: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                {['Facebook:', 'Instagram:', 'Twitter:', 'MS Teams:', 'Gmail:'].map((social) => (
+                  <Typography key={social} variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>{social}</Typography>
+                ))}
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
+                {['atlas.official', 'atlas.official', 'atlas.official', 'atlas.official', 'atlas.official'].map((account) => (
+                  <Typography key={account} variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>{account}</Typography>
+                ))}
+              </Box>
+            </Box>
+          </Box>
 
-        <div className='font-medium italic text-[1rem] mt-12'>'Your goals, our journey. Together, we achieve.'</div>
-        <div className="inline-block break-words font-normal text-[1rem] text-[#504B4B]">
-          Copyright. All rights reserved.
-        </div>
-      </div>
-    </div>
+          {/* Visit Team Box */}
+          <Box sx={{ backgroundColor: 'white', borderRadius: '1rem', p: 2, width: '30rem' }}>
+            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 2 }}>
+              Visit the Team
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 1, mb: 3 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                <Typography variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>Address:</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>Building:</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>Business Hours:</Typography>
+              </Box>
+              <Box sx={{ display: 'flex', flexDirection: 'column', textAlign: 'right' }}>
+                <Typography variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>Tabok Mandaue</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>North Wing 2nd</Typography>
+                <Typography variant="body1" sx={{ fontWeight: 'medium', mt: 1 }}>9:00am - 6:00pm</Typography>
+              </Box>
+            </Box>
+          </Box>
+        </Box>
+      </Box>
+
+      <Typography variant="body1" sx={{ fontWeight: 'medium', fontStyle: 'italic', fontSize: '1rem', marginTop: '3rem' }}>
+        'Your goals, our journey. Together, we achieve.'
+      </Typography>
+      <Typography variant="body2" sx={{ marginTop: '1rem', color: '#504B4B' }}>
+        Copyright. All rights reserved.
+      </Typography>
+    </Box>
   )
-}
+};
 
 export default page
