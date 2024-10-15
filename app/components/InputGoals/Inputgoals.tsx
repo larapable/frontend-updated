@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import DatePicker from "react-datepicker";
+import Navbar from "../Navbars/Navbar";
 import "react-datepicker/dist/react-datepicker.css";
 import { getSession, useSession } from "next-auth/react";
 import { toast } from "react-toastify";
@@ -27,12 +28,11 @@ import { TextField } from "@mui/material";
 import RemoveIcon from "@mui/icons-material/Remove";
 import AddIcon from "@mui/icons-material/Add";
 import CloseIcon from "@mui/icons-material/Close";
-import DeleteIcon from "@mui/icons-material/Delete";
 
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const drawerWidth = -210;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)(() => ({
   wordWrap: "break-word",
@@ -124,6 +124,7 @@ export default function Inputgoals() {
   const [displayedYear, setDisplayedYear] = useState<string | null>(null); // To display the year range
   // const dateForDatePicker = startYear ? new Date(startYear, 0) : null;
   const [isSaved, setIsSaved] = useState(false);
+  const [hasPrimaryStrats, setHasPrimaryStrats] = useState<string | null>(null);
 
   const department_id = user?.department_id;
 
@@ -249,7 +250,7 @@ export default function Inputgoals() {
       setShowSuccessMessageWithButtons(true);
     } catch (error) {
       console.error("Error updating goal:", error);
-      alert("An error occurred while updating the goal");
+      toast.error("An error occurred while updating the goal");
     }
   };
 
@@ -350,6 +351,257 @@ export default function Inputgoals() {
     fetchLatestData();
   }, []);
 
+  const targetYear =
+    startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
+
+  const primaryStrategiesData = [
+    {
+      perspective: "financial", // Added perspective field
+      office_target:
+        "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "stakeholder", // Added perspective field
+      office_target:
+        "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "stakeholder", // Added perspective field
+      office_target:
+        "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "stakeholder", // Added perspective field
+      office_target:
+        "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "stakeholder", // Added perspective field
+      office_target:
+        "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "stakeholder", // Added perspective field
+      office_target:
+        "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "stakeholder", // Added perspective field
+      office_target:
+        "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "internal", // Added perspective field
+      office_target:
+        "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning", // Added perspective field
+      office_target: "A7.1: At least 90% participation in CIT-sponsored events",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning", // Added perspective field
+      office_target:
+        "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning", // Added perspective field
+      office_target:
+        "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning",
+      office_target:
+        "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning",
+      office_target:
+        "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning",
+      office_target:
+        "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning",
+      office_target:
+        "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning",
+      office_target:
+        "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+    {
+      perspective: "learning",
+      office_target:
+        "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
+      department: { id: department_id },
+      targetYear: targetYear,
+    },
+  ];
+
+  const savePrimaryStrategies = async (
+    strategiesData: {
+      perspective: string;
+      office_target: string;
+      department: { id: number };
+      targetYear: string;
+    }[],
+    department_id: number
+  ) => {
+    const validStrategies = strategiesData.filter(
+      (strategyData) =>
+        strategyData.perspective === "financial" ||
+        strategyData.perspective === "stakeholder" ||
+        strategyData.perspective === "internal" ||
+        strategyData.perspective === "learning"
+    );
+
+    if (validStrategies.length !== strategiesData.length) {
+      console.warn(
+        "Some strategies have invalid 'perspective' values and were skipped."
+      );
+    }
+
+    const postPromises = strategiesData.map(async (strategyData) => {
+      const endpoint = `http://localhost:8080/stratmap/primary${
+        strategyData.perspective.charAt(0).toUpperCase() +
+        strategyData.perspective.slice(1)
+      }/insert`;
+      console.log("Endpoint:", endpoint);
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ...strategyData,
+          targetYear: strategyData.targetYear,
+        }),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error(
+          `Error posting ${strategyData.perspective} strategy:`,
+          errorText
+        );
+        throw new Error(
+          `Failed to save ${strategyData.perspective} strategy: ${errorText}`
+        ); // Crucial: Reject the promise!
+      }
+      return response.json(); // Return the successful result if needed
+    });
+
+    try {
+      const results = await Promise.all(postPromises);
+
+      if (department_id) {
+        const response = await fetch(
+          `http://localhost:8080/department/update/primaryStrats/${department_id}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ hasPrimaryStrats: 1 }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorText = await response.text();
+          console.error("Error updating hasPrimaryStrats:", errorText);
+          throw new Error(errorText);
+        } else {
+          localStorage.setItem("hasPrimaryStrats", "1");
+          setHasPrimaryStrats("1");
+        }
+      } else {
+        console.error("department_id not found");
+        throw new Error("department_id is required"); // Handle missing department_id
+      }
+
+      return results;
+    } catch (error) {
+      console.error("Error in savePrimaryStrategies:", error); // Log the error
+      throw error; // Re-throw to be caught by the caller
+    }
+  };
+
   const handleSave = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => {
@@ -361,20 +613,58 @@ export default function Inputgoals() {
       !valueProposition ||
       !strategicGoals
     ) {
-      alert("Please fill out all required fields");
+      toast.error("Please fill out all required fields");
       return;
     }
 
-    console.log("Saving goal with ID:", goalId);
+    // Check character limits (assuming the fields are limited to 255 chars)
+    if (officeVision.length > 255) {
+      toast.error("Office Vision Field reached its character limit.");
+      return;
+    }
+    if (valueProposition.length > 255) {
+      toast.error("Value Proposition Field reached its character limit.");
+      return;
+    }
+    if (mission.length > 255) {
+      toast.error("Mission cannot Field reached its character limit.");
+      return;
+    }
+    if (strategicGoals.length > 255) {
+      toast.error("Strategic Goals Field reached its character limit.");
+      return;
+    }
 
     try {
+      const targetYear =
+        startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
+
+      const currentYear = new Date().getFullYear();
+      const targetYearToCheck = `${currentYear}-${currentYear + 1}`;
+
+      const yearcheck = await fetch(
+        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
+      );
+      if (!yearcheck.ok) {
+        const error = await yearcheck.text();
+        console.error("Error fetching primary strategies", error);
+        throw new Error("Failed to fetch primary strategies");
+      }
+
+      const existingStrategies = await yearcheck.json();
+
+      const yearExists = existingStrategies.some(
+        (strategy: any) => strategy.targetYear === targetYearToCheck // Check if target year exists in the response
+      );
+
+      if (!yearExists) {
+        await savePrimaryStrategies(primaryStrategiesData, department_id);
+      }
+
       const url = isNew
         ? "http://localhost:8080/goals/insert"
         : `http://localhost:8080/goals/update/${goalId}`;
       const method = isNew ? "POST" : "PUT";
-
-      const targetYear =
-        startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
 
       const response = await fetch(url, {
         method: method,
@@ -392,8 +682,8 @@ export default function Inputgoals() {
 
       if (!response.ok) {
         const errorText = await response.text();
-        console.error("API error:", errorText);
-        throw new Error(errorText);
+        console.error("Error saving goal:", errorText);
+        throw new Error("Failed to save goal: " + errorText);
       }
 
       const result = await response.json();
@@ -421,13 +711,11 @@ export default function Inputgoals() {
       setIsSaved(true);
     } catch (error) {
       if (error instanceof Error) {
-        console.error("Error saving goal setting:", error.message);
-        alert(
-          "An error occurred while saving the goal setting: " + error.message
-        );
+        console.error("Error in handleSave:", error.message);
+        toast.error("An error occurred while saving: " + error.message);
       } else {
         console.error("Unexpected error:", error);
-        alert("An unexpected error occurred.");
+        toast.error("An unexpected error occurred.");
       }
     }
   };
@@ -534,686 +822,830 @@ export default function Inputgoals() {
   return (
     <Box
       sx={{
-        flexGrow: 1,
-        ml: isMobile ? 0 : `${drawerWidth}px`,
-        width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
-        p: 3,
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#2e2c2c",
       }}
     >
-      <Grid container spacing={2} sx={{ paddingTop: 2 }}>
-        <Grid item xs={12}>
-          <Typography
-            variant="h4"
-            component="h1"
-            sx={{
-              marginTop: "-45px",
-              fontWeight: "bold",
-              fontSize: { xs: "1.8rem", sm: "2.125rem" },
-            }}
-          >
-            GOAL SETTING
-          </Typography>
-        </Grid>
-        <Grid item xs={12}>
-          <MainFont sx={{ mb: 5 }}>
-            Goal setting involves defining specific objectives, outlining
-            actionable steps, and establishing a timeframe for achievement. It
-            provides direction and motivation for personal or professional
-            growth by creating clear targets to strive towards.
-          </MainFont>
-        </Grid>
+      <Box
+        sx={{
+          width: isMobile ? "100%" : drawerWidth,
+          flexShrink: 0,
+          position: isMobile ? "static" : "fixed",
+          height: isMobile ? "auto" : "100vh",
+          overflowY: "auto",
+        }}
+      >
+        <Navbar />
+      </Box>
 
-        <Grid item xs={12}>
-          <Cards
-            sx={{
-              backgroundColor: "#FFFFFF",
-              borderRadius: "0.6rem",
-              padding: 2,
-              border: "1px solid #E6E6E6",
-              marginTop: "-20px",
-            }}
-          >
-            <Grid container spacing={5}>
-              <Grid item xs={12}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                    marginTop: -1,
-                    height: "40px",
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    sx={{
-                      backgroundColor: "#AB3510",
-                      color: "#FFFFFF",
-                      border: "2px solid #AB3510",
-                      borderRadius: "0.6rem",
-                      padding: "0.8rem 2rem",
-                      "&:hover": {
-                        backgroundColor: "#AB3510",
-                        border: "2px solid #AB3510",
-                        opacity: 0.8,
-                      },
-                    }}
-                    onClick={handleShowGoals}
-                  >
-                    View Goals
-                  </Button>
-                </Box>
-
-                <Box
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    marginTop: "-20px",
-                  }}
-                >
-                  <img
-                    src="/year.png"
-                    alt="Year Icon"
-                    style={{ height: "4.5rem", marginRight: "1rem" }}
-                  />
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: "bold",
-                        color: "#000000",
-                        fontSize: "17px",
-                      }}
-                    >
-                      Target Year
-                    </Typography>
-                    <Typography sx={{ fontSize: "15px", color: "#807C7C" }}>
-                      The specific year by which a goal is intended to be
-                      achieved.
-                    </Typography>
-                  </Box>
-                </Box>
-                <Box
-                  sx={{
-                    border: "none",
-                    borderRadius: "12px",
-                    padding: "16px",
-                    marginBottom: "16px",
-                    backgroundColor: "#f3f4f6",
-                    width: "20%",
-                    height: "auto",
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
-                    alignItems: "flex-start",
-                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.2)",
-                    fontSize: "14px",
-                  }}
-                >
-                  <DatePicker
-                    selected={
-                      startYear !== null ? new Date(startYear, 0, 1) : null
-                    }
-                    onChange={handleYearChange}
-                    showYearPicker
-                    disabled={!isEditing && !isNew}
-                    minDate={new Date(new Date().getFullYear(), 0, 1)} // Set minimum date to January 1 of the current year
-                    maxDate={new Date(new Date().getFullYear(), 11, 31)} // Set maximum date to December 31 of the current year
-                    dateFormat="yyyy"
-                    className="w-full bg-gray-100" // Tailwind CSS for background color
-                  />
-                </Box>
-
-                {displayedYear && (
-                  <Typography
-                    sx={{
-                      marginTop: 1,
-                      color: "gray",
-                      textAlign: "left", // Align text to the left
-                      width: "100%", // Make it full width for proper alignment
-                    }}
-                  >
-                    Academic Year: {displayedYear}
-                  </Typography>
-                )}
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/proposition.png"
-                    alt="Vision Icon"
-                    style={{ height: "4.5rem", marginRight: "1rem" }}
-                  />
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: "bold",
-                        color: "#000000",
-                        fontSize: "17px",
-                      }}
-                    >
-                      Office Vision
-                    </Typography>
-                    <Typography sx={{ fontSize: "15px", color: "#807C7C" }}>
-                      A brief statement articulating the company’s long-term
-                      goals and values.
-                    </Typography>
-                  </Box>
-                </Box>
-                <GoalInput
-                  multiline
-                  value={officeVision}
-                  onChange={(event) => setOfficeVision(event.target.value)}
-                  disabled={!isEditing && !isNew}
-                  InputProps={{
-                    style: {
-                      fontSize: "14px",
-                      whiteSpace: "pre-wrap",
-                      overflowWrap: "break-word",
-                    },
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/proposition.png"
-                    alt="Proposition Icon"
-                    style={{ height: "4.5rem", marginRight: "1rem" }}
-                  />
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: "bold",
-                        color: "#000000",
-                        fontSize: "17px",
-                      }}
-                    >
-                      Value Proposition
-                    </Typography>
-                    <Typography sx={{ fontSize: "15px", color: "#807C7C" }}>
-                      A concise statement that communicates the unique benefits
-                      and advantages of your service.
-                    </Typography>
-                  </Box>
-                </Box>
-                <GoalInput
-                  multiline
-                  value={valueProposition}
-                  onChange={(event) => setValueProposition(event.target.value)}
-                  disabled={!isEditing && !isNew}
-                  InputProps={{
-                    style: {
-                      fontSize: "14px",
-                      whiteSpace: "pre-wrap",
-                      overflowWrap: "break-word",
-                    },
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12}>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/mission.png"
-                    alt="Mission Icon"
-                    style={{ height: "4.5rem", marginRight: "1rem" }}
-                  />
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: "bold",
-                        color: "#000000",
-                        fontSize: "17px",
-                      }}
-                    >
-                      Mission
-                    </Typography>
-                    <Typography sx={{ fontSize: "15px", color: "#807C7C" }}>
-                      A statement defining the company’s purpose and commitment
-                      to delivering value.
-                    </Typography>
-                  </Box>
-                </Box>
-                <GoalInput
-                  multiline
-                  value={mission}
-                  onChange={(event) => setMission(event.target.value)}
-                  disabled={!isEditing && !isNew}
-                  InputProps={{
-                    style: {
-                      fontSize: "14px",
-                      whiteSpace: "pre-wrap",
-                      overflowWrap: "break-word",
-                    },
-                  }}
-                />
-              </Grid>
-
-              <Grid item xs={12} sx={{ position: "relative" }}>
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <img
-                    src="/strategicgoals.png"
-                    alt="Strategic Goals Icon"
-                    style={{ height: "4.5rem", marginRight: "1rem" }}
-                  />
-                  <Box>
-                    <Typography
-                      variant="h6"
-                      sx={{
-                        fontWeight: "bold",
-                        color: "#000000",
-                        fontSize: "17px",
-                      }}
-                    >
-                      Strategic Goals
-                    </Typography>
-                    <Typography sx={{ fontSize: "15px", color: "#807C7C" }}>
-                      A guiding principle for decision-making, driving the
-                      organization towards its desired future state.
-                    </Typography>
-                  </Box>
-                </Box>
-
-                {(isEditing || isNew) && !isSaved && (
-                  <Box sx={{ position: "absolute", right: 10, top: 60 }}>
-                    <IconButton
-                      sx={{
-                        backgroundColor: "#ff7b00d3",
-                        color: "#ffffff",
-                        "&:hover": { backgroundColor: "#ff7b00" },
-                        borderRadius: "50%",
-                        padding: "0",
-                        width: "30px",
-                        height: "30px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                      onClick={handleAddGoal}
-                    >
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="currentColor"
-                        className="size-8"
-                        style={{ width: "30px", height: "20px" }}
-                      >
-                        <path
-                          fillRule="evenodd"
-                          d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                          clipRule="evenodd"
-                        />
-                      </svg>
-                    </IconButton>
-                  </Box>
-                )}
-              </Grid>
-
-              {strategicGoals.map((goal, index) => (
-                <Grid item xs={12} key={index} className="relative">
-                  <GoalInput
-                    multiline
-                    variant="outlined"
-                    rows={4}
-                    value={goal}
-                    onChange={(event) =>
-                      handleGoalChange(index, event.target.value)
-                    }
-                    disabled={!isEditing && !isNew}
-                    InputProps={{
-                      style: {
-                        fontSize: "14px",
-                        whiteSpace: "pre-wrap",
-                        overflowWrap: "break-word",
-                      },
-                    }}
-                  />
-
-                  {(isEditing || isNew) && !isSaved && (
-                    <>
-                      <IconButton
-                        className="absolute right-2 top-2 bg-red-500 text-white hover:bg-red-700"
-                        onClick={() => handleRemoveGoal(index)}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </>
-                  )}
-                </Grid>
-              ))}
+      <Box
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+        }}
+      >
+        <StyledBox>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid item>
+              <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                }}
+              >
+                INPUT GOALS
+              </Typography>
+              <Typography variant="h5">
+                Goal setting involves defining specific objectives, outlining
+                actionable steps, and establishing a timeframe for achievement.
+                It provides direction and motivation for personal or
+                professional growth by creating clear targets to strive towards.
+              </Typography>
             </Grid>
-          </Cards>
-        </Grid>
 
-        {isshowGoalsModal && (
-          <Modal open={isshowGoalsModal} onClose={handleCloseShowGoalsModal}>
-            <div className="flex justify-center items-center h-screen">
-              <div className="p-4 bg-white rounded-lg shadow-md w-[80rem] max-h-[80vh] overflow-y-auto">
-                <h2 className="text-2xl font-bold mb-4">Goals</h2>
-                <div className="flex mb-4">
-                  <Button
-                    variant="text"
-                    sx={{
-                      color: currentTab === "current" ? "black" : "black",
-                      fontWeight: currentTab === "current" ? "bold" : "normal",
-                      "&:hover": {
-                        color: "black",
-                      },
-                    }}
-                    onClick={handleCurrentClick}
-                  >
-                    Current
-                  </Button>
-                  <Button
-                    variant="text"
-                    sx={{
-                      color: currentTab === "accomplished" ? "black" : "black",
-                      fontWeight:
-                        currentTab === "accomplished" ? "bold" : "normal",
-                      "&:hover": {
-                        color: "black",
-                      },
-                    }}
-                    onClick={handleAccomplishedClick}
-                  >
-                    Accomplished
-                  </Button>
-                </div>
-
-                <div className="overflow-x-auto">
-                  <Table className="w-full border-collapse border border-gray-400">
-                    <TableHead>
-                      <TableRow className="bg-[#fff6d1]">
-                        <TableCell className="border border-gray-400">
-                          Target Year
-                        </TableCell>
-                        <TableCell className="border border-gray-400">
-                          Vision
-                        </TableCell>
-                        <TableCell className="border border-gray-400">
-                          Value Proposition
-                        </TableCell>
-                        <TableCell className="border border-gray-400">
-                          Mission
-                        </TableCell>
-                        <TableCell className="border border-gray-400 max-w-xs break-words">
-                          Strategic Goals
-                        </TableCell>
-                        <TableCell className="border border-gray-400">
-                          Status
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {displayedGoals
-                        .filter((goal) =>
-                          currentTab === "current"
-                            ? !goal.accomplished
-                            : goal.accomplished
-                        )
-                        .map((goal) => (
-                          <TableRow key={goal.id}>
-                            <TableCell className="border border-gray-400 whitespace-nowrap">
-                              {goal.targetYear}
-                            </TableCell>
-                            <TableCell className="border border-gray-400 max-w-xs break-words">
-                              {goal.vision}
-                            </TableCell>
-                            <TableCell className="border border-gray-400 max-w-xs break-words">
-                              {goal.proposition}
-                            </TableCell>
-                            <TableCell className="border border-gray-400 max-w-xs break-words">
-                              {goal.mission}
-                            </TableCell>
-                            <TableCell className="border border-gray-400 max-w-xs break-words">
-                              <ul className="list-disc pl-5">
-                                {goal.goals.map((item, index) => (
-                                  <li key={index}>{item}</li>
-                                ))}
-                              </ul>
-                            </TableCell>
-                            <TableCell
-                              className="px-4 py-2 flex justify-center items-center border border-gray-400"
-                              style={{ height: "auto" }}
-                            >
-                              {currentTab === "current" ? (
-                                <div className="flex flex-col items-center justify-center">
-                                  <span>Pending</span>
-                                  <Button
-                                    variant="contained"
-                                    sx={{
-                                      height: "30px",
-                                      marginTop: "0.5rem",
-                                      backgroundColor:
-                                        "rgba(255, 123, 0, 0.83)",
-                                      color: "#FFFFFF",
-                                      borderRadius: "0.6rem",
-                                      padding: "0.8rem 2rem",
-                                      "&:hover": {
-                                        backgroundColor:
-                                          "rgba(255, 123, 0, 0.60)",
-                                      },
-                                    }}
-                                    onClick={() => handleDoneClick(goal.id)}
-                                  >
-                                    Done
-                                  </Button>
-                                </div>
-                              ) : (
-                                <div className="flex justify-center items-center w-full h-full">
-                                  <span>Success</span>
-                                </div>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                    </TableBody>
-                  </Table>
-                </div>
-
-                {showSuccessMessageWithButtons && (
-                  <Modal
-                    open={showSuccessMessageWithButtons}
-                    onClose={() => setShowSuccessMessageWithButtons(false)}
-                  >
-                    <Box
-                      sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                        height: "100vh",
-                        backgroundColor: "rgba(0, 0, 0, 0.5)",
-                      }}
-                    >
+            <Grid container sx={{ mt: 5 }}>
+              <Box width="100%" sx={{ mt: -1 }}>
+                <Cards
+                  sx={{
+                    backgroundColor: "#FFFFFF",
+                    borderRadius: "0.6rem",
+                    padding: 2,
+                    border: "1px solid #E6E6E6",
+                    marginTop: "5px",
+                  }}
+                >
+                  <Grid container spacing={5}>
+                    <Grid item xs={12}>
                       <Box
                         sx={{
-                          backgroundColor: "white",
-                          padding: 4,
-                          borderRadius: "0.5rem",
-                          boxShadow: 3,
-                          width: "35rem",
-                          textAlign: "center",
-                          position: "relative",
+                          display: "flex",
+                          justifyContent: "flex-end",
+                          marginTop: -1,
+                          height: "40px",
+                          width: "100%",
                         }}
                       >
-                        <Typography
-                          variant="h3"
-                          sx={{ fontWeight: "bold", marginBottom: 1 }}
+                        <Button
+                          variant="contained"
+                          sx={{
+                            background:
+                              "linear-gradient(to left, #8a252c, #AB3510)",
+                            color: "#FFFFFF",
+                            border: "1px solid transparent",
+                            height: "3.5rem",
+                            padding: "0.8rem 2rem",
+                            fontSize: "18px",
+                            transition: "background-color 0.3s, color 0.3s",
+                            "&:hover": {
+                              background:
+                                "linear-gradient(to left, #8a252c, #AB3510)",
+                              color: "white",
+                              border: "0.5px solid #AB3510",
+                              opacity: 0.8,
+                            },
+                          }}
+                          onClick={handleShowGoals}
                         >
-                          Success!
+                          View Goals
+                        </Button>
+                      </Box>
+
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginTop: "-10px",
+                        }}
+                      >
+                        <img
+                          src="/year.png"
+                          alt="Year Icon"
+                          style={{ height: "5rem", marginRight: "1rem" }}
+                        />
+                        <Box>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            Target Year
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            The specific year by which a goal is intended to be
+                            achieved.
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box
+                        sx={{
+                          mt: 2,
+                          border: "1px solid #ccc", // Add a border similar to the TextField
+                          borderRadius: "8px", // Match the TextField's border radius
+                          padding: "16px", // Keep consistent padding
+                          backgroundColor: "#ffffff", // Match the TextField background color
+                          width: "20%", // Adjust width as needed to match the TextField
+                          height: "30%",
+                          display: "flex",
+                          flexDirection: "column",
+                          justifyContent: "center",
+                          alignItems: "flex-start",
+                          boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Subtle shadow to match the TextField's style
+                          fontSize: "18px", // Adjust font size to match TextField
+                        }}
+                      >
+                        <DatePicker
+                          selected={
+                            startYear !== null
+                              ? new Date(startYear, 0, 1)
+                              : null
+                          }
+                          onChange={handleYearChange}
+                          showYearPicker
+                          disabled={!isEditing && !isNew}
+                          minDate={new Date(new Date().getFullYear(), 0, 1)}
+                          maxDate={new Date(new Date().getFullYear(), 11, 31)}
+                          dateFormat="yyyy"
+                          className="w-full bg-white-100" // Tailwind CSS for background color
+                        />
+                      </Box>
+
+                      {displayedYear && (
+                        <Typography variant="h6" color="textSecondary">
+                          Academic Year: {displayedYear}
                         </Typography>
-                        <Typography variant="h6" sx={{ marginBottom: 1 }}>
-                          Goal has been accomplished.
-                        </Typography>
+                      )}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center",
+                          marginTop: "-15px",
+                        }}
+                      >
+                        <img
+                          src="/proposition.png"
+                          alt="Vision Icon"
+                          style={{ height: "5rem", marginRight: "1rem" }}
+                        />
+                        <Box>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            Office Vision
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            A brief statement articulating the company’s
+                            long-term goals and values.
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <TextField
+                        fullWidth
+                        multiline
+                        variant="outlined"
+                        rows={2} // Adjust number of rows for multiline behavior
+                        value={officeVision}
+                        onChange={(event) =>
+                          setOfficeVision(event.target.value)
+                        }
+                        disabled={!isEditing && !isNew}
+                        sx={{
+                          mt: 2,
+                          "& .MuiInputBase-root": {
+                            height: "90px", // Adjust this value as needed to set the height
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            fontSize: "18px", // Adjust the font size as needed
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/proposition.png"
+                          alt="Proposition Icon"
+                          style={{ height: "5rem", marginRight: "1rem" }}
+                        />
+                        <Box>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            Value Proposition
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            A concise statement that communicates the unique
+                            benefits and advantages of your service.
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <TextField
+                        fullWidth
+                        multiline
+                        variant="outlined"
+                        rows={2} // Adjust number of rows for the desired base height
+                        value={valueProposition}
+                        onChange={(event) =>
+                          setValueProposition(event.target.value)
+                        }
+                        disabled={!isEditing && !isNew}
+                        sx={{
+                          mt: 2,
+                          "& .MuiInputBase-root": {
+                            height: "90px", // Adjust this value to control the height
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            fontSize: "18px", // Adjust the font size as needed
+                            padding: "10px", // Adjust padding if needed for better appearance
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/mission.png"
+                          alt="Mission Icon"
+                          style={{ height: "5rem", marginRight: "1rem" }}
+                        />
+                        <Box>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            Mission
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            A statement defining the company’s purpose and
+                            commitment to delivering value.
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <TextField
+                        fullWidth
+                        multiline
+                        variant="outlined"
+                        rows={2} // Adjust the number of rows for the desired base height
+                        value={mission}
+                        onChange={(event) => setMission(event.target.value)}
+                        disabled={!isEditing && !isNew}
+                        sx={{
+                          mt: 2,
+                          "& .MuiInputBase-root": {
+                            height: "90px", // Adjust this value to control the height
+                          },
+                          "& .MuiOutlinedInput-input": {
+                            fontSize: "18px", // Adjust the font size as needed
+                            padding: "10px", // Adjust padding for a better appearance if needed
+                          },
+                        }}
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sx={{ position: "relative" }}>
+                      <Box sx={{ display: "flex", alignItems: "center" }}>
+                        <img
+                          src="/strategicgoals.png"
+                          alt="Strategic Goals Icon"
+                          style={{ height: "5rem", marginRight: "1rem" }}
+                        />
+                        <Box>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            Strategic Goals
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            A guiding principle for decision-making, driving the
+                            organization towards its desired future state.
+                          </Typography>
+                        </Box>
+                      </Box>
+
+                      {(isEditing || isNew) && !isSaved && (
+                        <Box sx={{ position: "absolute", right: 10, top: 60 }}>
+                          <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              alignItems: "center",
+                              borderRadius: "50%",
+                              width: "2.5rem",
+                              height: "2.5rem",
+                              backgroundColor: "#ff7b00d3",
+                              marginTop: "0.5rem",
+                            }}
+                            onClick={handleAddGoal}
+                          >
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              style={{
+                                width: "2rem",
+                                height: "2rem",
+                                color: "#ffffff",
+                              }}
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clipRule="evenodd"
+                              />
+                            </svg>
+                          </Box>
+                        </Box>
+                      )}
+                    </Grid>
+
+                    {strategicGoals.map((goal, index) => (
+                      <Grid item xs={12} key={index} className="relative">
+                        <Box sx={{ display: "flex", alignItems: "center" }}>
+                          <TextField
+                            fullWidth
+                            multiline
+                            variant="outlined"
+                            rows={2} // Adjust the number of rows for the desired base height
+                            value={goal}
+                            onChange={(event) =>
+                              handleGoalChange(index, event.target.value)
+                            }
+                            disabled={!isEditing && !isNew}
+                            sx={{
+                              mt: -3,
+                              "& .MuiInputBase-root": {
+                                height: "90px", // Adjust this value to control the height
+                              },
+                              "& .MuiOutlinedInput-input": {
+                                fontSize: "18px", // Adjust the font size as needed
+                                padding: "10px", // Adjust padding for a better appearance if needed
+                              },
+                            }}
+                          />
+
+                          {(isEditing || isNew) && !isSaved && (
+                            <>
+                              <IconButton
+                                onClick={() => handleRemoveGoal(index)}
+                                // className="absolute right-2 top-2"
+                                sx={{
+                                  marginTop: "-1rem",
+                                  color: "#AB3510",
+                                  "&:hover": {
+                                    color: "red", // Change the icon color to red on hover
+                                  },
+                                }}
+                              >
+                                <svg
+                                  xmlns="http://www.w3.org/2000/svg"
+                                  fill="none"
+                                  viewBox="0 0 24 24"
+                                  strokeWidth="1.5"
+                                  stroke="currentColor"
+                                  style={{
+                                    width: "24px", // Adjust width to match your icon size
+                                    height: "24px", // Adjust height to match your icon size
+                                  }}
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                  />
+                                </svg>
+                              </IconButton>
+                            </>
+                          )}
+                        </Box>
+                      </Grid>
+                    ))}
+                  </Grid>
+                </Cards>
+              </Box>
+            </Grid>
+
+            {isshowGoalsModal && (
+              <Modal
+                open={isshowGoalsModal}
+                onClose={handleCloseShowGoalsModal}
+              >
+                <div className="flex justify-center items-center h-screen">
+                  <div className="p-10 bg-white rounded-lg shadow-md w-[80rem] max-h-[80vh] overflow-y-auto">
+                    <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                      Goals
+                    </Typography>
+                    <div className="flex mb-4 mt-5">
+                      <Button
+                        variant="text"
+                        sx={{
+                          fontSize: "18px",
+                          color: currentTab === "current" ? "black" : "black",
+                          fontWeight:
+                            currentTab === "current" ? "bold" : "normal",
+                          "&:hover": {
+                            color: "black",
+                          },
+                        }}
+                        onClick={handleCurrentClick}
+                      >
+                        Current
+                      </Button>
+                      <Button
+                        variant="text"
+                        sx={{
+                          fontSize: "18px",
+                          color:
+                            currentTab === "accomplished" ? "black" : "black",
+                          fontWeight:
+                            currentTab === "accomplished" ? "bold" : "normal",
+                          "&:hover": {
+                            color: "black",
+                          },
+                        }}
+                        onClick={handleAccomplishedClick}
+                      >
+                        Accomplished
+                      </Button>
+                    </div>
+
+                    <div className="overflow-x-auto">
+                      <Table className="w-full border-collapse border border-gray-400">
+                        <TableHead>
+                          <TableRow className="bg-[#fff6d1]">
+                            <TableCell
+                              className="border border-gray-400 font-bold"
+                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                            >
+                              Target Year
+                            </TableCell>
+                            <TableCell
+                              className="border border-gray-400 font-bold"
+                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                            >
+                              Vision
+                            </TableCell>
+                            <TableCell
+                              className="border border-gray-400 font-bold"
+                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                            >
+                              Value Proposition
+                            </TableCell>
+                            <TableCell
+                              className="border border-gray-400 font-bold"
+                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                            >
+                              Mission
+                            </TableCell>
+                            <TableCell
+                              className="border border-gray-400 max-w-xs break-words font-bold"
+                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                            >
+                              Strategic Goals
+                            </TableCell>
+                            <TableCell
+                              className="border border-gray-400 font-bold"
+                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                            >
+                              Status
+                            </TableCell>
+                          </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                          {displayedGoals
+                            .filter((goal) =>
+                              currentTab === "current"
+                                ? !goal.accomplished
+                                : goal.accomplished
+                            )
+                            .map((goal) => (
+                              <TableRow key={goal.id}>
+                                <TableCell
+                                  className="border border-gray-400 whitespace-nowrap"
+                                  style={{ fontSize: "1rem" }}
+                                >
+                                  {" "}
+                                  {/* Font size for body text */}
+                                  {goal.targetYear}
+                                </TableCell>
+                                <TableCell
+                                  className="border border-gray-400 max-w-xs break-words"
+                                  style={{ fontSize: "1rem" }}
+                                >
+                                  {" "}
+                                  {/* Font size for body text */}
+                                  {goal.vision}
+                                </TableCell>
+                                <TableCell
+                                  className="border border-gray-400 max-w-xs break-words"
+                                  style={{ fontSize: "1rem" }}
+                                >
+                                  {" "}
+                                  {/* Font size for body text */}
+                                  {goal.proposition}
+                                </TableCell>
+                                <TableCell
+                                  className="border border-gray-400 max-w-xs break-words"
+                                  style={{ fontSize: "1rem" }}
+                                >
+                                  {" "}
+                                  {/* Font size for body text */}
+                                  {goal.mission}
+                                </TableCell>
+                                <TableCell
+                                  className="border border-gray-400 max-w-xs break-words"
+                                  style={{ fontSize: "1rem" }}
+                                >
+                                  {" "}
+                                  {/* Font size for body text */}
+                                  <ul className="list-disc pl-5">
+                                    {goal.goals.map((item, index) => (
+                                      <li
+                                        key={index}
+                                        style={{ fontSize: "1rem" }}
+                                      >
+                                        {" "}
+                                        {/* Font size for list items */}
+                                        {item}
+                                      </li>
+                                    ))}
+                                  </ul>
+                                </TableCell>
+                                <TableCell
+                                  className="px-4 py-2 flex justify-center items-center border border-gray-400"
+                                  style={{ height: "auto", fontSize: "1rem" }} // Font size for body text
+                                >
+                                  {currentTab === "current" ? (
+                                    <div className="flex flex-col items-center justify-center">
+                                      <span>Pending</span>
+                                      <Button
+                                        variant="contained"
+                                        sx={{
+                                          height: "30px",
+                                          marginTop: "0.5rem",
+                                          backgroundColor:
+                                            "rgba(255, 123, 0, 0.83)",
+                                          color: "#FFFFFF",
+                                          padding: "0.8rem 2rem",
+                                          "&:hover": {
+                                            backgroundColor:
+                                              "rgba(255, 123, 0, 0.60)",
+                                          },
+                                        }}
+                                        onClick={() => handleDoneClick(goal.id)}
+                                      >
+                                        Done
+                                      </Button>
+                                    </div>
+                                  ) : (
+                                    <div className="flex justify-center items-center w-full h-full">
+                                      <span>Success</span>
+                                    </div>
+                                  )}
+                                </TableCell>
+                              </TableRow>
+                            ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+
+                    {showSuccessMessageWithButtons && (
+                      <Modal
+                        open={showSuccessMessageWithButtons}
+                        onClose={() => setShowSuccessMessageWithButtons(false)}
+                      >
                         <Box
                           sx={{
                             display: "flex",
                             justifyContent: "center",
-                            gap: 2,
+                            alignItems: "center",
+                            height: "100vh",
+                            backgroundColor: "rgba(0, 0, 0, 0.5)",
                           }}
                         >
-                          <Button
-                            variant="contained"
+                          <Box
                             sx={{
-                              background:
-                                "linear-gradient(to left, #8a252c, #AB3510)",
-                              fontWeight: "bold",
-                              fontSize: "1rem",
-                              marginTop: 2,
-                              width: "15rem",
-                              padding: "0.5rem 2.2rem",
-                              borderRadius: "0.6rem",
-                            }}
-                            onClick={() => {
-                              handleAddNew();
-                              setShowSuccessMessageWithButtons(false);
+                              background: "white",
+                              padding: 6,
+                              borderRadius: 2,
+                              boxShadow: 24,
+                              textAlign: "center",
+                              position: "relative",
+                              maxWidth: "100vw",
                             }}
                           >
-                            Add New Goals
-                          </Button>
+                            <Typography
+                              variant="h5"
+                              sx={{ fontWeight: "600", marginBottom: 1 }}
+                            >
+                              Success!
+                            </Typography>
+                            <Typography variant="h6" sx={{ marginBottom: 1, fontWeight:"500" }}>
+                              Goal has been accomplished.
+                            </Typography>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                justifyContent: "center",
+                                gap: 2,
+                              }}
+                            >
+                              <Button
+                                variant="contained"
+                                sx={{
+                                  width: "30%",
+                                  background:
+                                    "linear-gradient(to left, #8a252c, #AB3510)",
+                                  p: 1,
+                                  fontSize: "18px",
+                                }}
+                                onClick={() => {
+                                  handleAddNew();
+                                  setShowSuccessMessageWithButtons(false);
+                                }}
+                              >
+                                Add New Goals
+                              </Button>
+                            </Box>
+                          </Box>
                         </Box>
-                      </Box>
-                    </Box>
-                  </Modal>
-                )}
+                      </Modal>
+                    )}
 
-                <div className="flex justify-center mt-5">
-                  <Button
-                    variant="contained"
-                    style={{
-                      background: "linear-gradient(to left, #8a252c, #AB3510)",
-                      color: "#ffffff",
-                    }}
-                    className="font-semibold text-[1.2rem] w-[11rem] mt-10"
-                    onClick={handleCloseShowGoalsModal}
-                  >
-                    Close
-                  </Button>
+                    <div className="flex justify-center mt-10">
+                      <Button
+                        variant="contained"
+                        style={{
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          color: "#ffffff",
+                          fontSize: "18px",
+                        }}
+                        className="font-semibold text-[1.2rem] w-[11rem]"
+                        onClick={handleCloseShowGoalsModal}
+                      >
+                        Close
+                      </Button>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </Modal>
-        )}
+              </Modal>
+            )}
 
-        <Grid
-          container
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-          marginBottom={8}
-          marginTop={3}
-        >
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Button
-              variant={isEditing ? "outlined" : "contained"}
-              onClick={isEditing ? handleCancel : toggleEditing}
-              sx={{
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-                width: "11rem",
-                borderRadius: "0.6rem",
-                backgroundColor: isEditing ? "#ffffff" : "#ffffff",
-                color: isEditing ? "#AB3510" : "#AB3510",
-                border: `2px solid #AB3510`,
-                "&:hover": {
-                  backgroundColor: "#f2f2f2",
-                  color: "#AB3510",
-                },
-              }}
+            <Grid
+              container
+              spacing={2}
+              justifyContent="center"
+              alignItems="center"
+              marginBottom={3}
+              marginTop={5}
             >
-              {isEditing ? "Cancel" : "Edit"}
-            </Button>
-          </Grid>
+              <Grid
+                container
+                justifyContent="center"
+                alignItems="flex-end"
+                sx={{ padding: 2 }}
+              >
+                <Grid
+                  item
+                  xs={12}
+                  sm={6}
+                  display="flex"
+                  justifyContent="center"
+                >
+                  <Grid
+                    container
+                    spacing={2}
+                    justifyContent="center"
+                    alignItems="center"
+                  >
+                    <Grid item>
+                      <Button
+                        variant={isEditing ? "outlined" : "contained"}
+                        onClick={isEditing ? handleCancel : toggleEditing}
+                        sx={{
+                          background: "white",
+                          color: "#AB3510",
+                          fontSize: "18px", // Consistent font size
+                          height: "3.5rem", // Consistent height
+                          width: "13rem", // Consistent width
+                          border: "2px solid #AB3510",
+                          padding: "0.8rem 2rem",
+                          transition: "background-color 0.3s, color 0.3s",
+                          "&:hover": {
+                            background:
+                              "linear-gradient(to left, #8a252c, #AB3510)",
+                            color: "white",
+                            border: "0.5px solid #AB3510",
+                            opacity: 0.8,
+                          },
+                          "&:focus": {
+                            outline: "none", // Remove outline on focus
+                            boxShadow: "none", // Remove box shadow on focus
+                          },
+                        }}
+                      >
+                        {isEditing ? "Cancel" : "Edit"}
+                      </Button>
+                    </Grid>
 
-          <Grid item xs={6} display="flex" justifyContent="center">
-            <Modal
-              open={successModal}
-              onClose={handleCloseSuccessModal}
-              aria-labelledby="success-modal-title"
-              aria-describedby="success-modal-description"
-            >
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100vh",
-                  width: "100vw",
-                  position: "absolute",
-                  top: 0,
-                  left: 0,
-                  backgroundColor: "rgba(0, 0, 0, 0.5)",
-                }}
+                    <Grid item>
+                      <Button
+                        variant="contained"
+                        onClick={handleSave}
+                        sx={{
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          color: "#FFFFFF",
+                          fontSize: "18px", // Consistent font size
+                          height: "3.5rem", // Consistent height
+                          width: "13rem", // Consistent width
+                          padding: "0.8rem 2rem",
+                          border: "1px solid transparent",
+                          transition: "background-color 0.3s, color 0.3s",
+                          "&:hover": {
+                            background:
+                              "linear-gradient(to left, #8a252c, #AB3510)",
+                            color: "white",
+                            border: "0.5px solid #AB3510",
+                            opacity: 0.8,
+                          },
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </Grid>
+                  </Grid>
+                </Grid>
+              </Grid>
+            </Grid>
+
+            <Grid item xs={6} display="flex" justifyContent="center">
+              <Modal
+                open={successModal}
+                onClose={handleCloseSuccessModal}
+                aria-labelledby="success-modal-title"
+                aria-describedby="success-modal-description"
               >
                 <Box
                   sx={{
-                    backgroundColor: "white",
-                    padding: 4,
-                    borderRadius: "0.5rem",
-                    boxShadow: 3,
-                    height: "auto",
-                    width: "35rem",
-                    textAlign: "center",
-                    position: "relative",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    height: "100vh",
+                    width: "100vw",
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    backgroundColor: "rgba(0, 0, 0, 0.5)",
                   }}
                 >
-                  <Typography
-                    id="success-modal-title"
-                    variant="h3"
-                    sx={{ fontWeight: "bold", marginBottom: 2 }}
-                  >
-                    Success!
-                  </Typography>
-                  <Typography
-                    id="success-modal-description"
-                    variant="h6"
-                    sx={{ marginBottom: 2, marginTop: 2 }}
-                  >
-                    Goal Successfully Saved.
-                  </Typography>
-                  <Button
-                    variant="contained"
+                  <Box
                     sx={{
-                      background: "linear-gradient(to left, #8a252c, #AB3510)",
-                      fontWeight: "bold",
-                      fontSize: "1.2rem",
-                      marginTop: 2,
-                      width: "11rem",
-                      padding: "0.5rem 2.2rem",
-                      borderRadius: "0.6rem",
+                      backgroundColor: "white",
+                      padding: 4,
+                      borderRadius: "0.5rem",
+                      boxShadow: 3,
+                      height: "auto",
+                      width: "35rem",
+                      textAlign: "center",
+                      position: "relative",
                     }}
-                    onClick={handleCloseSuccessModal}
                   >
-                    OK
-                  </Button>
+                    <Typography
+                      id="success-modal-title"
+                      variant="h3"
+                      sx={{ fontWeight: "bold", marginBottom: 2 }}
+                    >
+                      Success!
+                    </Typography>
+                    <Typography
+                      id="success-modal-description"
+                      variant="h6"
+                      sx={{ marginBottom: 2, marginTop: 2 }}
+                    >
+                      Goal Successfully Saved.
+                    </Typography>
+                    <Button
+                      variant="contained"
+                      sx={{
+                        background:
+                          "linear-gradient(to left, #8a252c, #AB3510)",
+                        fontWeight: "bold",
+                        fontSize: "1.2rem",
+                        marginTop: 2,
+                        width: "11rem",
+                        padding: "0.5rem 2.2rem",
+                        borderRadius: "0.6rem",
+                      }}
+                      onClick={handleCloseSuccessModal}
+                    >
+                      OK
+                    </Button>
+                  </Box>
                 </Box>
-              </Box>
-            </Modal>
-            <Button
-              variant="contained"
-              onClick={handleSave}
-              sx={{
-                fontWeight: "bold",
-                fontSize: "1.2rem",
-                width: "11rem",
-                borderRadius: "0.6rem",
-                background: "linear-gradient(to left, #8a252c, #AB3510)",
-                color: "#ffffff",
-                "&:hover": {
-                  background: "linear-gradient(to left, #AB3510, #8a252c)",
-                },
-              }}
-            >
-              Save
-            </Button>
+              </Modal>
+            </Grid>
           </Grid>
-        </Grid>
-      </Grid>
+        </StyledBox>
+      </Box>
     </Box>
   );
 }

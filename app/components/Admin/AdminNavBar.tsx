@@ -1,98 +1,131 @@
 "use client";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { TiLocationArrowOutline } from "react-icons/ti";
-import { signOut } from "next-auth/react"
+import {
+  Box,
+  Drawer,
+  List,
+  Divider,
+  ListItem,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+} from "@mui/material";
+import LogoutIcon from "@mui/icons-material/LogoutRounded";
+import ForkRightIcon from "@mui/icons-material/ForkRight";
+import CreditScoreIcon from "@mui/icons-material/CreditScore";
+import { signOut } from "next-auth/react";
+import { BrowserRouter as Router } from "react-router-dom";
+import SpaceDashboardRoundedIcon from '@mui/icons-material/SpaceDashboardRounded';
+import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
+import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded';
 
+const drawerWidth = 310;
 
 export default function AdminNavBar() {
   return (
-    <div
-      className="fixed top-0 left-0 flex flex-col h-screen w-[18rem] py-5 overflow-auto gap-1"
-      style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-    >
-      <div className="flex items-center justify-center">
-        {/* ilisi nig atlasLogo  */}
-        <img src="/logo.png" alt="" className=" h-[8rem] mt-3 mb-5 mr-5" />
-      </div>
-      <div className="w-[18rem] border-t border-white mb-5"></div>
-      <Link href="/admindashboard">
-        <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            className="w-8 h-8 "
-          >
-            <path d="M11.47 3.841a.75.75 0 0 1 1.06 0l8.69 8.69a.75.75 0 1 0 1.06-1.061l-8.689-8.69a2.25 2.25 0 0 0-3.182 0l-8.69 8.69a.75.75 0 1 0 1.061 1.06l8.69-8.689Z" />
-            <path d="m12 5.432 8.159 8.159c.03.03.06.058.091.086v6.198c0 1.035-.84 1.875-1.875 1.875H15a.75.75 0 0 1-.75-.75v-4.5a.75.75 0 0 0-.75-.75h-3a.75.75 0 0 0-.75.75V21a.75.75 0 0 1-.75.75H5.625a1.875 1.875 0 0 1-1.875-1.875v-6.198a2.29 2.29 0 0 0 .091-.086L12 5.432Z" />
-          </svg>
-          <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
-            Dashboard
-          </div>
-        </div>
-      </Link>
-      <Link href="/adminlistofusers">
-        <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            className="w-8 h-8 "
-          >
-            <path d="M12 12c2.7 0 5-2.3 5-5s-2.3-5-5-5-5 2.3-5 5 2.3 5 5 5zm0 2c-3.3 0-10 1.7-10 5v3h20v-3c0-3.3-6.7-5-10-5z"/>          
-            </svg>
-          <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
-            List of Users
-          </div>
-        </div>
-      </Link>
+    <Router>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          fontFamily: "Arial, sans-serif",
+          borderRadius:10 
+        }}
+      >
+        <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', background: 'linear-gradient(to left, #8a252c, #AB3510)', color: 'white', borderTopRightRadius: '30px',borderBottomRightRadius: '30px', },
+        }}>
+          <Box component="img" src="/logo.png" alt="Description" sx={{ width: '90%', height: '25%',ml:1, mt: 1}} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+            <Box sx={{ flex: 1, overflow: "auto" }}>
+              <List>
+                <Divider sx={{ background: "#ffffff" }} />
+                <ListItem
+                  disablePadding
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#962203",
+                    },
+                  }}
+                >
+                  <Link href="/admindashboard" legacyBehavior>
+                    <ListItemButton sx={{ minHeight: '60px', fontSize: '40px' }}>
+                      <ListItemIcon>
+                        <SpaceDashboardRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="Dashboard" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                    </ListItemButton>
+                  </Link>
+                </ListItem>
 
-      <Link href="/registerdepartment">
-        <div className="mx-3 border-[0.1rem] border-solid border-transparent rounded-lg w-[16rem] h-14 mb-3 py-4 px-3 flex items-center text-white hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke-width="2"
-            stroke="currentColor"
-            className="w-8 h-8 "
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Zm0 3h.008v.008h-.008v-.008Z"
-            />
-          </svg>
-          <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
-            Register Department
-          </div>
-        </div>
-      </Link>
-      <div className="w-[18rem] border-t border-white mb-5"></div>
-      <div className="flex flex-row text-white mx-3 hover:bg-[#eec160] hover:text-[#8a252c] transition-colors duration-300 items-center border-[0.1rem] border-solid border-transparent rounded-lg mb-3 px-3 h-14 "
-          onClick={() => signOut({ callbackUrl: '/login' })}>
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke-width="2"
-          stroke="currentColor"
-          className="w-8 h-8"
-        >
-          <path
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
-          />
-        </svg>
-        <div className="flex-1 px-3 py-1 ml-1  mr-4 font-medium bg-transparent focus:outline-none text-xl">
-          Logout
-        </div>
-      </div>
-    </div>
+                <ListItem
+                  disablePadding
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#962203",
+                    },
+                  }}
+                >
+                  <Link href="/adminlistofusers" legacyBehavior>
+                    <ListItemButton sx={{ minHeight: '60px' }}>
+                      <ListItemIcon>
+                        <PeopleAltRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="List of Users" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                    </ListItemButton>
+                  </Link>
+                </ListItem>
+
+                <ListItem
+                  disablePadding
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#962203",
+                    },
+                  }}
+                >
+                  <Link href="/registerdepartment" legacyBehavior>
+                    <ListItemButton sx={{ minHeight: '60px' }}>
+                      <ListItemIcon>
+                        <HowToRegRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                      </ListItemIcon>
+                      <ListItemText primary="Register Dep" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                    </ListItemButton>
+                  </Link>
+                </ListItem>
+              </List>
+            </Box>
+
+            <Box sx={{ pb: 1 }}>
+              <Divider sx={{ background: "#ffffff" }} />
+              <ListItem
+                disablePadding
+                sx={{
+                  "&:hover": {
+                    backgroundColor: "#962203",
+                  },
+                }}
+              >
+                <ListItemButton
+                  sx={{ minHeight: '60px' }}
+                  onClick={() => signOut({ callbackUrl: "/login" })}
+                >
+                  <ListItemIcon>
+                    <LogoutIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                  </ListItemIcon>
+                  <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                </ListItemButton>
+              </ListItem>
+            </Box>
+          </Box>
+        </Drawer>
+      </Box>
+    </Router>
   );
 }

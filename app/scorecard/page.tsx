@@ -9,6 +9,7 @@ import PrimaryFinancial from "../components/BSC/PrimaryFinancial";
 import PrimaryStakeholder from "../components/BSC/PrimaryStakeholder";
 import PrimaryInternal from "../components/BSC/PrimaryInternal";
 import PrimaryLearning from "../components/BSC/PrimaryLearning";
+import { useSession } from "next-auth/react";
 import {
   Box,
   Button,
@@ -19,11 +20,71 @@ import {
   Typography,
 } from "@mui/material";
 
+// Define a type for the target years
+type TargetYearsResponse = {
+  target_year: string[]; 
+};
+
 const ScorecardPage = () => {
+  const { data: session, status } = useSession();
+
+  let user;
+  if (session?.user?.name) user = JSON.parse(session?.user?.name);
+  const departmentId = user?.department_id;
+
   const [selectedComponent, setSelectedComponent] = useState("primary");
   const [primarySelectedComponent, setPrimarySelectedComponent] =
     useState("primary");
   const [currentView, setCurrentView] = useState("");
+  // To store the available years
+  const [selectedYear, setSelectedYear] = useState("");
+  const [targetYears, setTargetYears] = useState<string[]>([]);  
+
+
+
+  useEffect(() => {
+    const fetchTargetYears = async () => {
+      if (departmentId) {
+        try {
+          const [
+            financialResponse,
+            internalResponse,
+            learningResponse,
+            stakeholderResponse,
+          ] = await Promise.all([
+            fetch(`http://localhost:8080/bsc/getFinancialTargetYears/${departmentId}`),
+            fetch(`http://localhost:8080/bsc/getInternalTargetYears/${departmentId}`),
+            fetch(`http://localhost:8080/bsc/getLearningTargetYears/${departmentId}`),
+            fetch(`http://localhost:8080/bsc/getStakeholderTargetYears/${departmentId}`),
+          ]);
+  
+          const [financialData, internalData, learningData, stakeholderData] = await Promise.all([
+            financialResponse.json(),
+            internalResponse.json(),
+            learningResponse.json(),
+            stakeholderResponse.json(),
+          ]);
+  
+          const allData = [
+            ...financialData,
+            ...internalData,
+            ...learningData,
+            ...stakeholderData,
+          ];
+  
+          const uniqueYears = ["Select Year"]
+            .concat([...new Set(allData.map((entity) => entity.targetYear))]);
+          setTargetYears(uniqueYears);
+          console.log("Years: ", uniqueYears);
+          setSelectedYear("Select Year");
+        } catch (error) {
+          console.error("Error fetching target years:", error);
+        }
+      }
+    };
+  
+    fetchTargetYears();
+  }, [departmentId]);
 
   // Store the selected component in local storage
   const changeComponent = (componentName: string) => {
@@ -60,6 +121,11 @@ const ScorecardPage = () => {
     }
   }, []);
 
+// Set the selected year to the new value from the dropdown  
+  const handleYearChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(e.target.value); 
+  };
+
   return (
     <Grid
       sx={{
@@ -67,6 +133,7 @@ const ScorecardPage = () => {
         height: "100%",
         display: "flex",
         flexDirection: "row",
+        color: "#2e2c2c",
       }}
     >
       <Grid>
@@ -76,8 +143,8 @@ const ScorecardPage = () => {
         container
         direction="column"
         sx={{
-          mt: 2, // Add some margin at the top
-          px: 2, // Optional: Add some padding on the left and right
+          mt: 3, // Add some margin at the top
+          px: 3, // Optional: Add some padding on the left and right
         }}
       >
         <Box
@@ -89,14 +156,17 @@ const ScorecardPage = () => {
           }}
         >
           <Typography
+            variant="h4"
+            component="h1"
             sx={{
-              fontSize: "4rem",
               fontWeight: "bold",
-              color: "#3B3B3B",
+              marginBottom: 2,
+              fontSize: { xs: "2rem", sm: "3.5rem" },
             }}
           >
-            Balanced Scorecard
+            BALANCED SCORECARD
           </Typography>
+          
 
           {/* View Buttons */}
           <Box
@@ -113,12 +183,14 @@ const ScorecardPage = () => {
               variant={currentView === "primary" ? "contained" : "outlined"}
               fullWidth
               sx={{
+                p:3,
+                fontSize: '18px',
                 background:
                   currentView === "primary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
                     : "transparent",
                 color: currentView === "primary" ? "white" : "#AB3510",
-                flexGrow: 1, // Ensure both buttons have equal size
+                flexGrow: 2, // Ensure both buttons have equal size
                 height: "100%", // Match the height of the container
                 border: "1px solid transparent", // Keep border style consistent
                 transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
@@ -137,6 +209,8 @@ const ScorecardPage = () => {
               variant={currentView === "secondary" ? "contained" : "outlined"}
               fullWidth
               sx={{
+                p:3,
+                fontSize: '18px',
                 background:
                   currentView === "secondary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -160,16 +234,32 @@ const ScorecardPage = () => {
             </Button>
           </Box>
         </Box>
-        <Typography
-          sx={{
-            fontSize: "1.4rem",
-          }}
-        >
+        <Typography variant="h5">
           Explore the Balanced Scorecard feature to gain a comprehensive view of
           your organization&apos;s performance across different dimensions. Use
           it to set clear objectives, track progress, and drive strategic
           initiatives for success.
         </Typography>
+
+        {/* Year Dropdown */}
+        <div className="mb-4 mt-10">
+          <label htmlFor="year-select" className="mr-2 text-lg font-medium">
+            Select Year:
+          </label>
+          <select
+          id="year-select"
+          value={selectedYear}
+          onChange={handleYearChange}
+          className="border border-gray-300 rounded-md p-2"
+          key={selectedYear} // Add the key prop here 
+        >
+          {targetYears.map((year) => (
+            <option key={year} value={year}>
+              {year}
+            </option>
+          ))}
+        </select>
+      </div>
 
         {currentView === "primary" && (
           <Grid container>
@@ -179,11 +269,13 @@ const ScorecardPage = () => {
               alignItems="center"
               height="4rem"
               borderRadius={2}
-              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
+              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 5}}
             >
               <Button
                 onClick={() => changePrimaryComponent("Financial")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     primarySelectedComponent === "Financial"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -214,6 +306,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changePrimaryComponent("Stakeholder")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     primarySelectedComponent === "Stakeholder"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -244,6 +338,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changePrimaryComponent("Internal")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     primarySelectedComponent === "Internal"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -274,6 +370,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changePrimaryComponent("Learning")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     primarySelectedComponent === "Learning"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -313,17 +411,21 @@ const ScorecardPage = () => {
                 }}
               >
                 <CardContent>
-                  {primarySelectedComponent === "Financial" && (
-                    <PrimaryFinancial />
-                  )}
+                {primarySelectedComponent === "Financial" && (
+                <PrimaryFinancial 
+                selectedYear={selectedYear}  />
+                )}
                   {primarySelectedComponent === "Stakeholder" && (
-                    <PrimaryStakeholder />
+                    <PrimaryStakeholder 
+                    selectedYear={selectedYear}/>
                   )}
                   {primarySelectedComponent === "Internal" && (
-                    <PrimaryInternal />
+                  <PrimaryInternal 
+                  selectedYear={selectedYear} />
                   )}
                   {primarySelectedComponent === "Learning" && (
-                    <PrimaryLearning />
+                    <PrimaryLearning 
+                    selectedYear={selectedYear}/>
                   )}
                 </CardContent>
               </Card>
@@ -338,11 +440,13 @@ const ScorecardPage = () => {
               alignItems="center"
               height="4rem"
               borderRadius={2}
-              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
+              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 5 }}
             >
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     selectedComponent === "Financial"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -371,6 +475,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     selectedComponent === "Stakeholder"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -399,6 +505,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changeComponent("Internal")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     selectedComponent === "Internal"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -426,6 +534,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changeComponent("Learning")}
                 sx={{
+                  p:3,
+                  fontSize: '18px',
                   background:
                     selectedComponent === "Learning"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -462,10 +572,22 @@ const ScorecardPage = () => {
                 }}
               >
                 <CardContent>
-                  {selectedComponent === "Financial" && <Financial />}
-                  {selectedComponent === "Stakeholder" && <Stakeholder />}
-                  {selectedComponent === "Internal" && <Internal />}
-                  {selectedComponent === "Learning" && <Learning />}
+              {selectedComponent === "Financial" && (
+              <Financial 
+              selectedYear={selectedYear}  />
+              )}
+              {selectedComponent === "Stakeholder" && (
+              <Stakeholder 
+              selectedYear={selectedYear}  />
+              )}
+              {selectedComponent === "Internal" && (
+              <Internal 
+              selectedYear={selectedYear}  />
+              )}
+              {selectedComponent === "Learning" && (
+              <Learning 
+              selectedYear={selectedYear}  />
+              )}
                 </CardContent>
               </Card>
             </Box>

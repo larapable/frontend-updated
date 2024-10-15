@@ -1,54 +1,33 @@
 "use client";
 import QANavbar from "../components/Navbars/QANavbar";
-import QADepartmentView from "../components/QAProfile/QADepartmentView";
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import { FaPlus } from "react-icons/fa";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
 import { getSession, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Spinner from "../components/Misc/Spinner";
+
 import {
   Box,
-  Drawer,
   Typography,
   TextField,
-  Divider,
-  Avatar,
-  Select,
-  MenuItem,
   Grid,
   Button,
-  Autocomplete,
-  FormHelperText,
-  Card,
-  responsiveFontSizes,
-  Modal,
+  IconButton,
 } from "@mui/material";
-import axios from "axios";
 import styled from "@emotion/styled";
-import Image from "next/image";
-import { SelectChangeEvent } from "@mui/material/Select";
 import SpinnerPages from "../components/Misc/SpinnerPages";
 import "@/app/page.css";
+import CheckIcon from "@mui/icons-material/Check";
 
 interface Department {
   id: number;
   department_name: string;
 }
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
   overflowWrap: "break-word",
   maxWidth: "100%",
   height: "auto",
-});
-
-const MainFont = styled(Box)({
-  fontSize: "0.9rem",
-  mt: 2,
 });
 
 const Cards = styled(Box)({
@@ -61,11 +40,6 @@ const Cards = styled(Box)({
   borderWidth: "1px",
 });
 
-const Boxes = styled(Box)({
-  height: "auto",
-  width: "100%",
-});
-
 export default function QAStratmapView() {
   //   stratmap original code
   const { data: session } = useSession();
@@ -73,11 +47,11 @@ export default function QAStratmapView() {
   const [currentView, setCurrentView] = useState("primary");
   const [hasPrimaryStrats, setHasPrimaryStrats] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedYear, setSelectedYear] = useState("");
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
   const department_id = user?.department_id;
-  const role = user?.role;
   const username = user?.username;
 
   useEffect(() => {
@@ -372,6 +346,7 @@ export default function QAStratmapView() {
     id: number;
     fID: number;
     value: string;
+    targetYear: string;
   }
 
   interface StrategyCategories {
@@ -381,12 +356,6 @@ export default function QAStratmapView() {
     learningGrowth: GeneratedSentence[];
   }
 
-  // for vision values mission
-  const [editingStrategy, setEditingStrategy] =
-    useState<GeneratedSentence | null>(null);
-  const [newStrategyValue, setNewStrategyValue] = useState("");
-  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
-  const [showWarning, setShowWarning] = useState(false);
   const [primaryFinancialStrategies, setPrimaryFinancialStrategies] = useState<
     GeneratedSentence[]
   >([]);
@@ -399,327 +368,12 @@ export default function QAStratmapView() {
   const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] =
     useState<GeneratedSentence[]>([]);
 
-  // @ts-ignore
-  const handleEditClick = (strategy: GeneratedSentence) => {
-    setEditingStrategy(strategy);
-    setNewStrategyValue(strategy.value);
-  };
-
-  const handleButtonClick = (department_id: number) => {
-    setShowWarning(true);
-  };
-
   const [strategies, setStrategies] = useState<StrategyCategories>({
     financial: [],
     stakeholder: [],
     internalProcess: [],
     learningGrowth: [],
   });
-
-  const handleFinancialSaveEdit = useCallback(
-    async (fID: number, office_target: string, department_id: number) => {
-      try {
-        const details = {
-          id: fID,
-          office_target: office_target,
-          department: { id: department_id }, // Include the department ID in the payload
-        };
-        const response = await fetch(
-          `http://localhost:8080/stratmap/financial/edit/${fID}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(details),
-          }
-        );
-
-        if (!response.ok) {
-          console.error("Failed to update strategy", response.status);
-          return;
-        }
-
-        const result = await response.json();
-        const updatedStrategy = result.updatedFinancial;
-
-        setStrategies((prevStrategies) => {
-          const newStrategies = { ...prevStrategies };
-          const financial = newStrategies.financial || [];
-          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-          if (updatedStrategy) {
-            const strategyIndex = financial.findIndex(
-              (strategy) => strategy.id === fID
-            );
-            if (strategyIndex !== -1) {
-              financial[strategyIndex] = updatedStrategy;
-              newStrategies.financial = financial;
-            } else {
-              console.error(`Strategy with id ${fID} not found`);
-            }
-          } else {
-            console.error(`updatedStrategy for fID ${fID} is undefined`);
-          }
-
-          return newStrategies;
-        });
-
-        fetchExistingStrategies(department_id);
-      } catch (error) {
-        console.error("An error occurred while updating the strategy:", error);
-      }
-    },
-    []
-  );
-
-  const handleLearningGrowthSaveEdit = useCallback(
-    async (fID: number, office_target: string, department_id: number) => {
-      try {
-        const details = {
-          id: fID,
-          office_target: office_target,
-          department: { id: department_id }, // Include the department ID in the payload
-        };
-        const response = await fetch(
-          `http://localhost:8080/stratmap/learning/edit/${fID}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(details),
-          }
-        );
-
-        if (!response.ok) {
-          console.error("Failed to update strategy");
-          return;
-        }
-
-        const result = await response.json();
-        const updatedStrategy = result.updatedLG;
-
-        setStrategies((prevStrategies) => {
-          const newStrategies = { ...prevStrategies };
-          const learningGrowth = newStrategies.learningGrowth || [];
-          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-          if (updatedStrategy) {
-            const strategyIndex = learningGrowth.findIndex(
-              (strategy) => strategy.id === fID
-            );
-            if (strategyIndex !== -1) {
-              learningGrowth[strategyIndex] = updatedStrategy;
-              newStrategies.learningGrowth = learningGrowth;
-            } else {
-              console.error(`Strategy with id ${fID} not found`);
-            }
-          } else {
-            console.error(`updatedStrategy for fID ${fID} is undefined`);
-          }
-
-          return newStrategies;
-        });
-
-        fetchExistingStrategies(department_id);
-      } catch (error) {
-        console.error("An error occurred while updating the strategy:", error);
-      }
-    },
-    []
-  );
-
-  const handleStakeholderSaveEdit = useCallback(
-    async (fID: number, office_target: string, department_id: number) => {
-      try {
-        const details = {
-          office_target: office_target,
-          department: { id: department_id }, // Include the department ID in the payload
-        };
-        const response = await fetch(
-          `http://localhost:8080/stratmap/stakeholder/edit/${fID}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(details),
-          }
-        );
-
-        if (!response.ok) {
-          console.error("Failed to update strategy");
-          return;
-        }
-
-        const result = await response.json();
-        const updatedStrategy = result.stakeholderUpdated;
-
-        setStrategies((prevStrategies) => {
-          const newStrategies = { ...prevStrategies };
-          const stakeholder = newStrategies.stakeholder || [];
-          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-          if (updatedStrategy) {
-            const strategyIndex = stakeholder.findIndex(
-              (strategy) => strategy.id === fID
-            );
-            if (strategyIndex !== -1) {
-              stakeholder[strategyIndex] = updatedStrategy;
-              newStrategies.stakeholder = stakeholder;
-            } else {
-              console.error(`Strategy with id ${fID} not found`);
-            }
-          } else {
-            console.error(`updatedStrategy for fID ${fID} is undefined`);
-          }
-
-          return newStrategies;
-        });
-
-        fetchExistingStrategies(department_id);
-      } catch (error) {
-        console.error("An error occurred while updating the strategy:", error);
-      }
-    },
-    []
-  );
-
-  const handleInternalProcessSaveEdit = useCallback(
-    async (fID: number, office_target: string, department_id: number) => {
-      try {
-        const details = {
-          office_target: office_target,
-          department: { id: department_id }, // Include the department ID in the payload
-        };
-        const response = await fetch(
-          `http://localhost:8080/stratmap/internal/edit/${fID}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(details),
-          }
-        );
-
-        if (!response.ok) {
-          console.error("Failed to update strategy");
-          return;
-        }
-
-        const result = await response.json();
-        const updatedStrategy = result.updatedIP;
-
-        setStrategies((prevStrategies) => {
-          const newStrategies = { ...prevStrategies };
-          const internalProcess = newStrategies.internalProcess || [];
-          console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
-
-          if (updatedStrategy) {
-            const strategyIndex = internalProcess.findIndex(
-              (strategy) => strategy.id === fID
-            );
-            if (strategyIndex !== -1) {
-              internalProcess[strategyIndex] = updatedStrategy;
-              newStrategies.internalProcess = internalProcess;
-            } else {
-              console.error(`Strategy with id ${fID} not found`);
-            }
-          } else {
-            console.error(`updatedStrategy for fID ${fID} is undefined`);
-          }
-
-          return newStrategies;
-        });
-
-        fetchExistingStrategies(department_id);
-      } catch (error) {
-        console.error("An error occurred while updating the strategy:", error);
-      }
-    },
-    []
-  );
-
-  const API_ENDPOINTS = [
-    `http://localhost:8080/stStrat/get/${department_id}`,
-    `http://localhost:8080/soStrat/get/${department_id}`,
-    `http://localhost:8080/wtStrat/get/${department_id}`,
-    `http://localhost:8080/woStrat/get/${department_id}`,
-  ];
-
-  const SYSTEM_PROMPT = `Categorize the following responses into the following categories:
-      1. Financial: Stewardship
-      2. Stakeholder: Client Relationship
-      3. Internal Process: Process Development & Technology Management
-      4. Learning & Growth: Culture & People Development
-      
-    Remove any existing numbering in the responses namely the returned number from the database but do not remove the target code (S1O1, W2T3, etc).
-    Sort the responses by which category you think fits them while also taking into account the OFFICE VISION, VALUE PROPOSITION (only choose from 1-4).
-    When sorting, take into account the these three strategic themes: Excellence in Service Quality, Excellence in Internal Service Systems and Excellence in Organizational Stewardship. Append it to the modified response.
-    DO NOT MODIFY THE ORIGINAL STRATEGY RESPONSE TEXT. If the response is blank, write "Field is blank" for that response. 
-    Sort the responses by strategic theme.
-    These are example outputs you should format you output in: (
-    Sample 1: 3. Excellence in Internal Service Systems S6T2: Test new products and marketing strategies to stay ahead of competitors.
-    Sample 2: 1. Excellence in Service Quality S1O1: Implement contingency plans to ensure continuity during economic downturns.
-    Sample 3: 4. Excellence in Organizational Stewardship W2T1: Implement contingency plans to ensure continuity during economic downturns.
-    Sample 4: 2. Excellence in Internal Service Systems S6T2: Test new products and marketing strategies to stay ahead of competitors. )
-    "category number 1-4. (whichever strategic theme you think fits the response, DO NOT ADD THE CATEGORY NAMES OR ANY PRETEXT ASIDE FROM THE STRATEGIC THEME HERE.) (strategy here)" DO NOT ADD ANY MARKUP.
-    "Make sure not to output any double strategies with the same target code"
-    `;
-
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
-
-  // financial
-  const [isFModalOpen, setIsFModalOpen] = useState(false);
-  const [newFStrategy, setNewFStrategy] = useState("");
-  const [newFTargetCode, setNewFTargetCode] = useState("");
-  const [savedFStrategies, setSavedFStrategies] = useState<string[]>([]);
-
-  const openFModal = () => {
-    setIsFModalOpen(true);
-    setNewFTargetCode("");
-    setNewFStrategy("");
-  };
-
-  const closeFModal = () => {
-    setNewFTargetCode("");
-    setIsFModalOpen(false);
-  };
-
-  const handleFSave = async () => {
-    const strategyFWithCode = `${newFTargetCode}: ${newFStrategy}`;
-
-    try {
-      const data = {
-        office_target: newFStrategy,
-        department: { id: department_id },
-        user_generated: 1,
-      };
-      const response = await fetch(
-        "http://localhost:8080/stratmap/financial/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closeFModal();
-      } else {
-        console.error("Error saving financial strategy");
-        // Handle error
-      }
-    } catch (error) {
-      console.error("Error saving financial strategy:", error);
-      // Handle error
-    }
-    setSavedFStrategies([...savedFStrategies, strategyFWithCode]);
-  };
 
   const handlePrimaryFSave = async () => {
     try {
@@ -897,56 +551,6 @@ export default function QAStratmapView() {
     setIsPrimarySModalOpen(false);
   };
 
-  // stakeholder
-  const [isSModalOpen, setIsSModalOpen] = useState(false);
-  const [newSStrategy, setNewSStrategy] = useState("");
-  const [newSTargetCode, setNewSTargetCode] = useState("");
-  const [savedSStrategies, setSavedSStrategies] = useState<string[]>([]);
-
-  const openSModal = () => {
-    setIsSModalOpen(true);
-    setNewSTargetCode("");
-    setNewSStrategy("");
-  };
-
-  const closeSModal = () => {
-    setNewSTargetCode("");
-    setIsSModalOpen(false);
-  };
-
-  const handleSSave = async () => {
-    const strategySWithCode = `${newSTargetCode}: ${newSStrategy}`;
-
-    try {
-      const data = {
-        office_target: newSStrategy,
-        department: { id: department_id },
-        user_generated: 1,
-      };
-      const response = await fetch(
-        "http://localhost:8080/stratmap/stakeholder/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closeSModal();
-      } else {
-        console.error("Error saving stakeholder strategy");
-        // Handle error
-      }
-    } catch (error) {
-      console.error("Error saving stakeholder strategy:", error);
-      // Handle error
-    }
-    setSavedSStrategies([...savedSStrategies, strategySWithCode]);
-  };
-
   // internal process
   const [isPrimaryIPModalOpen, setIsPrimaryIPModalOpen] = useState(false);
   const [newPrimaryIPStrategy, setNewPrimaryIPStrategy] = useState("");
@@ -961,56 +565,6 @@ export default function QAStratmapView() {
   const closePrimaryIPModal = () => {
     setNewPrimaryIPTargetCode("");
     setIsPrimaryIPModalOpen(false);
-  };
-
-  // internal process
-  const [isIPModalOpen, setIsIPModalOpen] = useState(false);
-  const [newIPStrategy, setNewIPStrategy] = useState("");
-  const [newIPTargetCode, setNewIPTargetCode] = useState("");
-  const [savedIPStrategies, setSavedIPStrategies] = useState<string[]>([]);
-
-  const openIPModal = () => {
-    setIsIPModalOpen(true);
-    setNewIPTargetCode("");
-    setNewIPStrategy("");
-  };
-
-  const closeIPModal = () => {
-    setNewIPTargetCode("");
-    setIsIPModalOpen(false);
-  };
-
-  const handleIPSave = async () => {
-    const strategyIPWithCode = `${newIPTargetCode}: ${newIPStrategy}`;
-
-    try {
-      const data = {
-        office_target: newIPStrategy,
-        department: { id: department_id },
-        user_generated: 1,
-      };
-      const response = await fetch(
-        "http://localhost:8080/stratmap/internal/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closeIPModal();
-      } else {
-        console.error("Error saving internal process strategy");
-        // Handle error
-      }
-    } catch (error) {
-      console.error("Error saving internal process strategy:", error);
-      // Handle error
-    }
-    setSavedSStrategies([...savedIPStrategies, strategyIPWithCode]);
   };
 
   // Primary learning&growth
@@ -1029,283 +583,10 @@ export default function QAStratmapView() {
     setIsPrimaryLGModalOpen(false);
   };
 
-  // learning&growth
-  const [isLGModalOpen, setIsLGModalOpen] = useState(false);
-  const [newLGStrategy, setNewLGStrategy] = useState("");
-  const [newLGTargetCode, setNewLGTargetCode] = useState("");
-  const [savedLGStrategies, setSavedLGStrategies] = useState<string[]>([]);
-
-  const openLGModal = () => {
-    setIsLGModalOpen(true);
-    setNewLGTargetCode("");
-    setNewLGStrategy("");
-  };
-
-  const closeLGModal = () => {
-    setNewLGTargetCode("");
-    setIsLGModalOpen(false);
-  };
-
-  const handleLGSave = async () => {
-    const strategyLGWithCode = `${newLGTargetCode}: ${newLGStrategy}`;
-
-    try {
-      const data = {
-        office_target: newLGStrategy,
-        department: { id: department_id },
-        user_generated: 1,
-      };
-      const response = await fetch(
-        "http://localhost:8080/stratmap/learning/insert",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closeLGModal();
-      } else {
-        console.error("Error saving learning growth strategy");
-        // Handle error
-      }
-    } catch (error) {
-      console.error("Error saving learning growth strategy:", error);
-      // Handle error
-    }
-    setSavedFStrategies([...savedLGStrategies, strategyLGWithCode]);
-  };
-
-  const fetchDataAndCategorize = async (apiEndpoint: string) => {
-    try {
-      const response = await fetch(apiEndpoint);
-      const data = await response.json();
-      console.log("swot data: ", data);
-
-      const inputText = data
-        .map((row: any) => {
-          if (row["s_oResponses"]) return row["s_oResponses"];
-          else if (row["s_tResponses"]) return row["s_tResponses"];
-          else if (row["w_oResponses"]) return row["w_oResponses"];
-          else if (row["w_tResponses"]) return row["w_tResponses"];
-          else return "";
-        })
-        .join("\n");
-
-      console.log("inputText: ", inputText);
-
-      const geminiResponse = await fetch(GEMINI_API_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [{ text: `${SYSTEM_PROMPT}\n${inputText}` }],
-            },
-          ],
-        }),
-      });
-      const geminiData = await geminiResponse.json();
-      const apiResponse =
-        geminiData.candidates?.[0]?.content?.parts?.[0]?.text ||
-        "No response received";
-      console.log("api response: ", apiResponse);
-
-      const generatedSentences: string[] = apiResponse
-        .split("\n")
-        .filter((sentence: string) => sentence.trim() !== "");
-
-      const categorizedSentences: GeneratedSentence[] = await Promise.all(
-        // Use Promise.all to handle async operations within map
-        generatedSentences.map(async (sentence) => {
-          const match = sentence.match(
-            /^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/
-          );
-
-          if (match) {
-            const [, idStr, strategicTheme, code, content] = match;
-            const id = parseInt(idStr, 10);
-            const fID = id;
-
-            // POST target code to backend
-            if (id === 1) {
-              // Assuming id 1 represents Financial perspective
-              try {
-                const response = await fetch(
-                  // Make the fetch call asynchronous with await
-                  "http://localhost:8080/bsc/financialBsc/insert",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      target_code: code, // Send the extracted target code
-                      office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
-                      department: { id: department_id }, // Assuming department_id is available
-                    }),
-                  }
-                );
-
-                if (!response.ok) {
-                  console.error("Error POSTing target code:", response.status);
-                }
-              } catch (error) {
-                console.error("Error POSTing target code:", error);
-              }
-            }
-
-            return { id, fID, value: `${strategicTheme} ${code}: ${content}` };
-          } else {
-            console.warn("Invalid sentence format:", sentence);
-            return { id: -1, fID: -1, value: sentence };
-          }
-        })
-      );
-      return categorizedSentences;
-    } catch (error) {
-      console.error(
-        `Error fetching data or processing Gemini response for ${apiEndpoint}:`,
-        error
-      );
-      return [];
-    }
-  };
-
-  const fetchAllData = async (department_id: number) => {
-    const promises = API_ENDPOINTS.map((apiEndpoint) =>
-      fetchDataAndCategorize(apiEndpoint)
-    );
-    const categorizedSentencesArrays = await Promise.all(promises);
-
-    const strategies = {
-      financial: [] as GeneratedSentence[],
-      stakeholder: [] as GeneratedSentence[],
-      internalProcess: [] as GeneratedSentence[],
-      learningGrowth: [] as GeneratedSentence[],
-    };
-
-    for (const categorizedSentences of categorizedSentencesArrays) {
-      for (const sentence of categorizedSentences) {
-        switch (sentence.id) {
-          case 1:
-            strategies.financial.push(sentence);
-            break;
-          case 2:
-            strategies.stakeholder.push(sentence);
-            break;
-          case 3:
-            strategies.internalProcess.push(sentence);
-            break;
-          case 4:
-            strategies.learningGrowth.push(sentence);
-            break;
-        }
-      }
-    }
-    setStrategies(strategies);
-
-    const saveToDatabase = async (
-      strategies: {
-        financial: GeneratedSentence[];
-        stakeholder: GeneratedSentence[];
-        internalProcess: GeneratedSentence[];
-        learningGrowth: GeneratedSentence[];
-      },
-      department_id: number
-    ) => {
-      try {
-        // Financial entity
-        const financialPromises = strategies.financial.map((sentence) => {
-          const data = {
-            office_target: sentence.value,
-            department: { id: department_id },
-          };
-          console.log("financial data: ", data);
-          return fetch("http://localhost:8080/stratmap/financial/insert", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        });
-        await Promise.all(financialPromises);
-
-        // Stakeholder entity
-        const stakeholderPromises = strategies.stakeholder.map((sentence) => {
-          const data = {
-            office_target: sentence.value,
-            department: { id: department_id },
-          };
-          return fetch("http://localhost:8080/stratmap/stakeholder/insert", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        });
-        await Promise.all(stakeholderPromises);
-
-        // Internal process entity
-        const internalProcessPromises = strategies.internalProcess.map(
-          (sentence) => {
-            const data = {
-              office_target: sentence.value,
-              department: { id: department_id },
-            };
-            return fetch("http://localhost:8080/stratmap/internal/insert", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-          }
-        );
-        await Promise.all(internalProcessPromises);
-
-        // Learning and growth entity
-        const learningGrowthPromises = strategies.learningGrowth.map(
-          (sentence) => {
-            const data = {
-              office_target: sentence.value,
-              department: { id: department_id },
-            };
-            return fetch("http://localhost:8080/stratmap/learning/insert", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-          }
-        );
-        await Promise.all(learningGrowthPromises);
-
-        console.log("Data saved to database");
-      } catch (error) {
-        console.error("Error saving data to database:", error);
-      }
-    };
-
-    if (department_id) {
-      await saveToDatabase(strategies, department_id);
-    } else {
-      console.error("Department ID not found in user data. Cannot save data.");
-    }
-  };
-
   const fetchPrimaryFinancialStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}` // Assuming this is your API endpoint
+        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1314,10 +595,17 @@ export default function QAStratmapView() {
 
       console.log("primary financial data: ", data);
 
+      const currentYear = new Date().getFullYear().toString(); // Convert to string
+      const nextYear = (parseInt(currentYear) + 1).toString();
+
+      // Filter data for the current year and next year
+      const filteredData = data.filter((item: any) => {
+        return item.targetYear === `${currentYear}-${nextYear}`;
+      });
+
       // Update the strategies state with the fetched primary financial strategies
       setPrimaryFinancialStrategies(
-        // Update the primaryFinancialStrategies state
-        data.map((item: any) => ({
+        filteredData.map((item: any) => ({
           id: 1,
           fID: item.id,
           value: item.office_target,
@@ -1331,17 +619,22 @@ export default function QAStratmapView() {
   const fetchPrimaryStakeholderStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}` // Assuming this is your API endpoint
+        `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
 
-      // Update the strategies state with the fetched primary stakeholder strategies
+      const currentYear = new Date().getFullYear().toString();
+      const nextYear = (parseInt(currentYear) + 1).toString();
+
+      const filteredData = data.filter((item: any) => {
+        return item.targetYear === `${currentYear}-${nextYear}`;
+      });
+
       setPrimaryStakeholderStrategies(
-        // Update the primaryFinancialStrategies state
-        data.map((item: any) => ({
+        filteredData.map((item: any) => ({
           id: 1,
           fID: item.id,
           value: item.office_target,
@@ -1357,17 +650,22 @@ export default function QAStratmapView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryInternal/get/${department_id}` // Assuming this is your API endpoint
+        `http://localhost:8080/stratmap/primaryInternal/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
 
-      // Update the strategies state with the fetched primary internal process strategies
+      const currentYear = new Date().getFullYear().toString();
+      const nextYear = (parseInt(currentYear) + 1).toString();
+
+      const filteredData = data.filter((item: any) => {
+        return item.targetYear === `${currentYear}-${nextYear}`;
+      });
+
       setPrimaryInternalProcessStrategies(
-        // Update the primaryFinancialStrategies state
-        data.map((item: any) => ({
+        filteredData.map((item: any) => ({
           id: 1,
           fID: item.id,
           value: item.office_target,
@@ -1386,17 +684,22 @@ export default function QAStratmapView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryLearning/get/${department_id}` // Assuming this is your API endpoint
+        `http://localhost:8080/stratmap/primaryLearning/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
 
-      // Update the strategies state with the fetched primary learning and growth strategies
+      const currentYear = new Date().getFullYear().toString();
+      const nextYear = (parseInt(currentYear) + 1).toString();
+
+      const filteredData = data.filter((item: any) => {
+        return item.targetYear === `${currentYear}-${nextYear}`;
+      });
+
       setPrimaryLearningGrowthStrategies(
-        // Update the primaryFinancialStrategies state
-        data.map((item: any) => ({
+        filteredData.map((item: any) => ({
           id: 1,
           fID: item.id,
           value: item.office_target,
@@ -1454,174 +757,6 @@ export default function QAStratmapView() {
     } catch (error) {
       console.error("Error fetching existing strategies:", error);
     }
-  };
-
-  const handleFinancialDelete = useCallback(async (id: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/stratmap/financial/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const updatedStrategies = strategies.financial.filter(
-          (strategy) => strategy.id !== id
-        );
-        setStrategies({ ...strategies, financial: updatedStrategies });
-        fetchExistingStrategies(department_id);
-      } else {
-        console.error("Failed to delete financial strategy");
-      }
-    } catch (error) {
-      console.error("Error deleting financial strategy:", error);
-    }
-  }, []);
-
-  const handleLGDelete = useCallback(async (id: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/stratmap/learning/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const updatedStrategies = strategies.learningGrowth.filter(
-          (strategy) => strategy.id !== id
-        );
-        setStrategies({ ...strategies, learningGrowth: updatedStrategies });
-        fetchExistingStrategies(department_id);
-      } else {
-        console.error("Failed to delete financial strategy");
-      }
-    } catch (error) {
-      console.error("Error deleting financial strategy:", error);
-    }
-  }, []);
-
-  const handleStakeholderDelete = useCallback(async (id: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/stratmap/stakeholder/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const updatedStrategies = strategies.stakeholder.filter(
-          (strategy) => strategy.id !== id
-        );
-        setStrategies({ ...strategies, stakeholder: updatedStrategies });
-        fetchExistingStrategies(department_id);
-      } else {
-        console.error("Failed to delete financial strategy");
-      }
-    } catch (error) {
-      console.error("Error deleting financial strategy:", error);
-    }
-  }, []);
-
-  const handleInternalDelete = useCallback(async (id: number) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/stratmap/internal/delete/${id}`,
-        {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.ok) {
-        const updatedStrategies = strategies.internalProcess.filter(
-          (strategy) => strategy.id !== id
-        );
-        setStrategies({ ...strategies, internalProcess: updatedStrategies });
-        fetchExistingStrategies(department_id);
-      } else {
-        console.error("Failed to delete financial strategy");
-      }
-    } catch (error) {
-      console.error("Error deleting financial strategy:", error);
-    }
-  }, []);
-
-  const checkGeneratedAiStrats = async (username: string) => {
-    console.log("checking generatedAiStrats");
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/user/get/${username}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const userData = await response.json();
-      console.log("userData: ", userData.generatedAiStrats);
-
-      if (userData.generatedAiStrats === 1) {
-        await fetchExistingStrategies(department_id);
-      } else if (
-        userData.generatedAiStrats === 0 ||
-        userData.generatedAiStrats === null
-      ) {
-        await updateGeneratedAiStrats(username);
-        await fetchAllData(department_id);
-      }
-    } catch (error) {
-      console.error("Error checking generatedAiStrats:", error);
-    }
-  };
-
-  const updateGeneratedAiStrats = async (username: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/user/get/${username}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const userData = await response.json();
-
-      if (userData.generatedAiStrats === 0) {
-        // Update generatedAiStrats to 1
-        const updateResponse = await fetch(
-          `http://localhost:8080/user/update/${username}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ generatedAiStrats: 1 }),
-          }
-        );
-
-        if (!updateResponse.ok) {
-          throw new Error(`HTTP error! Status: ${updateResponse.status}`);
-        }
-      }
-    } catch (error) {
-      console.error("Error updating generatedAiStrats:", error);
-    }
-  };
-
-  const changeComponent = (componentName: string) => {
-    localStorage.setItem("lastComponent", componentName);
-    setSelectedComponent(componentName);
   };
 
   const [departments, setDepartments] = useState<Department[]>([]);
@@ -1691,8 +826,21 @@ export default function QAStratmapView() {
         fetch(
           `http://localhost:8080/stratmap/${perspective}/get/${departmentId}`
         )
-          .then((res) => res.json())
+          .then((res) => {
+            if (!res.ok) {
+              // If a 404 or other error, return an empty array to avoid breaking Promise.all
+              return [];
+            }
+            return res.json();
+          })
           .then((data) => ({ perspective, data }))
+          .catch((error) => {
+            console.error(
+              `Error fetching data for perspective ${perspective}:`,
+              error
+            );
+            return { perspective, data: [] }; // Return empty data on fetch error
+          })
       );
 
       const results = await Promise.all(promises);
@@ -1711,33 +859,49 @@ export default function QAStratmapView() {
               id: 1,
               fID: item.id,
               value: item.office_target,
-            })); // Map data to correct format
+              targetYear: item.targetYear,
+            }));
             break;
           case "stakeholder":
             newStrategies.stakeholder = data.map((item: any) => ({
               id: 2,
               fID: item.id,
               value: item.office_target,
-            })); // Map data to correct format
+              targetYear: item.targetYear,
+            }));
             break;
           case "internal":
             newStrategies.internalProcess = data.map((item: any) => ({
               id: 3,
               fID: item.id,
               value: item.office_target,
-            })); // Map data to correct format
+              targetYear: item.targetYear,
+            }));
             break;
           case "learning":
             newStrategies.learningGrowth = data.map((item: any) => ({
               id: 4,
               fID: item.id,
               value: item.office_target,
-            })); // Map data to correct format
+              targetYear: item.targetYear,
+            }));
             break;
         }
       });
 
-      setStrategies(newStrategies);
+      if (selectedYear) {
+        const filteredStrategies = {
+          financial: filterStrategiesByYear(newStrategies.financial),
+          stakeholder: filterStrategiesByYear(newStrategies.stakeholder),
+          internalProcess: filterStrategiesByYear(
+            newStrategies.internalProcess
+          ),
+          learningGrowth: filterStrategiesByYear(newStrategies.learningGrowth),
+        };
+        setStrategies(filteredStrategies);
+      } else {
+        setStrategies(newStrategies); // Display all strategies if no year is selected
+      }
     } catch (error) {
       console.error("Error fetching strategies for department:", error);
       setStrategies({
@@ -1746,6 +910,19 @@ export default function QAStratmapView() {
         internalProcess: [],
         learningGrowth: [],
       });
+    }
+  };
+
+  const filterStrategiesByYear = (strategies: GeneratedSentence[]) => {
+    return strategies.filter((strategy) => {
+      return strategy.targetYear === selectedYear;
+    });
+  };
+
+  const handleYearConfirm = () => {
+    if (selectedDepartment && selectedYear) {
+      // Check if both are defined
+      fetchStrategiesForDepartment(selectedDepartment.id);
     }
   };
 
@@ -1758,7 +935,7 @@ export default function QAStratmapView() {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -1790,7 +967,7 @@ export default function QAStratmapView() {
                 sx={{
                   fontWeight: "bold",
                   marginBottom: 2,
-                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
                 STRATEGY MAPPING
@@ -1803,36 +980,77 @@ export default function QAStratmapView() {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                border={1}
-                borderColor="#e9e8e8"
                 width="auto"
-                height="auto"
+                height="4rem"
                 borderRadius={2}
-                fontSize={12}
-                sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
               >
-                <button
+                <Button
                   onClick={() => setCurrentView("primary")}
-                  className={`rounded-lg transition-all ${
-                    currentView === "primary"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                  variant={currentView === "primary" ? "contained" : "outlined"}
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "primary"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "primary" ? "white" : "#AB3510",
+                    flexGrow: 2,
+                    height: "100%",
+                    border: "1px solid transparent",
+                    transition: "background-color 0.3s, color 0.3s",
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)",
+                      color: "white",
+                      border:
+                        currentView === "primary"
+                          ? "none"
+                          : "0.5px solid #AB3510",
+                    },
+                  }}
                 >
                   PRIMARY
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setCurrentView("secondary")}
-                  className={`rounded-lg transition-all ${
-                    currentView === "secondary"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                  variant={
+                    currentView === "secondary" ? "contained" : "outlined"
+                  }
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "secondary"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "secondary" ? "white" : "#AB3510",
+                    flexGrow: 2, // Ensure both buttons have equal size
+                    height: "100%", // Match the height of the container
+                    border: "1px solid transparent", // Keep border style consistent
+                    transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                      color: "white", // Change text color on hover
+                      border:
+                        currentView === "secondary"
+                          ? "none"
+                          : "0.5px solid #AB3510", // Border on hover if not current
+                    },
+                  }}
                 >
                   SECONDARY
-                </button>
+                </Button>
               </Box>
             </Grid>
+            <Typography variant="h5">
+              The Strategy Mapping feature uses AI to automatically generate
+              strategies based on your inputs from four key perspectives:
+              Financial, Stakeholder, Internal Processes, and Learning & Growth.
+              This ensures a well-rounded approach to achieving your goals.
+            </Typography>
           </Grid>
 
           <Grid container sx={{ mt: 5 }}>
@@ -1857,20 +1075,17 @@ export default function QAStratmapView() {
                             <img
                               src="/financial.png"
                               alt=""
-                              className="h-[5rem]"
+                              className="h-[6rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography sx={{ fontWeight: "bolder" }}>
+                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
                               <span className="text-[#ff7b00d3]">
                                 Financial:
                               </span>{" "}
                               Stewardship Overview
                             </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "500" }}
-                            >
+                            <Typography variant="h6" sx={{ fontWeight: "500" }}>
                               Measures financial performance and profitability.
                             </Typography>
                           </Box>
@@ -1920,20 +1135,28 @@ export default function QAStratmapView() {
                             className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                             sx={{
                               width: "60%",
-                              height: "85%",
+                              height: "80%",
                               maxWidth: "95vw",
                               maxHeight: "95vh",
                               // maxHeight: '100vh',
                             }}
                           >
-                            <p className="text-xl font-bold mb-4">
+                            <Typography
+                              variant="h4"
+                              component="h2"
+                              sx={{
+                                fontWeight: "bold",
+                                mb: 2,
+                                color: "#2e2c2c",
+                              }}
+                            >
                               Financial Strategy
-                            </p>
+                            </Typography>
                             <div className="flex flex-col mb-1">
-                              <Typography sx={{ fontWeight: 800 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
+                              </span>
                             </div>
                             <TextField
                               variant="outlined"
@@ -1942,20 +1165,21 @@ export default function QAStratmapView() {
                                 setNewPrimaryFTargetCode(e.target.value)
                               }
                               sx={{
-                                height: "35px",
-                                "& .MuiInputBase-root": { height: "35px" },
+                                height: "50px",
+                                "& .MuiInputBase-root": { height: "50px" },
                               }}
                             />
-                            <Box>
-                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                            <Box sx={{ mt: 3 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
-                              <span className="mb-3">
+                              </span>
+                              <span className="mb-3 text-[1.1rem]">
+                                <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -1963,7 +1187,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2">
+                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -1974,27 +1198,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold">
+                              <span className="font-bold text-[1.1rem]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -2032,7 +1256,12 @@ export default function QAStratmapView() {
                               <Button
                                 variant="contained"
                                 onClick={closePrimaryFModal}
-                                sx={{ width: 150, color: "#AB3510" }}
+                                sx={{
+                                  minWidth: "10rem",
+                                  color: "#AB3510",
+                                  p: 1,
+                                  fontSize: "18px",
+                                }}
                                 style={{
                                   background: "white",
                                   border: "1px solid #AB3510",
@@ -2048,10 +1277,12 @@ export default function QAStratmapView() {
                                     department_id
                                   ); //change
                                 }}
-                                style={{
+                                sx={{
+                                  minWidth: "10rem",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
-                                  width: 150,
+                                  p: 1,
+                                  fontSize: "18px",
                                 }}
                               >
                                 Save
@@ -2073,11 +1304,18 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  index < primaryFinancialStrategies.length - 1
+                                    ? "border-b border-gray-200"
+                                    : ""
                                 }`}
                               >
-                                <Typography>{strategy.value}</Typography>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontWeight: "400" }}
+                                >
+                                  {strategy.value}
+                                </Typography>
                               </div>
                             )
                           )}
@@ -2103,20 +1341,17 @@ export default function QAStratmapView() {
                             <img
                               src="/learning.png"
                               alt=""
-                              className="h-[5rem]"
+                              className="h-[6rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography sx={{ fontWeight: "bolder" }}>
+                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
                               <span className="text-[#ff7b00d3]">
                                 Learning & Growth:
                               </span>{" "}
                               Culture & People Development Overview
                             </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "500" }}
-                            >
+                            <Typography variant="h6" sx={{ fontWeight: "500" }}>
                               Enhances organizational culture and employee
                               growth.
                             </Typography>
@@ -2167,20 +1402,28 @@ export default function QAStratmapView() {
                             className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                             sx={{
                               width: "60%",
-                              height: "85%",
+                              height: "80%",
                               maxWidth: "95vw",
                               maxHeight: "95vh",
                               // maxHeight: '100vh',
                             }}
                           >
-                            <p className="text-xl font-bold mb-4">
+                            <Typography
+                              variant="h4"
+                              component="h2"
+                              sx={{
+                                fontWeight: "bold",
+                                mb: 2,
+                                color: "#2e2c2c",
+                              }}
+                            >
                               Learning & Growth Strategy
-                            </p>
+                            </Typography>
                             <div className="flex flex-col mb-1">
-                              <Typography sx={{ fontWeight: 800 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
+                              </span>
                             </div>
                             <TextField
                               variant="outlined"
@@ -2189,20 +1432,21 @@ export default function QAStratmapView() {
                                 setNewPrimaryLGTargetCode(e.target.value)
                               }
                               sx={{
-                                height: "35px",
-                                "& .MuiInputBase-root": { height: "35px" },
+                                height: "50px",
+                                "& .MuiInputBase-root": { height: "50px" },
                               }}
                             />
-                            <Box>
-                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                            <Box sx={{ mt: 3 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
-                              <span className="mb-3">
+                              </span>
+                              <span className="mb-3 text-[1.1rem]">
+                                <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -2210,7 +1454,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2">
+                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -2221,27 +1465,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold">
+                              <span className="font-bold text-[1.1rem]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -2279,7 +1523,12 @@ export default function QAStratmapView() {
                               <Button
                                 variant="contained"
                                 onClick={closePrimaryLGModal}
-                                sx={{ width: 150, color: "#AB3510" }}
+                                sx={{
+                                  minWidth: "10rem",
+                                  color: "#AB3510",
+                                  p: 1,
+                                  fontSize: "18px",
+                                }}
                                 style={{
                                   background: "white",
                                   border: "1px solid #AB3510",
@@ -2295,10 +1544,12 @@ export default function QAStratmapView() {
                                     department_id
                                   ); //change
                                 }}
-                                style={{
+                                sx={{
+                                  minWidth: "10rem",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
-                                  width: 150,
+                                  p: 1,
+                                  fontSize: "18px",
                                 }}
                               >
                                 Save
@@ -2320,11 +1571,19 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  index <
+                                  primaryLearningGrowthStrategies.length - 1
+                                    ? "border-b border-gray-200"
+                                    : ""
                                 }`}
                               >
-                                <Typography>{strategy.value}</Typography>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontWeight: "400" }}
+                                >
+                                  {strategy.value}
+                                </Typography>
                               </div>
                             )
                           )}
@@ -2351,11 +1610,11 @@ export default function QAStratmapView() {
                             <img
                               src="/internal.png"
                               alt=""
-                              className="h-[5rem]"
+                              className="h-[6rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography sx={{ fontWeight: "bolder" }}>
+                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
                               <span className="text-[#ff7b00d3]">
                                 Internal Process:
                               </span>{" "}
@@ -2415,20 +1674,28 @@ export default function QAStratmapView() {
                             className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                             sx={{
                               width: "60%",
-                              height: "85%",
+                              height: "80%",
                               maxWidth: "95vw",
                               maxHeight: "95vh",
                               // maxHeight: '100vh',
                             }}
                           >
-                            <p className="text-xl font-bold mb-4">
+                            <Typography
+                              variant="h4"
+                              component="h2"
+                              sx={{
+                                fontWeight: "bold",
+                                mb: 2,
+                                color: "#2e2c2c",
+                              }}
+                            >
                               Internal Process Strategy
-                            </p>
+                            </Typography>
                             <div className="flex flex-col mb-1">
-                              <Typography sx={{ fontWeight: 800 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
+                              </span>
                             </div>
                             <TextField
                               variant="outlined"
@@ -2437,20 +1704,21 @@ export default function QAStratmapView() {
                                 setNewPrimaryIPTargetCode(e.target.value)
                               }
                               sx={{
-                                height: "35px",
-                                "& .MuiInputBase-root": { height: "35px" },
+                                height: "50px",
+                                "& .MuiInputBase-root": { height: "50px" },
                               }}
                             />
                             <Box>
-                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
-                              <span className="mb-3">
+                              </span>
+                              <span className="mb-3 text-[1.1rem]">
+                                <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -2458,7 +1726,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2">
+                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -2469,27 +1737,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span>
+                              <span className="text-[1.1rem]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold">
+                              <span className="font-bold text-[1.1rem]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -2527,7 +1795,12 @@ export default function QAStratmapView() {
                               <Button
                                 variant="contained"
                                 onClick={closePrimaryIPModal}
-                                sx={{ width: 150, color: "#AB3510" }}
+                                sx={{
+                                  minWidth: "10rem",
+                                  color: "#AB3510",
+                                  p: 1,
+                                  fontSize: "18px",
+                                }}
                                 style={{
                                   background: "white",
                                   border: "1px solid #AB3510",
@@ -2541,10 +1814,12 @@ export default function QAStratmapView() {
                                   await handlePrimaryIPSave(); //change
                                   fetchExistingStrategies(department_id); //change
                                 }}
-                                style={{
+                                sx={{
+                                  minWidth: "10rem",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
-                                  width: 150,
+                                  p: 1,
+                                  fontSize: "18px",
                                 }}
                               >
                                 Save
@@ -2566,11 +1841,19 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  index <
+                                  primaryInternalProcessStrategies.length - 1
+                                    ? "border-b border-gray-200"
+                                    : ""
                                 }`}
                               >
-                                <Typography>{strategy.value}</Typography>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontWeight: "400" }}
+                                >
+                                  {strategy.value}
+                                </Typography>
                               </div>
                             )
                           )}
@@ -2597,20 +1880,17 @@ export default function QAStratmapView() {
                             <img
                               src="/stakeholder.png"
                               alt=""
-                              className="h-[5rem]"
+                              className="h-[6rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography sx={{ fontWeight: "bolder" }}>
+                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
                               <span className="text-[#ff7b00d3]">
                                 Stakeholder:
                               </span>{" "}
                               Client Relationship Overview
                             </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "500" }}
-                            >
+                            <Typography variant="h6" sx={{ fontWeight: "500" }}>
                               Measures client engagement quality and value.
                             </Typography>
                           </Box>
@@ -2660,20 +1940,28 @@ export default function QAStratmapView() {
                             className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                             sx={{
                               width: "60%",
-                              height: "85%",
+                              height: "80%",
                               maxWidth: "95vw",
                               maxHeight: "95vh",
                               // maxHeight: '100vh',
                             }}
                           >
-                            <p className="text-xl font-bold mb-4">
+                            <Typography
+                              variant="h4"
+                              component="h2"
+                              sx={{
+                                fontWeight: "bold",
+                                mb: 2,
+                                color: "#2e2c2c",
+                              }}
+                            >
                               Stakeholder Strategy
-                            </p>
+                            </Typography>
                             <div className="flex flex-col mb-1">
-                              <Typography sx={{ fontWeight: 800 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
+                              </span>
                             </div>
                             <TextField
                               variant="outlined"
@@ -2682,20 +1970,21 @@ export default function QAStratmapView() {
                                 setNewPrimarySTargetCode(e.target.value)
                               }
                               sx={{
-                                height: "35px",
-                                "& .MuiInputBase-root": { height: "35px" },
+                                height: "50px",
+                                "& .MuiInputBase-root": { height: "50px" },
                               }}
                             />
                             <Box>
-                              <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
-                              </Typography>
-                              <span className="mb-3">
+                              </span>
+                              <span className="mb-3 text-[1.1rem]">
+                                <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span>
+                              <span className="mb-3 text-[1.1rem]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -2703,7 +1992,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2">
+                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -2714,27 +2003,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span>
+                              <span className="mb-3 text-[1.1rem]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span>
+                              <span className="mb-3 text-[1.1rem]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span>
+                              <span className="mb-3 text-[1.1rem]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold">
+                              <span className="font-bold text-[1.1rem]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -2772,7 +2061,12 @@ export default function QAStratmapView() {
                               <Button
                                 variant="contained"
                                 onClick={closePrimarySModal}
-                                sx={{ width: 150, color: "#AB3510" }}
+                                sx={{
+                                  minWidth: "10rem",
+                                  color: "#AB3510",
+                                  p: 1,
+                                  fontSize: "18px",
+                                }}
                                 style={{
                                   background: "white",
                                   border: "1px solid #AB3510",
@@ -2786,10 +2080,12 @@ export default function QAStratmapView() {
                                   await handlePrimarySSave(); //change
                                   fetchExistingStrategies(department_id); //change
                                 }}
-                                style={{
+                                sx={{
+                                  minWidth: "10rem",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
-                                  width: 150,
+                                  p: 1,
+                                  fontSize: "18px",
                                 }}
                               >
                                 Save
@@ -2811,11 +2107,19 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                  index % 2 === 0 ? "bg-[#fff6d1]" : "bg-white"
+                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  index <
+                                  primaryStakeholderStrategies.length - 1
+                                    ? "border-b border-gray-200"
+                                    : ""
                                 }`}
                               >
-                                <Typography>{strategy.value}</Typography>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontWeight: "400" }}
+                                >
+                                  {strategy.value}
+                                </Typography>
                               </div>
                             )
                           )}
@@ -2828,10 +2132,16 @@ export default function QAStratmapView() {
               {currentView === "secondary" && (
                 <>
                   {/* ADD DROPDOWN HERE */}
-                  <Box sx={{ display: "flex", alignItems: "center", mt: -2 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 2,
+                    }}
+                  >
                     <select
                       id="departmentSelect"
-                      className="border border-gray-200 shadow-sm rounded-xl mb-8 px-3 py-2 w-full md:w-[full] h-[4rem]"
+                      className="border border-gray-200 shadow-sm rounded-xl mb-8 px-3 py-2 w-[65%] md:w-[full] h-[4rem]"
                       onChange={handleDepartmentChange}
                     >
                       <option value="">Select a department</option>
@@ -2841,6 +2151,29 @@ export default function QAStratmapView() {
                         </option>
                       ))}
                     </select>
+
+                    <TextField
+                      placeholder="Select Year ex. 2024"
+                      variant="outlined"
+                      value={selectedYear}
+                      onChange={(e) => setSelectedYear(e.target.value)}
+                      sx={{ width: "35%", mt: -4 }}
+                    />
+                    <IconButton
+                      color="primary"
+                      onClick={handleYearConfirm}
+                      sx={{
+                        mt: -4,
+                        background:
+                          "linear-gradient(to left, #8a252c, #AB3510)",
+                        color: "white",
+                        width: 50,
+                        height: 50,
+                        borderRadius: 2, // Optional: round corners of the icon container
+                      }}
+                    >
+                      <CheckIcon sx={{ fontSize: 30 }} />
+                    </IconButton>
                   </Box>
                   {/* ADD !SELECTED DEP HERE */}
                   {!selectedDepartment && (
@@ -2858,6 +2191,7 @@ export default function QAStratmapView() {
                       </div>
                     </div>
                   )}
+
                   {selectedDepartment && (
                     <>
                       <Cards>
@@ -2879,18 +2213,21 @@ export default function QAStratmapView() {
                                 <img
                                   src="/financial.png"
                                   alt=""
-                                  className="h-[5rem]"
+                                  className="h-[6rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography sx={{ fontWeight: "bolder" }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{ fontWeight: "600" }}
+                                >
                                   <span className="text-[#ff7b00d3]">
                                     Financial:
                                   </span>{" "}
                                   Stewardship Overview
                                 </Typography>
                                 <Typography
-                                  variant="body2"
+                                  variant="h6"
                                   sx={{ fontWeight: "500" }}
                                 >
                                   Measures financial performance and
@@ -2917,12 +2254,16 @@ export default function QAStratmapView() {
                                       <div
                                         key={strategy.id}
                                         className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                          index % 2 === 0
-                                            ? "bg-[#fff6d1]"
-                                            : "bg-white"
+                                          index <
+                                          strategies.financial.length - 1
+                                            ? "border-b border-gray-200"
+                                            : ""
                                         }`}
                                       >
-                                        <Typography>
+                                        <Typography
+                                          variant="h6"
+                                          sx={{ fontWeight: "400" }}
+                                        >
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -2965,18 +2306,21 @@ export default function QAStratmapView() {
                                 <img
                                   src="/learning.png"
                                   alt=""
-                                  className="h-[5rem]"
+                                  className="h-[6rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography sx={{ fontWeight: "bolder" }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{ fontWeight: "600" }}
+                                >
                                   <span className="text-[#ff7b00d3]">
                                     Learning & Growth:
                                   </span>{" "}
                                   Culture & People Development Overview
                                 </Typography>
                                 <Typography
-                                  variant="body2"
+                                  variant="h6"
                                   sx={{ fontWeight: "500" }}
                                 >
                                   Enhances organizational culture and employee
@@ -3003,12 +2347,16 @@ export default function QAStratmapView() {
                                       <div
                                         key={strategy.id}
                                         className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                          index % 2 === 0
-                                            ? "bg-[#fff6d1]"
-                                            : "bg-white"
+                                          index <
+                                          strategies.learningGrowth.length - 1
+                                            ? "border-b border-gray-200"
+                                            : ""
                                         }`}
                                       >
-                                        <Typography>
+                                        <Typography
+                                          variant="h6"
+                                          sx={{ fontWeight: "400" }}
+                                        >
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -3051,18 +2399,21 @@ export default function QAStratmapView() {
                                 <img
                                   src="/internal.png"
                                   alt=""
-                                  className="h-[5rem]"
+                                  className="h-[6rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography sx={{ fontWeight: "bolder" }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{ fontWeight: "600" }}
+                                >
                                   <span className="text-[#ff7b00d3]">
                                     Internal Process:
                                   </span>{" "}
                                   Process & Technology Overview
                                 </Typography>
                                 <Typography
-                                  variant="body2"
+                                  variant="h6"
                                   sx={{ fontWeight: "500" }}
                                 >
                                   Optimizes and manages internal processes and
@@ -3089,12 +2440,16 @@ export default function QAStratmapView() {
                                       <div
                                         key={strategy.id}
                                         className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                          index % 2 === 0
-                                            ? "bg-[#fff6d1]"
-                                            : "bg-white"
+                                          index <
+                                          strategies.internalProcess.length - 1
+                                            ? "border-b border-gray-200"
+                                            : ""
                                         }`}
                                       >
-                                        <Typography>
+                                        <Typography
+                                          variant="h6"
+                                          sx={{ fontWeight: "400" }}
+                                        >
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -3137,18 +2492,21 @@ export default function QAStratmapView() {
                                 <img
                                   src="/stakeholder.png"
                                   alt=""
-                                  className="h-[5rem]"
+                                  className="h-[6rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography sx={{ fontWeight: "bolder" }}>
+                                <Typography
+                                  variant="h5"
+                                  sx={{ fontWeight: "600" }}
+                                >
                                   <span className="text-[#ff7b00d3]">
                                     Stakeholder:
                                   </span>{" "}
                                   Client Relationship Overview
                                 </Typography>
                                 <Typography
-                                  variant="body2"
+                                  variant="h6"
                                   sx={{ fontWeight: "500" }}
                                 >
                                   Measures client engagement quality and value.
@@ -3174,12 +2532,16 @@ export default function QAStratmapView() {
                                       <div
                                         key={strategy.id}
                                         className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                          index % 2 === 0
-                                            ? "bg-[#fff6d1]"
-                                            : "bg-white"
+                                          index <
+                                          strategies.stakeholder.length - 1
+                                            ? "border-b border-gray-200"
+                                            : ""
                                         }`}
                                       >
-                                        <Typography>
+                                        <Typography
+                                          variant="h6"
+                                          sx={{ fontWeight: "400" }}
+                                        >
                                           {strategy.value}
                                         </Typography>
                                       </div>

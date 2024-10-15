@@ -25,9 +25,14 @@ interface ReportInternalView {
   target_performance: string;
   actual_performance: string;
   evidence_link: string; //link
+  targetYear: string;
 }
 
-const ReportInternalView = () => {
+interface ReportInternalViewProps {
+  selectedYear: string; 
+}
+
+const ReportInternalView: React.FC<ReportInternalViewProps> = ({ selectedYear }) => {
   const { data: session } = useSession();
 
   let user;
@@ -93,16 +98,18 @@ const ReportInternalView = () => {
   }
 
   return (
-    <Grid item>
+    <Grid item sx={{ color: "#2e2c2c" }}>
       <Grid>
         <Box
           sx={{
             width: "100%",
             display: "flex",
             alignItems: "center",
+            mt: -2,
+            mb: 2,
           }}
         >
-          <img src="/internal.png" alt="" className=" h-[5rem] mr-2" />
+          <img src="/internal.png" alt="" className=" h-[6rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -112,10 +119,10 @@ const ReportInternalView = () => {
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography sx={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+              <Typography variant="h5" sx={{ fontWeight: "600" }}>
                 INTERNAL PERSPECTIVE
               </Typography>
-              <Typography sx={{ fontSize: "1rem" }}>
+              <Typography variant="h6" sx={{ fontWeight: "500" }}>
                 The Annual Progress Report offers a detailed look into academic
                 performance during the first half of the year.
               </Typography>
@@ -132,15 +139,55 @@ const ReportInternalView = () => {
             {/* Table Header */}
             <TableHead>
               <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Office Target</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Office Target
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   KPI
                 </TableCell>
 
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   In-charge
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                 {/* {added targetYear} */}
+                 <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Year
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Performance <br />
                   <div className="font-medium ">
                     <span>Actual </span>
@@ -149,7 +196,14 @@ const ReportInternalView = () => {
                   </div>
                 </TableCell>
 
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Link of Evidence
                 </TableCell>
               </TableRow>
@@ -169,35 +223,52 @@ const ReportInternalView = () => {
                     report.actual_performance !== null &&
                     report.target_performance !== null &&
                     // report.ofi &&
-                    report.evidence_link //link
+                    report.evidence_link &&
+                    report.targetYear
                 )
+                .filter((scorecard) => {
+                  if (!selectedYear) return true; 
+                  return scorecard.targetYear === selectedYear;
+                })
                 .map((report, index) => (
                   <TableRow
                     key={index}
                     sx={{
-                      bgcolor: index % 2 === 0 ? "white" : "#fff6d1",
+                      borderBottom: `1px solid ${
+                        index < allInternalReports.length - 1
+                          ? "gray-200"
+                          : "transparent"
+                      }`,
                     }}
                   >
                     {/* Table Cells */}
                     <TableCell>
-                      <span className="font-semibold text-gray-500">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                         {truncateString(report.office_target, 45)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-semibold text-gray-500">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                         {truncateString(report.key_performance_indicator, 20)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      {truncateString(report?.incharge || "...", 8)}
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.incharge || "...", 8)}
+                      </span>
+                    </TableCell>
+                    {/* {added targetYear} */}
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {report.targetYear}
+                      </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="text-start mr-2">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] mr-2">
                         {report.actual_performance}
                       </span>
                       <span className="text-center">|</span>
-                      <span className="text-end ml-2">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] ml-2">
                         {report.target_performance}
                       </span>
                     </TableCell>
@@ -207,7 +278,7 @@ const ReportInternalView = () => {
                           href={report.evidence_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-orange-500 underline"
+                          className="text-orange-500 underline font-medium text-[1.1rem]"
                         >
                           {report.evidence_link.length > 20
                             ? `${report.evidence_link.substring(0, 15)}...`

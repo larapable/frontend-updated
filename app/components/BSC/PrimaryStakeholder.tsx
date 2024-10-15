@@ -14,8 +14,12 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
-
 import DatePicker from "react-datepicker";
+import { TextField } from "@mui/material";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 interface PrimaryStakeholderScorecard {
   id: number;
@@ -26,15 +30,27 @@ interface PrimaryStakeholderScorecard {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  targetYear: string;
+  evidence_link: string;
 }
 
-export default function PrimaryStakeholder() {
+
+interface PrimaryStakeholderProps {
+  selectedYear: string; 
+}
+
+const PrimaryStakeholder: React.FC<PrimaryStakeholderProps> = ({ selectedYear }) => {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
   const userRole = user?.role;
+
+   //set current year
+   const currentYear = new Date().getFullYear();
+   const yearAsString = currentYear.toString(); 
+ 
 
   // open modal
   const [primaryModalOpen, setPrimaryModalOpen] = useState(false);
@@ -43,11 +59,14 @@ export default function PrimaryStakeholder() {
   const [primaryTargetCode, setPrimaryTargetCode] = useState("");
   const [primaryMetric, setPrimaryMetric] = useState("");
   const [primaryOfficeTarget, setPrimaryOfficeTarget] = useState("");
-  const [primaryTargetYear, setPrimaryTargetYear] = useState(new Date());
   const [primaryStatus, setPrimaryStatus] = useState("");
   const [primaryKPI, setPrimaryKPI] = useState("");
   const [primaryTargetPerformance, setPrimaryTargetPerformance] = useState("");
   const [primaryActualPerformance, setPrimaryActualPerformance] = useState("");
+
+  // {added link and target year}
+  const [primaryTargetYear, setPrimaryTargetYear] = useState("");
+  const [primaryEvidenceLink, setPrimaryEvidenceLink] = useState("");
 
   // primary stakeholder scorecard
   const [primaryStakeholderScorecard, setPrimaryStakeholderScorecard] =
@@ -110,6 +129,8 @@ export default function PrimaryStakeholder() {
     setPrimaryKPI(scorecard.key_performance_indicator);
     setPrimaryTargetPerformance(scorecard.target_performance);
     setPrimaryActualPerformance(scorecard.actual_performance);
+    setPrimaryTargetYear(scorecard.targetYear);
+    setPrimaryEvidenceLink(scorecard.evidence_link);
     setPrimaryEditMode(scorecard);
     setPrimaryEditId(scorecard.id);
     setPrimaryModalOpen(true);
@@ -127,6 +148,8 @@ export default function PrimaryStakeholder() {
       key_performance_indicator: primaryKPI,
       target_performance: primaryTargetPerformance,
       actual_performance: primaryActualPerformance,
+      targetYear: primaryTargetYear,
+      evidence_link: primaryEvidenceLink
     };
     console.log("Primary Edit Id", primaryEditId);
     try {
@@ -158,63 +181,126 @@ export default function PrimaryStakeholder() {
     }
   };
 
-  const handleYearDateChange = (date: Date | null) => {
-    console.log("Selected Completion Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setPrimaryTargetYear(utcDate);
-    } else {
-      //@ts-ignore
-      setPrimaryTargetYear(null);
-    }
-  };
+  // const handleYearDateChange = (date: Date | null) => {
+  //   console.log("Selected Completion Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setPrimaryTargetYear(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setPrimaryTargetYear(null);
+  //   }
+  // };
 
   return (
-    <Grid item>
+    <Grid item sx={{ color: "#2e2c2c" }}>
       <Grid>
         <Box
           sx={{
             width: "100%",
             display: "flex",
+            mt: -2,
+            mb: 2,
           }}
         >
-          <img src="/stakeholder.png" alt="" className=" h-[5rem] mr-2" />
+          <img src="/stakeholder.png" alt="" className=" h-[6rem] mr-2" />
           <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-            <Typography sx={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+            <Typography variant="h5" sx={{ fontWeight: "600" }}>
               Stakeholder Scorecard Overview
             </Typography>
-            <Typography sx={{ fontSize: "1rem" }}>
+            <Typography variant="h6" sx={{ fontWeight: "500" }}>
               Evaluates value delivered to stakeholders, including customers.
             </Typography>
           </Box>
         </Box>
       </Grid>
       <Box>
-        <TableContainer
-          component={Paper}
-          sx={{ borderRadius: 2, overflow: "hidden", boxShadow: 3 }}
-        >
+        <TableContainer component={Paper}>
           <Table>
             {/* Table Header */}
             <TableHead>
               <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Target Code</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Code
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Stakeholder Office Target
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                 {/* {added target Year} */}
+                 <TableCell
+                 align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Year
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Metric
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Target Performance
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Attainment
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                {/* {added evidence link} */}
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Link of Evidence
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Status
                 </TableCell>
                 <TableCell></TableCell>
@@ -225,7 +311,12 @@ export default function PrimaryStakeholder() {
             <TableBody>
               {primaryStakeholderScorecard &&
                 primaryStakeholderScorecard.length > 0 &&
-                primaryStakeholderScorecard.map((scorecard, index) => {
+                primaryStakeholderScorecard
+                .filter((scorecard) => {
+                  if (!selectedYear) return true; 
+                  return scorecard.targetYear === selectedYear;
+                })
+                .map((scorecard, index) => {
                   if (!scorecard) return null;
 
                   // Calculate the attainment level
@@ -242,37 +333,64 @@ export default function PrimaryStakeholder() {
                     <TableRow
                       key={index}
                       sx={{
-                        bgcolor: index % 2 === 0 ? "white" : "#fff6d1",
+                        borderBottom: `1px solid ${
+                          index < primaryStakeholderScorecard.length - 1
+                            ? "gray-200"
+                            : "transparent"
+                        }`,
                       }}
                     >
                       {/* Table Cells */}
                       <TableCell>
-                        <span className="font-semibold text-gray-500">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {scorecard.target_code || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell sx={{ maxWidth: "35rem" }}>
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.office_target || "N/A"}
                         </span>
                       </TableCell>
+                       {/* {added target year} */}
+                       <TableCell align="center">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          {scorecard.targetYear || "N/A"}
+                        </span>
+                      </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.metric || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.target_performance || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {validatedLevelOfAttainment || "N/A"}%
                         </span>
                       </TableCell>
+                        {/* {added Link of evidence} */}
+                        <TableCell align="center">
+                    {scorecard.evidence_link ? (
+                      <a
+                        href={scorecard.evidence_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-500 underline"
+                      >
+                        {scorecard.evidence_link.length > 20
+                          ? `${scorecard.evidence_link.substring(0, 15)}...`
+                          : scorecard.evidence_link}
+                      </a>
+                    ) : (
+                      "..."
+                    )}
+                  </TableCell>
                       <TableCell align="center">
-                        <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 ">
+                        <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.status || "N/A"}
                         </div>
                       </TableCell>
@@ -316,7 +434,7 @@ export default function PrimaryStakeholder() {
           <Box
             sx={{
               background: "white",
-              padding: 4,
+              padding: 6,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
@@ -327,7 +445,7 @@ export default function PrimaryStakeholder() {
             <Typography
               variant="h4"
               component="h2"
-              sx={{ fontWeight: "bold", mb: 2 }}
+              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
             >
               Stakeholder
             </Typography>
@@ -340,49 +458,64 @@ export default function PrimaryStakeholder() {
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={primaryTargetCode}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setPrimaryTargetCode(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col ">
-                <span className="mr-3 font-regular text-md text-[#000000]">
+              <div className="flex flex-col w-[26rem]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
-                <DatePicker
-                  key={primaryTargetYear?.toString()}
-                  selected={primaryTargetYear}
-                  onChange={handleYearDateChange}
-                  minDate={new Date()}
-                  placeholderText="YYYY"
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[26rem]"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={primaryTargetYear}
+                  disabled
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <select
-                  value={primaryMetric || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
-                  onChange={(e) => setPrimaryMetric(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Percentage">Percentage (%)</option>
-                  <option value="Count">Count</option>
-                  <option value="Rating">Rating</option>
-                  <option value="Score">Score</option>
-                  <option value="Succession Plan">Succession Plan</option>
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    value={primaryMetric || ""}
+                    onChange={(e) => setPrimaryMetric(e.target.value)}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Percentage">Percentage (%)</MenuItem>
+                    <MenuItem value="Count">Count</MenuItem>
+                    <MenuItem value="Rating">Rating</MenuItem>
+                    <MenuItem value="Score">Score</MenuItem>
+                    <MenuItem value="Succession Plan">Succession Plan</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
             </Box>
             <Box
@@ -395,33 +528,46 @@ export default function PrimaryStakeholder() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Key Performance Indicator
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={primaryKPI}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setPrimaryKPI(e.target.value)}
                 />
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Status
                 </span>
-                <select
-                  value={primaryStatus || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
-                  onChange={(e) => setPrimaryStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"} // Disable if not QA
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Not Achieved">Not Achieved</option>
-                  <option value="Achieved">Achieved</option>
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    value={primaryStatus || ""}
+                    onChange={(e) => setPrimaryStatus(e.target.value)}
+                    disabled={userRole !== "qualityAssurance"}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                      background: "#f2f2f2",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Not Achieved">Not Achieved</MenuItem>
+                    <MenuItem value="Achieved">Achieved</MenuItem>
+                  </Select>
+                </FormControl>
                 {userRole !== "qualityAssurance" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     You cannot edit the status unless you are in a QA role.
@@ -438,14 +584,19 @@ export default function PrimaryStakeholder() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={primaryTargetPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
                   onChange={(e) => {
                     const maxLimit =
                       primaryMetric === "Percentage"
@@ -472,6 +623,7 @@ export default function PrimaryStakeholder() {
                     setPrimaryTargetPerformance(value.toString());
                   }}
                 />
+
                 {primaryMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -485,13 +637,13 @@ export default function PrimaryStakeholder() {
                 )}
                 {primaryMetric === "Rating" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
+                    Please enter a number from 1 to 10, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
                 {primaryMetric === "Score" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
+                    Please enter a score from 1 to 20, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
@@ -504,14 +656,19 @@ export default function PrimaryStakeholder() {
                 )}
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={primaryActualPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => {
                     const maxLimit =
                       primaryMetric === "Percentage"
@@ -538,6 +695,7 @@ export default function PrimaryStakeholder() {
                     setPrimaryActualPerformance(value.toString());
                   }}
                 />
+
                 {primaryMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -551,13 +709,13 @@ export default function PrimaryStakeholder() {
                 )}
                 {primaryMetric === "Rating" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
+                    Please enter a number from 1 to 10, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
                 {primaryMetric === "Score" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
+                    Please enter a score from 1 to 20, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
@@ -570,15 +728,34 @@ export default function PrimaryStakeholder() {
                 )}
               </div>
             </Box>
+             {/* {added link of evidence} */}
+             <Box>
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                 Link of Evidence
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
+                  value={primaryEvidenceLink}
+                  onChange={(e) => setPrimaryEvidenceLink(e.target.value)}
+                />
+              </div>
+            </Box>
             <Box>
-              <div className="flex flex-col ">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Office Target
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={primaryOfficeTarget}
-                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg h-[10rem]"
+                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem]"
                   onChange={(e) => setPrimaryOfficeTarget(e.target.value)}
                 />
               </div>
@@ -598,7 +775,8 @@ export default function PrimaryStakeholder() {
                 sx={{
                   minWidth: "10rem",
                   color: "#AB3510",
-                  paddingX: 2,
+                  p: 1,
+                  fontSize: "18px",
                 }}
                 style={{
                   background: "white",
@@ -613,7 +791,8 @@ export default function PrimaryStakeholder() {
                 sx={{
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
-                  padding: 1,
+                  p: 1,
+                  fontSize: "18px",
                 }}
               >
                 {primaryEditMode ? "Edit" : "Save"}
@@ -625,3 +804,6 @@ export default function PrimaryStakeholder() {
     </Grid>
   );
 }
+
+
+export default PrimaryStakeholder;

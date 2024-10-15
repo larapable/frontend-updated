@@ -35,7 +35,7 @@ interface Department {
   department_name: string;
 }
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -505,7 +505,7 @@ export default function QAReportView() {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -536,15 +536,22 @@ export default function QAReportView() {
                 sx={{
                   fontWeight: "bold",
                   marginBottom: 2,
-                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
                 REPORT
               </Typography>
             </Grid>
+            <Typography variant="h5">
+              The Report feature provides an overview of your performance across
+              all key perspectives—Financial, Stakeholder, Internal Processes,
+              and Learning & Growth. It gives you a clear summary of your
+              progress, helping you track achievements and identify areas for
+              improvement at a glance.
+            </Typography>
           </Grid>
 
-          <Grid item>
+          <Grid item sx={{ mt: 5 }}>
             <Select
               options={departmentOptions}
               onChange={handleDepartmentChange}
@@ -576,7 +583,17 @@ export default function QAReportView() {
           {selectedDepartmentId ? (
             <>
               {/* FINANCIAL HERE */}
-              <Cards>
+              <Cards
+                sx={{
+                  mt: 5,
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  paddingX: 3,
+                  paddingBottom: 3,
+                  borderRadius: 2,
+                }}
+              >
                 <StyledBox sx={{ background: "white", borderRadius: 5 }}>
                   <Box>
                     <Grid
@@ -584,9 +601,9 @@ export default function QAReportView() {
                       alignItems="center"
                       p={1}
                       sx={{
-                        ml: 1,
                         height: "85px",
                         "& .MuiInputBase-root": { height: "85px" },
+                        mb: 3,
                       }}
                     >
                       <Grid item sm={11.3} container alignItems="center">
@@ -594,18 +611,15 @@ export default function QAReportView() {
                           <img
                             src="/financial.png"
                             alt=""
-                            className="h-[5rem]"
+                            className="h-[6rem]"
                           />
                         </Box>
                         <Box sx={{ ml: 1 }}>
-                          <Typography sx={{ fontWeight: "bolder" }}>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
                             <span className="text-[#ff7b00d3]">Financial:</span>{" "}
                             Stewardship Overview
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
                             Measures financial performance and profitability.
                           </Typography>
                         </Box>
@@ -618,37 +632,41 @@ export default function QAReportView() {
                       <Table>
                         {/* Table Header */}
                         <TableHead>
-                          <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                          <TableRow
+                            sx={{ bgcolor: "#fff6d1", fontSize: "18px" }}
+                          >
+                            <TableCell
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
+                            >
                               Office Target
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               KPI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Actions
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Budget
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               In-charge
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Performance <br />
                               <div className="font-medium ">
@@ -659,13 +677,13 @@ export default function QAReportView() {
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               OFI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Link of Evidence
                             </TableCell>
@@ -683,41 +701,75 @@ export default function QAReportView() {
                                   <TableRow
                                     key={index}
                                     sx={{
-                                      bgcolor:
-                                        index % 2 === 0 ? "white" : "#fff6d1",
+                                      borderBottom: `1px solid ${
+                                        index <
+                                        allFinancialSavedScorecards.length - 1
+                                          ? "gray-200"
+                                          : "transparent"
+                                      }`,
                                     }}
                                   >
                                     {/* Table Cells */}
                                     <TableCell>
-                                      <span className="font-semibold">
+                                      <span className="font-medium text-[1.1rem]">
                                         {truncateString(
                                           scorecard.office_target,
                                           45
                                         )}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.key_performance_indicator,
                                         20
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.actions || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.budget || "..."}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.incharge || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       <span className="text-start mr-2">
                                         {scorecard.actual_performance}
                                       </span>
@@ -726,13 +778,25 @@ export default function QAReportView() {
                                         {scorecard.target_performance}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.ofi || "...",
                                         4
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.evidence_link ? (
                                         <a
                                           href={scorecard.evidence_link}
@@ -762,7 +826,17 @@ export default function QAReportView() {
                 </StyledBox>
               </Cards>
               {/* LEARNING HERE */}
-              <Cards sx={{ mt: 5 }}>
+              <Cards
+                sx={{
+                  mt: 5,
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  paddingX: 3,
+                  paddingBottom: 3,
+                  borderRadius: 2,
+                }}
+              >
                 <StyledBox sx={{ background: "white", borderRadius: 5 }}>
                   <Box>
                     <Grid
@@ -770,9 +844,9 @@ export default function QAReportView() {
                       alignItems="center"
                       p={1}
                       sx={{
-                        ml: 1,
                         height: "85px",
                         "& .MuiInputBase-root": { height: "85px" },
+                        mb: 3,
                       }}
                     >
                       <Grid item sm={11.3} container alignItems="center">
@@ -780,20 +854,17 @@ export default function QAReportView() {
                           <img
                             src="/learning.png"
                             alt=""
-                            className="h-[5rem]"
+                            className="h-[6rem]"
                           />
                         </Box>
                         <Box sx={{ ml: 1 }}>
-                          <Typography sx={{ fontWeight: "bolder" }}>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
                             <span className="text-[#ff7b00d3]">
                               Learning & Growth:
                             </span>{" "}
                             Culture & People Development Overview
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
                             Enhances organizational culture and employee growth.
                           </Typography>
                         </Box>
@@ -807,36 +878,38 @@ export default function QAReportView() {
                         {/* Table Header */}
                         <TableHead>
                           <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
+                            >
                               Office Target
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               KPI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Actions
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Budget
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               In-charge
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Performance <br />
                               <div className="font-medium ">
@@ -847,13 +920,13 @@ export default function QAReportView() {
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               OFI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Link of Evidence
                             </TableCell>
@@ -871,41 +944,75 @@ export default function QAReportView() {
                                   <TableRow
                                     key={index}
                                     sx={{
-                                      bgcolor:
-                                        index % 2 === 0 ? "white" : "#fff6d1",
+                                      borderBottom: `1px solid ${
+                                        index <
+                                        allLearningSavedScorecards.length - 1
+                                          ? "gray-200"
+                                          : "transparent"
+                                      }`,
                                     }}
                                   >
                                     {/* Table Cells */}
                                     <TableCell>
-                                      <span className="font-semibold">
+                                      <span className="font-medium text-[1.1rem]">
                                         {truncateString(
                                           scorecard.office_target,
                                           45
                                         )}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.key_performance_indicator,
                                         20
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.actions || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.budget || "..."}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.incharge || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       <span className="text-start mr-2">
                                         {scorecard.actual_performance}
                                       </span>
@@ -914,13 +1021,25 @@ export default function QAReportView() {
                                         {scorecard.target_performance}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.ofi || "...",
                                         4
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.evidence_link ? (
                                         <a
                                           href={scorecard.evidence_link}
@@ -950,7 +1069,17 @@ export default function QAReportView() {
                 </StyledBox>
               </Cards>
               {/* INTERNAL HERE */}
-              <Cards sx={{ mt: 5 }}>
+              <Cards
+                sx={{
+                  mt: 5,
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  paddingX: 3,
+                  paddingBottom: 3,
+                  borderRadius: 2,
+                }}
+              >
                 <StyledBox sx={{ background: "white", borderRadius: 5 }}>
                   <Box>
                     <Grid
@@ -958,9 +1087,9 @@ export default function QAReportView() {
                       alignItems="center"
                       p={1}
                       sx={{
-                        ml: 1,
                         height: "85px",
                         "& .MuiInputBase-root": { height: "85px" },
+                        mb: 3,
                       }}
                     >
                       <Grid item sm={11.3} container alignItems="center">
@@ -968,20 +1097,17 @@ export default function QAReportView() {
                           <img
                             src="/internal.png"
                             alt=""
-                            className="h-[5rem]"
+                            className="h-[6rem]"
                           />
                         </Box>
                         <Box sx={{ ml: 1 }}>
-                          <Typography sx={{ fontWeight: "bolder" }}>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
                             <span className="text-[#ff7b00d3]">
                               Internal Process:
                             </span>{" "}
                             Process & Technology Overview
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
                             Optimizes and manages internal processes and
                             technology.
                           </Typography>
@@ -996,36 +1122,38 @@ export default function QAReportView() {
                         {/* Table Header */}
                         <TableHead>
                           <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
+                            >
                               Office Target
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               KPI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Actions
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Budget
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               In-charge
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Performance <br />
                               <div className="font-medium ">
@@ -1036,13 +1164,13 @@ export default function QAReportView() {
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               OFI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Link of Evidence
                             </TableCell>
@@ -1060,41 +1188,75 @@ export default function QAReportView() {
                                   <TableRow
                                     key={index}
                                     sx={{
-                                      bgcolor:
-                                        index % 2 === 0 ? "white" : "#fff6d1",
+                                      borderBottom: `1px solid ${
+                                        index <
+                                        allInternalSavedScorecards.length - 1
+                                          ? "gray-200"
+                                          : "transparent"
+                                      }`,
                                     }}
                                   >
                                     {/* Table Cells */}
                                     <TableCell>
-                                      <span className="font-semibold">
+                                      <span className="font-medium text-[1.1rem]">
                                         {truncateString(
                                           scorecard.office_target,
                                           45
                                         )}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.key_performance_indicator,
                                         20
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.actions || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.budget || "..."}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.incharge || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       <span className="text-start mr-2">
                                         {scorecard.actual_performance}
                                       </span>
@@ -1103,13 +1265,25 @@ export default function QAReportView() {
                                         {scorecard.target_performance}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.ofi || "...",
                                         4
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.evidence_link ? (
                                         <a
                                           href={scorecard.evidence_link}
@@ -1139,7 +1313,17 @@ export default function QAReportView() {
                 </StyledBox>
               </Cards>
               {/* STAKEHOLDER HERE */}
-              <Cards sx={{ mt: 5 }}>
+              <Cards
+                sx={{
+                  mt: 5,
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  paddingX: 3,
+                  paddingBottom: 3,
+                  borderRadius: 2,
+                }}
+              >
                 <StyledBox sx={{ background: "white", borderRadius: 5 }}>
                   <Box>
                     <Grid
@@ -1147,9 +1331,9 @@ export default function QAReportView() {
                       alignItems="center"
                       p={1}
                       sx={{
-                        ml: 1,
                         height: "85px",
                         "& .MuiInputBase-root": { height: "85px" },
+                        mb: 3,
                       }}
                     >
                       <Grid item sm={11.3} container alignItems="center">
@@ -1157,20 +1341,17 @@ export default function QAReportView() {
                           <img
                             src="/stakeholder.png"
                             alt=""
-                            className="h-[5rem]"
+                            className="h-[6rem]"
                           />
                         </Box>
                         <Box sx={{ ml: 1 }}>
-                          <Typography sx={{ fontWeight: "bolder" }}>
+                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
                             <span className="text-[#ff7b00d3]">
                               Stakeholder:
                             </span>{" "}
                             Client Relationship Overview
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
                             Measures client engagement quality and value.
                           </Typography>
                         </Box>
@@ -1184,36 +1365,38 @@ export default function QAReportView() {
                         {/* Table Header */}
                         <TableHead>
                           <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
+                            >
                               Office Target
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               KPI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Actions
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Budget
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               In-charge
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Performance <br />
                               <div className="font-medium ">
@@ -1224,13 +1407,13 @@ export default function QAReportView() {
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               OFI
                             </TableCell>
                             <TableCell
                               align="center"
-                              sx={{ fontWeight: "bold" }}
+                              sx={{ fontWeight: "bold", fontSize: "18px" }}
                             >
                               Link of Evidence
                             </TableCell>
@@ -1248,41 +1431,75 @@ export default function QAReportView() {
                                   <TableRow
                                     key={index}
                                     sx={{
-                                      bgcolor:
-                                        index % 2 === 0 ? "white" : "#fff6d1",
+                                      borderBottom: `1px solid ${
+                                        index <
+                                        allStakeholderSavedScorecards.length - 1
+                                          ? "gray-200"
+                                          : "transparent"
+                                      }`,
                                     }}
                                   >
                                     {/* Table Cells */}
                                     <TableCell>
-                                      <span className="font-semibold">
+                                      <span className="font-medium text-[1.1rem]">
                                         {truncateString(
                                           scorecard.office_target,
                                           45
                                         )}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.key_performance_indicator,
                                         20
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.actions || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.budget || "..."}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.incharge || "...",
                                         8
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       <span className="text-start mr-2">
                                         {scorecard.actual_performance}
                                       </span>
@@ -1291,13 +1508,25 @@ export default function QAReportView() {
                                         {scorecard.target_performance}
                                       </span>
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {truncateString(
                                         scorecard.ofi || "...",
                                         4
                                       )}
                                     </TableCell>
-                                    <TableCell align="center">
+                                    <TableCell
+                                      align="center"
+                                      sx={{
+                                        fontSize: "18px",
+                                        fontWeight: "500",
+                                      }}
+                                    >
                                       {scorecard.evidence_link ? (
                                         <a
                                           href={scorecard.evidence_link}

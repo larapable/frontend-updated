@@ -1,44 +1,26 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import Navbar from "../components/Navbars/Navbar";
-import { FaPlus } from "react-icons/fa";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
-import { getSession, useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import Spinner from "../components/Misc/Spinner";
+import { useSession } from "next-auth/react";
+
 import {
   Box,
-  Drawer,
   Typography,
   TextField,
   Divider,
-  Avatar,
-  Select,
-  MenuItem,
   Grid,
   Button,
-  Autocomplete,
-  FormHelperText,
-  Card,
-  responsiveFontSizes,
   Modal,
 } from "@mui/material";
-import axios from "axios";
 import styled from "@emotion/styled";
 import Image from "next/image";
 import { SelectChangeEvent } from "@mui/material/Select";
 import SpinnerPages from "../components/Misc/SpinnerPages";
 import "@/app/page.css";
-import {
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-} from "@mui/material";
+import { Dialog, DialogActions, DialogContent } from "@mui/material";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -73,6 +55,7 @@ const Page = () => {
   const [currentView, setCurrentView] = useState("primary");
   const [hasPrimaryStrats, setHasPrimaryStrats] = useState<string | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
@@ -92,7 +75,7 @@ const Page = () => {
 
     const postToPrimaryStrategies = async () => {
       const response = await fetch(
-        `http://localhost:8080/user/getHasPrimaryStrats/${username}`
+        `http://localhost:8080/department/getHasPrimaryStrats/${department_id}`
       );
       const data = await response.json();
 
@@ -107,138 +90,161 @@ const Page = () => {
               office_target:
                 "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "stakeholder", // Added perspective field
               office_target:
                 "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "stakeholder", // Added perspective field
               office_target:
                 "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "stakeholder", // Added perspective field
               office_target:
                 "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "stakeholder", // Added perspective field
               office_target:
                 "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "stakeholder", // Added perspective field
               office_target:
                 "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "stakeholder", // Added perspective field
               office_target:
                 "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "internal", // Added perspective field
               office_target:
                 "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning", // Added perspective field
               office_target:
                 "A7.1: At least 90% participation in CIT-sponsored events",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning", // Added perspective field
               office_target:
                 "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning", // Added perspective field
               office_target:
                 "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning",
               office_target:
                 "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning",
               office_target:
                 "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning",
               office_target:
                 "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning",
               office_target:
                 "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning",
               office_target:
                 "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
               department: { id: department_id },
+              targetYear: currentYear,
             },
             {
               perspective: "learning",
               office_target:
                 "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
               department: { id: department_id },
+              targetYear: currentYear,
             },
           ];
 
@@ -270,7 +276,7 @@ const Page = () => {
           // Update hasPrimaryStrats in the user entity
           if (username) {
             const response = await fetch(
-              `http://localhost:8080/user/update/primaryStrats/${username}`,
+              `http://localhost:8080/department/update/primaryStrats/${department_id}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -367,6 +373,39 @@ const Page = () => {
   ] = useState<GeneratedSentence[]>([]);
   const [primaryLearningGrowthStrategies, setPrimaryLearningGrowthStrategies] =
     useState<GeneratedSentence[]>([]);
+  const [strategyToDelete, setStrategyToDelete] =
+    useState<GeneratedSentence | null>(null);
+
+  const handleDeleteClick = (strategy: GeneratedSentence) => {
+    setStrategyToDelete(strategy);
+    setIsDeleteModalOpen(true);
+  };
+
+  const handleCancelDelete = () => {
+    setStrategyToDelete(null); // Close the dialog without deleting
+  };
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleConfirmDelete = async () => {
+    if (strategyToDelete) {
+      switch (strategyToDelete.id) {
+        case 1:
+          await handleFinancialDelete(strategyToDelete.fID);
+          break;
+        case 2:
+          await handleStakeholderDelete(strategyToDelete.fID);
+          break;
+        case 3:
+          await handleInternalDelete(strategyToDelete.fID);
+          break;
+        case 4:
+          await handleLGDelete(strategyToDelete.fID);
+          break;
+      }
+      setStrategyToDelete(null); // Close the dialog after deleting
+    }
+  };
 
   // @ts-ignore
   const handleEditClick = (strategy) => {
@@ -378,35 +417,11 @@ const Page = () => {
     setShowWarning(true);
   };
 
-  const handleConfirmClear = async (department_id: number) => {
+  const handleConfirmSort = async (department_id: number) => {
     setShowWarning(false); // Close the warning dialog
     setIsButtonDisabled(true);
 
-    try {
-      // Call the API endpoints to clear the tables
-      await fetch("http://localhost:8080/stratmap/financial/clear", {
-        method: "DELETE",
-      });
-      await fetch("http://localhost:8080/stratmap/stakeholder/clear", {
-        method: "DELETE",
-      });
-      await fetch("http://localhost:8080/stratmap/learning/clear", {
-        method: "DELETE",
-      });
-      await fetch("http://localhost:8080/stratmap/internal/clear", {
-        method: "DELETE",
-      });
-
-      // Re-fetch the data and categorize after clearing the tables
-      await fetchAllData(department_id);
-    } catch (error) {
-      console.error("Error clearing tables:", error);
-      // Handle errors, e.g., show an error message to the user
-    } finally {
-      setTimeout(() => {
-        setIsButtonDisabled(false);
-      }, 60000);
-    }
+    fetchAllData(department_id);
   };
 
   const handleCancelClear = () => {
@@ -649,10 +664,10 @@ const Page = () => {
   };
 
   const API_ENDPOINTS = [
-    `http://localhost:8080/stStrat/get/${department_id}`,
-    `http://localhost:8080/soStrat/get/${department_id}`,
-    `http://localhost:8080/wtStrat/get/${department_id}`,
-    `http://localhost:8080/woStrat/get/${department_id}`,
+    `http://localhost:8080/stStrat/getNonSorted/${department_id}`,
+    `http://localhost:8080/soStrat/getNonSorted/${department_id}`,
+    `http://localhost:8080/wtStrat/getNonSorted/${department_id}`,
+    `http://localhost:8080/woStrat/getNonSorted/${department_id}`,
   ];
 
   const SYSTEM_PROMPT = `Categorize the following responses into the following categories:
@@ -732,6 +747,7 @@ const Page = () => {
         office_target: newFStrategy,
         department: { id: department_id },
         user_generated: 1,
+        targetYear: currentYear,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/financial/insert",
@@ -757,176 +773,15 @@ const Page = () => {
     setSavedFStrategies([...savedFStrategies, strategyFWithCode]);
   };
 
-  const handlePrimaryFSave = async () => {
-    try {
-      const data = {
-        office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`, // Combine target code and strategy
-        department: { id: department_id },
-      };
-
-      console.log("Data to be sent:", data); // Log the data for debugging
-
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryFinancial/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closePrimaryFModal();
-        fetchPrimaryFinancialStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary financial strategy:",
-          response.status
-        );
-        // Handle error, e.g., display an error message to the user
-      }
-    } catch (error) {
-      console.error("Error saving primary financial strategy:", error);
-      // Handle error, e.g., display an error message to the user
-    }
-  };
-
-  const handlePrimarySSave = async () => {
-    try {
-      const data = {
-        office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`, // Combine target code and strategy
-        department: { id: department_id },
-      };
-
-      console.log("Data to be sent:", data); // Log the data for debugging
-
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryStakeholder/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closePrimarySModal();
-        fetchPrimaryStakeholderStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary stakeholder strategy:",
-          response.status
-        );
-        // Handle error, e.g., display an error message to the user
-      }
-    } catch (error) {
-      console.error("Error saving primary stakeholder strategy:", error);
-      // Handle error, e.g., display an error message to the user
-    }
-  };
-
-  const handlePrimaryLGSave = async () => {
-    try {
-      const data = {
-        office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`, // Combine target code and strategy
-        department: { id: department_id },
-      };
-
-      console.log("Data to be sent:", data); // Log the data for debugging
-
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryLearning/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closePrimaryLGModal();
-        fetchPrimaryLearningGrowthStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary learning strategy:",
-          response.status
-        );
-        // Handle error, e.g., display an error message to the user
-      }
-    } catch (error) {
-      console.error("Error saving primary learning strategy:", error);
-      // Handle error, e.g., display an error message to the user
-    }
-  };
-
-  const handlePrimaryIPSave = async () => {
-    try {
-      const data = {
-        office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`, // Combine target code and strategy
-        department: { id: department_id },
-      };
-
-      console.log("Data to be sent:", data); // Log the data for debugging
-
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryInternal/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
-
-      if (response.ok) {
-        closePrimaryIPModal();
-        fetchPrimaryInternalProcessStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary internal strategy:",
-          response.status
-        );
-        // Handle error, e.g., display an error message to the user
-      }
-    } catch (error) {
-      console.error("Error saving primary internal strategy:", error);
-      // Handle error, e.g., display an error message to the user
-    }
-  };
-
   // Primary financial
   const [isPrimaryFModalOpen, setIsPrimaryFModalOpen] = useState(false);
   const [newPrimaryFStrategy, setNewPrimaryFStrategy] = useState("");
   const [newPrimaryFTargetCode, setNewPrimaryFTargetCode] = useState("");
 
-  const openPrimaryFModal = () => {
-    setIsPrimaryFModalOpen(true);
-    setNewPrimaryFTargetCode("");
-    setNewPrimaryFStrategy("");
-  };
-
-  const closePrimaryFModal = () => {
-    setNewPrimaryFTargetCode("");
-    setIsPrimaryFModalOpen(false);
-  };
-
   // Primary stakeholder
   const [isPrimarySModalOpen, setIsPrimarySModalOpen] = useState(false);
   const [newPrimarySStrategy, setNewPrimarySStrategy] = useState("");
   const [newPrimarySTargetCode, setNewPrimarySTargetCode] = useState("");
-
-  const openPrimarySModal = () => {
-    setIsPrimarySModalOpen(true);
-    setNewPrimarySTargetCode("");
-    setNewPrimarySStrategy("");
-  };
 
   const closePrimarySModal = () => {
     setNewPrimarySTargetCode("");
@@ -957,7 +812,7 @@ const Page = () => {
       const data = {
         office_target: newSStrategy,
         department: { id: department_id },
-        user_generated: 1,
+        targetYear: currentYear,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/stakeholder/insert",
@@ -984,22 +839,6 @@ const Page = () => {
   };
 
   // internal process
-  const [isPrimaryIPModalOpen, setIsPrimaryIPModalOpen] = useState(false);
-  const [newPrimaryIPStrategy, setNewPrimaryIPStrategy] = useState("");
-  const [newPrimaryIPTargetCode, setNewPrimaryIPTargetCode] = useState("");
-
-  const openPrimaryIPModal = () => {
-    setIsPrimaryIPModalOpen(true);
-    setNewPrimaryIPTargetCode("");
-    setNewPrimaryIPStrategy("");
-  };
-
-  const closePrimaryIPModal = () => {
-    setNewPrimaryIPTargetCode("");
-    setIsPrimaryIPModalOpen(false);
-  };
-
-  // internal process
   const [isIPModalOpen, setIsIPModalOpen] = useState(false);
   const [newIPStrategy, setNewIPStrategy] = useState("");
   const [newIPTargetCode, setNewIPTargetCode] = useState("");
@@ -1023,7 +862,7 @@ const Page = () => {
       const data = {
         office_target: newIPStrategy,
         department: { id: department_id },
-        user_generated: 1,
+        targetYear: currentYear,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/internal/insert",
@@ -1089,7 +928,7 @@ const Page = () => {
       const data = {
         office_target: newLGStrategy,
         department: { id: department_id },
-        user_generated: 1,
+        targetYear: currentYear,
       };
       const response = await fetch(
         "http://localhost:8080/stratmap/learning/insert",
@@ -1115,7 +954,10 @@ const Page = () => {
     setSavedFStrategies([...savedLGStrategies, strategyLGWithCode]);
   };
 
-  const fetchDataAndCategorize = async (apiEndpoint: string) => {
+  const fetchDataAndCategorize = async (
+    apiEndpoint: string,
+    department_id: number
+  ) => {
     try {
       const response = await fetch(apiEndpoint);
       const data = await response.json();
@@ -1157,7 +999,6 @@ const Page = () => {
         .filter((sentence: string) => sentence.trim() !== "");
 
       const categorizedSentences: GeneratedSentence[] = await Promise.all(
-        // Use Promise.all to handle async operations within map
         generatedSentences.map(async (sentence) => {
           const match = sentence.match(
             /^(\d+)\.\s*(.*?)\s*([SW]\d+[TO]\d+|[WO]\d+[WT]\d+)?:\s*(.*)$/
@@ -1166,43 +1007,70 @@ const Page = () => {
           if (match) {
             const [, idStr, strategicTheme, code, content] = match;
             const id = parseInt(idStr, 10);
-            const fID = id;
-
-            // POST target code to backend
-            if (id === 1) {
-              // Assuming id 1 represents Financial perspective
-              try {
-                const response = await fetch(
-                  // Make the fetch call asynchronous with await
-                  "http://localhost:8080/bsc/financialBsc/insert",
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                      target_code: code, // Send the extracted target code
-                      office_target: `${strategicTheme} ${code}: ${content}`, // Send the full strategy text as well
-                      department: { id: department_id }, // Assuming department_id is available
-                    }),
-                  }
-                );
-
-                if (!response.ok) {
-                  console.error("Error POSTing target code:", response.status);
-                }
-              } catch (error) {
-                console.error("Error POSTing target code:", error);
-              }
-            }
-
-            return { id, fID, value: `${strategicTheme} ${code}: ${content}` };
+            const fID = id; // No longer using fID
+            return {
+              code,
+              id,
+              fID, // No longer using fID
+              value: `${strategicTheme} ${code}: ${content}`,
+            };
           } else {
             console.warn("Invalid sentence format:", sentence);
             return { id: -1, fID: -1, value: sentence };
           }
         })
       );
+
+      //@ts-ignore
+      const dataWithTypes = data.map((row) => {
+        if (row.s_tResponses) {
+          return { ...row, type: "st" };
+        } else if (row.s_oResponses) {
+          return { ...row, type: "so" };
+        } else if (row.w_tResponses) {
+          return { ...row, type: "wt" };
+        } else if (row.w_oResponses) {
+          return { ...row, type: "wo" };
+        } else {
+          console.warn("Unable to determine row type:", row);
+          return row;
+        }
+      });
+
+      for (const row of dataWithTypes) {
+        const rowId = row.id;
+        const updateEndpoint = getUpdateEndpoint(row);
+
+        if (updateEndpoint && row.sorted == 0) {
+          // Only send PUT if an endpoint was generated
+          try {
+            const updateResponse = await fetch(updateEndpoint, {
+              method: "PUT",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ sorted: 1 }),
+            });
+
+            if (!updateResponse.ok) {
+              console.error(
+                `Error updating row with id ${rowId} at ${updateEndpoint}:`,
+                updateResponse.statusText
+              );
+            } else {
+              console.log(
+                `Successfully updated row with id ${rowId} at ${updateEndpoint}`
+              );
+            }
+          } catch (error) {
+            console.error(
+              `Error updating row with id ${rowId} at ${updateEndpoint}:`,
+              error
+            );
+          }
+        }
+      }
+
       return categorizedSentences;
     } catch (error) {
       console.error(
@@ -1213,20 +1081,29 @@ const Page = () => {
     }
   };
 
+  const getUpdateEndpoint = (row: any): string => {
+    if (row.type === "st") {
+      return `http://localhost:8080/stStrat/updateSorted/${row.id}`;
+    } else if (row.type === "so") {
+      return `http://localhost:8080/soStrat/updateSorted/${row.id}`;
+    } else if (row.type === "wt") {
+      return `http://localhost:8080/wtStrat/updateSorted/${row.id}`;
+    } else if (row.type === "wo") {
+      return `http://localhost:8080/woStrat/updateSorted/${row.id}`;
+    } else {
+      console.warn("Unknown row type:", row);
+      return "";
+    }
+  };
+
   const fetchAllData = async (department_id: number) => {
-    const promises = API_ENDPOINTS.map((apiEndpoint) =>
-      fetchDataAndCategorize(apiEndpoint)
-    );
-    const categorizedSentencesArrays = await Promise.all(promises);
+    for (const apiEndpoint of API_ENDPOINTS) {
+      const categorizedSentences = await fetchDataAndCategorize(
+        apiEndpoint,
+        department_id
+      );
 
-    const strategies = {
-      financial: [] as GeneratedSentence[],
-      stakeholder: [] as GeneratedSentence[],
-      internalProcess: [] as GeneratedSentence[],
-      learningGrowth: [] as GeneratedSentence[],
-    };
-
-    for (const categorizedSentences of categorizedSentencesArrays) {
+      // Process the categorizedSentences for each API endpoint (e.g., organize them into strategies)
       for (const sentence of categorizedSentences) {
         switch (sentence.id) {
           case 1:
@@ -1244,6 +1121,7 @@ const Page = () => {
         }
       }
     }
+
     setStrategies(strategies);
 
     const saveToDatabase = async (
@@ -1261,6 +1139,9 @@ const Page = () => {
           const data = {
             office_target: sentence.value,
             department: { id: department_id },
+            targetYear: currentYear,
+            //@ts-ignore
+            target_code: sentence.code,
           };
           console.log("financial data: ", data);
           return fetch("http://localhost:8080/stratmap/financial/insert", {
@@ -1278,6 +1159,9 @@ const Page = () => {
           const data = {
             office_target: sentence.value,
             department: { id: department_id },
+            targetYear: currentYear,
+            //@ts-ignore
+            target_code: sentence.code,
           };
           return fetch("http://localhost:8080/stratmap/stakeholder/insert", {
             method: "POST",
@@ -1295,6 +1179,9 @@ const Page = () => {
             const data = {
               office_target: sentence.value,
               department: { id: department_id },
+              targetYear: currentYear,
+              //@ts-ignore
+              target_code: sentence.code,
             };
             return fetch("http://localhost:8080/stratmap/internal/insert", {
               method: "POST",
@@ -1313,6 +1200,9 @@ const Page = () => {
             const data = {
               office_target: sentence.value,
               department: { id: department_id },
+              targetYear: currentYear,
+              //@ts-ignore
+              target_code: sentence.code,
             };
             return fetch("http://localhost:8080/stratmap/learning/insert", {
               method: "POST",
@@ -1328,14 +1218,18 @@ const Page = () => {
         console.log("Data saved to database");
       } catch (error) {
         console.error("Error saving data to database:", error);
+      } finally {
+        try {
+          await fetchExistingStrategies(department_id);
+          setIsButtonDisabled(false);
+        } catch (error) {
+          console.error("Error in sorting or saving:", error);
+          setIsButtonDisabled(false);
+        }
       }
     };
 
-    if (department_id) {
-      await saveToDatabase(strategies, department_id);
-    } else {
-      console.error("Department ID not found in user data. Cannot save data.");
-    }
+    await saveToDatabase(strategies, department_id);
   };
 
   const fetchPrimaryFinancialStrategies = async (department_id: number) => {
@@ -1592,65 +1486,6 @@ const Page = () => {
     }
   };
 
-  const checkGeneratedAiStrats = async (username: string) => {
-    console.log("checking generatedAiStrats");
-
-    try {
-      const response = await fetch(
-        `http://localhost:8080/user/get/${username}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const userData = await response.json();
-      console.log("userData: ", userData.generatedAiStrats);
-
-      if (userData.generatedAiStrats === 1) {
-        await fetchExistingStrategies(department_id);
-      } else if (
-        userData.generatedAiStrats === 0 ||
-        userData.generatedAiStrats === null
-      ) {
-        await updateGeneratedAiStrats(username);
-        await fetchAllData(department_id);
-      }
-    } catch (error) {
-      console.error("Error checking generatedAiStrats:", error);
-    }
-  };
-
-  const updateGeneratedAiStrats = async (username: string) => {
-    try {
-      const response = await fetch(
-        `http://localhost:8080/user/get/${username}`
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
-      const userData = await response.json();
-
-      if (userData.generatedAiStrats === 0) {
-        // Update generatedAiStrats to 1
-        const updateResponse = await fetch(
-          `http://localhost:8080/user/update/${username}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ generatedAiStrats: 1 }),
-          }
-        );
-
-        if (!updateResponse.ok) {
-          throw new Error(`HTTP error! Status: ${updateResponse.status}`);
-        }
-      }
-    } catch (error) {
-      console.error("Error updating generatedAiStrats:", error);
-    }
-  };
-
   const changeComponent = (componentName: string) => {
     localStorage.setItem("lastComponent", componentName);
     setSelectedComponent(componentName);
@@ -1697,7 +1532,7 @@ const Page = () => {
                 sx={{
                   fontWeight: "bold",
                   marginBottom: 2,
-                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
                 STRATEGY MAPPING
@@ -1711,49 +1546,91 @@ const Page = () => {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                border={1}
-                borderColor="#e9e8e8"
                 width="auto"
-                height="auto"
+                height="4rem"
                 borderRadius={2}
-                fontSize={12}
-                sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
               >
-                <button
+                <Button
                   onClick={() => setCurrentView("primary")}
-                  className={`rounded-lg transition-all ${
-                    currentView === "primary"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                  variant={currentView === "primary" ? "contained" : "outlined"}
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "primary"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "primary" ? "white" : "#AB3510",
+                    flexGrow: 2,
+                    height: "100%",
+                    border: "1px solid transparent",
+                    transition: "background-color 0.3s, color 0.3s",
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)",
+                      color: "white",
+                      border:
+                        currentView === "primary"
+                          ? "none"
+                          : "0.5px solid #AB3510",
+                    },
+                  }}
                 >
                   PRIMARY
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => setCurrentView("secondary")}
-                  className={`rounded-lg transition-all ${
-                    currentView === "secondary"
-                      ? "bg-[#A43214] text-white"
-                      : "border text-[#A43214]"
-                  } hover:bg-[#A43214] border border-none hover:border-red-500 hover:text-white p-3`}
+                  variant={
+                    currentView === "secondary" ? "contained" : "outlined"
+                  }
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "secondary"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "secondary" ? "white" : "#AB3510",
+                    flexGrow: 2, // Ensure both buttons have equal size
+                    height: "100%", // Match the height of the container
+                    border: "1px solid transparent", // Keep border style consistent
+                    transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                      color: "white", // Change text color on hover
+                      border:
+                        currentView === "secondary"
+                          ? "none"
+                          : "0.5px solid #AB3510", // Border on hover if not current
+                    },
+                  }}
                 >
                   SECONDARY
-                </button>
+                </Button>
                 {currentView === "secondary" && role !== "FACULTY" && (
                   <button
                     onClick={() => handleButtonClick(department_id)}
                     disabled={isButtonDisabled}
-                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-6 py-2"
+                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-10 py-1"
                   >
-                    <SwapVertRoundedIcon />
+                    <SwapVertRoundedIcon sx={{ fontSize: "40px" }} />
                   </button>
                 )}
               </Box>
             </Grid>
+
+            <Typography variant="h5">
+              The Strategy Mapping feature uses AI to automatically generate
+              strategies based on your inputs from four key perspectives:
+              Financial, Stakeholder, Internal Processes, and Learning & Growth.
+              This ensures a well-rounded approach to achieving your goals.
+            </Typography>
           </Grid>
 
           <StyledBox
-            sx={{ flex: 1, background: "white", borderRadius: 2, mt: 2 }}
+            sx={{ flex: 1, background: "white", borderRadius: 2, mt: 5 }}
           >
             <div className="flex gap-5">
               <div
@@ -1766,12 +1643,14 @@ const Page = () => {
                   borderWidth: "1px",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center" }}>
+                <div
+                  style={{ display: "flex", alignItems: "center", padding: 3 }}
+                >
                   <div
                     style={{
                       top: 0,
                       left: 0, // Move to the left edge
-                      height: "50px", // Adjust height to match "Vision" text height
+                      height: "60px", // Adjust height to match "Vision" text height
                       width: "8px",
                       backgroundColor: "#A43214",
                       marginRight: 10,
@@ -1780,12 +1659,18 @@ const Page = () => {
                     }}
                   ></div>
                   <div className="flex flex-col">
-                    <Typography sx={{ fontWeight: "bold" }}>Vision</Typography>
-                    <Typography>Define what you hope to achieve.</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      Vision
+                    </Typography>
+                    <Typography variant="h6">
+                      Define what you hope to achieve.
+                    </Typography>
                   </div>
                 </div>
                 <Divider />
-                <MainFont sx={{mt:1}}>{officeVision}</MainFont>
+                <Typography variant="h6" sx={{ mt: 1 }}>
+                  {officeVision}
+                </Typography>
               </div>
               <div
                 className="w-1/3 p-4 bg-white rounded-lg shadow-md overflow-y-auto"
@@ -1802,7 +1687,7 @@ const Page = () => {
                     style={{
                       top: 0,
                       left: 0, // Move to the left edge
-                      height: "50px", // Adjust height to match "Vision" text height
+                      height: "60px", // Adjust height to match "Vision" text height
                       width: "8px",
                       backgroundColor: "#A43214",
                       marginRight: 10,
@@ -1811,12 +1696,18 @@ const Page = () => {
                     }}
                   ></div>
                   <div className="flex flex-col">
-                    <Typography sx={{ fontWeight: "bold" }}>Value</Typography>
-                    <Typography>Define what makes you unique.</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      Value
+                    </Typography>
+                    <Typography variant="h6">
+                      Define what makes you unique.
+                    </Typography>
                   </div>
                 </div>
                 <Divider />
-                <MainFont sx={{mt:1}}>{valueProposition}</MainFont>
+                <Typography variant="h6" sx={{ mt: 1 }}>
+                  {valueProposition}
+                </Typography>
               </div>
               <div
                 className="w-1/3 p-4 bg-white rounded-lg shadow-md overflow-y-auto"
@@ -1833,7 +1724,7 @@ const Page = () => {
                     style={{
                       top: 0,
                       left: 0, // Move to the left edge
-                      height: "50px", // Adjust height to match "Vision" text height
+                      height: "60px", // Adjust height to match "Vision" text height
                       width: "8px",
                       backgroundColor: "#A43214",
                       marginRight: 10,
@@ -1842,12 +1733,16 @@ const Page = () => {
                     }}
                   ></div>
                   <div className="flex flex-col">
-                    <Typography sx={{ fontWeight: "bold" }}>Mission</Typography>
-                    <Typography>Define your purpose.</Typography>
+                    <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      Mission
+                    </Typography>
+                    <Typography variant="h6">Define your purpose.</Typography>
                   </div>
                 </div>
                 <Divider />
-                <MainFont sx={{mt:1}}>{mission}</MainFont>
+                <Typography variant="h6" sx={{ mt: 1 }}>
+                  {mission}
+                </Typography>
               </div>
             </div>
           </StyledBox>
@@ -1864,6 +1759,8 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   bgcolor:
                     selectedComponent === "Financial"
                       ? "#A43214"
@@ -1892,6 +1789,8 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   bgcolor:
                     selectedComponent === "Stakeholder"
                       ? "#A43214"
@@ -1920,6 +1819,8 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Internal")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   bgcolor:
                     selectedComponent === "Internal"
                       ? "#A43214"
@@ -1947,6 +1848,8 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Learning")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   bgcolor:
                     selectedComponent === "Learning"
                       ? "#A43214"
@@ -1994,18 +1897,21 @@ const Page = () => {
                               <img
                                 src="/financial.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Financial:
                                 </span>{" "}
                                 Stewardship Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Measures financial performance and
@@ -2013,192 +1919,7 @@ const Page = () => {
                               </Typography>
                             </Box>
                           </Grid>
-                          {/* <Grid
-                            item
-                            sm={0.7}
-                            style={{ justifyContent: "flex-end" }}
-                          > */}
-                            {/* <Box
-                              sx={{
-                                p: 1,
-                                background: "#ff7b00d3",
-                                borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            > */}
-                              {/* <button
-                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
-                                onClick={openPrimaryFModal}
-                              >
-                                <div className="flex flex-row">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="size-8"
-                                  >
-                                    <path
-                                      fill-rule="evenodd"
-                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                      clip-rule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
-                              </button> */}
-                            {/* </Box> */}
-                          {/* </Grid> */}
                         </Grid>
-                        {/* add modal here */}
-                          {/* {isPrimaryFModalOpen && (
-                            <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                              <Box
-                                className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
-                                sx={{
-                                  width: "60%",
-                                  height: "85%",
-                                  maxWidth: "95vw",
-                                  maxHeight: "95vh",
-                                  // maxHeight: '100vh',
-                                }}
-                              >
-                                <p className="text-xl font-bold mb-4">
-                                  Financial Strategy
-                                </p>
-                                <div className="flex flex-col mb-1">
-                                  <Typography sx={{ fontWeight: 800 }}>
-                                    Target Code
-                                    <span className="text-[#DD1414]">*</span>
-                                  </Typography>
-                                </div>
-                                <TextField
-                                  variant="outlined"
-                                  value={newPrimaryFTargetCode}
-                                  onChange={(e) =>
-                                    setNewPrimaryFTargetCode(e.target.value)
-                                  }
-                                  sx={{
-                                    height: "35px",
-                                    "& .MuiInputBase-root": { height: "35px" },
-                                  }}
-                                />
-                                <Box>
-                                  <Typography sx={{ fontWeight: 800, mt: 2 }}>
-                                    Strategy
-                                    <span className="text-[#DD1414]">*</span>
-                                  </Typography>
-                                  <span className="mb-3">
-                                    Before inputting a strategy, please follow
-                                    this format.
-                                  </span>
-                                  <span>
-                                    <br />
-                                    1. Choose one of the following{" "}
-                                    <span className="font-bold">
-                                      strategic themes
-                                    </span>
-                                    :
-                                  </span>
-                                  <ul className="list-disc ml-10 mb-2">
-                                    <li className="font-bold">
-                                      Excellence in Service Quality
-                                    </li>
-                                    <li className="font-bold">
-                                      Excellence in Internal Service Systems
-                                    </li>
-                                    <li className="font-bold">
-                                      Excellence in Organizational Stewardship
-                                    </li>
-                                  </ul>
-                                  <span>
-                                    2. After selecting the theme, leave a space
-                                    and then input the{" "}
-                                    <span className="font-bold">target code</span>{" "}
-                                    followed by a colon{" "}
-                                    <span className="font-bold">(:)</span>
-                                  </span>
-                                  <span>
-                                    <br />
-                                    3. Finally, write the{" "}
-                                    <span className="font-bold">strategy.</span>
-                                  </span>
-                                  <br />
-                                  <span>
-                                    <br />
-                                    The correct format should be:{" "}
-                                    <span className="font-bold">
-                                      Strategic Theme Target Code: Strategy
-                                    </span>
-                                  </span>
-                                  <span className="font-bold">
-                                    <br />
-                                    Example:{" "}
-                                    <span className="font-bold text-red-500">
-                                      Excellence in Service Quality T001: Improve
-                                      customer response time.
-                                    </span>
-                                  </span>
-
-                                  <Grid item sx={{ mt: 2 }}>
-                                    <TextField
-                                      value={newPrimaryFStrategy}
-                                      onChange={(e) =>
-                                        setNewPrimaryFStrategy(e.target.value)
-                                      }
-                                      multiline
-                                      rows={3}
-                                      sx={{
-                                        width: "100%",
-                                        overflowY: "auto",
-                                        "& .MuiInputBase-root": {},
-                                      }}
-                                    />
-                                  </Grid>
-                                </Box>
-
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    gap: 2,
-                                    mt: 3,
-                                    flexWrap: "wrap", // Allow buttons to wrap
-                                  }}
-                                >
-                                  <Button
-                                    variant="contained"
-                                    onClick={closePrimaryFModal}
-                                    sx={{ width: 150, color: "#AB3510" }}
-                                    style={{
-                                      background: "white",
-                                      border: "1px solid #AB3510",
-                                    }}
-                                  >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="contained"
-                                    onClick={async () => {
-                                      await handlePrimaryFSave(); //change
-                                      fetchPrimaryFinancialStrategies(
-                                        department_id
-                                      ); //change
-                                    }}
-                                    style={{
-                                      background:
-                                        "linear-gradient(to left, #8a252c, #AB3510)",
-                                      width: 150,
-                                    }}
-                                  >
-                                    Save
-                                  </Button>
-                                </Box>
-                              </Box>
-                            </Box>
-                          )} */}
-
                         <Grid
                           container
                           alignItems="center"
@@ -2211,13 +1932,19 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index <
+                                    primaryFinancialStrategies.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
-                                  <Typography>{strategy.value}</Typography>
+                                  <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: "400" }}
+                                  >
+                                    {strategy.value}
+                                  </Typography>
                                 </div>
                               )
                             )}
@@ -2244,18 +1971,21 @@ const Page = () => {
                               <img
                                 src="/learning.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Learning & Growth:
                                 </span>{" "}
                                 Culture & People Development Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Enhances organizational culture and employee
@@ -2263,192 +1993,7 @@ const Page = () => {
                               </Typography>
                             </Box>
                           </Grid>
-                          {/* <Grid
-                            item
-                            sm={0.7}
-                            style={{ justifyContent: "flex-end" }}
-                          >
-                            <Box
-                              sx={{
-                                p: 1,
-                                background: "#ff7b00d3",
-                                borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <button
-                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
-                                onClick={openPrimaryLGModal}
-                              >
-                                <div className="flex flex-row">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="size-8"
-                                  >
-                                    <path
-                                      fill-rule="evenodd"
-                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                      clip-rule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
-                              </button>
-                            </Box>
-                          </Grid> */}
                         </Grid>
-                        {/* add modal here */}
-                        {/* {isPrimaryLGModalOpen && (
-                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                            <Box
-                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
-                              sx={{
-                                width: "60%",
-                                height: "85%",
-                                maxWidth: "95vw",
-                                maxHeight: "95vh",
-                                // maxHeight: '100vh',
-                              }}
-                            >
-                              <p className="text-xl font-bold mb-4">
-                                Learning & Growth Strategy
-                              </p>
-                              <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
-                                  Target Code
-                                  <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                              </div>
-                              <TextField
-                                variant="outlined"
-                                value={newPrimaryLGTargetCode}
-                                onChange={(e) =>
-                                  setNewPrimaryLGTargetCode(e.target.value)
-                                }
-                                sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
-                                }}
-                              />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
-                                  Strategy
-                                  <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
-                                  Before inputting a strategy, please follow
-                                  this format.
-                                </span>
-                                <span>
-                                  <br />
-                                  1. Choose one of the following{" "}
-                                  <span className="font-bold">
-                                    strategic themes
-                                  </span>
-                                  :
-                                </span>
-                                <ul className="list-disc ml-10 mb-2">
-                                  <li className="font-bold">
-                                    Excellence in Service Quality
-                                  </li>
-                                  <li className="font-bold">
-                                    Excellence in Internal Service Systems
-                                  </li>
-                                  <li className="font-bold">
-                                    Excellence in Organizational Stewardship
-                                  </li>
-                                </ul>
-                                <span>
-                                  2. After selecting the theme, leave a space
-                                  and then input the{" "}
-                                  <span className="font-bold">target code</span>{" "}
-                                  followed by a colon{" "}
-                                  <span className="font-bold">(:)</span>
-                                </span>
-                                <span>
-                                  <br />
-                                  3. Finally, write the{" "}
-                                  <span className="font-bold">strategy.</span>
-                                </span>
-                                <br />
-                                <span>
-                                  <br />
-                                  The correct format should be:{" "}
-                                  <span className="font-bold">
-                                    Strategic Theme Target Code: Strategy
-                                  </span>
-                                </span>
-                                <span className="font-bold">
-                                  <br />
-                                  Example:{" "}
-                                  <span className="font-bold text-red-500">
-                                    Excellence in Service Quality T001: Improve
-                                    customer response time.
-                                  </span>
-                                </span>
-
-                                <Grid item sx={{ mt: 2 }}>
-                                  <TextField
-                                    value={newPrimaryLGStrategy}
-                                    onChange={(e) =>
-                                      setNewPrimaryLGStrategy(e.target.value)
-                                    }
-                                    multiline
-                                    rows={3}
-                                    sx={{
-                                      width: "100%",
-                                      overflowY: "auto",
-                                      "& .MuiInputBase-root": {},
-                                    }}
-                                  />
-                                </Grid>
-                              </Box>
-
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  gap: 2,
-                                  mt: 3,
-                                  flexWrap: "wrap",
-                                }}
-                              >
-                                <Button
-                                  variant="contained"
-                                  onClick={closePrimaryLGModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
-                                  style={{
-                                    background: "white",
-                                    border: "1px solid #AB3510",
-                                  }}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  onClick={async () => {
-                                    await handlePrimaryLGSave(); //change
-                                    fetchPrimaryLearningGrowthStrategies(
-                                      department_id
-                                    ); //change
-                                  }}
-                                  style={{
-                                    background:
-                                      "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
-                                  }}
-                                >
-                                  Save
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Box>
-                        )} */}
-
                         <Grid
                           container
                           alignItems="center"
@@ -2461,13 +2006,19 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index <
+                                    primaryLearningGrowthStrategies.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
-                                  <Typography>{strategy.value}</Typography>
+                                  <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: "400" }}
+                                  >
+                                    {strategy.value}
+                                  </Typography>
                                 </div>
                               )
                             )}
@@ -2494,18 +2045,21 @@ const Page = () => {
                               <img
                                 src="/internal.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Internal Process:
                                 </span>{" "}
                                 Process & Technology Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Optimizes and manages internal processes and
@@ -2513,190 +2067,7 @@ const Page = () => {
                               </Typography>
                             </Box>
                           </Grid>
-                          {/* <Grid
-                            item
-                            sm={0.7}
-                            style={{ justifyContent: "flex-end" }}
-                          >
-                            <Box
-                              sx={{
-                                p: 1,
-                                background: "#ff7b00d3",
-                                borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <button
-                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
-                                onClick={openPrimaryIPModal}
-                              >
-                                <div className="flex flex-row">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="size-8"
-                                  >
-                                    <path
-                                      fill-rule="evenodd"
-                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                      clip-rule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
-                              </button>
-                            </Box>
-                          </Grid> */}
                         </Grid>
-                        {/* add modal here */}
-                        {/* {isPrimaryIPModalOpen && (
-                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                            <Box
-                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
-                              sx={{
-                                width: "60%",
-                                height: "85%",
-                                maxWidth: "95vw",
-                                maxHeight: "95vh",
-                                // maxHeight: '100vh',
-                              }}
-                            >
-                              <p className="text-xl font-bold mb-4">
-                                Internal Process Strategy
-                              </p>
-                              <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
-                                  Target Code
-                                  <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                              </div>
-                              <TextField
-                                variant="outlined"
-                                value={newPrimaryIPTargetCode}
-                                onChange={(e) =>
-                                  setNewPrimaryIPTargetCode(e.target.value)
-                                }
-                                sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
-                                }}
-                              />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
-                                  Strategy
-                                  <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
-                                  Before inputting a strategy, please follow
-                                  this format.
-                                </span>
-                                <span>
-                                  <br />
-                                  1. Choose one of the following{" "}
-                                  <span className="font-bold">
-                                    strategic themes
-                                  </span>
-                                  :
-                                </span>
-                                <ul className="list-disc ml-10 mb-2">
-                                  <li className="font-bold">
-                                    Excellence in Service Quality
-                                  </li>
-                                  <li className="font-bold">
-                                    Excellence in Internal Service Systems
-                                  </li>
-                                  <li className="font-bold">
-                                    Excellence in Organizational Stewardship
-                                  </li>
-                                </ul>
-                                <span>
-                                  2. After selecting the theme, leave a space
-                                  and then input the{" "}
-                                  <span className="font-bold">target code</span>{" "}
-                                  followed by a colon{" "}
-                                  <span className="font-bold">(:)</span>
-                                </span>
-                                <span>
-                                  <br />
-                                  3. Finally, write the{" "}
-                                  <span className="font-bold">strategy.</span>
-                                </span>
-                                <br />
-                                <span>
-                                  <br />
-                                  The correct format should be:{" "}
-                                  <span className="font-bold">
-                                    Strategic Theme Target Code: Strategy
-                                  </span>
-                                </span>
-                                <span className="font-bold">
-                                  <br />
-                                  Example:{" "}
-                                  <span className="font-bold text-red-500">
-                                    Excellence in Service Quality T001: Improve
-                                    customer response time.
-                                  </span>
-                                </span>
-
-                                <Grid item sx={{ mt: 2 }}>
-                                  <TextField
-                                    value={newPrimaryIPStrategy}
-                                    onChange={(e) =>
-                                      setNewPrimaryIPStrategy(e.target.value)
-                                    }
-                                    multiline
-                                    rows={3}
-                                    sx={{
-                                      width: "100%",
-                                      overflowY: "auto",
-                                      "& .MuiInputBase-root": {},
-                                    }}
-                                  />
-                                </Grid>
-                              </Box>
-
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  gap: 2,
-                                  mt: 3,
-                                  flexWrap: "wrap",
-                                }}
-                              >
-                                <Button
-                                  variant="contained"
-                                  onClick={closePrimaryIPModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
-                                  style={{
-                                    background: "white",
-                                    border: "1px solid #AB3510",
-                                  }}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  onClick={async () => {
-                                    await handlePrimaryIPSave(); //change
-                                    fetchExistingStrategies(department_id); //change
-                                  }}
-                                  style={{
-                                    background:
-                                      "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
-                                  }}
-                                >
-                                  Save
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Box>
-                        )} */}
-
                         <Grid
                           container
                           alignItems="center"
@@ -2709,13 +2080,19 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index <
+                                    primaryInternalProcessStrategies.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
-                                  <Typography>{strategy.value}</Typography>
+                                  <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: "400" }}
+                                  >
+                                    {strategy.value}
+                                  </Typography>
                                 </div>
                               )
                             )}
@@ -2742,208 +2119,28 @@ const Page = () => {
                               <img
                                 src="/stakeholder.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Stakeholder:
                                 </span>{" "}
                                 Client Relationship Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Measures client engagement quality and value.
                               </Typography>
                             </Box>
                           </Grid>
-                          {/* <Grid
-                            item
-                            sm={0.7}
-                            style={{ justifyContent: "flex-end" }}
-                          >
-                            <Box
-                              sx={{
-                                p: 1,
-                                background: "#ff7b00d3",
-                                borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
-                                alignItems: "center",
-                                justifyContent: "center",
-                              }}
-                            >
-                              <button
-                                className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
-                                onClick={openPrimarySModal}
-                              >
-                                <div className="flex flex-row">
-                                  <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    viewBox="0 0 24 24"
-                                    fill="currentColor"
-                                    className="size-8"
-                                  >
-                                    <path
-                                      fill-rule="evenodd"
-                                      d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
-                                      clip-rule="evenodd"
-                                    />
-                                  </svg>
-                                </div>
-                              </button>
-                            </Box>
-                          </Grid> */}
                         </Grid>
-                        {/* add modal here */}
-                        {/* {isPrimarySModalOpen && (
-                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
-                            <Box
-                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
-                              sx={{
-                                width: "60%",
-                                height: "85%",
-                                maxWidth: "95vw",
-                                maxHeight: "95vh",
-                                // maxHeight: '100vh',
-                              }}
-                            >
-                              <p className="text-xl font-bold mb-4">
-                                Stakeholder Strategy
-                              </p>
-                              <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
-                                  Target Code
-                                  <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                              </div>
-                              <TextField
-                                variant="outlined"
-                                value={newPrimarySTargetCode}
-                                onChange={(e) =>
-                                  setNewPrimarySTargetCode(e.target.value)
-                                }
-                                sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
-                                }}
-                              />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
-                                  Strategy
-                                  <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
-                                  Before inputting a strategy, please follow
-                                  this format.
-                                </span>
-                                <span>
-                                  <br />
-                                  1. Choose one of the following{" "}
-                                  <span className="font-bold">
-                                    strategic themes
-                                  </span>
-                                  :
-                                </span>
-                                <ul className="list-disc ml-10 mb-2">
-                                  <li className="font-bold">
-                                    Excellence in Service Quality
-                                  </li>
-                                  <li className="font-bold">
-                                    Excellence in Internal Service Systems
-                                  </li>
-                                  <li className="font-bold">
-                                    Excellence in Organizational Stewardship
-                                  </li>
-                                </ul>
-                                <span>
-                                  2. After selecting the theme, leave a space
-                                  and then input the{" "}
-                                  <span className="font-bold">target code</span>{" "}
-                                  followed by a colon{" "}
-                                  <span className="font-bold">(:)</span>
-                                </span>
-                                <span>
-                                  <br />
-                                  3. Finally, write the{" "}
-                                  <span className="font-bold">strategy.</span>
-                                </span>
-                                <br />
-                                <span>
-                                  <br />
-                                  The correct format should be:{" "}
-                                  <span className="font-bold">
-                                    Strategic Theme Target Code: Strategy
-                                  </span>
-                                </span>
-                                <span className="font-bold">
-                                  <br />
-                                  Example:{" "}
-                                  <span className="font-bold text-red-500">
-                                    Excellence in Service Quality T001: Improve
-                                    customer response time.
-                                  </span>
-                                </span>
-
-                                <Grid item sx={{ mt: 2 }}>
-                                  <TextField
-                                    value={newPrimarySStrategy}
-                                    onChange={(e) =>
-                                      setNewPrimarySStrategy(e.target.value)
-                                    }
-                                    multiline
-                                    rows={3}
-                                    sx={{
-                                      width: "100%",
-                                      overflowY: "auto",
-                                      "& .MuiInputBase-root": {},
-                                    }}
-                                  />
-                                </Grid>
-                              </Box>
-
-                              <Box
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                  gap: 2,
-                                  mt: 3,
-                                  flexWrap: "wrap",
-                                }}
-                              >
-                                <Button
-                                  variant="contained"
-                                  onClick={closePrimarySModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
-                                  style={{
-                                    background: "white",
-                                    border: "1px solid #AB3510",
-                                  }}
-                                >
-                                  Cancel
-                                </Button>
-                                <Button
-                                  variant="contained"
-                                  onClick={async () => {
-                                    await handlePrimarySSave(); //change
-                                    fetchExistingStrategies(department_id); //change
-                                  }}
-                                  style={{
-                                    background:
-                                      "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
-                                  }}
-                                >
-                                  Save
-                                </Button>
-                              </Box>
-                            </Box>
-                          </Box>
-                        )} */}
-
                         <Grid
                           container
                           alignItems="center"
@@ -2956,13 +2153,19 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-7 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                    index <
+                                    primaryStakeholderStrategies.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
-                                  <Typography>{strategy.value}</Typography>
+                                  <Typography
+                                    variant="h6"
+                                    sx={{ fontWeight: "400" }}
+                                  >
+                                    {strategy.value}
+                                  </Typography>
                                 </div>
                               )
                             )}
@@ -2985,7 +2188,7 @@ const Page = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 4,
+                      padding: 6,
                       borderRadius: 2,
                       boxShadow: 24,
                       textAlign: "center",
@@ -2994,16 +2197,15 @@ const Page = () => {
                     }}
                   >
                     <Typography
-                      variant="h6"
+                      variant="h4"
                       component="h2"
-                      sx={{ fontWeight: "bold", mb: 2 }}
+                      sx={{ fontWeight: "bold", mb: 3 }}
                     >
-                      Warning: Clear Tables
+                      Sort new strategies?
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 3 }}>
-                      Are you sure you want to sort? This will clear any
-                      existing data in the Financial, Stakeholder, Internal
-                      Process, and Learning & Growth tables.
+                    <Typography variant="h5" sx={{ mb: 5 }}>
+                      Are you sure you want to sort? This will take unsorted
+                      strategies and sort them into the correct categories.
                     </Typography>
                     <Box
                       sx={{
@@ -3018,8 +2220,10 @@ const Page = () => {
                         variant="contained"
                         onClick={handleCancelClear}
                         sx={{
-                          width: "auto",
+                          width: "30%",
                           color: "#AB3510",
+                          p: 1,
+                          fontSize: "18px",
                         }}
                         style={{
                           background: "white",
@@ -3030,11 +2234,13 @@ const Page = () => {
                       </Button>
                       <Button
                         variant="contained"
-                        onClick={() => handleConfirmClear(department_id)}
+                        onClick={() => handleConfirmSort(department_id)}
                         sx={{
-                          width: "auto",
+                          width: "30%",
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          fontSize: "18px",
                         }}
                       >
                         Confirm
@@ -3064,18 +2270,21 @@ const Page = () => {
                               <img
                                 src="/financial.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Financial:
                                 </span>{" "}
                                 Stewardship Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Measures financial performance and
@@ -3128,20 +2337,28 @@ const Page = () => {
                               className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                               sx={{
                                 width: "60%",
-                                height: "85%",
+                                height: "80%",
                                 maxWidth: "95vw",
                                 maxHeight: "95vh",
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <p className="text-xl font-bold mb-4">
+                              <Typography
+                                variant="h4"
+                                component="h2"
+                                sx={{
+                                  fontWeight: "bold",
+                                  mb: 2,
+                                  color: "#2e2c2c",
+                                }}
+                              >
                                 Financial Strategy
-                              </p>
+                              </Typography>
                               <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
+                                </span>
                               </div>
                               <TextField
                                 variant="outlined"
@@ -3150,20 +2367,21 @@ const Page = () => {
                                   setNewFTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
+                                  height: "50px",
+                                  "& .MuiInputBase-root": { height: "50px" },
                                 }}
                               />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                              <Box sx={{ mt: 3 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
+                                </span>
+                                <span className="mb-3 text-[1.1rem]">
+                                  <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -3171,7 +2389,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2">
+                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -3182,27 +2400,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold">
+                                <span className="font-bold text-[1.1rem]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -3240,7 +2458,12 @@ const Page = () => {
                                 <Button
                                   variant="contained"
                                   onClick={closeFModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
+                                  sx={{
+                                    minWidth: "10rem",
+                                    color: "#AB3510",
+                                    p: 1,
+                                    fontSize: "18px",
+                                  }}
                                   style={{
                                     background: "white",
                                     border: "1px solid #AB3510",
@@ -3254,10 +2477,12 @@ const Page = () => {
                                     await handleFSave();
                                     fetchExistingStrategies(department_id);
                                   }}
-                                  style={{
+                                  sx={{
+                                    minWidth: "10rem",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
+                                    p: 1,
+                                    fontSize: "18px",
                                   }}
                                 >
                                   Save
@@ -3279,9 +2504,9 @@ const Page = () => {
                                 <div
                                   key={strategy.id}
                                   className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                    index < strategies.financial.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
                                   {/* edit div */}
@@ -3310,7 +2535,12 @@ const Page = () => {
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography>{strategy.value}</Typography>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{ fontWeight: "400" }}
+                                    >
+                                      {strategy.value}
+                                    </Typography>
                                   )}
                                   <div className="flex">
                                     <button
@@ -3333,27 +2563,70 @@ const Page = () => {
                                       </svg>
                                     </button>
 
-                                    <button
-                                      onClick={() =>
-                                        handleFinancialDelete(strategy.fID)
-                                      }
-                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
+                                    {strategyToDelete?.fID === strategy.fID ? (
+                                      <>
+                                        <button
+                                          onClick={handleConfirmDelete}
+                                          className="bg-[#ff7b00d3] hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-2"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M4.5 12.75l6 6 9-13.5"
+                                            />
+                                          </svg>
+                                        </button>
+                                        <button
+                                          onClick={handleCancelDelete}
+                                          className="bg-[#AB3510] hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M6 18L18 6M6 6l12 12"
+                                            />
+                                          </svg>
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteClick(strategy)
+                                        }
+                                        className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                       >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                        />
-                                      </svg>
-                                    </button>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                          />
+                                        </svg>
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               )
@@ -3381,18 +2654,21 @@ const Page = () => {
                               <img
                                 src="/learning.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Learning & Growth:
                                 </span>{" "}
                                 Culture & People Development Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Enhances organizational culture and employee
@@ -3445,20 +2721,28 @@ const Page = () => {
                               className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                               sx={{
                                 width: "60%",
-                                height: "85%",
+                                height: "80%",
                                 maxWidth: "95vw",
                                 maxHeight: "95vh",
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <p className="text-xl font-bold mb-4">
+                              <Typography
+                                variant="h4"
+                                component="h2"
+                                sx={{
+                                  fontWeight: "bold",
+                                  mb: 2,
+                                  color: "#2e2c2c",
+                                }}
+                              >
                                 Learning & Growth Strategy
-                              </p>
+                              </Typography>
                               <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
+                                </span>
                               </div>
                               <TextField
                                 variant="outlined"
@@ -3467,20 +2751,21 @@ const Page = () => {
                                   setNewLGTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
+                                  height: "50px",
+                                  "& .MuiInputBase-root": { height: "50px" },
                                 }}
                               />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                              <Box sx={{ mt: 3 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
+                                </span>
+                                <span className="mb-3 text-[1.1rem]">
+                                  <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -3488,7 +2773,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2">
+                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -3499,27 +2784,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold">
+                                <span className="font-bold text-[1.1rem]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -3557,7 +2842,12 @@ const Page = () => {
                                 <Button
                                   variant="contained"
                                   onClick={closeLGModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
+                                  sx={{
+                                    minWidth: "10rem",
+                                    color: "#AB3510",
+                                    p: 1,
+                                    fontSize: "18px",
+                                  }}
                                   style={{
                                     background: "white",
                                     border: "1px solid #AB3510",
@@ -3571,10 +2861,12 @@ const Page = () => {
                                     await handleLGSave();
                                     fetchExistingStrategies(department_id);
                                   }}
-                                  style={{
+                                  sx={{
+                                    minWidth: "10rem",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
+                                    p: 1,
+                                    fontSize: "18px",
                                   }}
                                 >
                                   Save
@@ -3596,9 +2888,9 @@ const Page = () => {
                                 <div
                                   key={strategy.id}
                                   className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                    index < strategies.learningGrowth.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
                                   {/* edit div */}
@@ -3627,7 +2919,12 @@ const Page = () => {
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography>{strategy.value}</Typography>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{ fontWeight: "400" }}
+                                    >
+                                      {strategy.value}
+                                    </Typography>
                                   )}
                                   <div className="flex">
                                     <button
@@ -3650,27 +2947,70 @@ const Page = () => {
                                       </svg>
                                     </button>
 
-                                    <button
-                                      onClick={() =>
-                                        handleLGDelete(strategy.fID)
-                                      }
-                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
+                                    {strategyToDelete?.fID === strategy.fID ? (
+                                      <>
+                                        <button
+                                          onClick={handleConfirmDelete}
+                                          className="bg-[#ff7b00d3] hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-2"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M4.5 12.75l6 6 9-13.5"
+                                            />
+                                          </svg>
+                                        </button>
+                                        <button
+                                          onClick={handleCancelDelete}
+                                          className="bg-[#AB3510] hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M6 18L18 6M6 6l12 12"
+                                            />
+                                          </svg>
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteClick(strategy)
+                                        }
+                                        className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                       >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                        />
-                                      </svg>
-                                    </button>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                          />
+                                        </svg>
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               )
@@ -3698,18 +3038,21 @@ const Page = () => {
                               <img
                                 src="/internal.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Internal Process:
                                 </span>{" "}
                                 Process & Technology Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Optimizes and manages internal processes and
@@ -3762,20 +3105,28 @@ const Page = () => {
                               className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                               sx={{
                                 width: "60%",
-                                height: "85%",
+                                height: "80%",
                                 maxWidth: "95vw",
                                 maxHeight: "95vh",
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <p className="text-xl font-bold mb-4">
+                              <Typography
+                                variant="h4"
+                                component="h2"
+                                sx={{
+                                  fontWeight: "bold",
+                                  mb: 2,
+                                  color: "#2e2c2c",
+                                }}
+                              >
                                 Internal Process Strategy
-                              </p>
+                              </Typography>
                               <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
+                                </span>
                               </div>
                               <TextField
                                 variant="outlined"
@@ -3784,20 +3135,21 @@ const Page = () => {
                                   setNewIPTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
+                                  height: "50px",
+                                  "& .MuiInputBase-root": { height: "50px" },
                                 }}
                               />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                              <Box sx={{ mt: 3 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
+                                </span>
+                                <span className="mb-3 text-[1.1rem]">
+                                  <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -3805,7 +3157,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2">
+                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -3816,27 +3168,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold">
+                                <span className="font-bold text-[1.1rem]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -3874,7 +3226,12 @@ const Page = () => {
                                 <Button
                                   variant="contained"
                                   onClick={closeIPModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
+                                  sx={{
+                                    minWidth: "10rem",
+                                    color: "#AB3510",
+                                    p: 1,
+                                    fontSize: "18px",
+                                  }}
                                   style={{
                                     background: "white",
                                     border: "1px solid #AB3510",
@@ -3888,10 +3245,12 @@ const Page = () => {
                                     await handleIPSave();
                                     fetchExistingStrategies(department_id);
                                   }}
-                                  style={{
+                                  sx={{
+                                    minWidth: "10rem",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
+                                    p: 1,
+                                    fontSize: "18px",
                                   }}
                                 >
                                   Save
@@ -3913,9 +3272,10 @@ const Page = () => {
                                 <div
                                   key={strategy.id}
                                   className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                    index <
+                                    strategies.internalProcess.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
                                   {/* edit div */}
@@ -3944,7 +3304,12 @@ const Page = () => {
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography>{strategy.value}</Typography>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{ fontWeight: "400" }}
+                                    >
+                                      {strategy.value}
+                                    </Typography>
                                   )}
                                   <div className="flex">
                                     <button
@@ -3967,27 +3332,70 @@ const Page = () => {
                                       </svg>
                                     </button>
 
-                                    <button
-                                      onClick={() =>
-                                        handleInternalDelete(strategy.fID)
-                                      }
-                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
+                                    {strategyToDelete?.fID === strategy.fID ? (
+                                      <>
+                                        <button
+                                          onClick={handleConfirmDelete}
+                                          className="bg-[#ff7b00d3] hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-2"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M4.5 12.75l6 6 9-13.5"
+                                            />
+                                          </svg>
+                                        </button>
+                                        <button
+                                          onClick={handleCancelDelete}
+                                          className="bg-[#AB3510] hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M6 18L18 6M6 6l12 12"
+                                            />
+                                          </svg>
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteClick(strategy)
+                                        }
+                                        className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                       >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                        />
-                                      </svg>
-                                    </button>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                          />
+                                        </svg>
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               )
@@ -4015,18 +3423,21 @@ const Page = () => {
                               <img
                                 src="/stakeholder.png"
                                 alt=""
-                                className="h-[5rem]"
+                                className="h-[6rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "600" }}
+                              >
                                 <span className="text-[#ff7b00d3]">
                                   Stakeholder:
                                 </span>{" "}
                                 Client Relationship Overview
                               </Typography>
                               <Typography
-                                variant="body2"
+                                variant="h6"
                                 sx={{ fontWeight: "500" }}
                               >
                                 Measures client engagement quality and value.
@@ -4078,20 +3489,28 @@ const Page = () => {
                               className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                               sx={{
                                 width: "60%",
-                                height: "85%",
+                                height: "80%",
                                 maxWidth: "95vw",
                                 maxHeight: "95vh",
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <p className="text-xl font-bold mb-4">
+                              <Typography
+                                variant="h4"
+                                component="h2"
+                                sx={{
+                                  fontWeight: "bold",
+                                  mb: 2,
+                                  color: "#2e2c2c",
+                                }}
+                              >
                                 Stakeholder Strategy
-                              </p>
+                              </Typography>
                               <div className="flex flex-col mb-1">
-                                <Typography sx={{ fontWeight: 800 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
+                                </span>
                               </div>
                               <TextField
                                 variant="outlined"
@@ -4100,20 +3519,21 @@ const Page = () => {
                                   setNewSTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "35px",
-                                  "& .MuiInputBase-root": { height: "35px" },
+                                  height: "50px",
+                                  "& .MuiInputBase-root": { height: "50px" },
                                 }}
                               />
-                              <Box>
-                                <Typography sx={{ fontWeight: 800, mt: 2 }}>
+                              <Box sx={{ mt: 3 }}>
+                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
-                                </Typography>
-                                <span className="mb-3">
+                                </span>
+                                <span className="mb-3 text-[1.1rem]">
+                                  <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -4121,7 +3541,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2">
+                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -4132,27 +3552,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span>
+                                <span className="text-[1.1rem]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold">
+                                <span className="font-bold text-[1.1rem]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -4190,7 +3610,12 @@ const Page = () => {
                                 <Button
                                   variant="contained"
                                   onClick={closeSModal}
-                                  sx={{ width: 150, color: "#AB3510" }}
+                                  sx={{
+                                    minWidth: "10rem",
+                                    color: "#AB3510",
+                                    p: 1,
+                                    fontSize: "18px",
+                                  }}
                                   style={{
                                     background: "white",
                                     border: "1px solid #AB3510",
@@ -4204,10 +3629,12 @@ const Page = () => {
                                     await handleSSave();
                                     fetchExistingStrategies(department_id);
                                   }}
-                                  style={{
+                                  sx={{
+                                    minWidth: "10rem",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
-                                    width: 150,
+                                    p: 1,
+                                    fontSize: "18px",
                                   }}
                                 >
                                   Save
@@ -4229,9 +3656,9 @@ const Page = () => {
                                 <div
                                   key={strategy.id}
                                   className={`flex justify-between items-center p-5 m-5 w-auto ${
-                                    index % 2 === 0
-                                      ? "bg-[#fff6d1]"
-                                      : "bg-white"
+                                    index < strategies.stakeholder.length - 1
+                                      ? "border-b border-gray-200"
+                                      : ""
                                   }`}
                                 >
                                   {/* edit div */}
@@ -4260,7 +3687,12 @@ const Page = () => {
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography>{strategy.value}</Typography>
+                                    <Typography
+                                      variant="h6"
+                                      sx={{ fontWeight: "400" }}
+                                    >
+                                      {strategy.value}
+                                    </Typography>
                                   )}
                                   <div className="flex">
                                     <button
@@ -4283,27 +3715,70 @@ const Page = () => {
                                       </svg>
                                     </button>
 
-                                    <button
-                                      onClick={() =>
-                                        handleStakeholderDelete(strategy.fID)
-                                      }
-                                      className="font-bold py-2 px-2 rounded text-[#AB3510]"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        fill="none"
-                                        viewBox="0 0 24 24"
-                                        strokeWidth="1.5"
-                                        stroke="currentColor"
-                                        className="size-6"
+                                    {strategyToDelete?.fID === strategy.fID ? (
+                                      <>
+                                        <button
+                                          onClick={handleConfirmDelete}
+                                          className="bg-[#ff7b00d3] hover:bg-orange-700 text-white font-bold py-1 px-2 rounded mr-2"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M4.5 12.75l6 6 9-13.5"
+                                            />
+                                          </svg>
+                                        </button>
+                                        <button
+                                          onClick={handleCancelDelete}
+                                          className="bg-[#AB3510] hover:bg-red-700 text-white font-bold py-1 px-2 rounded"
+                                        >
+                                          <svg
+                                            xmlns="http://www.w3.org/2000/svg"
+                                            fill="none"
+                                            viewBox="0 0 24 24"
+                                            strokeWidth="2"
+                                            stroke="currentColor"
+                                            className="w-4 h-4"
+                                          >
+                                            <path
+                                              strokeLinecap="round"
+                                              strokeLinejoin="round"
+                                              d="M6 18L18 6M6 6l12 12"
+                                            />
+                                          </svg>
+                                        </button>
+                                      </>
+                                    ) : (
+                                      <button
+                                        onClick={() =>
+                                          handleDeleteClick(strategy)
+                                        }
+                                        className="font-bold py-2 px-2 rounded text-[#AB3510]"
                                       >
-                                        <path
-                                          strokeLinecap="round"
-                                          strokeLinejoin="round"
-                                          d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
-                                        />
-                                      </svg>
-                                    </button>
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          fill="none"
+                                          viewBox="0 0 24 24"
+                                          strokeWidth="1.5"
+                                          stroke="currentColor"
+                                          className="size-6"
+                                        >
+                                          <path
+                                            strokeLinecap="round"
+                                            strokeLinejoin="round"
+                                            d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0"
+                                          />
+                                        </svg>
+                                      </button>
+                                    )}
                                   </div>
                                 </div>
                               )

@@ -42,7 +42,7 @@ interface Department {
   head_officer: string;
 }
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 export default function QANavbar() {
   return (
@@ -53,30 +53,18 @@ export default function QANavbar() {
           justifyContent: "center",
           alignItems: "center",
           fontFamily: "Arial, sans-serif",
+          borderRadius:10 
         }}
       >
         <Drawer
-          variant="permanent"
-          sx={{
-            width: drawerWidth,
-            flexShrink: 0,
-            [`& .MuiDrawer-paper`]: {
-              width: drawerWidth,
-              boxSizing: "border-box",
-              background: "linear-gradient(to left, #8a252c, #AB3510)",
-              color: "white",
-            },
-          }}
-        >
-          <Box
-            component="img"
-            src="/logo.png"
-            alt="Description"
-            sx={{ width: "70%", height: "20%", ml: 3, mt: 1 }}
-          />
-          <Box
-            sx={{ display: "flex", flexDirection: "column", height: "100%" }}
-          >
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', background: 'linear-gradient(to left, #8a252c, #AB3510)', color: 'white', borderTopRightRadius: '30px',borderBottomRightRadius: '30px', },
+        }}>
+          <Box component="img" src="/logo.png" alt="Description" sx={{ width: '90%', height: '25%',ml:1, mt: 1}} />
+          <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <Box sx={{ flex: 1, overflow: "auto" }}>
               <List>
                 <Divider sx={{ background: "#ffffff" }} />
@@ -89,11 +77,11 @@ export default function QANavbar() {
                   }}
                 >
                   <Link href="/qaprofileview" legacyBehavior>
-                    <ListItemButton>
+                    <ListItemButton sx={{ minHeight: '60px', fontSize: '40px' }}>
                       <ListItemIcon>
-                        <AccountCircleIcon sx={{ color: "#F2F2F2" }} />
+                        <AccountCircleIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
                       </ListItemIcon>
-                      <ListItemText primary="Profile" />
+                      <ListItemText primary="Department Profile" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -107,11 +95,11 @@ export default function QANavbar() {
                   }}
                 >
                   <Link href="/qastratmapview" legacyBehavior>
-                    <ListItemButton>
+                    <ListItemButton sx={{ minHeight: '60px' }}>
                       <ListItemIcon>
-                        <ForkRightIcon sx={{ color: "#F2F2F2" }} />
+                        <ForkRightIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
                       </ListItemIcon>
-                      <ListItemText primary="Strat Mapping" />
+                      <ListItemText primary="Strat Mapping" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -125,11 +113,11 @@ export default function QANavbar() {
                   }}
                 >
                   <Link href="/qascorecard" legacyBehavior>
-                    <ListItemButton>
+                    <ListItemButton sx={{ minHeight: '60px' }}>
                       <ListItemIcon>
-                        <CreditScoreIcon sx={{ color: "#F2F2F2" }} />
+                        <CreditScoreIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
                       </ListItemIcon>
-                      <ListItemText primary="Scorecard" />
+                      <ListItemText primary="Scorecard" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -143,11 +131,11 @@ export default function QANavbar() {
                   }}
                 >
                   <Link href="/qareportview" legacyBehavior>
-                    <ListItemButton>
+                    <ListItemButton sx={{ minHeight: '60px' }}>
                       <ListItemIcon>
-                        <BarChartIcon sx={{ color: "#F2F2F2" }} />
+                        <BarChartIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
                       </ListItemIcon>
-                      <ListItemText primary="Report Analysis" />
+                      <ListItemText primary="Report Analysis" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -165,12 +153,13 @@ export default function QANavbar() {
                 }}
               >
                 <ListItemButton
+                  sx={{ minHeight: '60px' }}
                   onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   <ListItemIcon>
-                    <LogoutIcon sx={{ color: "#F2F2F2" }} />
+                    <LogoutIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
                   </ListItemIcon>
-                  <ListItemText primary="Logout" />
+                  <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
                 </ListItemButton>
               </ListItem>
             </Box>

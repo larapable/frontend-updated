@@ -31,7 +31,7 @@ import SpinnerPages from "@/app/components/Misc/SpinnerPages";
 import ModeEditRoundedIcon from "@mui/icons-material/ModeEditRounded";
 import { useParams } from "next/navigation";
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -50,7 +50,9 @@ const Cards = styled(Box)({
   height: "auto",
   borderRadius: "20px",
   boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
-  borderColor: "gray",
+  borderColor: "#e9e8e8",
+  borderStyle: "solid", // Add border style (e.g., solid, dashed, dotted)
+  borderWidth: "1px",
 });
 
 const Boxes = styled(Box)({
@@ -153,7 +155,7 @@ export default function DepartmentProfile() {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -184,22 +186,25 @@ export default function DepartmentProfile() {
                 sx={{
                   fontWeight: "bold",
                   marginBottom: 2,
-                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
                 PROFILE
               </Typography>
             </Grid>
+              <Typography variant="h5">
+                The Profile feature allows you to view the department’s details, including its name, head officer, landline, email, and a brief description. This ensures transparency and easy access to accurate information, helping you stay informed and connected with your department for seamless communication and collaboration.
+              </Typography>
           </Grid>
 
-          <Cards>
+          <Cards sx={{mt:5}}>
             <StyledBox sx={{ background: "white", borderRadius: 5 }}>
               <Grid container alignItems="center" p={3}>
                 <Grid item xs={12} sm={8.5}>
                   <Grid container alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={4}>
                       {department.image ? (
-                        <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 flex items-center justify-center overflow-hidden">
+                        <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 flex items-center justify-center overflow-hidden">
                           <img
                             src={department.image}
                             alt="Department Image"
@@ -207,7 +212,7 @@ export default function DepartmentProfile() {
                           />
                         </Box>
                       ) : (
-                        <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-48 h-48 my-4 flex items-center justify-center">
+                        <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 my-4 flex items-center justify-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -224,15 +229,15 @@ export default function DepartmentProfile() {
                       )}
                     </Grid>
 
-                    <Grid item xs={12} sm={8}>
+                    <Grid item xs={12} sm={8} sx={{ml:-2}}>
                       <Typography
-                        variant="h5"
+                        variant="h4"
                         component="h2"
-                        sx={{ fontWeight: "bold" }}
+                        sx={{ fontWeight: "bold",mr:5 }}
                       >
                         {department.department_name}
                       </Typography>
-                      <Typography variant="subtitle1" color="textSecondary">
+                      <Typography variant="h6" color="textSecondary">
                         Department Name
                       </Typography>
                     </Grid>
@@ -243,97 +248,99 @@ export default function DepartmentProfile() {
                   <Box
                     sx={{
                       background: "#fff6d1",
-                      p: 1,
+                      p: 3,
                       borderRadius: 2,
                       textAlign: "center",
                       mb: 2,
                     }}
                   >
-                    <Typography variant="h6" sx={{ fontWeight: "500", mb: 1 }}>
-                      Department Profile
+                    <Typography variant="h5" sx={{ fontWeight: "500", mb: 1 }}>
+                      DEPARTMENT PROFILE
                     </Typography>
                     <Typography
-                      variant="body2"
+                      variant="h6"
                       sx={{ fontWeight: "400", mb: 1 }}
                     >
                       Access and view details about your department here.
                     </Typography>
                   </Box>
-                  <Box
-                    sx={{
-                      background: "#ffdb6e",
-                      p: 1,
-                      borderRadius: 2,
-                      textAlign: "center",
-                    }}
-                  >
-                    {/* contents of small box */}
-                    <Grid item sx={{ p: 1 }} spacing={2}>
-                      <Grid
-                        container
-                        alignItems="center"
-                        justifyContent="space-between"
-                        spacing={1}
+                    <Box
+                        sx={{
+                          background: "#ffdb6e",
+                          p: 1,
+                          borderRadius: 2,
+                          textAlign: "center",
+                        }}
                       >
-                        <Grid
-                          item
-                          sm={6}
-                          sx={{
-                            bgcolor:
-                              roles === "headOfficer"
-                                ? "#f8da90"
-                                : "transparent",
-                            borderRadius: 2,
-                            p: 1,
-                            mt: 2,
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
+                        {/* contents of small box */}
+                        <Grid item sx={{ p: 1 }} spacing={2}>
+                          <Grid
+                            container
+                            alignItems="center"
+                            justifyContent="space-between"
+                            spacing={1}
                           >
-                            HEAD
-                          </Typography>
-                          <Typography sx={{ fontWeight: "bolder" }}>
-                            {roleCounts.headOfficer}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
-                            Users
-                          </Typography>
+                            <Grid
+                              item
+                              sm={6}
+                              sx={{
+                                bgcolor:
+                                  roles === "headOfficer"
+                                    ? "#f8da90"
+                                    : "transparent",
+                                borderRadius: 2,
+                                p: 1,
+                                mt: 2,
+                              }}
+                            >
+                              <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+                                {roleCounts.headOfficer}
+                              </Typography>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                HEAD
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Users
+                              </Typography>
+                            </Grid>
+                            <Grid
+                              item
+                              sm={6}
+                              sx={{
+                                bgcolor:
+                                  roles === "faculty"
+                                    ? "#f8da90"
+                                    : "transparent",
+                                borderRadius: 2,
+                                p: 1,
+                                mt: 2,
+                              }}
+                            >
+                              <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+                                {roleCounts.faculty}
+                              </Typography>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                FACULTY
+                              </Typography>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: "500" }}
+                              >
+                                Users
+                              </Typography>
+                            </Grid>
+                          </Grid>
                         </Grid>
-                        <Grid
-                          item
-                          sm={6}
-                          sx={{
-                            bgcolor:
-                              roles === "faculty" ? "#f8da90" : "transparent",
-                            borderRadius: 2,
-                            p: 1,
-                            mt: 2,
-                          }}
-                        >
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
-                            FACULTIES
-                          </Typography>
-                          <Typography sx={{ fontWeight: "bolder" }}>
-                            {roleCounts.faculty}
-                          </Typography>
-                          <Typography
-                            variant="body2"
-                            sx={{ fontWeight: "500" }}
-                          >
-                            Users
-                          </Typography>
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  </Box>
+                      </Box>
                 </Grid>
               </Grid>
 
@@ -346,7 +353,7 @@ export default function DepartmentProfile() {
                     borderColor: "gray",
                   }}
                 >
-                  <Typography sx={{ fontWeight: "bold", p: 3 }}>
+                  <Typography variant="h5" sx={{ fontWeight: "bold", p: 3 }}>
                     Basic Information
                   </Typography>
 
@@ -361,8 +368,8 @@ export default function DepartmentProfile() {
                     >
                       <Grid item sm={4}>
                         <Typography
-                          variant="body2"
-                          sx={{ fontWeight: "bold", color: "#8d8d8d" }}
+                          variant="h6"
+                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
                         >
                           Head Officer
                         </Typography>
@@ -370,8 +377,11 @@ export default function DepartmentProfile() {
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "35px",
-                            "& .MuiInputBase-root": { height: "35px" },
+                            height: "50px",
+                            "& .MuiInputBase-root": { height: "50px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed 
+                                }
                           }}
                           value={department.head_officer}
                           inputProps={{ readOnly: true }}
@@ -379,8 +389,8 @@ export default function DepartmentProfile() {
                       </Grid>
                       <Grid item sm={4}>
                         <Typography
-                          variant="body2"
-                          sx={{ fontWeight: "bold", color: "#8d8d8d" }}
+                          variant="h6"
+                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
                         >
                           Email
                         </Typography>
@@ -388,8 +398,11 @@ export default function DepartmentProfile() {
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "35px",
-                            "& .MuiInputBase-root": { height: "35px" },
+                            height: "50px",
+                            "& .MuiInputBase-root": { height: "50px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed 
+                                }
                           }}
                           value={department.email}
                           inputProps={{ readOnly: true }}
@@ -397,8 +410,8 @@ export default function DepartmentProfile() {
                       </Grid>
                       <Grid item sm={4}>
                         <Typography
-                          variant="body2"
-                          sx={{ fontWeight: "bold", color: "#8d8d8d" }}
+                          variant="h6"
+                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
                         >
                           Landline
                         </Typography>
@@ -406,8 +419,11 @@ export default function DepartmentProfile() {
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "35px",
-                            "& .MuiInputBase-root": { height: "35px" },
+                            height: "50px",
+                            "& .MuiInputBase-root": { height: "50px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed 
+                                }
                           }}
                           value={department.department_landline}
                           inputProps={{ readOnly: true }}
@@ -427,8 +443,8 @@ export default function DepartmentProfile() {
                     >
                       <Grid item sm={6}>
                         <Typography
-                          variant="body2"
-                          sx={{ fontWeight: "bold", color: "#8d8d8d" }}
+                          variant="h6"
+                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
                         >
                           University
                         </Typography>
@@ -436,8 +452,11 @@ export default function DepartmentProfile() {
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "35px",
-                            "& .MuiInputBase-root": { height: "35px" },
+                            height: "50px",
+                            "& .MuiInputBase-root": { height: "50px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed 
+                                }
                           }}
                           value={department.university}
                           inputProps={{ readOnly: true }}
@@ -445,8 +464,8 @@ export default function DepartmentProfile() {
                       </Grid>
                       <Grid item sm={6}>
                         <Typography
-                          variant="body2"
-                          sx={{ fontWeight: "bold", color: "#8d8d8d" }}
+                          variant="h6"
+                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
                         >
                           Location
                         </Typography>
@@ -454,8 +473,11 @@ export default function DepartmentProfile() {
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "35px",
-                            "& .MuiInputBase-root": { height: "35px" },
+                            height: "50px",
+                            "& .MuiInputBase-root": { height: "50px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed 
+                                }
                           }}
                           value={department.location}
                           inputProps={{ readOnly: true }}
@@ -471,7 +493,7 @@ export default function DepartmentProfile() {
                       borderColor: "gray",
                     }}
                   >
-                    <Typography sx={{ fontWeight: "bold", p: 3 }}>
+                    <Typography variant="h5" sx={{ fontWeight: "bold", p: 3 }}>
                       About Department
                     </Typography>
                     <Grid item sx={{ p: 3, mt: -3 }}>
@@ -483,6 +505,9 @@ export default function DepartmentProfile() {
                           "& .MuiInputBase-root": {
                             // Remove height property
                           },
+                          "& .MuiOutlinedInput-input": { // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed 
+                                }
                         }}
                         value={department.description}
                         inputProps={{ readOnly: true }}

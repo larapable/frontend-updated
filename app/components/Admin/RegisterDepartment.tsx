@@ -1,6 +1,39 @@
 "use client";
 import { useState } from "react";
-import { Button, Card, Modal } from "@mui/material";
+import AdminNavbar from "../Admin/AdminNavBar";
+import {
+  Box,
+  Drawer,
+  Typography,
+  TextField,
+  Divider,
+  Avatar,
+  Select,
+  MenuItem,
+  Grid,
+  Button,
+  Autocomplete,
+  FormHelperText,
+  Card,
+  responsiveFontSizes,
+  Modal,
+} from "@mui/material";
+import axios from "axios";
+import React from "react";
+import styled from "@emotion/styled";
+import Image from "next/image";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+
+const drawerWidth = 310;
+
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
 
 export default function RegisterDepartment() {
   const [departmentName, setDepartmentName] = useState("");
@@ -12,6 +45,7 @@ export default function RegisterDepartment() {
   const [email, setEmail] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleDepartmentNameChange = (e: any) =>
     setDepartmentName(e.target.value);
@@ -92,11 +126,59 @@ export default function RegisterDepartment() {
   };
 
   return (
-    <div className="text-[rgb(59,59,59)]">
-        <div className="flex flex-col justify-center items-center text-center">
-            <span className="mt-5 inline-block break-words font-bold text-[3rem]">Register Department</span>
-            <span className="text-[1.3rem]">Enter the details to get going</span>
-
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#4D4C4C",
+      }}
+    >
+      <Box
+        sx={{
+          width: isMobile ? "100%" : drawerWidth,
+          flexShrink: 0,
+          position: isMobile ? "static" : "fixed",
+          height: isMobile ? "auto" : "100vh",
+          overflowY: "auto",
+        }}
+      >
+        <AdminNavbar />
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+        }}
+      >
+        <StyledBox sx={{ width: "100%", maxWidth: "800px" }}>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Typography
+                variant="h4"
+                component="h1"
+                sx={{
+                  fontWeight: "bold",
+                  marginBottom: 2,
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                }}
+              >
+                REGISTER DEPARTMENT
+              </Typography>
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            <Typography
+                variant="h5"
+                component="h1"
+                sx={{
+                  fontWeight: "400",
+                  marginBottom: 2,
+                }}
+              >
+                Enter the details to get going
+              </Typography>
+          </Box>
+          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
             {/* indicator */}
             <div className="w-full max-w-3xl mx-auto px-4 py-6 mt-5 mb-5">
                 <div className="flex items-center justify-between">
@@ -123,130 +205,223 @@ export default function RegisterDepartment() {
                 </div>
               </div>
             {/* end */}
+          </Box>
 
-            <div className="ml-[-40rem] bg-[#A43214] text-white border border-none text-[1.2rem] font-semibold text-center items-center rounded-lg px-5 py-2">
-                Information
-            </div>
-        
-            <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-14 px-10 bg-white h-[auto] w-[50rem] mt-[-0.5rem]">
-            <div className="flex flex-col">
-            <div className="flex flex-col mt-[-1rem]">
-                <span className="self-start mb-2 break-words font-regular text-md">
+            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+            
+            <Box
+              sx={{
+                borderRadius:"10px",
+                background: "white",
+                fontSize: "20px",
+                fontWeight: "600",
+                p:5,
+                width:"50%",
+                height:"auto",
+                borderColor:"#e9e8e8",
+                borderStyle:"solid",
+                borderWidth: "1px",
+                boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+              }}
+            >
+              <Typography variant="h5" sx={{fontWeight:"600", mb:2}}>
+                    Basic Information
+                </Typography>
+
+                <Typography variant="h6" sx={{fontWeight:"400"}}>
                     Department Name
                     <span className="text-[#DD1414]">*</span>
-                </span>
-                <input
-                    type="text"
-                    id="departmentName"
-                    value={departmentName}
-                    onChange={handleDepartmentNameChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[44rem] flex items-center mb-6 py-2 px-2"
-                />
-            </div>
-            <div className="flex flex-row gap-16">
-            <div className="flex flex-col">
-                <span className="self-start mb-2 break-words font-regular text-md">
-                    University
-                    <span className="text-[#DD1414]">*</span>
-                </span>
-                <input
-                    type="text"
-                    id="university"
-                    value={university}
-                    onChange={handleUniversityChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[20rem] flex items-center py-2 px-2"
-                />
-            </div>
-            <div className="flex flex-col">
-                <span className="self-start mb-2 break-words font-regular text-md">
-                    Location
-                    <span className="text-[#DD1414]">*</span>
-                </span>
-                <input
-                    type="text"
-                    id="location"
-                    value={location}
-                    onChange={handleLocationChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[20rem] flex items-center py-2 px-2"
-                />
-            </div>
-            </div>
-            </div>
-            </Card>
+                </Typography>
+                <Grid>
+                  <TextField
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={departmentName}
+                          onChange={handleDepartmentNameChange}
+                        />
+                </Grid>
 
-            <div className="ml-[-42rem] bg-[#A43214] text-white border border-none text-[1.2rem] mt-5 font-semibold text-center items-center rounded-lg px-5 py-2">
-                Contact
-            </div>
-        
-            <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-14 px-10 bg-white h-[auto] w-[50rem] mt-[-0.5rem]">
-            <div className="flex flex-col">
-            <div className="flex flex-col mt-[-1rem]">
-                <span className="self-start mb-2 break-words font-regular text-md">
+                <Grid container alignItems="center" sx={{mt:3}}>
+                  <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{fontWeight:"400"}}>
+                      University
+                      <span className="text-[#DD1414]">*</span>
+                  </Typography>
+                    <TextField
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={university}
+                          onChange={handleUniversityChange}
+                        />
+                  </Grid>
+                  <Grid item xs={1}></Grid>
+                  <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{fontWeight:"400"}}>
+                      Location
+                      <span className="text-[#DD1414]">*</span>
+                  </Typography>
+                    <TextField
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={location}
+                          onChange={handleLocationChange}
+                        />
+                  </Grid>
+                </Grid>
+            </Box>
+            </Box>
+
+            <Box sx={{mt:5, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            
+            <Box
+              sx={{
+                borderRadius:"10px",
+                background: "white",
+                fontSize: "20px",
+                fontWeight: "600",
+                p:5,
+                width:"50%",
+                height:"auto",
+                borderColor:"#e9e8e8",
+                borderStyle:"solid",
+                borderWidth: "1px",
+                boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+              }}
+            >
+              <Typography variant="h5" sx={{fontWeight:"600", mb:2}}>
+                    Contact Information
+                </Typography>
+
+                <Typography variant="h6" sx={{fontWeight:"400"}}>
                     Head Officer
                     <span className="text-[#DD1414]">*</span>
-                </span>
-                <input
-                    type="text"
-                    id="headOfficer"
-                    value={headOfficer}
-                    onChange={handleHeadOfficerChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[44rem] flex items-center mb-6 py-2 px-2"
-                />
-            </div>
-            <div className="flex flex-row gap-16">
-            <div className="flex flex-col">
-                <span className="self-start mb-2 break-words font-regular text-md">
-                    Department Landline
-                    <span className="text-[#DD1414]">*</span>
-                </span>
-                <input
-                    type="text"
-                    id="departmentLandline"
-                    value={departmentLandline}
-                    onChange={handleDepartmentLandlineChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[20rem] flex items-center py-2 px-2"
-                />
-            </div>
-            <div className="flex flex-col">
-                <span className="self-start mb-2 break-words font-regular text-md">
-                    Email
-                    <span className="text-[#DD1414]">*</span>
-                </span>
-                <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[20rem] flex items-center py-2 px-2"
-                />
-            </div>
-            </div>
-            </div>
-            </Card>
+                </Typography>
+                <Grid>
+                  <TextField
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={headOfficer}
+                          onChange={handleHeadOfficerChange}
+                        />
+                </Grid>
 
-            <div className="ml-[-42.5rem] bg-[#A43214] text-white border border-none text-[1.2rem] mt-5 font-semibold text-center items-center rounded-lg px-5 py-2">
-                Details
-            </div>
-        
-            <Card className="flex align-center rounded-lg border border-gray-200 justify-between py-14 px-10 bg-white h-[auto] w-[50rem] mt-[-0.5rem] mb-10">
-            <div className="flex flex-col">
-            <div className="flex flex-col mt-[-1rem]">
-                <span className="self-start mb-2 break-words font-regular text-md">
+                <Grid container alignItems="center" sx={{mt:3}}>
+                  <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{fontWeight:"400"}}>
+                      Department Landline
+                      <span className="text-[#DD1414]">*</span>
+                  </Typography>
+                    <TextField
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={departmentLandline}
+                          onChange={handleDepartmentLandlineChange}
+                        />
+                  </Grid>
+                  <Grid item xs={1}></Grid>
+                  <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{fontWeight:"400"}}>
+                      Email
+                      <span className="text-[#DD1414]">*</span>
+                  </Typography>
+                    <TextField
+                          fullWidth
+                          variant="outlined"
+                          sx={{
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={email}
+                          onChange={handleEmailChange}
+                        />
+                  </Grid>
+                </Grid>
+              </Box>
+            </Box>
+
+            <Box sx={{mt:5, display: "flex", flexDirection: "column", alignItems: "center" }}>
+            
+            <Box
+              sx={{
+                borderRadius:"10px",
+                background: "white",
+                fontSize: "20px",
+                fontWeight: "600",
+                p:5,
+                width:"50%",
+                height:"auto",
+                borderColor:"#e9e8e8",
+                borderStyle:"solid",
+                borderWidth: "1px",
+                boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+              }}
+            >
+              <Typography variant="h5" sx={{fontWeight:"600", mb:2}}>
+                    Details About Department
+                </Typography>
+
+                <Typography variant="h6" sx={{fontWeight:"400"}}>
                     Description
                     <span className="text-[#DD1414]">*</span>
-                </span>
-                <textarea
-                    id="description"
-                    value={description}
-                    onChange={handleDescriptionChange}
-                    className="border-[0.1rem] self-start border-solid border-gray-400 border-opacity-60 rounded-lg w-[44rem] h-[7rem] flex items-center py-2 px-2"
-                />
-            </div>
-            </div>
-            </Card>
-
+                </Typography>
+                <Grid>
+                  <TextField
+                          fullWidth
+                          variant="outlined"
+                          multiline
+                          sx={{
+                            "& .MuiInputBase-root": {  },
+                            "& .MuiOutlinedInput-input": { // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed 
+                            },
+                          }}
+                          value={description}
+                          onChange={handleDescriptionChange}
+                        />
+                </Grid>
+              </Box>
+            </Box>
+            <Box sx={{mt:5, display: "flex", flexDirection: "column", alignItems: "center" }}>
             <button
-                className="rounded-lg text-white font-bold text-xl w-[38rem] px-12 py-5 border[0.1rem] border-white hover:text-[#f3deb0] mb-10"
+                className="rounded-lg text-white font-bold text-xl mt-5 px-32 py-5 border[0.1rem] border-white hover:text-[#f3deb0] mb-10"
                 style={{
                     backgroundImage: `url('bgimagemaroon.png')`,
                     backgroundSize: "cover",
@@ -257,49 +432,67 @@ export default function RegisterDepartment() {
                 >
                 Register
             </button>
+            </Box>
 
-            {/* Modal */}
-        <Modal open={showModal} onClose={() => setShowModal(false)}>
-          <div className="flex flex-col items-center justify-center h-full">
-            <div className="bg-white p-8 rounded-lg shadow-md h-72 w-[40rem] text-center relative">
-              <button
-                onClick={handleCancelSave}
-                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800"
+            <Modal open={showModal} onClose={() => setShowModal(false)}>
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100vh", // Occupy full viewport height
+                }}
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  className="w-6 h-6"
+                <Box
+                  sx={{
+                    background: "white",
+                    padding: 6,
+                    borderRadius: 2,
+                    boxShadow: 24,
+                    textAlign: "center",
+                    position: "relative",
+                    width: "30%", // Limit modal width to 80% of viewport width
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
-              <p className="text-3xl font-bold mb-4">Notice!</p>
-              <p className="text-xl mb-4 mt-10">
-                {modalMessage}
-              </p>
-              <div className="flex justify-center gap-10 mt-12 mb-10">
-                <button
-                  onClick={() => setShowModal(false)}
-                  className="rounded-[0.6rem] text-[#ffffff] font-medium text-lg py-2 px-3 w-36 h-[fit-content]"
-                  style={{ background: "linear-gradient(to left, #8a252c, #AB3510)" }}
-                >
-                  Close
-                </button>
-              </div>
-            </div>
-          </div>
-        </Modal>
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    sx={{ fontWeight: "bold", mb: 3 }}
+                  >
+                    Notice!
+                  </Typography>
+                  <Typography variant="h5" sx={{ mb: 5 }}>
+                    {modalMessage}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: 2,
+                      mt: 3,
+                      flexWrap: "wrap", // Allow buttons to wrap on smaller screens
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={() => setShowModal(false)}
+                      sx={{
+                        width: "40%",
+                        background: "linear-gradient(to left, #8a252c, #AB3510)",
+                        p:1,
+                        fontSize: '18px',
+                      }}
+                    >
+                      Close
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </Modal>
 
+        </StyledBox>
 
-        </div>
-    </div>
+      </Box>
+    </Box>
   );
 }

@@ -21,12 +21,16 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
-import Navbar from "../components/Navbars/Navbar";
 
 interface Department {
   id: number;
   department_name: string;
 }
+
+// Define a type for the target years
+type TargetYearsResponse = {
+  target_year: string[];
+};
 
 const QAScorecard = () => {
   const { data: session, status, update } = useSession();
@@ -36,6 +40,68 @@ const QAScorecard = () => {
   const [currentView, setCurrentView] = useState("");
   const [departments, setDepartments] = useState<Department[]>([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(1);
+  // To store the available years
+  const [selectedYear, setSelectedYear] = useState("");
+  const [targetYears, setTargetYears] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchTargetYears = async () => {
+      if (selectedDepartmentId) {
+        try {
+          const [
+            financialResponse,
+            internalResponse,
+            learningResponse,
+            stakeholderResponse,
+          ] = await Promise.all([
+            fetch(
+              `http://localhost:8080/bsc/getFinancialTargetYears/${selectedDepartmentId}`
+            ),
+            fetch(
+              `http://localhost:8080/bsc/getInternalTargetYears/${selectedDepartmentId}`
+            ),
+            fetch(
+              `http://localhost:8080/bsc/getLearningTargetYears/${selectedDepartmentId}`
+            ),
+            fetch(
+              `http://localhost:8080/bsc/getStakeholderTargetYears/${selectedDepartmentId}`
+            ),
+          ]);
+
+          const [financialData, internalData, learningData, stakeholderData] =
+            await Promise.all([
+              financialResponse.json(),
+              internalResponse.json(),
+              learningResponse.json(),
+              stakeholderResponse.json(),
+            ]);
+
+          const allData = [
+            ...financialData,
+            ...internalData,
+            ...learningData,
+            ...stakeholderData,
+          ];
+
+          const uniqueYears = ["Select Year"].concat([
+            ...new Set(allData.map((entity) => entity.targetYear)),
+          ]);
+          setTargetYears(uniqueYears);
+          console.log("Years: ", uniqueYears);
+          setSelectedYear("Select Year");
+        } catch (error) {
+          console.error("Error fetching target years:", error);
+        }
+      }
+    };
+
+    fetchTargetYears();
+  }, [selectedDepartmentId]);
+
+  // Set the selected year to the new value from the dropdown
+  const handleYearChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(e.target.value);
+  };
 
   // Store the selected view in local storage
   const changeView = (view: string) => {
@@ -100,6 +166,7 @@ const QAScorecard = () => {
         height: "100%",
         display: "flex",
         flexDirection: "row",
+        color: "#2e2c2c",
       }}
     >
       <Grid>
@@ -109,8 +176,8 @@ const QAScorecard = () => {
         container
         direction="column"
         sx={{
-          mt: 2, // Add some margin at the top
-          px: 4, // Optional: Add some padding on the left and right
+          mt: 3, // Add some margin at the top
+          px: 3, // Optional: Add some padding on the left and right
         }}
       >
         <Box
@@ -122,13 +189,15 @@ const QAScorecard = () => {
           }}
         >
           <Typography
+            variant="h4"
+            component="h1"
             sx={{
-              fontSize: "4rem",
               fontWeight: "bold",
-              color: "#3B3B3B",
+              marginBottom: 2,
+              fontSize: { xs: "2rem", sm: "3.5rem" },
             }}
           >
-            Balanced Scorecard
+            BALANCED SCORECARD
           </Typography>
 
           {/* View Buttons */}
@@ -146,12 +215,14 @@ const QAScorecard = () => {
               variant={currentView === "primary" ? "contained" : "outlined"}
               fullWidth
               sx={{
+                p: 3,
+                fontSize: "18px",
                 background:
                   currentView === "primary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
                     : "transparent",
                 color: currentView === "primary" ? "white" : "#AB3510",
-                flexGrow: 1, // Ensure both buttons have equal size
+                flexGrow: 2, // Ensure both buttons have equal size
                 height: "100%", // Match the height of the container
                 border: "1px solid transparent", // Keep border style consistent
                 transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
@@ -170,12 +241,14 @@ const QAScorecard = () => {
               variant={currentView === "secondary" ? "contained" : "outlined"}
               fullWidth
               sx={{
+                p: 3,
+                fontSize: "18px",
                 background:
                   currentView === "secondary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
                     : "transparent",
                 color: currentView === "secondary" ? "white" : "#AB3510",
-                flexGrow: 1, // Ensure both buttons have equal size
+                flexGrow: 2, // Ensure both buttons have equal size
                 height: "100%", // Match the height of the container
                 border: "1px solid transparent", // Keep border style consistent
                 transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
@@ -204,48 +277,70 @@ const QAScorecard = () => {
           initiatives for success.
         </Typography>
 
-        <Box sx={{ display: "flex", justifyContent: "flex-end", my: 2 }}>
-          <Select
-            options={departmentOptions}
-            onChange={handleDepartmentChange}
-            placeholder="Select Department"
-            value={
-              selectedDepartmentId
-                ? departmentOptions.find(
-                    (option) => option.value === selectedDepartmentId
-                  )
-                : null
-            }
-            className="w-80 border border-gray-300 rounded-lg"
-            styles={{
-              option: (provided, state) => ({
-                ...provided,
-                backgroundColor: state.isFocused ? "#A43214" : "white", // Background color when focused
-                color: state.isFocused ? "white" : "black", // Text color when focused
-                cursor: "pointer",
-                "&:active": {
-                  backgroundColor: "#A43214", // Background color when selected
-                  color: "white", // Text color when selected
-                },
-              }),
-              control: (provided) => ({
-                ...provided,
-                borderColor: "gray", // Border color for the select control
-                boxShadow: "none", // Remove the default blue outline
-                "&:hover": {
-                  borderColor: "#A43214", // Border color on hover
-                },
-              }),
-              menu: (provided) => ({
-                ...provided,
-                zIndex: 9999, // Ensure dropdown appears above other elements
-              }),
-              menuList: (provided) => ({
-                ...provided,
-                padding: 0, // Remove padding for menu list
-              }),
-            }}
-          />
+        <Box sx={{ display: "flex", justifyContent: "space-between", my: 4 }}>
+          {/* Year Dropdown */}
+
+          <div>
+            <label htmlFor="year-select" className="mr-2 text-lg font-medium">
+              Select Year:
+            </label>
+            <select
+              id="year-select"
+              value={selectedYear}
+              onChange={handleYearChange}
+              className="border border-gray-300 rounded-md p-2"
+              key={selectedYear} // Add the key prop here
+            >
+              {targetYears.map((year) => (
+                <option key={year} value={year}>
+                  {year}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Box>
+            <Select
+              options={departmentOptions}
+              onChange={handleDepartmentChange}
+              placeholder="Select Department"
+              value={
+                selectedDepartmentId
+                  ? departmentOptions.find(
+                      (option) => option.value === selectedDepartmentId
+                    )
+                  : null
+              }
+              className="w-80 border border-gray-300 rounded-lg"
+              styles={{
+                option: (provided, state) => ({
+                  ...provided,
+                  backgroundColor: state.isFocused ? "#A43214" : "white", // Background color when focused
+                  color: state.isFocused ? "white" : "black", // Text color when focused
+                  cursor: "pointer",
+                  "&:active": {
+                    backgroundColor: "#A43214", // Background color when selected
+                    color: "white", // Text color when selected
+                  },
+                }),
+                control: (provided) => ({
+                  ...provided,
+                  borderColor: "gray", // Border color for the select control
+                  boxShadow: "none", // Remove the default blue outline
+                  "&:hover": {
+                    borderColor: "#A43214", // Border color on hover
+                  },
+                }),
+                menu: (provided) => ({
+                  ...provided,
+                  zIndex: 9999, // Ensure dropdown appears above other elements
+                }),
+                menuList: (provided) => ({
+                  ...provided,
+                  padding: 0, // Remove padding for menu list
+                }),
+              }}
+            />
+          </Box>
         </Box>
 
         {currentView === "primary" && (
@@ -265,6 +360,7 @@ const QAScorecard = () => {
                   <QAPrimaryFinancial
                     selectedDepartmentId={selectedDepartmentId}
                     departments={departments}
+                    selectedYear={selectedYear}
                   />
                 </CardContent>
               </Card>
@@ -282,6 +378,7 @@ const QAScorecard = () => {
                   <QAPrimaryStakeholder
                     selectedDepartmentId={selectedDepartmentId}
                     departments={departments}
+                    selectedYear={selectedYear}
                   />
                 </CardContent>
               </Card>
@@ -299,6 +396,7 @@ const QAScorecard = () => {
                   <QAPrimaryInternal
                     selectedDepartmentId={selectedDepartmentId}
                     departments={departments}
+                    selectedYear={selectedYear}
                   />
                 </CardContent>
               </Card>
@@ -316,6 +414,7 @@ const QAScorecard = () => {
                   <QAPrimaryLearning
                     selectedDepartmentId={selectedDepartmentId}
                     departments={departments}
+                    selectedYear={selectedYear}
                   />
                 </CardContent>
               </Card>
@@ -336,7 +435,10 @@ const QAScorecard = () => {
                 }}
               >
                 <CardContent>
-                  <QAFinancial selectedDepartmentId={selectedDepartmentId} />
+                  <QAFinancial
+                    selectedDepartmentId={selectedDepartmentId}
+                    selectedYear={selectedYear}
+                  />
                 </CardContent>
               </Card>
               <Card
@@ -350,7 +452,10 @@ const QAScorecard = () => {
                 }}
               >
                 <CardContent>
-                  <QAStakeholder selectedDepartmentId={selectedDepartmentId} />
+                  <QAStakeholder
+                    selectedDepartmentId={selectedDepartmentId}
+                    selectedYear={selectedYear}
+                  />
                 </CardContent>
               </Card>
               <Card
@@ -364,7 +469,10 @@ const QAScorecard = () => {
                 }}
               >
                 <CardContent>
-                  <QAInternal selectedDepartmentId={selectedDepartmentId} />
+                  <QAInternal
+                    selectedDepartmentId={selectedDepartmentId}
+                    selectedYear={selectedYear}
+                  />
                 </CardContent>
               </Card>
               <Card
@@ -378,7 +486,10 @@ const QAScorecard = () => {
                 }}
               >
                 <CardContent>
-                  <QALearning selectedDepartmentId={selectedDepartmentId} />
+                  <QALearning
+                    selectedDepartmentId={selectedDepartmentId}
+                    selectedYear={selectedYear}
+                  />
                 </CardContent>
               </Card>
             </Box>

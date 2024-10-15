@@ -16,6 +16,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import { TextField } from "@mui/material";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 interface FinancialScorecard {
   id: number;
@@ -26,9 +31,15 @@ interface FinancialScorecard {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  targetYear: string;
+  evidence_link: string;
 }
 
-export default function Financial() {
+interface FinancialProps {
+  selectedYear: string;
+}
+
+const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
@@ -36,13 +47,16 @@ export default function Financial() {
   const department_id = user?.department_id;
   const userRole = user?.role;
 
+  //set current year
+  const currentYear = new Date().getFullYear();
+  const yearAsString = currentYear.toString();
+
   // open modal
   const [financialModalOpen, setFinancialModalOpen] = useState(false);
   // financial values
   const [financialTargetCode, setFinancialTargetCode] = useState("");
   const [financialMetric, setFinancialMetric] = useState("");
   const [financialOfficeTarget, setFinancialOfficeTarget] = useState("");
-  const [financialTargetYear, setFinancialTargetYear] = useState(new Date());
   const [financialStatus, setFinancialStatus] = useState("Not Achieved");
   const [financialKPI, setFinancialKPI] = useState("");
   const [financialTargetPerformance, setFinancialTargetPerformance] =
@@ -51,6 +65,9 @@ export default function Financial() {
     useState("");
   const [financialLevelOfAttainment, setFinancialLevelOfAttainment] =
     useState("");
+  // {added link and target year}
+  const [financialTargetYear, setFinancialTargetYear] = useState("");
+  const [financialEvidenceLink, setFinancialEvidenceLink] = useState("");
 
   // financial scorecards
   const [financialSavedScorecards, setFinancialSavedScorecards] = useState<
@@ -77,6 +94,8 @@ export default function Financial() {
     setFinancialKPI("");
     setFinancialTargetPerformance("");
     setFinancialActualPerformance("");
+    setFinancialTargetYear("");
+    setFinancialEvidenceLink("");
     setFinancialEditMode(null);
     setFinancialModalOpen(true);
   };
@@ -138,6 +157,8 @@ export default function Financial() {
     setFinancialKPI(scorecard.key_performance_indicator);
     setFinancialTargetPerformance(scorecard.target_performance);
     setFinancialActualPerformance(scorecard.actual_performance);
+    setFinancialTargetYear(scorecard.targetYear);
+    setFinancialEvidenceLink(scorecard.evidence_link || "");
     setFinancialEditMode(scorecard);
     setFinancialEditID(scorecard.id);
     setFinancialModalOpen(true);
@@ -152,7 +173,8 @@ export default function Financial() {
       !financialTargetPerformance ||
       !financialStatus ||
       !financialKPI ||
-      !financialActualPerformance
+      !financialActualPerformance ||
+      !financialEvidenceLink
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed 100."
@@ -178,6 +200,8 @@ export default function Financial() {
             key_performance_indicator: financialKPI,
             target_performance: financialTargetPerformance,
             actual_performance: financialActualPerformance,
+            targetYear: financialTargetYear,
+            evidence_link: financialEvidenceLink,
           }),
         }
       );
@@ -211,6 +235,8 @@ export default function Financial() {
       key_performance_indicator: financialKPI,
       target_performance: financialTargetPerformance,
       actual_performance: financialActualPerformance,
+      targetYear: financialTargetYear,
+      evidence_link: financialEvidenceLink,
     };
 
     try {
@@ -243,31 +269,33 @@ export default function Financial() {
     }
   };
 
-  const handleYearDateChange = (date: Date | null) => {
-    console.log("Selected Completion Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setFinancialTargetYear(utcDate);
-    } else {
-      //@ts-ignore
-      setFinancialTargetYear(null);
-    }
-  };
+  // const handleYearDateChange = (date: Date | null) => {
+  //   console.log("Selected Completion Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setFinancialTargetYear(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setFinancialTargetYear(null);
+  //   }
+  // };
 
   return (
-    <Grid item>
+    <Grid item sx={{ color: "#2e2c2c" }}>
       <Grid>
         <Box
           sx={{
             width: "100%",
             display: "flex",
             alignItems: "center",
+            mt: -2,
+            mb: 2,
           }}
         >
-          <img src="/financial.png" alt="" className=" h-[5rem] mr-2" />
+          <img src="/financial.png" alt="" className=" h-[6rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -277,21 +305,22 @@ export default function Financial() {
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography sx={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+              <Typography variant="h5" sx={{ fontWeight: "600" }}>
                 Financial Scorecard Overview
               </Typography>
-              <Typography sx={{ fontSize: "1rem" }}>
+              <Typography variant="h6" sx={{ fontWeight: "500" }}>
                 Measures financial performance and profitability.
               </Typography>
             </Box>
+
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: "50%",
-                width: "2.5rem",
-                height: "2.5rem",
+                width: "3rem",
+                height: "3rem",
                 backgroundColor: "#ff7b00d3",
                 marginTop: "0.5rem",
               }}
@@ -319,33 +348,92 @@ export default function Financial() {
         </Box>
       </Grid>
       <Box>
-        <TableContainer
-          component={Paper}
-          sx={{ borderRadius: 2, overflow: "hidden", boxShadow: 3 }}
-        >
+        <TableContainer component={Paper}>
           <Table>
             {/* Table Header */}
             <TableHead>
               <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Target Code</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Code
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Financial Office Target
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                {/* {added target Year} */}
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Year
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Metric
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Target Performance
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Attainment
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                {/* {added evidence link} */}
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Link of Evidence
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Status
                 </TableCell>
-                <TableCell>
-                
-                </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
 
@@ -353,82 +441,118 @@ export default function Financial() {
             <TableBody>
               {financialSavedScorecards &&
                 financialSavedScorecards.length > 0 &&
-                financialSavedScorecards.map((scorecard, index) => {
-                  if (!scorecard) return null;
+                financialSavedScorecards
+                  .filter((scorecard) => {
+                    if (!selectedYear) return true;
+                    return scorecard.targetYear === selectedYear;
+                  })
+                  .map((scorecard, index) => {
+                    if (!scorecard) return null;
 
-                  // Calculate the attainment level
-                  const levelOfAttainment = calculateFinancialLevelOfAttainment(
-                    parseFloat(scorecard.actual_performance),
-                    parseFloat(scorecard.target_performance)
-                  );
-                  const validatedLevelOfAttainment = Math.min(
-                    Math.max(parseFloat(levelOfAttainment), 1),
-                    100
-                  );
+                    // Calculate the attainment level
+                    const levelOfAttainment =
+                      calculateFinancialLevelOfAttainment(
+                        parseFloat(scorecard.actual_performance),
+                        parseFloat(scorecard.target_performance)
+                      );
+                    const validatedLevelOfAttainment = Math.min(
+                      Math.max(parseFloat(levelOfAttainment), 1),
+                      100
+                    );
 
-                  return (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        bgcolor: index % 2 === 0 ? "white" : "#fff6d1",
-                      }}
-                    >
-                      {/* Table Cells */}
-                      <TableCell>
-                        <span className="font-semibold text-gray-500">
-                          {scorecard.target_code || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell sx={{ maxWidth: "35rem" }}>
-                        <span className="font-semibold">
-                          {scorecard.office_target || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell align="center">
-                        <span className="font-semibold">
-                          {scorecard.metric || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell align="center">
-                        <span className="font-semibold">
-                          {scorecard.target_performance || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell align="center">
-                        <span className="font-semibold">
-                          {validatedLevelOfAttainment || "N/A"}%
-                        </span>
-                      </TableCell>
-                      <TableCell align="center">
-                        <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 ">
-                          {scorecard.status || "N/A"}
-                        </div>
-                      </TableCell>
-                      <TableCell align="center" sx={{ color: "#c2410c" }}>
-                        <button
-                          onClick={() =>
-                            handleFinancialEditScorecard(scorecard)
-                          }
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="w-6 h-6"
+                    return (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          borderBottom: `1px solid ${
+                            index < financialSavedScorecards.length - 1
+                              ? "gray-200"
+                              : "transparent"
+                          }`,
+                        }}
+                      >
+                        {/* Table Cells */}
+                        <TableCell>
+                          <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                            {scorecard.target_code || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: "35rem" }}>
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.office_target || "N/A"}
+                          </span>
+                        </TableCell>
+                        {/* {added target year} */}
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.targetYear || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.metric || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.target_performance || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {validatedLevelOfAttainment || "N/A"}%
+                          </span>
+                        </TableCell>
+                        {/* {added Link of evidence} */}
+                        <TableCell align="center">
+                          {scorecard.evidence_link ? (
+                            <a
+                              href={scorecard.evidence_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-orange-500 underline"
+                            >
+                              {scorecard.evidence_link.length > 20
+                                ? `${scorecard.evidence_link.substring(
+                                    0,
+                                    15
+                                  )}...`
+                                : scorecard.evidence_link}
+                            </a>
+                          ) : (
+                            "..."
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.status || "N/A"}
+                          </div>
+                        </TableCell>
+                        <TableCell align="center" sx={{ color: "#c2410c" }}>
+                          <button
+                            onClick={() =>
+                              handleFinancialEditScorecard(scorecard)
+                            }
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                            />
-                          </svg>
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                              />
+                            </svg>
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -449,7 +573,7 @@ export default function Financial() {
           <Box
             sx={{
               background: "white",
-              padding: 4,
+              padding: 6,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
@@ -460,7 +584,7 @@ export default function Financial() {
             <Typography
               variant="h4"
               component="h2"
-              sx={{ fontWeight: "bold", mb: 2 }}
+              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
             >
               Financial
             </Typography>
@@ -473,36 +597,66 @@ export default function Financial() {
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Code
-                  <span className="text-[#DD1414]">*</span>
+                  <span className="text-[rgb(221,20,20)]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialTargetCode}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setFinancialTargetCode(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col ">
-                <span className="mr-3 font-regular text-md text-[#000000]">
+              {/* {target year added} */}
+              <div className="flex flex-col w-[26rem]">
+                <span className="mr-3 font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
-                <DatePicker
-                  key={financialTargetYear?.toString()}
-                  selected={financialTargetYear}
-                  onChange={handleYearDateChange}
-                  minDate={new Date()}
-                  placeholderText="YYYY"
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[26rem]"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={financialTargetYear}
+                  disabled
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <select
+                <FormControl fullWidth>
+                  <Select
+                    value={financialMetric || ""}
+                    onChange={(e) => setFinancialMetric(e.target.value)}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Percentage">Percentage (%)</MenuItem>
+                    <MenuItem value="Count">Count</MenuItem>
+                    <MenuItem value="Rating">Rating</MenuItem>
+                    <MenuItem value="Score">Score</MenuItem>
+                    <MenuItem value="Succession Plan">Succession Plan</MenuItem>
+                  </Select>
+                </FormControl>
+                {/* <select
                   value={financialMetric || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
                   onChange={(e) => setFinancialMetric(e.target.value)}
@@ -515,7 +669,7 @@ export default function Financial() {
                   <option value="Rating">Rating</option>
                   <option value="Score">Score</option>
                   <option value="Succession Plan">Succession Plan</option>
-                </select>
+                </select> */}
               </div>
             </Box>
             <Box
@@ -528,22 +682,47 @@ export default function Financial() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Key Performance Indicator
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialKPI}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setFinancialKPI(e.target.value)}
                 />
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Status
                 </span>
-                <select
+                <FormControl fullWidth>
+                  <Select
+                    value={financialStatus || ""}
+                    onChange={(e) => setFinancialStatus(e.target.value)}
+                    disabled={userRole !== "qualityAssurance"}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                      background: "#f2f2f2",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Not Achieved">Not Achieved</MenuItem>
+                    <MenuItem value="Achieved">Achieved</MenuItem>
+                  </Select>
+                </FormControl>
+                {/* <select
                   value={financialStatus || ""}
                   className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setFinancialStatus(e.target.value)}
@@ -554,7 +733,7 @@ export default function Financial() {
                   </option>
                   <option value="Not Achieved">Not Achieved</option>
                   <option value="Achieved">Achieved</option>
-                </select>
+                </select> */}
                 {userRole !== "qualityAssurance" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     You cannot edit the status unless you are in a QA role.
@@ -575,10 +754,15 @@ export default function Financial() {
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialTargetPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
                   onChange={(e) => {
                     const maxLimit =
                       financialMetric === "Percentage"
@@ -605,6 +789,7 @@ export default function Financial() {
                     setFinancialTargetPerformance(value.toString());
                   }}
                 />
+
                 {financialMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -641,10 +826,15 @@ export default function Financial() {
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialActualPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => {
                     const maxLimit =
                       financialMetric === "Percentage"
@@ -671,6 +861,7 @@ export default function Financial() {
                     setFinancialActualPerformance(value.toString());
                   }}
                 />
+
                 {financialMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -703,15 +894,34 @@ export default function Financial() {
                 )}
               </div>
             </Box>
+            {/* {added link of evidence} */}
             <Box>
-              <div className="flex flex-col ">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Link of Evidence
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
+                  value={financialEvidenceLink}
+                  onChange={(e) => setFinancialEvidenceLink(e.target.value)}
+                />
+              </div>
+            </Box>
+            <Box>
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Office Target
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={financialOfficeTarget}
-                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg h-[10rem]"
+                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem]"
                   onChange={(e) => setFinancialOfficeTarget(e.target.value)}
                 />
               </div>
@@ -731,7 +941,8 @@ export default function Financial() {
                 sx={{
                   minWidth: "10rem",
                   color: "#AB3510",
-                  paddingX: 2,
+                  p: 1,
+                  fontSize: "18px",
                 }}
                 style={{
                   background: "white",
@@ -746,7 +957,8 @@ export default function Financial() {
                 sx={{
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
-                  padding: 1,
+                  p: 1,
+                  fontSize: "18px",
                 }}
               >
                 {financialEditMode ? "Edit" : "Save"}
@@ -757,4 +969,6 @@ export default function Financial() {
       </Modal>
     </Grid>
   );
-}
+};
+
+export default Financial;

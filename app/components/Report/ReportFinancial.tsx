@@ -15,6 +15,7 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import { TextField } from "@mui/material";
 
 interface ReportFinancial {
   id: number;
@@ -29,9 +30,14 @@ interface ReportFinancial {
   actual_performance: string;
   perspective: string;
   evidence_link: string;
+  targetYear: string;
 }
 
-const ReportFinancial = () => {
+interface ReportFinancialProps {
+  selectedYear: string;
+}
+
+const ReportFinancial: React.FC<ReportFinancialProps> = ({ selectedYear }) => {
   const { data: session } = useSession();
 
   let user;
@@ -56,6 +62,7 @@ const ReportFinancial = () => {
     useState("");
 
   const [financialEvidenceLink, setFinancialEvidenceLink] = useState(""); //link
+  const [financialTargetYear, setFinancialTargetYear] = useState("");
 
   //Report and Scorecard
   const [financialReports, setFinancialReports] = useState<ReportFinancial[]>(
@@ -157,6 +164,7 @@ const ReportFinancial = () => {
     setFinancialBudget(report.budget);
     setFinancialIncharge(report.incharge);
     setFinancialOfi(report.ofi);
+    setFinancialTargetYear(report.targetYear);
     setFinancialEvidenceLink(report.evidence_link || ""); //link
     setOpenModal(true);
     console.log("Report ID to edit:", reportEditId);
@@ -173,6 +181,8 @@ const ReportFinancial = () => {
     setFinancialActions(report.actions);
     setFinancialBudget(report.budget);
     setFinancialIncharge(report.incharge);
+    setFinancialTargetYear(report.targetYear);
+    setFinancialEvidenceLink(report.evidence_link || ""); //link
     setFinancialOfi(report.ofi);
     setOpenModal(true);
     console.log("Report ID to edit:", reportEditId);
@@ -191,6 +201,7 @@ const ReportFinancial = () => {
       key_performance_indicator: financialKPI,
       target_performance: financialTargetPerformance,
       actual_performance: financialActualPerformance,
+      targetYear: financialTargetYear,
       evidence_link: financialEvidenceLink, //link
     };
 
@@ -232,11 +243,12 @@ const ReportFinancial = () => {
       budget: financialBudget,
       incharge: financialIncharge,
       ofi: financialOfi,
-      target_code: financialTargetCode, 
+      target_code: financialTargetCode,
       office_target: financialOfficeTarget,
       key_performance_indicator: financialKPI,
       target_performance: financialTargetPerformance,
       actual_performance: financialActualPerformance,
+      targetYear: financialTargetYear,
       evidence_link: financialEvidenceLink, //link
     };
 
@@ -270,16 +282,18 @@ const ReportFinancial = () => {
   };
 
   return (
-    <Grid item>
+    <Grid item sx={{ color: "#2e2c2c" }}>
       <Grid>
         <Box
           sx={{
             width: "100%",
             display: "flex",
             alignItems: "center",
+            mt: -2,
+            mb: 2,
           }}
         >
-          <img src="/financial.png" alt="" className=" h-[5rem] mr-2" />
+          <img src="/financial.png" alt="" className=" h-[6rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -289,10 +303,10 @@ const ReportFinancial = () => {
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography sx={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+              <Typography variant="h5" sx={{ fontWeight: "600" }}>
                 Financial Scorecard Overview
               </Typography>
-              <Typography sx={{ fontSize: "1rem" }}>
+              <Typography variant="h6" sx={{ fontWeight: "500" }}>
                 Each objective is categorized annually. Users must input the{" "}
                 <span className="font-bold">
                   actions taken, budget, person in charge,{" "}
@@ -315,20 +329,63 @@ const ReportFinancial = () => {
             {/* Table Header */}
             <TableHead>
               <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Office Target</TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Office Target
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   KPI
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Actions
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Budget
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   In-charge
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Performance <br />
                   <div className="font-medium ">
                     <span>Actual </span>
@@ -336,10 +393,24 @@ const ReportFinancial = () => {
                     <span> Target</span>
                   </div>
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   OFI
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Link of Evidence
                 </TableCell>
                 <TableCell></TableCell>
@@ -348,81 +419,98 @@ const ReportFinancial = () => {
 
             {/* Table Body */}
             <TableBody>
-              {allFinancialReports.map((report, index) => (
-                <TableRow
-                  key={index}
-                  sx={{
-                    bgcolor: index % 2 === 0 ? "white" : "#fff6d1",
-                  }}
-                >
-                  {/* Table Cells */}
-                  <TableCell>
-                    <span className="font-semibold text-gray-500">
-                      {truncateString(report.office_target, 45)}
-                    </span>
-                  </TableCell>
-                  <TableCell align="center">
-                    <span className="font-semibold text-gray-500">
-                      {truncateString(report.key_performance_indicator, 20)}
-                    </span>
-                  </TableCell>
-                  <TableCell align="center">
-                    {truncateString(report?.actions || "...", 8)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {report?.budget || "..."}
-                  </TableCell>
-                  <TableCell align="center">
-                    {truncateString(report?.incharge || "...", 8)}
-                  </TableCell>
-                  <TableCell align="center">
-                    <span className="text-start mr-2">
-                      {report.actual_performance}
-                    </span>
-                    <span className="text-center">|</span>
-                    <span className="text-end ml-2">
-                      {report.target_performance}
-                    </span>
-                  </TableCell>
-                  <TableCell align="center">
-                    {truncateString(report?.ofi || "...", 4)}
-                  </TableCell>
-                  <TableCell align="center">
-                    {report.evidence_link ? (
-                      <a
-                        href={report.evidence_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-orange-500 underline"
-                      >
-                        {report.evidence_link.length > 20
-                          ? `${report.evidence_link.substring(0, 15)}...`
-                          : report.evidence_link}
-                      </a>
-                    ) : (
-                      "..."
-                    )}
-                  </TableCell>
-                  <TableCell align="center" sx={{ color: "#c2410c" }}>
-                    <button onClick={() => handleEditReport(report)}>
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth="1.5"
-                        stroke="currentColor"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                        />
-                      </svg>
-                    </button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {allFinancialReports
+                .filter((scorecard) => {
+                  if (!selectedYear) return true;
+                  return scorecard.targetYear === selectedYear;
+                })
+                .map((report, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      borderBottom: `1px solid ${
+                        index < allFinancialReports.length - 1
+                          ? "gray-200"
+                          : "transparent"
+                      }`,
+                    }}
+                  >
+                    {/* Table Cells */}
+                    <TableCell>
+                      <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                        {truncateString(report.office_target, 45)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report.key_performance_indicator, 20)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.actions || "...", 8)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {report?.budget || "..."}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.incharge || "...", 8)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] mr-2">
+                        {report.actual_performance}
+                      </span>
+                      <span className="text-center">|</span>
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] ml-2">
+                        {report.target_performance}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.ofi || "...", 4)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      {report.evidence_link ? (
+                        <a
+                          href={report.evidence_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-orange-500 underline font-medium text-[1.1rem]"
+                        >
+                          {report.evidence_link.length > 20
+                            ? `${report.evidence_link.substring(0, 15)}...`
+                            : report.evidence_link}
+                        </a>
+                      ) : (
+                        "..."
+                      )}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "#c2410c" }}>
+                      <button onClick={() => handleEditReport(report)}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
             </TableBody>
           </Table>
         </TableContainer>
@@ -440,7 +528,7 @@ const ReportFinancial = () => {
           <Box
             sx={{
               background: "white",
-              padding: 4,
+              padding: 6,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
@@ -451,7 +539,7 @@ const ReportFinancial = () => {
             <Typography
               variant="h4"
               component="h2"
-              sx={{ fontWeight: "bold", mb: 2 }}
+              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
             >
               Financial
             </Typography>
@@ -464,14 +552,19 @@ const ReportFinancial = () => {
               }}
             >
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
-                  Target Year
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialTargetCode}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  onChange={(e) => setFinancialTargetCode(e.target.value)}
                 />
               </div>
 
@@ -480,24 +573,33 @@ const ReportFinancial = () => {
                   Budget
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialBudget}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) =>
                     setFinancialBudget(parseFloat(e.target.value) || 0)
                   }
                 />
               </div>
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   KPI
                 </span>
-                <input
-                  disabled
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
                   value={financialKPI}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  disabled
                 />
               </div>
             </Box>
@@ -510,43 +612,56 @@ const ReportFinancial = () => {
               }}
             >
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   In Charge
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={financialIncharge}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setFinancialIncharge(e.target.value)}
                 />
               </div>
 
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Link of Evidence
-                  <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
                   value={financialEvidenceLink}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
-                  onChange={(e) => setFinancialEvidenceLink(e.target.value)}
+                  disabled
                 />
               </div>
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Performance (Actual | Target)
                 </span>
-                <input
-                  disabled
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
                   value={
                     financialActualPerformance +
                     " | " +
                     financialTargetPerformance
                   }
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  disabled
                 />
               </div>
             </Box>
@@ -556,7 +671,7 @@ const ReportFinancial = () => {
               }}
             >
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Office Target
                 </span>
                 <textarea
@@ -572,7 +687,7 @@ const ReportFinancial = () => {
               }}
             >
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Actions
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -589,7 +704,7 @@ const ReportFinancial = () => {
               }}
             >
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   OFI
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -616,7 +731,8 @@ const ReportFinancial = () => {
                 sx={{
                   minWidth: "10rem",
                   color: "#AB3510",
-                  paddingX: 2,
+                  p: 1,
+                  fontSize: "18px",
                 }}
                 style={{
                   background: "white",
@@ -632,7 +748,8 @@ const ReportFinancial = () => {
                   sx={{
                     minWidth: "10rem",
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    padding: 1,
+                    p: 1,
+                    fontSize: "18px",
                   }}
                 >
                   Save
@@ -644,7 +761,8 @@ const ReportFinancial = () => {
                   sx={{
                     minWidth: "10rem",
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    padding: 1,
+                    p: 1,
+                    fontSize: "18px",
                   }}
                 >
                   Save

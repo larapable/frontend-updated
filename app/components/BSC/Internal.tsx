@@ -16,6 +16,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import { TextField } from "@mui/material";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 interface InternalScorecard {
   id: number;
@@ -26,14 +31,24 @@ interface InternalScorecard {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  targetYear: string;
+  evidence_link: string;
 }
-export default function Internal() {
+interface InternalProps {
+  selectedYear: string; 
+}
+
+const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
   const userRole = user?.role;
+
+  //set current year
+  const currentYear = new Date().getFullYear();
+  const yearAsString = currentYear.toString(); 
 
   // open modal
   const [internalModalOpen, setInternalModalOpen] = useState(false);
@@ -42,7 +57,6 @@ export default function Internal() {
   const [internalTargetCode, setInternalTargetCode] = useState("");
   const [internalMetric, setInternalMetric] = useState("");
   const [internalOfficeTarget, setInternalOfficeTarget] = useState("");
-  const [internalTargetYear, setInternalTargetYear] = useState(new Date());
   const [internalTargetPerformance, setInternalTargetPerformance] =
     useState("");
   const [internalStatus, setInternalStatus] = useState("Not Achieved");
@@ -51,6 +65,11 @@ export default function Internal() {
     useState("");
   const [internalLevelOfAttainment, setInternalLevelOfAttainment] =
     useState("");
+  
+     // {added link and target year}
+  const [internalTargetYear, setInternalTargetYear] = useState("");
+  const [internalEvidenceLink, setInternalEvidenceLink] = useState(""); 
+
 
   // internal scorecard
   const [internalSavedScorecards, setInternalSavedScorecards] = useState<
@@ -76,6 +95,8 @@ export default function Internal() {
     setInternalKPI("");
     setInternalActualPerformance("");
     setInternalLevelOfAttainment("");
+    setInternalTargetYear("");
+    setInternalEvidenceLink("");
     setInternalEditMode(null);
     setInternalModalOpen(true);
   };
@@ -131,6 +152,8 @@ export default function Internal() {
     setInternalKPI(scorecard.key_performance_indicator);
     setInternalTargetPerformance(scorecard.target_performance);
     setInternalActualPerformance(scorecard.actual_performance);
+    setInternalTargetYear(scorecard.targetYear);
+    setInternalEvidenceLink(scorecard.evidence_link || "");
     setInternalEditMode(scorecard);
     setInternalEditID(scorecard.id);
     setInternalModalOpen(true);
@@ -145,7 +168,8 @@ export default function Internal() {
       !internalTargetPerformance ||
       !internalStatus ||
       !internalKPI ||
-      !internalActualPerformance
+      !internalActualPerformance ||
+      !internalEvidenceLink
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed 100."
@@ -171,6 +195,8 @@ export default function Internal() {
             key_performance_indicator: internalKPI,
             target_performance: internalTargetPerformance,
             actual_performance: internalActualPerformance,
+            targetYear: internalTargetYear,
+            evidence_link: internalEvidenceLink,
           }),
         }
       );
@@ -201,6 +227,9 @@ export default function Internal() {
       key_performance_indicator: internalKPI,
       target_performance: internalTargetPerformance,
       actual_performance: internalActualPerformance,
+      targetYear: internalTargetYear,
+      evidence_link: internalEvidenceLink,
+      
     };
 
     try {
@@ -231,31 +260,33 @@ export default function Internal() {
       toast.error("Error updating internal scorecard");
     }
   };
-  const handleYearDateChange = (date: Date | null) => {
-    console.log("Selected Completion Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setInternalTargetYear(utcDate);
-    } else {
-      //@ts-ignore
-      setInternalTargetYear(null);
-    }
-  };
+  // const handleYearDateChange = (date: Date | null) => {
+  //   console.log("Selected Completion Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setInternalTargetYear(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setInternalTargetYear(null);
+  //   }
+  // };
 
   return (
-    <Grid item>
+    <Grid item sx={{ color: "#2e2c2c" }}>
       <Grid>
         <Box
           sx={{
             width: "100%",
             display: "flex",
             alignItems: "center",
+            mt: -2,
+            mb: 2,
           }}
         >
-          <img src="/internal.png" alt="" className=" h-[5rem] mr-2" />
+          <img src="/internal.png" alt="" className=" h-[6rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -265,21 +296,22 @@ export default function Internal() {
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography sx={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+              <Typography variant="h5" sx={{ fontWeight: "600" }}>
                 Internal Process Scorecard Overview
               </Typography>
-              <Typography sx={{ fontSize: "1rem" }}>
+              <Typography variant="h6" sx={{ fontWeight: "500" }}>
                 Assesses the efficiency and quality of internal operations.
               </Typography>
             </Box>
+
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: "50%",
-                width: "2.5rem",
-                height: "2.5rem",
+                width: "3rem",
+                height: "3rem",
                 backgroundColor: "#ff7b00d3",
                 marginTop: "0.5rem",
               }}
@@ -307,33 +339,92 @@ export default function Internal() {
         </Box>
       </Grid>
       <Box>
-        <TableContainer
-          component={Paper}
-          sx={{ borderRadius: 2, overflow: "hidden", boxShadow: 3 }}
-        >
+        <TableContainer component={Paper}>
           <Table>
             {/* Table Header */}
             <TableHead>
               <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Target Code</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Code
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Internal Office Target
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                {/* {added target Year} */}
+                <TableCell
+                 align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Year
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Metric
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Target Performance
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Attainment
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                 {/* {added evidence link} */}
+                 <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Link of Evidence
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Status
                 </TableCell>
-                <TableCell >
-                 
-                </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
 
@@ -341,7 +432,12 @@ export default function Internal() {
             <TableBody>
               {internalSavedScorecards &&
                 internalSavedScorecards.length > 0 &&
-                internalSavedScorecards.map((scorecard, index) => {
+                internalSavedScorecards
+                .filter((scorecard) => {
+                  if (!selectedYear) return true; 
+                  return scorecard.targetYear === selectedYear;
+                })
+                .map((scorecard, index) => {
                   if (!scorecard) return null;
 
                   // Calculate the attainment level
@@ -358,37 +454,64 @@ export default function Internal() {
                     <TableRow
                       key={index}
                       sx={{
-                        bgcolor: index % 2 === 0 ? "white" : "#fff6d1",
+                        borderBottom: `1px solid ${
+                          index < internalSavedScorecards.length - 1
+                            ? "gray-200"
+                            : "transparent"
+                        }`,
                       }}
                     >
                       {/* Table Cells */}
                       <TableCell>
-                        <span className="font-semibold text-gray-500">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {scorecard.target_code || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell sx={{ maxWidth: "35rem" }}>
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.office_target || "N/A"}
                         </span>
                       </TableCell>
+                      {/* {added target year} */}
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          {scorecard.targetYear || "N/A"}
+                        </span>
+                      </TableCell>
+                      <TableCell align="center">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.metric || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.target_performance || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                           {validatedLevelOfAttainment || "N/A"}%
                         </span>
                       </TableCell>
+                      {/* {added Link of evidence} */}
                       <TableCell align="center">
-                        <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 ">
+                    {scorecard.evidence_link ? (
+                      <a
+                        href={scorecard.evidence_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-500 underline"
+                      >
+                        {scorecard.evidence_link.length > 20
+                          ? `${scorecard.evidence_link.substring(0, 15)}...`
+                          : scorecard.evidence_link}
+                      </a>
+                    ) : (
+                      "..."
+                    )}
+                  </TableCell>
+                      <TableCell align="center">
+                        <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.status || "N/A"}
                         </div>
                       </TableCell>
@@ -435,7 +558,7 @@ export default function Internal() {
           <Box
             sx={{
               background: "white",
-              padding: 4,
+              padding: 6,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
@@ -446,7 +569,7 @@ export default function Internal() {
             <Typography
               variant="h4"
               component="h2"
-              sx={{ fontWeight: "bold", mb: 2 }}
+              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
             >
               Internal Process
             </Typography>
@@ -459,49 +582,65 @@ export default function Internal() {
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={internalTargetCode}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setInternalTargetCode(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col ">
-                <span className="mr-3 font-regular text-md text-[#000000]">
+               {/* {target year added} */}
+               <div className="flex flex-col w-[26rem]">
+                <span className="mr-3 font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
-                <DatePicker
-                  key={internalTargetYear?.toString()}
-                  selected={internalTargetYear}
-                  onChange={handleYearDateChange}
-                  minDate={new Date()}
-                  placeholderText="YYYY"
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[26rem]"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={internalTargetYear}
+                  disabled
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <select
-                  value={internalMetric || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
-                  onChange={(e) => setInternalMetric(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Percentage">Percentage (%)</option>
-                  <option value="Count">Count</option>
-                  <option value="Rating">Rating</option>
-                  <option value="Score">Score</option>
-                  <option value="Succession Plan">Succession Plan</option>
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    value={internalMetric || ""}
+                    onChange={(e) => setInternalMetric(e.target.value)}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Percentage">Percentage (%)</MenuItem>
+                    <MenuItem value="Count">Count</MenuItem>
+                    <MenuItem value="Rating">Rating</MenuItem>
+                    <MenuItem value="Score">Score</MenuItem>
+                    <MenuItem value="Succession Plan">Succession Plan</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
             </Box>
             <Box
@@ -514,33 +653,46 @@ export default function Internal() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Key Performance Indicator
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={internalKPI}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setInternalKPI(e.target.value)}
                 />
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Status
                 </span>
-                <select
-                  value={internalStatus || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
-                  onChange={(e) => setInternalStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"} // Disable if not QA
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Not Achieved">Not Achieved</option>
-                  <option value="Achieved">Achieved</option>
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    value={internalStatus || ""}
+                    onChange={(e) => setInternalStatus(e.target.value)}
+                    disabled={userRole !== "qualityAssurance"}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                      background: "#f2f2f2",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Not Achieved">Not Achieved</MenuItem>
+                    <MenuItem value="Achieved">Achieved</MenuItem>
+                  </Select>
+                </FormControl>
                 {userRole !== "qualityAssurance" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     You cannot edit the status unless you are in a QA role.
@@ -557,14 +709,19 @@ export default function Internal() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={internalTargetPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
                   onChange={(e) => {
                     const maxLimit =
                       internalMetric === "Percentage"
@@ -604,13 +761,13 @@ export default function Internal() {
                 )}
                 {internalMetric === "Rating" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
+                    Please enter a number from 1 to 10, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
                 {internalMetric === "Score" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
+                    Please enter a score from 1 to 20, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
@@ -623,14 +780,19 @@ export default function Internal() {
                 )}
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={internalActualPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => {
                     const maxLimit =
                       internalMetric === "Percentage"
@@ -657,6 +819,7 @@ export default function Internal() {
                     setInternalActualPerformance(value.toString());
                   }}
                 />
+
                 {internalMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -670,13 +833,13 @@ export default function Internal() {
                 )}
                 {internalMetric === "Rating" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
+                    Please enter a number from 1 to 10, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
                 {internalMetric === "Score" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
+                    Please enter a score from 1 to 20, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
@@ -689,15 +852,34 @@ export default function Internal() {
                 )}
               </div>
             </Box>
+            {/* {added link of evidence} */}
             <Box>
-              <div className="flex flex-col ">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                 Link of Evidence
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
+                  value={internalEvidenceLink}
+                  onChange={(e) => setInternalEvidenceLink(e.target.value)}
+                />
+              </div>
+            </Box>
+            <Box>
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Office Target
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={internalOfficeTarget}
-                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg h-[10rem]"
+                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem]"
                   onChange={(e) => setInternalOfficeTarget(e.target.value)}
                 />
               </div>
@@ -717,7 +899,8 @@ export default function Internal() {
                 sx={{
                   minWidth: "10rem",
                   color: "#AB3510",
-                  paddingX: 2,
+                  p: 1,
+                  fontSize: "18px",
                 }}
                 style={{
                   background: "white",
@@ -732,7 +915,8 @@ export default function Internal() {
                 sx={{
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
-                  padding: 1,
+                  p: 1,
+                  fontSize: "18px",
                 }}
               >
                 {internalEditMode ? "Edit" : "Save"}
@@ -744,3 +928,5 @@ export default function Internal() {
     </Grid>
   );
 }
+
+export default Internal;

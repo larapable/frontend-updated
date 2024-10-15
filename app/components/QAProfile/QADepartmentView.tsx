@@ -36,7 +36,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -113,7 +113,7 @@ export default function QADepartmentView() {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -147,12 +147,13 @@ export default function QADepartmentView() {
                 sx={{
                   fontWeight: "bold",
                   marginBottom: 2,
-                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
                 DEPARTMENT LIST
               </Typography>
               <Typography
+                variant="h5"
                 sx={{
                   marginBottom: 2,
                 }}
@@ -185,7 +186,7 @@ export default function QADepartmentView() {
                         sx={{
                           color: "white",
                           fontWeight: "bold",
-                          fontSize: "1rem",
+                          fontSize: "1.2rem",
                         }}
                       >
                         Department Name
@@ -194,7 +195,7 @@ export default function QADepartmentView() {
                         sx={{
                           color: "white",
                           fontWeight: "bold",
-                          fontSize: "1rem",
+                          fontSize: "1.2rem",
                         }}
                       >
                         Head Officer
@@ -203,7 +204,7 @@ export default function QADepartmentView() {
                         sx={{
                           color: "white",
                           fontWeight: "bold",
-                          fontSize: "1rem",
+                          fontSize: "1.2rem",
                           textAlign: "right",
                           pr: 4,
                         }}
@@ -222,12 +223,12 @@ export default function QADepartmentView() {
                         }}
                       >
                         <TableCell
-                          sx={{ fontWeight: "medium", color: "#4D4C4C" }}
+                          sx={{ fontWeight: "500", color: "#2e2c2c", fontSize: "1.2rem" }}
                         >
                           {department.department_name}
                         </TableCell>
                         <TableCell
-                          sx={{ fontWeight: "medium", color: "#4D4C4C" }}
+                          sx={{ fontWeight: "500", color: "#2e2c2c", fontSize: "1.2rem"  }}
                         >
                           {department.head_officer}
                         </TableCell>
@@ -243,6 +244,7 @@ export default function QADepartmentView() {
                                 borderRadius: "8px",
                                 padding: "8px 16px",
                                 textTransform: "none",
+                                fontSize: "1.2rem"
                               }}
                             >
                               View

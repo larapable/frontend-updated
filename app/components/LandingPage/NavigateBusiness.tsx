@@ -47,6 +47,8 @@ const NavigateBusiness = () => {
             <Button
               variant="contained"
               sx={{
+                fontSize: "18px",
+                fontWeight: "bold",
                 backgroundColor: '#fad655', // Same as the old code
                 borderRadius: '2rem',
                 color: '#962203',
@@ -66,6 +68,8 @@ const NavigateBusiness = () => {
             <Button
               variant="outlined"
               sx={{
+                fontSize: "18px",
+                fontWeight: "bold",
                 borderRadius: '2rem',
                 borderColor: '#FFFFFF',
                 color: '#FFFFFF', // Change text color to white

@@ -12,7 +12,7 @@ export default function page() {
 
   useEffect(() => {
     if (status === "unauthenticated") {
-      router.push("/login"); 
+      router.push("/login");
     }
   }, [status, router]);
 
@@ -21,14 +21,11 @@ export default function page() {
   }
 
   if (status === "unauthenticated") {
-    return null; 
+    return null;
   }
-    return (
-        <div className="flex flex-row">
-            <Navbar />
-            <div className="flex-1 flex flex-col mt-8 ml-56">
-                <Inputgoals />
-            </div>
-        </div>
-    );
+  return (
+    <>
+      <Inputgoals />
+    </>
+  );
 }

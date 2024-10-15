@@ -1,11 +1,68 @@
 "use client";
+import React, { useState, useEffect, useRef } from "react";
+import Navbar from "../components/Navbars/Navbar";
+import { FaPlus } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
+import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import Spinner from "../components/Misc/Spinner";
+import {
+  Box,
+  Drawer,
+  Typography,
+  TextField,
+  Divider,
+  Avatar,
+  Select,
+  MenuItem,
+  Grid,
+  Button,
+  Autocomplete,
+  FormHelperText,
+  Card,
+  responsiveFontSizes,
+  Modal,
+  Link,
+} from "@mui/material";
+import axios from "axios";
+import styled from "@emotion/styled";
+import Image from "next/image";
+import { SelectChangeEvent } from "@mui/material/Select";
+import SpinnerPages from "../components/Misc/SpinnerPages";
+import "@/app/page.css";
 
-import { useSession } from "next-auth/react";
-import { useState, useEffect } from "react";
-import Navbar from '../components/Navbars/Navbar';
-import Link from 'next/link';
+const drawerWidth = 310;
+
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
+const MainFont = styled(Box)({
+  fontSize: "0.9rem",
+  mt: 2,
+});
+
+const Cards = styled(Box)({
+  width: "100%",
+  height: "auto",
+  borderRadius: "20px",
+  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+  borderColor: "#e9e8e8",
+  borderStyle: "solid", // Add border style (e.g., solid, dashed, dotted)
+  borderWidth: "1px",
+});
+
+const Boxes = styled(Box)({
+  height: "auto",
+  width: "100%",
+});
 
 export default function Password() {
+    const [isMobile, setIsMobile] = useState(false);
     const [currentPassword, setCurrentPassword] = useState("");
     const [changePassword, setChangePassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,10 +121,38 @@ export default function Password() {
     };
 
     return (
-        <div className="flex flex-row w-full text-[rgb(59,59,59)]">
-            <Navbar />
-            <div className="flex-1 flex flex-col ml-80 items-center justify-center mt-[7rem]">
-                <div className="h-[42rem] w-[33rem] mt-5 border border-[#ee552a] rounded-2xl bg-white shadow-2xl mx-auto">
+        <Box
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#2e2c2c",
+      }}
+    >
+      <Box
+        sx={{
+          width: isMobile ? "100%" : drawerWidth,
+          flexShrink: 0,
+          position: isMobile ? "static" : "fixed",
+          height: isMobile ? "auto" : "100vh",
+          overflowY: "auto",
+        }}
+      >
+        <Navbar />
+      </Box>
+      <Box
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <StyledBox>
+          <Grid container alignItems="center" justifyContent="space-between">
+            <div className="h-[42rem] w-[33rem] mt-[5rem] border border-[#ee552a] rounded-2xl bg-white shadow-2xl mx-auto">
                     <div className="flex flex-col text-center">
                         <div className="mb-2 mt-10 text-center break-words font-bold text-[2rem]">
                             Change your password
@@ -120,7 +205,7 @@ export default function Password() {
                             )}
 
                         <div className="flex flex-row gap-5 mt-10 items-center justify-center">
-                        <Link href="/profile">
+                            <Link href="/profile">
                                 <button
                                     className="rounded-lg text-[#AB3510] border border-[#AB3510] hover:bg-[#AB3510] hover:text-white font-medium text-md py-3 w-[12rem] h-[3rem] mb-10 items-center"
                                 >
@@ -143,7 +228,9 @@ export default function Password() {
 
                     </div>
                 </div>
-            </div>
-        </div>
+          </Grid>
+        </StyledBox>
+      </Box>
+    </Box>
     );
 }

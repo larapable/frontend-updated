@@ -27,7 +27,7 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import Image from "next/image";
 
-const drawerWidth = 280;
+const drawerWidth = 310;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -206,7 +206,7 @@ const FeedbackForm: React.FC = () => {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -240,12 +240,13 @@ const FeedbackForm: React.FC = () => {
                 sx={{
                   fontWeight: "bold",
                   marginBottom: 2,
-                  fontSize: { xs: "1.8rem", sm: "2.125rem" },
+                  fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
                 FEEDBACK FORM
               </Typography>
-              <Typography
+              <Typography 
+                variant="h5"
                 sx={{
                   marginBottom: 2,
                 }}
@@ -278,19 +279,19 @@ const FeedbackForm: React.FC = () => {
                     textAlign: "center",
                     background: "#A43214",
                     borderRadius: 2,
-                    p: 1,
+                    p: 2,
                     mb: -2,
                   }}
                 >
                   <Typography
-                    variant="body2"
+                    variant="h5"
                     sx={{ fontWeight: 500, color: "white" }}
                   >
                     How are you feeling?
                   </Typography>
                 </Box>
                 <FeelingButtonsContainer
-                  sx={{ background: "#ffffff", borderRadius: 2 }}
+                  sx={{ background: "#ffffff", borderRadius: 2, width: "100%" }}
                 >
                   {[
                     {
@@ -339,13 +340,13 @@ const FeedbackForm: React.FC = () => {
                     textAlign: "center",
                     background: "#A43214",
                     borderRadius: 2,
-                    p: 1,
+                    p: 2,
                     mb: -2,
                     mt: 5,
                   }}
                 >
                   <Typography
-                    variant="body2"
+                    variant="h5"
                     sx={{ fontWeight: 500, color: "white" }}
                   >
                     Overall Satisfaction of Service
@@ -361,7 +362,7 @@ const FeedbackForm: React.FC = () => {
                     borderRadius: "8px",
                   }}
                 >
-                  <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                  <Typography variant="h6" sx={{ fontWeight: 500 }}>
                     <table className="border-collapse w-full align-center rounded-md shadow-md border-[#ccc]">
                       <thead>
                         <tr>
@@ -428,14 +429,14 @@ const FeedbackForm: React.FC = () => {
                     textAlign: "center",
                     background: "#A43214",
                     borderRadius: "8px",
-                    p: 1,
+                    p: 2,
                     mb: -2,
                     mt: 5,
                     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                   }}
                 >
                   <Typography
-                    variant="body2"
+                    variant="h5"
                     sx={{ fontWeight: 500, color: "white" }}
                   >
                     Overall Feedback
@@ -449,7 +450,7 @@ const FeedbackForm: React.FC = () => {
                     background: "white",
                   }}
                 >
-                  <Typography variant="body2">
+                  <Typography variant="h6" sx={{fontWeight: '500'}}>
                     <textarea
                       className="w-full p-2 border rounded-md shadow-md border-[#ccc]"
                       rows={4}
@@ -472,7 +473,7 @@ const FeedbackForm: React.FC = () => {
                 >
                   <Button
                     type="submit"
-                    sx={{ px: 5 }}
+                    sx={{ py:2, px:5, fontSize: "18px" }}
                     style={{
                       background: "linear-gradient(to left, #8a252c, #AB3510)",
                       color: "white",
@@ -554,22 +555,22 @@ const FeedbackForm: React.FC = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 4,
+                      padding: 6,
                       borderRadius: 2,
                       boxShadow: 24,
                       textAlign: "center",
                       position: "relative",
-                      maxWidth: "50vw", // Limit modal width to 80% of viewport width
+                      maxWidth: "100vw", // Limit modal width to 80% of viewport width
                     }}
                   >
                     <Typography
-                      variant="h6"
+                      variant="h4"
                       component="h2"
-                      sx={{ fontWeight: "bold", mb: 2 }}
+                      sx={{ fontWeight: "bold", mb: 3 }}
                     >
                       Notice!
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 3 }}>
+                    <Typography variant="h5" sx={{ mb: 5 }}>
                       {modalMessage}
                     </Typography>
                     <Box
@@ -585,9 +586,10 @@ const FeedbackForm: React.FC = () => {
                         variant="contained"
                         onClick={() => setShowErrorModal(false)}
                         sx={{
-                          width: "auto",
-                          background:
-                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          width: "30%",
+                          background: "linear-gradient(to left, #8a252c, #AB3510)",
+                          p:1,
+                          fontSize: '18px',
                         }}
                       >
                         Close

@@ -16,6 +16,11 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import Button from "@mui/material/Button";
 import Modal from "@mui/material/Modal";
+import { TextField } from "@mui/material";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import InputLabel from "@mui/material/InputLabel";
+import FormControl from "@mui/material/FormControl";
 
 interface StakeholderScorecard {
   id: number;
@@ -26,15 +31,25 @@ interface StakeholderScorecard {
   key_performance_indicator: string;
   target_performance: string;
   actual_performance: string;
+  targetYear: string;
+  evidence_link: string;
 }
 
-export default function Stakeholder() {
+interface StakeholderProps {
+  selectedYear: string; 
+}
+
+const Stakeholder: React.FC<StakeholderProps> = ({ selectedYear }) => {
   const { data: session, status, update } = useSession();
   console.log("useSession Hook session object", session);
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const department_id = user?.department_id;
   const userRole = user?.role;
+
+  //set current year
+  const currentYear = new Date().getFullYear();
+  const yearAsString = currentYear.toString(); 
 
   // open modal
   const [stakeholderModalOpen, setStakeholderModalOpen] = useState(false);
@@ -43,9 +58,6 @@ export default function Stakeholder() {
   const [stakeholderTargetCode, setStakeholderTargetCode] = useState("");
   const [stakeholderMetric, setStakeholderMetric] = useState("");
   const [stakeholderOfficeTarget, setStakeholderOfficeTarget] = useState("");
-  const [stakeholderTargetYear, setStakeholderTargetYear] = useState(
-    new Date()
-  );
   const [stakeholderTargetPerformance, setStakeholderTargetPerformance] =
     useState("");
   const [stakeholderStatus, setStakeholderStatus] = useState("Not Achieved");
@@ -54,6 +66,10 @@ export default function Stakeholder() {
     useState("");
   const [stakeholderLevelOfAttainment, setStakeholderLevelOfAttainment] =
     useState("");
+
+   // {added link and target year}
+   const [stakeholderTargetYear, setStakeholderTargetYear] = useState("");
+   const [stakeholderEvidenceLink, setStakeholderEvidenceLink] = useState(""); 
 
   //stakeholder scorecards
   const [stakeholderSavedScorecards, setStakeholderSavedScorecards] = useState<
@@ -79,6 +95,8 @@ export default function Stakeholder() {
     setStakeholderKPI("");
     setStakeholderActualPerformance("");
     setStakeholderLevelOfAttainment("");
+    setStakeholderTargetYear("");
+    setStakeholderEvidenceLink("");
     setStakeholderEditMode(null);
     setStakeholderModalOpen(true);
   };
@@ -134,6 +152,8 @@ export default function Stakeholder() {
     setStakeholderKPI(scorecard.key_performance_indicator);
     setStakeholderTargetPerformance(scorecard.target_performance);
     setStakeholderActualPerformance(scorecard.actual_performance);
+    setStakeholderTargetYear(scorecard.targetYear);
+    setStakeholderEvidenceLink(scorecard.evidence_link || "");
     setStakeholderEditMode(scorecard);
     setStakeholderEditID(scorecard.id);
     setStakeholderModalOpen(true);
@@ -148,7 +168,8 @@ export default function Stakeholder() {
       !stakeholderTargetPerformance ||
       !stakeholderStatus ||
       !stakeholderKPI ||
-      !stakeholderActualPerformance
+      !stakeholderActualPerformance ||
+      !stakeholderEvidenceLink
     ) {
       toast.error(
         "Please fill in all fields and ensure performance values do not exceed its limit."
@@ -174,6 +195,8 @@ export default function Stakeholder() {
             key_performance_indicator: stakeholderKPI,
             target_performance: stakeholderTargetPerformance,
             actual_performance: stakeholderActualPerformance,
+            targetYear: stakeholderTargetYear,
+            evidence_link: stakeholderEvidenceLink,
           }),
         }
       );
@@ -206,6 +229,8 @@ export default function Stakeholder() {
       key_performance_indicator: stakeholderKPI,
       target_performance: stakeholderTargetPerformance,
       actual_performance: stakeholderActualPerformance,
+      targetYear: stakeholderTargetYear,
+      evidence_link: stakeholderEvidenceLink,
     };
 
     try {
@@ -237,30 +262,32 @@ export default function Stakeholder() {
     }
   };
 
-  const handleYearDateChange = (date: Date | null) => {
-    console.log("Selected Completion Date", date);
-    if (date) {
-      // Convert the selected date to UTC before saving it
-      const utcDate = new Date(
-        Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
-      );
-      setStakeholderTargetYear(utcDate);
-    } else {
-      //@ts-ignore
-      setStakeholderTargetYear(null);
-    }
-  };
+  // const handleYearDateChange = (date: Date | null) => {
+  //   console.log("Selected Completion Date", date);
+  //   if (date) {
+  //     // Convert the selected date to UTC before saving it
+  //     const utcDate = new Date(
+  //       Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())
+  //     );
+  //     setStakeholderTargetYear(utcDate);
+  //   } else {
+  //     //@ts-ignore
+  //     setStakeholderTargetYear(null);
+  //   }
+  // };
   return (
-    <Grid item>
+    <Grid item sx={{ color: "#2e2c2c" }}>
       <Grid>
         <Box
           sx={{
             width: "100%",
             display: "flex",
             alignItems: "center",
+            mt: -2,
+            mb: 2,
           }}
         >
-          <img src="/stakeholder.png" alt="" className=" h-[5rem] mr-2" />
+          <img src="/stakeholder.png" alt="" className=" h-[6rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -270,21 +297,22 @@ export default function Stakeholder() {
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography sx={{ fontSize: "1.3rem", fontWeight: "bold" }}>
+              <Typography variant="h5" sx={{ fontWeight: "600" }}>
                 Stakeholder Scorecard Overview
               </Typography>
-              <Typography sx={{ fontSize: "1rem" }}>
+              <Typography variant="h6" sx={{ fontWeight: "500" }}>
                 Evaluates value delivered to stakeholders, including customers.
               </Typography>
             </Box>
+
             <Box
               sx={{
                 display: "flex",
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: "50%",
-                width: "2.5rem",
-                height: "2.5rem",
+                width: "3rem",
+                height: "3rem",
                 backgroundColor: "#ff7b00d3",
                 marginTop: "0.5rem",
               }}
@@ -312,33 +340,92 @@ export default function Stakeholder() {
         </Box>
       </Grid>
       <Box>
-        <TableContainer
-          component={Paper}
-          sx={{ borderRadius: 2, overflow: "hidden", boxShadow: 3 }}
-        >
+        <TableContainer component={Paper}>
           <Table>
             {/* Table Header */}
             <TableHead>
               <TableRow sx={{ bgcolor: "#fff6d1" }}>
-                <TableCell sx={{ fontWeight: "bold" }}>Target Code</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Code
+                </TableCell>
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Stakeholder Office Target
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                {/* {added target Year} */}
+                <TableCell
+                 align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Target Year
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Metric
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Target Performance
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Attainment
                 </TableCell>
-                <TableCell align="center" sx={{ fontWeight: "bold" }}>
+                {/* {added evidence link} */}
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Link of Evidence
+                </TableCell>
+                <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
                   Status
                 </TableCell>
-                <TableCell >
-                
-                </TableCell>
+                <TableCell></TableCell>
               </TableRow>
             </TableHead>
 
@@ -346,7 +433,12 @@ export default function Stakeholder() {
             <TableBody>
               {stakeholderSavedScorecards &&
                 stakeholderSavedScorecards.length > 0 &&
-                stakeholderSavedScorecards.map((scorecard, index) => {
+                stakeholderSavedScorecards
+                .filter((scorecard) => {
+                  if (!selectedYear) return true; 
+                  return scorecard.targetYear === selectedYear;
+                })
+                .map((scorecard, index) => {
                   if (!scorecard) return null;
 
                   // Calculate the attainment level
@@ -364,37 +456,64 @@ export default function Stakeholder() {
                     <TableRow
                       key={index}
                       sx={{
-                        bgcolor: index % 2 === 0 ? "white" : "#fff6d1",
+                        borderBottom: `1px solid ${
+                          index < stakeholderSavedScorecards.length - 1
+                            ? "gray-200"
+                            : "transparent"
+                        }`,
                       }}
                     >
                       {/* Table Cells */}
                       <TableCell>
-                        <span className="font-semibold text-gray-500">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {scorecard.target_code || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell sx={{ maxWidth: "35rem" }}>
-                        <span className="font-semibold">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {scorecard.office_target || "N/A"}
                         </span>
                       </TableCell>
+                       {/* {added target year} */}
+                       <TableCell align="center">
+                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          {scorecard.targetYear || "N/A"}
+                        </span>
+                      </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {scorecard.metric || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {scorecard.target_performance || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-semibold">
+                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
                           {validatedLevelOfAttainment || "N/A"}%
                         </span>
                       </TableCell>
+                      {/* {added Link of evidence} */}
                       <TableCell align="center">
-                        <div className="font-semibold border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 ">
+                    {scorecard.evidence_link ? (
+                      <a
+                        href={scorecard.evidence_link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-orange-500 underline"
+                      >
+                        {scorecard.evidence_link.length > 20
+                          ? `${scorecard.evidence_link.substring(0, 15)}...`
+                          : scorecard.evidence_link}
+                      </a>
+                    ) : (
+                      "..."
+                    )}
+                  </TableCell>
+                      <TableCell align="center">
+                        <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
                           {scorecard.status || "N/A"}
                         </div>
                       </TableCell>
@@ -443,7 +562,7 @@ export default function Stakeholder() {
           <Box
             sx={{
               background: "white",
-              padding: 4,
+              padding: 6,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
@@ -454,7 +573,7 @@ export default function Stakeholder() {
             <Typography
               variant="h4"
               component="h2"
-              sx={{ fontWeight: "bold", mb: 2 }}
+              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
             >
               Stakeholder
             </Typography>
@@ -467,49 +586,65 @@ export default function Stakeholder() {
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={stakeholderTargetCode}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setStakeholderTargetCode(e.target.value)}
                 />
               </div>
-              <div className="flex flex-col ">
-                <span className="mr-3 font-regular text-md text-[#000000]">
+               {/* {target year added} */}
+               <div className="flex flex-col w-[26rem]">
+                <span className="mr-3 font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
-                <DatePicker
-                  key={stakeholderTargetYear?.toString()}
-                  selected={stakeholderTargetYear}
-                  onChange={handleYearDateChange}
-                  minDate={new Date()}
-                  placeholderText="YYYY"
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg w-[26rem]"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={stakeholderTargetYear}
+                  disabled
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <select
-                  value={stakeholderMetric || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
-                  onChange={(e) => setStakeholderMetric(e.target.value)}
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Percentage">Percentage (%)</option>
-                  <option value="Count">Count</option>
-                  <option value="Rating">Rating</option>
-                  <option value="Score">Score</option>
-                  <option value="Succession Plan">Succession Plan</option>
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    value={stakeholderMetric || ""}
+                    onChange={(e) => setStakeholderMetric(e.target.value)}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Percentage">Percentage (%)</MenuItem>
+                    <MenuItem value="Count">Count</MenuItem>
+                    <MenuItem value="Rating">Rating</MenuItem>
+                    <MenuItem value="Score">Score</MenuItem>
+                    <MenuItem value="Succession Plan">Succession Plan</MenuItem>
+                  </Select>
+                </FormControl>
               </div>
             </Box>
             <Box
@@ -522,33 +657,46 @@ export default function Stakeholder() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Key Performance Indicator
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
-                  type="text"
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={stakeholderKPI}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => setStakeholderKPI(e.target.value)}
                 />
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Status
                 </span>
-                <select
-                  value={stakeholderStatus || ""}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
-                  onChange={(e) => setStakeholderStatus(e.target.value)}
-                  disabled={userRole !== "qualityAssurance"} // Disable if not QA
-                >
-                  <option value="" disabled>
-                    Select
-                  </option>
-                  <option value="Not Achieved">Not Achieved</option>
-                  <option value="Achieved">Achieved</option>
-                </select>
+                <FormControl fullWidth>
+                  <Select
+                    value={stakeholderStatus || ""}
+                    onChange={(e) => setStakeholderStatus(e.target.value)}
+                    disabled={userRole !== "qualityAssurance"}
+                    sx={{
+                      height: "47px",
+                      "& .MuiInputBase-root": { height: "47px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                      background: "#f2f2f2",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Not Achieved">Not Achieved</MenuItem>
+                    <MenuItem value="Achieved">Achieved</MenuItem>
+                  </Select>
+                </FormControl>
                 {userRole !== "qualityAssurance" && (
                   <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
                     You cannot edit the status unless you are in a QA role.
@@ -565,14 +713,19 @@ export default function Stakeholder() {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={stakeholderTargetPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg "
                   onChange={(e) => {
                     const maxLimit =
                       stakeholderMetric === "Percentage"
@@ -599,6 +752,7 @@ export default function Stakeholder() {
                     setStakeholderTargetPerformance(value.toString());
                   }}
                 />
+
                 {stakeholderMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -612,13 +766,13 @@ export default function Stakeholder() {
                 )}
                 {stakeholderMetric === "Rating" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
+                    Please enter a number from 1 to 10, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
                 {stakeholderMetric === "Score" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
+                    Please enter a score from 1 to 20, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
@@ -631,14 +785,19 @@ export default function Stakeholder() {
                 )}
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
-                <input
+                <TextField
                   type="number"
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
                   value={stakeholderActualPerformance}
-                  className="border border-gray-300 px-3 py-2 mt-1 rounded-lg"
                   onChange={(e) => {
                     const maxLimit =
                       stakeholderMetric === "Percentage"
@@ -665,6 +824,7 @@ export default function Stakeholder() {
                     setStakeholderActualPerformance(value.toString());
                   }}
                 />
+
                 {stakeholderMetric === "Percentage" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
                     Please enter the actual performance as a percentage without
@@ -678,13 +838,13 @@ export default function Stakeholder() {
                 )}
                 {stakeholderMetric === "Rating" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a number from 1 to 5, allowing one decimal
+                    Please enter a number from 1 to 10, allowing one decimal
                     point (e.g., 3.5).
                   </span>
                 )}
                 {stakeholderMetric === "Score" && (
                   <span className="break-words font-regular italic text-xs text-[#2c2c2c]">
-                    Please enter a score from 1 to 10, allowing one decimal
+                    Please enter a score from 1 to 20, allowing one decimal
                     point (e.g., 7.5).
                   </span>
                 )}
@@ -697,15 +857,34 @@ export default function Stakeholder() {
                 )}
               </div>
             </Box>
+             {/* {added link of evidence} */}
+             <Box>
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                 Link of Evidence
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
+                  value={stakeholderEvidenceLink}
+                  onChange={(e) => setStakeholderEvidenceLink(e.target.value)}
+                />
+              </div>
+            </Box>
             <Box>
-              <div className="flex flex-col ">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+              <div className="flex flex-col mt-5">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Office Target
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={stakeholderOfficeTarget}
-                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-lg h-[10rem]"
+                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem]"
                   onChange={(e) => setStakeholderOfficeTarget(e.target.value)}
                 />
               </div>
@@ -725,7 +904,8 @@ export default function Stakeholder() {
                 sx={{
                   minWidth: "10rem",
                   color: "#AB3510",
-                  paddingX: 2,
+                  p: 1,
+                  fontSize: "18px",
                 }}
                 style={{
                   background: "white",
@@ -740,7 +920,8 @@ export default function Stakeholder() {
                 sx={{
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
-                  padding: 1,
+                  p: 1,
+                  fontSize: "18px",
                 }}
               >
                 {stakeholderEditMode ? "Edit" : "Save"}
@@ -752,3 +933,5 @@ export default function Stakeholder() {
     </Grid>
   );
 }
+
+export default Stakeholder;

@@ -1,6 +1,6 @@
 "use client";
 import Navbar from "../components/Navbars/Navbar";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import ReportFinancial from "../components/Report/ReportFinancial";
 import ReportLearning from "../components/Report/ReportLearning";
 import ReportStakeholder from "../components/Report/ReportStakeholder";
@@ -17,6 +17,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import html2canvas from "html2canvas";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // Import the autoTable plugin
@@ -94,11 +95,76 @@ const ReportsPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [initialSavePerformed, setInitialSavePerformed] = useState(false);
+
+  // To store the available years
+  const [selectedYear, setSelectedYear] = useState("");
+  const [targetYears, setTargetYears] = useState<string[]>([]);
+
+  useEffect(() => {
+    const fetchTargetYears = async () => {
+      if (department_id) {
+        try {
+          const [
+            financialResponse,
+            internalResponse,
+            learningResponse,
+            stakeholderResponse,
+          ] = await Promise.all([
+            fetch(
+              `http://localhost:8080/bsc/getFinancialTargetYears/${department_id}`
+            ),
+            fetch(
+              `http://localhost:8080/bsc/getInternalTargetYears/${department_id}`
+            ),
+            fetch(
+              `http://localhost:8080/bsc/getLearningTargetYears/${department_id}`
+            ),
+            fetch(
+              `http://localhost:8080/bsc/getStakeholderTargetYears/${department_id}`
+            ),
+          ]);
+
+          const [financialData, internalData, learningData, stakeholderData] =
+            await Promise.all([
+              financialResponse.json(),
+              internalResponse.json(),
+              learningResponse.json(),
+              stakeholderResponse.json(),
+            ]);
+
+          const allData = [
+            ...financialData,
+            ...internalData,
+            ...learningData,
+            ...stakeholderData,
+          ];
+
+          const uniqueYears = ["Select Year"].concat([
+            ...new Set(allData.map((entity) => entity.targetYear)),
+          ]);
+          setTargetYears(uniqueYears);
+          console.log("Years: ", uniqueYears);
+          setSelectedYear("Select Year");
+        } catch (error) {
+          console.error("Error fetching target years:", error);
+        }
+      }
+    };
+
+    fetchTargetYears();
+  }, [department_id]);
+
+  // Set the selected year to the new value from the dropdown
+  const handleYearChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedYear(e.target.value);
+  };
+
+  const chartRef = useRef<HTMLDivElement | null>(null);
   const [chartData, setChartData] = useState({
     labels: ["Financial", "Stakeholder", "Internal", "Learning"],
     datasets: [
       {
-        label: "Number of Reports",
+        label: "Average Reports Each Perspectives",
         data: [0, 0, 0, 0],
         backgroundColor: [
           "#b83216",
@@ -296,7 +362,8 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
           ),
           ...primaryFinancialData.filter(
             (report: any) =>
@@ -308,7 +375,8 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
         ];
@@ -345,7 +413,8 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
           ...primaryStakeholderData.filter(
@@ -358,7 +427,8 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
         ];
@@ -396,7 +466,8 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
           ...primaryInternalData.filter(
@@ -409,11 +480,12 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
         ];
-
+        console.log("CmpleteInternalReports: ", completeInternalReports);
         setInternalReports(completeInternalReports);
 
         //Fetch learning reports
@@ -446,7 +518,8 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
           ...primaryLearningData.filter(
@@ -459,23 +532,71 @@ const ReportsPage = () => {
               report.incharge &&
               report.actual_performance !== null &&
               report.target_performance !== null &&
-              report.evidence_link
+              report.evidence_link &&
+              report.targetYear
             // report.ofi
           ),
         ];
         setLearningReports(completeLearningReports);
         console.log(completeLearningReports);
 
+        // Calculate individual percentages and average them for chart data
+        const calculateAveragePercentage = (reports: any[]) => {
+          if (reports.length === 0) return 0;
+
+          const totalPercentage = reports.reduce((acc, report) => {
+            const percentage =
+              (report.actual_performance / report.target_performance) * 100;
+            return acc + percentage;
+          }, 0);
+
+          return totalPercentage / reports.length;
+        };
+
+        // Use the new function to calculate percentages for each perspective
+        const filteredFinancialReports = completeFinancialReports.filter(
+          (report) => report.targetYear === selectedYear
+        );
+        const financialPercentage = calculateAveragePercentage(
+          filteredFinancialReports
+        );
+
+        const filteredStakeholderReports = completeStakeholderReports.filter(
+          (report) => report.targetYear === selectedYear
+        );
+        const stakeholderPercentage = calculateAveragePercentage(
+          filteredStakeholderReports
+        );
+
+        const filteredInternalReports = completeInternalReports.filter(
+          (report) => report.targetYear === selectedYear
+        );
+        const internalPercentage = calculateAveragePercentage(
+          filteredInternalReports
+        );
+
+        const filteredLearningReports = completeLearningReports.filter(
+          (report) => report.targetYear === selectedYear
+        );
+        const learningPercentage = calculateAveragePercentage(
+          filteredLearningReports
+        );
         setChartData({
           ...chartData,
+          labels: [
+            `Financial (${financialPercentage}%)`,
+            `Stakeholder (${stakeholderPercentage}%)`,
+            `Internal (${internalPercentage}%)`,
+            `Learning (${learningPercentage}%)`,
+          ],
           datasets: [
             {
               ...chartData.datasets[0],
               data: [
-                completeFinancialReports.length,
-                completeStakeholderReports.length,
-                completeInternalReports.length,
-                completeLearningReports.length,
+                financialPercentage,
+                stakeholderPercentage,
+                internalPercentage,
+                learningPercentage,
               ],
             },
           ],
@@ -484,19 +605,24 @@ const ReportsPage = () => {
         console.error("Error fetching reports:", error);
       }
     };
+
     getReports(department_id);
-  }, [department_id]);
+  }, [department_id, selectedYear]);
 
   const handleDownload = async () => {
     const headers = [
-      "Office Target",
-      "KPI",
-      "In-charge",
-      "Actual Performance",
-      "Target Performance",
-      "Year",
-      "Link of Evidence",
+      ["Office Target"],
+      ["KPI"],
+      ["In-charge"],
+      ["Actual Performance"], // Separate array for line break
+      ["Target Performance"],
+      ["Year"],
+      ["Link of Evidence"],
     ];
+
+    const filterDataByYear = (data: any[]) => {
+      return data.filter((report) => report.targetYear === selectedYear);
+    };
 
     const transformData = (data: any[]) => {
       return data.map((report) => ({
@@ -508,71 +634,76 @@ const ReportsPage = () => {
         "In-charge": report.incharge,
         "Actual Performance": report.actual_performance,
         "Target Performance": report.target_performance,
+        Year: report.targetYear,
         "Link of Evidence": report.evidence_link,
         // OFI: report.ofi,
       }));
     };
 
-    const transformedFinancial = transformData(financialReports).map(
-      (report) => ({
-        // "Target Code": report["Target Code"],
-        "Office Target": report["Office Target"],
-        KPI: report.KPI,
-        // Actions: report.Actions,
-        // Budget: report.Budget,
-        "In-charge": report["In-charge"],
-        "Actual Performance": report["Actual Performance"],
-        "Target Performance": report["Target Performance"],
-        "Link of Evidence": report["Link of Evidence"],
+    const transformedFinancial = transformData(
+      filterDataByYear(financialReports)
+    ).map((report) => ({
+      // "Target Code": report["Target Code"],
+      "Office Target": report["Office Target"],
+      KPI: report.KPI,
+      // Actions: report.Actions,
+      // Budget: report.Budget,
+      "In-charge": report["In-charge"],
+      "Actual Performance": report["Actual Performance"],
+      "Target Performance": report["Target Performance"],
+      Year: report["Year"],
+      "Link of Evidence": report["Link of Evidence"],
 
-        // OFI: report.OFI,
-      })
-    );
+      // OFI: report.OFI,
+    }));
 
-    const transformedStakeholder = transformData(stakeholderReports).map(
-      (report) => ({
-        // "Target Code": report["Target Code"],
-        "Office Target": report["Office Target"],
-        KPI: report.KPI,
-        // Actions: report.Actions,
-        // Budget: report.Budget,
-        "In-charge": report["In-charge"],
-        "Actual Performance": report["Actual Performance"],
-        "Target Performance": report["Target Performance"],
-        "Link of Evidence": report["Link of Evidence"],
-        // OFI: report.OFI,
-      })
-    );
+    const transformedStakeholder = transformData(
+      filterDataByYear(stakeholderReports)
+    ).map((report) => ({
+      // "Target Code": report["Target Code"],
+      "Office Target": report["Office Target"],
+      KPI: report.KPI,
+      // Actions: report.Actions,
+      // Budget: report.Budget,
+      "In-charge": report["In-charge"],
+      "Actual Performance": report["Actual Performance"],
+      "Target Performance": report["Target Performance"],
+      Year: report["Year"],
+      "Link of Evidence": report["Link of Evidence"],
+      // OFI: report.OFI,
+    }));
 
-    const transformedInternal = transformData(internalReports).map(
-      (report) => ({
-        // "Target Code": report["Target Code"],
-        "Office Target": report["Office Target"],
-        KPI: report.KPI,
-        // Actions: report.Actions,
-        // Budget: report.Budget,
-        "In-charge": report["In-charge"],
-        "Actual Performance": report["Actual Performance"],
-        "Target Performance": report["Target Performance"],
-        "Link of Evidence": report["Link of Evidence"],
-        // OFI: report.OFI,
-      })
-    );
+    const transformedInternal = transformData(
+      filterDataByYear(internalReports)
+    ).map((report) => ({
+      // "Target Code": report["Target Code"],
+      "Office Target": report["Office Target"],
+      KPI: report.KPI,
+      // Actions: report.Actions,
+      // Budget: report.Budget,
+      "In-charge": report["In-charge"],
+      "Actual Performance": report["Actual Performance"],
+      "Target Performance": report["Target Performance"],
+      Year: report["Year"],
+      "Link of Evidence": report["Link of Evidence"],
+      // OFI: report.OFI,
+    }));
 
-    const transformedLearning = transformData(learningReports).map(
-      (report) => ({
-        // "Target Code": report["Target Code"],
-        "Office Target": report["Office Target"],
-        KPI: report.KPI,
-        // Actions: report.Actions,
-        // Budget: report.Budget,
-        "In-charge": report["In-charge"],
-        "Actual Performance": report["Actual Performance"],
-        "Target Performance": report["Target Performance"],
-        "Link of Evidence": report["Link of Evidence"],
-        // OFI: report.OFI,
-      })
-    );
+    const transformedLearning = transformData(
+      filterDataByYear(learningReports)
+    ).map((report) => ({
+      // "Target Code": report["Target Code"],
+      "Office Target": report["Office Target"],
+      KPI: report.KPI,
+      // Actions: report.Actions,
+      // Budget: report.Budget,
+      "In-charge": report["In-charge"],
+      "Actual Performance": report["Actual Performance"],
+      "Target Performance": report["Target Performance"],
+      Year: report["Year"],
+      "Link of Evidence": report["Link of Evidence"],
+      // OFI: report.OFI,
+    }));
 
     const doc = new jsPDF();
     let startY = 5;
@@ -597,18 +728,38 @@ const ReportsPage = () => {
 
     startY = 40;
 
+    // Export the chart to an image
+    if (chartRef.current) {
+      // Check if current is not null
+      const canvas = await html2canvas(chartRef.current);
+      const imgData = canvas.toDataURL("image/png");
+
+      // Add chart image to the PDF
+      doc.addImage(imgData, "PNG", 10, startY, 140, 50);
+      startY += 60; // Move startY down after adding the chart
+    }
+
     const addSection = (reportTitle: string, reportData: any[]) => {
+      // Log the reportData to verify it contains expected values
+      console.log(`Adding section: ${reportTitle}`, reportData);
+
+      // Check if we need to add a new page
+      const pageHeight = doc.internal.pageSize.height;
+      if (startY > pageHeight - 30) {
+        doc.addPage();
+        startY = 10; // Reset startY for the new page
+      }
+
       doc.setFontSize(9);
       doc.setFont("Helvetica", "bold");
       doc.text(reportTitle, 15, startY + 10);
-
       startY += 15;
 
       // Generate the table
       autoTable(doc, {
         head: [headers],
         body: reportData.map((row) => Object.values(row)),
-        startY: startY, // Ensure the table starts after the title
+        startY: startY,
         didDrawCell: (data: any) => {
           if (
             data.section === "body" &&
@@ -618,38 +769,44 @@ const ReportsPage = () => {
           }
         },
         headStyles: {
-          fontSize: 8,
+          fontSize: 7,
           fontStyle: "bold",
           fillColor: "#A43214",
           textColor: [245, 245, 17],
           halign: "center",
-          lineColor: [0, 0, 0], // Black border
-          lineWidth: 0.1, // Border thickness
+          lineColor: [0, 0, 0],
+          lineWidth: 0.1,
         },
         bodyStyles: {
           fontSize: 7,
           fontStyle: "normal",
-          lineColor: [0, 0, 0], // Black border
+          lineColor: [0, 0, 0],
           lineWidth: 0.1,
-          halign: "center", // Border thickness
+          halign: "center",
         },
         columnStyles: {
-          0: { cellWidth: 40 }, // "Office Target" (index 0)
-          1: { cellWidth: 35 }, // KPI (index 1)
-          2: { cellWidth: 30 }, // "In-charge" (index 2)
-          3: { cellWidth: 20 }, // "Actual Performance" (index 3)
-          4: { cellWidth: 20 }, // "Target Performance" (index 4)
-          5: { cellWidth: 10 }, // "Year" (index 5)
-          6: { cellWidth: 20 }, // "Link of Evidence" (index 6)
+          0: { cellWidth: 40 },
+          1: { cellWidth: 35 },
+          2: { cellWidth: 30 },
+          3: { cellWidth: 20 },
+          4: { cellWidth: 20 },
+          5: { cellWidth: 10 },
+          6: { cellWidth: 20 },
         },
       });
+
+      // Update startY after the table is drawn
+      startY += 5; // Add some padding after the table
     };
 
+    addSection("FINANCIAL PERSPECTIVE", transformedFinancial);
     addSection("STAKEHOLDER PERSPECTIVE", transformedStakeholder);
     addSection("INTERNAL PERSPECTIVE", transformedInternal);
     addSection("LEARNING AND GROWTH PERSPECTIVE", transformedLearning);
-    console.log("transformed :", transformedLearning);
-    addSection("FINANCIAL PERSPECTIVE", transformedFinancial);
+    console.log("Transformed Financial:", transformedFinancial);
+    console.log("Transformed Stakeholder:", transformedStakeholder);
+    console.log("Transformed Internal:", transformedInternal);
+    console.log("Transformed Learning:", transformedLearning);
 
     doc.save("report.pdf");
   };
@@ -661,6 +818,7 @@ const ReportsPage = () => {
         height: "100%",
         display: "flex",
         flexDirection: "row",
+        color: "#2e2c2c",
       }}
     >
       <Grid>
@@ -670,8 +828,8 @@ const ReportsPage = () => {
         container
         direction="column"
         sx={{
-          mt: 2, // Add some margin at the top
-          px: 2, // Optional: Add some padding on the left and right
+          mt: 3, // Add some margin at the top
+          px: 3, // Optional: Add some padding on the left and right
         }}
       >
         <Box
@@ -683,10 +841,12 @@ const ReportsPage = () => {
           }}
         >
           <Typography
+            variant="h4"
+            component="h1"
             sx={{
-              fontSize: "4rem",
               fontWeight: "bold",
-              color: "#3B3B3B",
+              marginBottom: 2,
+              fontSize: { xs: "2rem", sm: "3.5rem" },
             }}
           >
             REPORT
@@ -707,12 +867,14 @@ const ReportsPage = () => {
               variant={currentView === "default" ? "contained" : "outlined"}
               fullWidth
               sx={{
+                p: 3,
+                fontSize: "18px",
                 background:
                   currentView === "default"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
                     : "transparent",
                 color: currentView === "default" ? "white" : "#A43214",
-                flexGrow: 1, // Ensure both buttons have equal size
+                flexGrow: 2, // Ensure both buttons have equal size
                 height: "100%", // Match the height of the container
                 border: "1px solid transparent", // Keep border style consistent
                 transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
@@ -731,12 +893,14 @@ const ReportsPage = () => {
               variant={currentView === "printed" ? "contained" : "outlined"}
               fullWidth
               sx={{
+                p: 3,
+                fontSize: "18px",
                 background:
                   currentView === "printed"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
                     : "transparent",
                 color: currentView === "printed" ? "white" : "#A43214",
-                flexGrow: 1, // Ensure both buttons have equal size
+                flexGrow: 2, // Ensure both buttons have equal size
                 height: "100%", // Match the height of the container
                 border: "1px solid transparent", // Keep border style consistent
                 transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
@@ -763,6 +927,26 @@ const ReportsPage = () => {
           improvement, helping you stay on track and make informed decisions for
           future planning.
         </Typography>
+
+        {/* Year Dropdown */}
+        <div className="mb-4 mt-10">
+          <label htmlFor="year-select" className="mr-2 text-lg font-medium">
+            Select Year:
+          </label>
+          <select
+            id="year-select"
+            value={selectedYear}
+            onChange={handleYearChange}
+            className="border border-gray-300 rounded-md p-2"
+            key={selectedYear} // Add the key prop here
+          >
+            {targetYears.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
 
         {currentView === "default" && (
           <Grid container>
@@ -896,10 +1080,18 @@ const ReportsPage = () => {
                 }}
               >
                 <CardContent>
-                  {selectedComponent === "Financial" && <ReportFinancial />}
-                  {selectedComponent === "Stakeholder" && <ReportStakeholder />}
-                  {selectedComponent === "Internal" && <ReportInternal />}
-                  {selectedComponent === "Learning" && <ReportLearning />}
+                  {selectedComponent === "Financial" && (
+                    <ReportFinancial selectedYear={selectedYear} />
+                  )}
+                  {selectedComponent === "Stakeholder" && (
+                    <ReportStakeholder selectedYear={selectedYear} />
+                  )}
+                  {selectedComponent === "Internal" && (
+                    <ReportInternal selectedYear={selectedYear} />
+                  )}
+                  {selectedComponent === "Learning" && (
+                    <ReportLearning selectedYear={selectedYear} />
+                  )}
                 </CardContent>
               </Card>
             </Box>
@@ -929,62 +1121,69 @@ const ReportsPage = () => {
                 <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
                   REPORT VISUALIZATION
                 </Typography>
-                <Box sx={{ padding: 1, height: "100%" }}>
-                  {chartData && (
-                    <Bar
-                      data={chartData}
-                      options={{
-                        responsive: true,
-                        plugins: {
-                          legend: {
-                            position: "top" as const,
-                          },
-                          title: {
-                            display: false,
-                            text: "Report Visualization",
-                          },
-                        },
-                        elements: {
-                          bar: {
-                            backgroundColor: [
-                              "#b83216",
-                              "rgba(253, 227, 167, 1)",
-                              "#b83216",
-                              "rgba(253, 227, 167, 1)",
-                            ],
-                            borderColor: [
-                              "rgba(255, 99, 132, 1)",
-                              "rgba(249, 105, 14, 1)",
-                              "rgba(249, 105, 14, 1)",
-                              "rgba(249, 105, 14, 1)",
-                            ],
-                            borderWidth: 1,
-                            borderRadius: 10,
-                          },
-                        },
-                        datasets: {
-                          bar: {
-                            barPercentage: 1.3, // Make bars narrower
-                            categoryPercentage: 0.6, // Increase space between categories
-                          },
-                        },
-                        scales: {
-                          x: {
-                            grid: {
-                              lineWidth: 1,
-                              color: "white",
+                <Box ref={chartRef} sx={{ padding: 1, height: "100%" }}>
+                  {!selectedYear ? (
+                    <Typography sx={{ fontSize: "1rem", color: "gray" }}>
+                      Please select a year to view the chart.
+                    </Typography>
+                  ) : (
+                    chartData && (
+                      <Bar
+                        data={chartData}
+                        options={{
+                          responsive: true,
+                          indexAxis: "y",
+                          plugins: {
+                            legend: {
+                              position: "top" as const,
+                            },
+                            title: {
+                              display: false,
+                              text: "Report Visualization",
                             },
                           },
-                          y: {
-                            grid: {
-                              lineWidth: 1,
-                              color: "rgba(0, 0, 0, 0.2)",
+                          elements: {
+                            bar: {
+                              backgroundColor: [
+                                "#b83216",
+                                "rgba(253, 227, 167, 1)",
+                                "#b83216",
+                                "rgba(253, 227, 167, 1)",
+                              ],
+                              borderColor: [
+                                "rgba(255, 99, 132, 1)",
+                                "rgba(249, 105, 14, 1)",
+                                "rgba(249, 105, 14, 1)",
+                                "rgba(249, 105, 14, 1)",
+                              ],
+                              borderWidth: 1,
+                              borderRadius: 10,
                             },
                           },
-                        },
-                      }}
-                      height={100}
-                    />
+                          datasets: {
+                            bar: {
+                              barPercentage: 1.3, // Make bars narrower
+                              categoryPercentage: 0.6, // Increase space between categories
+                            },
+                          },
+                          scales: {
+                            x: {
+                              grid: {
+                                lineWidth: 1,
+                                color: "white",
+                              },
+                            },
+                            y: {
+                              grid: {
+                                lineWidth: 1,
+                                color: "rgba(0, 0, 0, 0.2)",
+                              },
+                            },
+                          },
+                        }}
+                        height={100}
+                      />
+                    )
                   )}
                 </Box>
               </Box>
@@ -1178,7 +1377,9 @@ const ReportsPage = () => {
                 mt: 3,
               }}
             >
-              <CardContent>{<ReportFinancialView />}</CardContent>
+              <CardContent>
+                {<ReportFinancialView selectedYear={selectedYear} />}
+              </CardContent>
             </Card>
             <Card
               sx={{
@@ -1190,7 +1391,9 @@ const ReportsPage = () => {
                 mt: 3,
               }}
             >
-              <CardContent>{<ReportStakeholderView />}</CardContent>
+              <CardContent>
+                {<ReportStakeholderView selectedYear={selectedYear} />}
+              </CardContent>
             </Card>
             <Card
               sx={{
@@ -1202,7 +1405,9 @@ const ReportsPage = () => {
                 mt: 3,
               }}
             >
-              <CardContent>{<ReportInternalView />}</CardContent>
+              <CardContent>
+                {<ReportInternalView selectedYear={selectedYear} />}
+              </CardContent>
             </Card>
             <Card
               sx={{
@@ -1215,7 +1420,9 @@ const ReportsPage = () => {
                 mb: 3,
               }}
             >
-              <CardContent>{<ReportLearningView />}</CardContent>
+              <CardContent>
+                {<ReportLearningView selectedYear={selectedYear} />}
+              </CardContent>
             </Card>
           </Grid>
         )}
