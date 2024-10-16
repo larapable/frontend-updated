@@ -1609,15 +1609,6 @@ const Page = () => {
                 >
                   SECONDARY
                 </Button>
-                {currentView === "secondary" && role !== "FACULTY" && (
-                  <button
-                    onClick={() => handleButtonClick(department_id)}
-                    disabled={isButtonDisabled}
-                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-10 py-1"
-                  >
-                    <SwapVertRoundedIcon sx={{ fontSize: "40px" }} />
-                  </button>
-                )}
               </Box>
             </Grid>
 
@@ -1756,9 +1747,11 @@ const Page = () => {
               borderRadius={2}
               sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
             >
+              <Grid item xs={12} sx={{height:'15px', mt:-5, gap:1}}>
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
+                  mr:1,
                   p: 3,
                   fontSize: "18px",
                   bgcolor:
@@ -1789,6 +1782,7 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
+                  mr:1,
                   p: 3,
                   fontSize: "18px",
                   bgcolor:
@@ -1819,6 +1813,7 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Internal")}
                 sx={{
+                  mr:1,
                   p: 3,
                   fontSize: "18px",
                   bgcolor:
@@ -1874,6 +1869,19 @@ const Page = () => {
               >
                 Learning
               </Button>
+              </Grid>
+            </Box>
+
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', width: '100%', mt:-9 }}>
+              {currentView === "secondary" && role !== "FACULTY" && (
+                  <button
+                    onClick={() => handleButtonClick(department_id)}
+                    disabled={isButtonDisabled}
+                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-8 py-5 font-bold text-[18px]"
+                  >
+                    MAP STRATEGIES
+                  </button>
+              )}
             </Box>
 
             <Box width="100%" sx={{ mt: -1 }}>
@@ -2176,6 +2184,7 @@ const Page = () => {
                   )}
                 </>
               )}
+              
               <Modal open={showWarning} onClose={handleCancelClear}>
                 <Box
                   sx={{
@@ -2249,6 +2258,7 @@ const Page = () => {
                   </Box>
                 </Box>
               </Modal>
+              
 
               {currentView === "secondary" && (
                 <>
@@ -3792,6 +3802,7 @@ const Page = () => {
               )}
             </Box>
           </Grid>
+          
         </StyledBox>
       </Box>
     </Box>

@@ -51,7 +51,7 @@ export default function QAStratmapView() {
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
-  const department_id = user?.department_id;
+  const department_id = 1;  
   const username = user?.username;
 
   useEffect(() => {
@@ -980,7 +980,7 @@ export default function QAStratmapView() {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                width="auto"
+                width="18rem"
                 height="4rem"
                 borderRadius={2}
                 sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}

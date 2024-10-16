@@ -351,8 +351,10 @@ export default function Inputgoals() {
     fetchLatestData();
   }, []);
 
-  const targetYear =
-    startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
+  // const targetYear =
+  //   startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
+
+  const targetYear = startYear !== null ? `${startYear}` : "";
 
   const primaryStrategiesData = [
     {
@@ -627,7 +629,7 @@ export default function Inputgoals() {
       return;
     }
     if (mission.length > 255) {
-      toast.error("Mission cannot Field reached its character limit.");
+      toast.error("Mission Field reached its character limit.");
       return;
     }
     if (strategicGoals.length > 255) {
@@ -636,26 +638,37 @@ export default function Inputgoals() {
     }
 
     try {
-      const targetYear =
-        startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
+      // Use the current year as the target year
+      // const targetYear =
+      // startYear !== null && endYear !== null ? `${startYear}-${endYear}` : "";
+
+      const targetYear = startYear !== null ? `${startYear}` : "";
 
       const currentYear = new Date().getFullYear();
-      const targetYearToCheck = `${currentYear}-${currentYear + 1}`;
+      //const targetYearToCheck = `${currentYear}-${currentYear + 1}`;
+      const targetYearToCheck = `${currentYear}`; // Check only the current year
 
       const yearcheck = await fetch(
         `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
       );
-      if (!yearcheck.ok) {
+
+      let yearExists = false;
+
+      if (yearcheck.ok) {
+        // Only check for existing year if the request was successful
+        const existingStrategies = await yearcheck.json();
+        console.log("Existing strategies:", existingStrategies);
+        yearExists = existingStrategies.some(
+          (strategy: any) => strategy.targetYear === targetYearToCheck
+        );
+      } else if (yearcheck.status === 404) {
+        // If 404, it means no existing strategies, so we can save
+        console.warn("No existing strategies found for this department.");
+      } else {
         const error = await yearcheck.text();
         console.error("Error fetching primary strategies", error);
         throw new Error("Failed to fetch primary strategies");
       }
-
-      const existingStrategies = await yearcheck.json();
-
-      const yearExists = existingStrategies.some(
-        (strategy: any) => strategy.targetYear === targetYearToCheck // Check if target year exists in the response
-      );
 
       if (!yearExists) {
         await savePrimaryStrategies(primaryStrategiesData, department_id);
@@ -675,7 +688,7 @@ export default function Inputgoals() {
           proposition: valueProposition,
           mission: mission,
           goals: strategicGoals,
-          targetYear: targetYear,
+          targetYear: targetYear, // Set the current year as the target year
           department: { id: department_id },
         }),
       });
@@ -702,8 +715,10 @@ export default function Inputgoals() {
       setValueProposition(result.proposition);
       setMission(result.mission);
       setStrategicGoals(result.goals);
-      setStartYear(parseInt(result.targetYear.split("-")[0], 10));
-      setEndYear(parseInt(result.targetYear.split("-")[1], 10));
+      //setStartYear(parseInt(result.targetYear.split("-")[0], 10));
+      //setEndYear(parseInt(result.targetYear.split("-")[1], 10));
+      setStartYear(parseInt(result.targetYear, 10)); // Adjusted for single year
+      setEndYear(null); // No longer needed for single year
 
       setSuccessModal(true);
       setIsEditing(false);
@@ -1437,7 +1452,10 @@ export default function Inputgoals() {
                             >
                               Success!
                             </Typography>
-                            <Typography variant="h6" sx={{ marginBottom: 1, fontWeight:"500" }}>
+                            <Typography
+                              variant="h6"
+                              sx={{ marginBottom: 1, fontWeight: "500" }}
+                            >
                               Goal has been accomplished.
                             </Typography>
                             <Box

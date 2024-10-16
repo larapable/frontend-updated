@@ -50,6 +50,8 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
   //set current year
   const currentYear = new Date().getFullYear();
   const yearAsString = currentYear.toString();
+  const yearOptions = Array.from({ length: 10 }, (_, i) => currentYear + i);
+  
 
   // open modal
   const [financialModalOpen, setFinancialModalOpen] = useState(false);
@@ -66,7 +68,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
   const [financialLevelOfAttainment, setFinancialLevelOfAttainment] =
     useState("");
   // {added link and target year}
-  const [financialTargetYear, setFinancialTargetYear] = useState("");
+  const [financialTargetYear, setFinancialTargetYear] = useState(yearAsString);
   const [financialEvidenceLink, setFinancialEvidenceLink] = useState("");
 
   // financial scorecards
@@ -94,7 +96,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
     setFinancialKPI("");
     setFinancialTargetPerformance("");
     setFinancialActualPerformance("");
-    setFinancialTargetYear("");
+    setFinancialTargetYear(yearAsString);
     setFinancialEvidenceLink("");
     setFinancialEditMode(null);
     setFinancialModalOpen(true);
@@ -613,7 +615,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 />
               </div>
               {/* {target year added} */}
-              <div className="flex flex-col w-[26rem]">
+              {/* <div className="flex flex-col w-[26rem]">
                 <span className="mr-3 font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
@@ -628,7 +630,33 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   value={financialTargetYear}
                   disabled
                 />
-              </div>
+              </div> */}
+               <div className="flex flex-col w-[26rem]">
+                  <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                    Target Year
+                    <span className="text-[#DD1414]">*</span>
+                  </span>
+                  <FormControl fullWidth>
+                    <Select
+                      value={financialTargetYear}
+                      onChange={(e) => setFinancialTargetYear(e.target.value)}
+                      sx={{
+                        height: "47px",
+                        "& .MuiInputBase-root": { height: "47px" },
+                        "& .MuiOutlinedInput-input": {
+                          fontSize: "18px",
+                        },
+                      }}
+                    >
+                      {yearOptions.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              
               <div className="flex flex-col w-[26rem]">
                 <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure

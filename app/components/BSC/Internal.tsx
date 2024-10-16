@@ -49,6 +49,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
   //set current year
   const currentYear = new Date().getFullYear();
   const yearAsString = currentYear.toString(); 
+  const yearOptions = Array.from({ length: 10 }, (_, i) => currentYear + i);
 
   // open modal
   const [internalModalOpen, setInternalModalOpen] = useState(false);
@@ -67,7 +68,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
     useState("");
   
      // {added link and target year}
-  const [internalTargetYear, setInternalTargetYear] = useState("");
+  const [internalTargetYear, setInternalTargetYear] = useState(yearAsString);
   const [internalEvidenceLink, setInternalEvidenceLink] = useState(""); 
 
 
@@ -95,7 +96,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
     setInternalKPI("");
     setInternalActualPerformance("");
     setInternalLevelOfAttainment("");
-    setInternalTargetYear("");
+    setInternalTargetYear(yearAsString);
     setInternalEvidenceLink("");
     setInternalEditMode(null);
     setInternalModalOpen(true);
@@ -598,7 +599,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
                 />
               </div>
                {/* {target year added} */}
-               <div className="flex flex-col w-[26rem]">
+               {/* <div className="flex flex-col w-[26rem]">
                 <span className="mr-3 font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
@@ -613,7 +614,33 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
                   value={internalTargetYear}
                   disabled
                 />
-              </div>
+              </div> */}
+              <div className="flex flex-col w-[26rem]">
+                  <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                    Target Year
+                    <span className="text-[#DD1414]">*</span>
+                  </span>
+                  <FormControl fullWidth>
+                    <Select
+                      value={internalTargetYear}
+                      onChange={(e) => setInternalTargetYear(e.target.value)}
+                      sx={{
+                        height: "47px",
+                        "& .MuiInputBase-root": { height: "47px" },
+                        "& .MuiOutlinedInput-input": {
+                          fontSize: "18px",
+                        },
+                      }}
+                    >
+                      {yearOptions.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              
               <div className="flex flex-col w-[26rem]">
                 <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure

@@ -160,6 +160,7 @@ const ReportsPage = () => {
   };
 
   const chartRef = useRef<HTMLDivElement | null>(null);
+
   const [chartData, setChartData] = useState({
     labels: ["Financial", "Stakeholder", "Internal", "Learning"],
     datasets: [
@@ -607,7 +608,7 @@ const ReportsPage = () => {
     };
 
     getReports(department_id);
-  }, [department_id, selectedYear]);
+  }, [department_id, selectedYear, chartData]);
 
   const handleDownload = async () => {
     const headers = [

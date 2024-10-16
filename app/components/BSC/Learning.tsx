@@ -49,6 +49,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
   //set current year
   const currentYear = new Date().getFullYear();
   const yearAsString = currentYear.toString(); 
+  const yearOptions = Array.from({ length: 10 }, (_, i) => currentYear + i);
 
   // Open modal
   const [learningModalOpen, setLearningModalOpen] = useState(false);
@@ -67,7 +68,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
     useState("");
 
     // {added link and target year}
-  const [learningTargetYear, setLearningTargetYear] = useState("");
+  const [learningTargetYear, setLearningTargetYear] = useState(yearAsString);
   const [learningEvidenceLink, setLearningEvidenceLink] = useState(""); 
 
   const [learningSavedScorecards, setLearningSavedScorecards] = useState<
@@ -93,7 +94,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
     setLearningKPI("");
     setLearningTargetPerformance("");
     setLearningActualPerformance("");
-    setLearningTargetYear("");
+    setLearningTargetYear(yearAsString);
     setLearningEvidenceLink("");
     setLearningEditMode(null);
     setLearningModalOpen(true);
@@ -596,7 +597,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
                 />
               </div>
                 {/* {target year added} */}
-                <div className="flex flex-col w-[26rem]">
+                {/* <div className="flex flex-col w-[26rem]">
                 <span className="mr-3 font-regular text-lg text-[#000000]">
                   Target Year
                 </span>
@@ -611,7 +612,34 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
                   value={learningTargetYear}
                   disabled
                 />
-              </div>
+              </div> */}
+              <div className="flex flex-col w-[26rem]">
+                  <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                    Target Year
+                    <span className="text-[#DD1414]">*</span>
+                  </span>
+                  <FormControl fullWidth>
+                    <Select
+                      value={learningTargetYear}
+                      onChange={(e) => setLearningTargetYear(e.target.value)}
+                      sx={{
+                        height: "47px",
+                        "& .MuiInputBase-root": { height: "47px" },
+                        "& .MuiOutlinedInput-input": {
+                          fontSize: "18px",
+                        },
+                      }}
+                    >
+                      {yearOptions.map((year) => (
+                        <MenuItem key={year} value={year}>
+                          {year}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </div>
+              
+
               <div className="flex flex-col w-[26rem]">
                 <span className="mr-3 break-words font-regular text-lg text-[#000000]">
                   Metric / Unit of Measure
