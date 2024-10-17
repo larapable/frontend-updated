@@ -24,6 +24,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import FormControl from "@mui/material/FormControl";
 
 const drawerWidth = 310;
 
@@ -43,6 +44,7 @@ export default function RegisterDepartment() {
   const [university, setUniversity] = useState("");
   const [description, setDescription] = useState("");
   const [email, setEmail] = useState("");
+  const [category, setCategory] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
   const [isMobile, setIsMobile] = useState(false);
@@ -56,6 +58,7 @@ export default function RegisterDepartment() {
   const handleUniversityChange = (e: any) => setUniversity(e.target.value);
   const handleDescriptionChange = (e: any) => setDescription(e.target.value);
   const handleEmailChange = (e: any) => setEmail(e.target.value);
+  const handleCategoryChange = (e: any) => setCategory(e.target.value);
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
@@ -67,7 +70,8 @@ export default function RegisterDepartment() {
       !location ||
       !university ||
       !description ||
-      !email
+      !email ||
+      !category
     ) {
       // alert("Please fill in all required fields.");
       setModalMessage('Please fill in all required fields.');
@@ -91,6 +95,7 @@ export default function RegisterDepartment() {
             university: university,
             description: description,
             email: email,
+            category: category,
           }),
         }
       );
@@ -107,6 +112,7 @@ export default function RegisterDepartment() {
       setUniversity("");
       setDescription("");
       setEmail("");
+      setCategory("");
 
       // alert("Department registered successfully!");
       setModalMessage('Department registered successfully!');
@@ -246,6 +252,31 @@ export default function RegisterDepartment() {
                           value={departmentName}
                           onChange={handleDepartmentNameChange}
                         />
+                </Grid>
+                <Typography variant="h6" sx={{fontWeight:"400", mt:3}}>
+                    Department Category
+                    <span className="text-[#DD1414]">*</span>
+                </Typography>
+                <Grid>
+                <FormControl fullWidth>
+                  <Select
+                    value={category}
+                    onChange={handleCategoryChange}
+                    sx={{
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "18px",
+                      },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select
+                    </MenuItem>
+                    <MenuItem value="Administrative">Administrative</MenuItem>
+                    <MenuItem value="Academic">Academic</MenuItem>
+                  </Select>
+                </FormControl>
                 </Grid>
 
                 <Grid container alignItems="center" sx={{mt:3}}>

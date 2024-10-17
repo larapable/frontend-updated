@@ -320,82 +320,86 @@ export default function UserProfile() {
                 PROFILE
               </Typography>
             </Grid>
-            
-            <Grid item>
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              width="20rem"
-              height="4rem"
-              borderRadius={2}
-              sx={{ gap: 1, p: 1, borderWidth: 0.5, mt:-2 }}
-            >
-              <Button
-                onClick={() => setCurrentView("department")}
-                variant={currentView === "department" ? "contained" : "outlined"}
-                fullWidth
-                sx={{
-                  p:3,
-                  fontSize: '18px',
-                  background:
-                    currentView === "department"
-                      ? "linear-gradient(to left, #8a252c, #AB3510)"
-                      : "transparent",
-                  color: currentView === "department" ? "white" : "#AB3510",
-                  flexGrow: 2, 
-                  height: "100%",
-                  border: "1px solid transparent",
-                  transition: "background-color 0.3s, color 0.3s", 
-                  "&:hover": {
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", 
-                    color: "white", 
-                    border:
-                      currentView === "department" ? "none" : "0.5px solid #AB3510", 
-                  },
-                }}
-              >
-                Department
-              </Button>
-              <Button
-                onClick={() => setCurrentView("user")}
-                variant={currentView === "user" ? "contained" : "outlined"}
-                fullWidth
-                sx={{
-                  p:3,
-                  fontSize: '18px',
-                  background:
-                    currentView === "user"
-                      ? "linear-gradient(to left, #8a252c, #AB3510)"
-                      : "transparent",
-                  color: currentView === "user" ? "white" : "#AB3510",
-                  flexGrow: 2, // Ensure both buttons have equal size
-                  height: "100%", // Match the height of the container
-                  border: "1px solid transparent", // Keep border style consistent
-                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
-                  "&:hover": {
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
-                    color: "white", // Change text color on hover
-                    border:
-                      currentView === "user"
-                        ? "none"
-                        : "0.5px solid #AB3510", // Border on hover if not current
-                  },
-                }}
-              >
-                USER
-              </Button>
-            </Box>
-            </Grid>
 
+            <Grid item>
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="20rem"
+                height="4rem"
+                borderRadius={2}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
+              >
+                <Button
+                  onClick={() => setCurrentView("department")}
+                  variant={
+                    currentView === "department" ? "contained" : "outlined"
+                  }
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "department"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "department" ? "white" : "#AB3510",
+                    flexGrow: 2,
+                    height: "100%",
+                    border: "1px solid transparent",
+                    transition: "background-color 0.3s, color 0.3s",
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)",
+                      color: "white",
+                      border:
+                        currentView === "department"
+                          ? "none"
+                          : "0.5px solid #AB3510",
+                    },
+                  }}
+                >
+                  Department
+                </Button>
+                <Button
+                  onClick={() => setCurrentView("user")}
+                  variant={currentView === "user" ? "contained" : "outlined"}
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "user"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "user" ? "white" : "#AB3510",
+                    flexGrow: 2, // Ensure both buttons have equal size
+                    height: "100%", // Match the height of the container
+                    border: "1px solid transparent", // Keep border style consistent
+                    transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                      color: "white", // Change text color on hover
+                      border:
+                        currentView === "user" ? "none" : "0.5px solid #AB3510", // Border on hover if not current
+                    },
+                  }}
+                >
+                  USER
+                </Button>
+              </Box>
+            </Grid>
 
             {/* enter description here */}
             <Typography variant="h5">
-                The Profile feature allows you to view your department’s details, including department name, while also giving you access to your personal profile where you can update your contact information, and upload your profile picture.
-              </Typography>
+              The Profile feature allows you to view your department’s details,
+              including department name, while also giving you access to your
+              personal profile where you can update your contact information,
+              and upload your profile picture.
+            </Typography>
           </Grid>
 
-          <Cards sx={{mt:5}}>
+          <Cards sx={{ mt: 5 }}>
             <StyledBox sx={{ background: "white", borderRadius: 5 }}>
               {currentView === "department" ? (
                 <>
@@ -403,13 +407,13 @@ export default function UserProfile() {
                     <Button
                       variant="contained"
                       href="/profile/edit"
-                      sx={{ width: 'auto', color: "#AB3510" }}
+                      sx={{ width: "auto", color: "#AB3510" }}
                       style={{
                         background: "white",
                         borderRadius: "20px",
                         marginTop: -20,
                         border: "1px solid #d9d9d9",
-                        padding: '10px 30px',
+                        padding: "10px 30px",
                       }}
                     >
                       {/* Edit Profile  */}
@@ -446,11 +450,11 @@ export default function UserProfile() {
                           )}
                         </Grid>
 
-                        <Grid item xs={12} sm={8} sx={{ml:-2}}>
+                        <Grid item xs={12} sm={8} sx={{ ml: -2 }}>
                           <Typography
                             variant="h4"
                             component="h2"
-                            sx={{ fontWeight: "bold",mr:5 }}
+                            sx={{ fontWeight: "bold", mr: 5 }}
                           >
                             {department}
                           </Typography>
@@ -513,7 +517,10 @@ export default function UserProfile() {
                                 mt: 2,
                               }}
                             >
-                              <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "bolder" }}
+                              >
                                 {roleCounts.headOfficer}
                               </Typography>
                               <Typography
@@ -542,7 +549,10 @@ export default function UserProfile() {
                                 mt: 2,
                               }}
                             >
-                              <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "bolder" }}
+                              >
                                 {roleCounts.faculty}
                               </Typography>
                               <Typography
@@ -574,7 +584,10 @@ export default function UserProfile() {
                         borderColor: "gray",
                       }}
                     >
-                      <Typography variant="h5" sx={{ fontWeight: "bold", p: 3 }}>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", p: 3 }}
+                      >
                         Basic Information
                       </Typography>
 
@@ -600,9 +613,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={headOfficer}
                               inputProps={{ readOnly: true }}
@@ -621,9 +635,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={email}
                               inputProps={{ readOnly: true }}
@@ -642,9 +657,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={departmentLandline}
                               inputProps={{ readOnly: true }}
@@ -675,9 +691,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={university}
                               inputProps={{ readOnly: true }}
@@ -696,9 +713,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={location}
                               inputProps={{ readOnly: true }}
@@ -714,7 +732,10 @@ export default function UserProfile() {
                           borderColor: "gray",
                         }}
                       >
-                        <Typography variant="h5" sx={{ fontWeight: "bold", p: 3 }}>
+                        <Typography
+                          variant="h5"
+                          sx={{ fontWeight: "bold", p: 3 }}
+                        >
                           About Department
                         </Typography>
                         <Grid item sx={{ p: 3, mt: -3 }}>
@@ -726,9 +747,10 @@ export default function UserProfile() {
                               "& .MuiInputBase-root": {
                                 // Remove height property
                               },
-                              "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                              "& .MuiOutlinedInput-input": {
+                                // Target the input element specifically
+                                fontSize: "18px", // Adjust the font size as needed
+                              },
                             }}
                             value={departmentDescription}
                             inputProps={{ readOnly: true }}
@@ -744,13 +766,13 @@ export default function UserProfile() {
                     <Button
                       variant="contained"
                       href="/userprofile/edit"
-                      sx={{ width: 'auto', color: "#AB3510" }}
+                      sx={{ width: "auto", color: "#AB3510" }}
                       style={{
                         background: "white",
                         borderRadius: "20px",
                         marginTop: -20,
                         border: "1px solid #d9d9d9",
-                        padding: '10px 30px',
+                        padding: "10px 30px",
                       }}
                     >
                       {<ModeEditRoundedIcon />}
@@ -786,7 +808,7 @@ export default function UserProfile() {
                           )}
                         </Grid>
 
-                        <Grid item xs={12} sm={8} sx={{ml:-2}}>
+                        <Grid item xs={12} sm={8} sx={{ ml: -2 }}>
                           <Typography
                             variant="h4"
                             component="h2"
@@ -795,7 +817,9 @@ export default function UserProfile() {
                             {username}
                           </Typography>
                           <Typography variant="h6" color="textSecondary">
-                            {role}
+                            {role === "headOfficer"
+                              ? "Head Officer"
+                              : "Faculty"}
                           </Typography>
                         </Grid>
                       </Grid>
@@ -855,7 +879,10 @@ export default function UserProfile() {
                                 mt: 2,
                               }}
                             >
-                              <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "bolder" }}
+                              >
                                 {roleCounts.headOfficer}
                               </Typography>
                               <Typography
@@ -884,7 +911,10 @@ export default function UserProfile() {
                                 mt: 2,
                               }}
                             >
-                              <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
+                              <Typography
+                                variant="h5"
+                                sx={{ fontWeight: "bolder" }}
+                              >
                                 {roleCounts.faculty}
                               </Typography>
                               <Typography
@@ -916,7 +946,10 @@ export default function UserProfile() {
                         borderColor: "gray",
                       }}
                     >
-                      <Typography variant="h5" sx={{ fontWeight: "bold", p: 3 }}>
+                      <Typography
+                        variant="h5"
+                        sx={{ fontWeight: "bold", p: 3 }}
+                      >
                         Basic Information
                       </Typography>
 
@@ -942,9 +975,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={firstname}
                               inputProps={{ readOnly: true }}
@@ -963,9 +997,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={lastname}
                               inputProps={{ readOnly: true }}
@@ -984,9 +1019,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={userEmail}
                               inputProps={{ readOnly: true }}
@@ -1017,9 +1053,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={birthdate}
                               inputProps={{ readOnly: true }}
@@ -1038,9 +1075,10 @@ export default function UserProfile() {
                               sx={{
                                 height: "50px",
                                 "& .MuiInputBase-root": { height: "50px" },
-                                "& .MuiOutlinedInput-input": { // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed 
-                                }
+                                "& .MuiOutlinedInput-input": {
+                                  // Target the input element specifically
+                                  fontSize: "18px", // Adjust the font size as needed
+                                },
                               }}
                               value={age}
                               inputProps={{ readOnly: true }}

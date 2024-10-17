@@ -51,7 +51,7 @@ export default function QAStratmapView() {
 
   let user;
   if (session?.user?.name) user = JSON.parse(session.user?.name as string);
-  const department_id = 1;  
+  const department_id = 1;
   const username = user?.username;
 
   useEffect(() => {
@@ -378,144 +378,155 @@ export default function QAStratmapView() {
   const handlePrimaryFSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`, // Combine target code and strategy
-        department: { id: department_id },
+        office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`,
+        department: { id: department_id }, // Initialize with current department ID
       };
 
-      console.log("Data to be sent:", data); // Log the data for debugging
+      for (const department of departments) {
+        // Loop through all departments
+        data.department.id = department.id; // Update department ID for each iteration
 
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryFinancial/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+        console.log("Data to be sent:", data);
 
-      if (response.ok) {
-        closePrimaryFModal();
-        fetchPrimaryFinancialStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary financial strategy:",
-          response.status
+        const response = await fetch(
+          "http://localhost:8080/stratmap/primaryFinancial/insert",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
         );
-        // Handle error, e.g., display an error message to the user
+
+        if (!response.ok) {
+          console.error(
+            "Error saving primary financial strategy to department",
+            department.id,
+            response.status
+          );
+        }
       }
+
+      closePrimaryFModal();
+      fetchPrimaryFinancialStrategies(department_id);
     } catch (error) {
       console.error("Error saving primary financial strategy:", error);
-      // Handle error, e.g., display an error message to the user
     }
   };
 
   const handlePrimarySSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`, // Combine target code and strategy
+        office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`,
         department: { id: department_id },
       };
 
-      console.log("Data to be sent:", data); // Log the data for debugging
+      for (const department of departments) {
+        data.department.id = department.id;
 
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryStakeholder/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+        console.log("Data to be sent (Stakeholder):", data);
 
-      if (response.ok) {
-        closePrimarySModal();
-        fetchPrimaryStakeholderStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary stakeholder strategy:",
-          response.status
+        const response = await fetch(
+          "http://localhost:8080/stratmap/primaryStakeholder/insert",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
         );
-        // Handle error, e.g., display an error message to the user
+
+        if (!response.ok) {
+          console.error(
+            "Error saving primary stakeholder strategy to department",
+            department.id,
+            response.status
+          );
+        }
       }
+
+      closePrimarySModal();
+      fetchPrimaryStakeholderStrategies(department_id);
     } catch (error) {
       console.error("Error saving primary stakeholder strategy:", error);
-      // Handle error, e.g., display an error message to the user
     }
   };
 
   const handlePrimaryLGSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`, // Combine target code and strategy
+        office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`,
         department: { id: department_id },
       };
 
-      console.log("Data to be sent:", data); // Log the data for debugging
+      for (const department of departments) {
+        data.department.id = department.id;
 
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryLearning/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+        console.log("Data to be sent (Learning & Growth):", data);
 
-      if (response.ok) {
-        closePrimaryLGModal();
-        fetchPrimaryLearningGrowthStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary learning strategy:",
-          response.status
+        const response = await fetch(
+          "http://localhost:8080/stratmap/primaryLearning/insert",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
         );
-        // Handle error, e.g., display an error message to the user
+
+        if (!response.ok) {
+          console.error(
+            "Error saving primary learning & growth strategy to department",
+            department.id,
+            response.status
+          );
+        }
       }
+
+      closePrimaryLGModal();
     } catch (error) {
-      console.error("Error saving primary learning strategy:", error);
-      // Handle error, e.g., display an error message to the user
+      console.error("Error saving primary learning & growth strategy:", error);
     }
   };
 
   const handlePrimaryIPSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`, // Combine target code and strategy
+        office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`,
         department: { id: department_id },
       };
 
-      console.log("Data to be sent:", data); // Log the data for debugging
+      for (const department of departments) {
+        data.department.id = department.id;
 
-      const response = await fetch(
-        "http://localhost:8080/stratmap/primaryInternal/insert", // Use the correct endpoint
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(data),
-        }
-      );
+        console.log("Data to be sent (Internal Process):", data);
 
-      if (response.ok) {
-        closePrimaryIPModal();
-        fetchPrimaryInternalProcessStrategies(department_id); // Refresh the list after saving
-      } else {
-        console.error(
-          "Error saving primary internal strategy:",
-          response.status
+        const response = await fetch(
+          "http://localhost:8080/stratmap/primaryInternal/insert",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
         );
-        // Handle error, e.g., display an error message to the user
+
+        if (!response.ok) {
+          console.error(
+            "Error saving primary internal process strategy to department",
+            department.id,
+            response.status
+          );
+        }
       }
+
+      closePrimaryIPModal();
     } catch (error) {
-      console.error("Error saving primary internal strategy:", error);
-      // Handle error, e.g., display an error message to the user
+      console.error("Error saving primary internal process strategy:", error);
     }
   };
 

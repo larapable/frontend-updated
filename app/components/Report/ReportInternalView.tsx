@@ -149,7 +149,6 @@ const ReportInternalView: React.FC<ReportInternalViewProps> = ({ selectedYear })
                   Office Target
                 </TableCell>
                 <TableCell
-                  align="center"
                   sx={{
                     fontWeight: "bold",
                     fontSize: "18px",
@@ -159,7 +158,7 @@ const ReportInternalView: React.FC<ReportInternalViewProps> = ({ selectedYear })
                   KPI
                 </TableCell>
 
-                <TableCell
+                {/* <TableCell
                   align="center"
                   sx={{
                     fontWeight: "bold",
@@ -168,7 +167,7 @@ const ReportInternalView: React.FC<ReportInternalViewProps> = ({ selectedYear })
                   }}
                 >
                   In-charge
-                </TableCell>
+                </TableCell> */}
                  {/* {added targetYear} */}
                  <TableCell
                   align="center"
@@ -242,21 +241,21 @@ const ReportInternalView: React.FC<ReportInternalViewProps> = ({ selectedYear })
                     }}
                   >
                     {/* Table Cells */}
-                    <TableCell>
+                    <TableCell sx={{ maxWidth: "35rem" }}>
                       <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                        {truncateString(report.office_target, 45)}
+                        {report.office_target}
                       </span>
                     </TableCell>
-                    <TableCell align="center">
+                    <TableCell>
                       <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                         {truncateString(report.key_performance_indicator, 20)}
                       </span>
                     </TableCell>
-                    <TableCell align="center">
+                    {/* <TableCell align="center">
                       <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                         {truncateString(report?.incharge || "...", 8)}
                       </span>
-                    </TableCell>
+                    </TableCell> */}
                     {/* {added targetYear} */}
                     <TableCell align="center">
                       <span className="font-medium text-[1.1rem] text-[#2e2c2c]">

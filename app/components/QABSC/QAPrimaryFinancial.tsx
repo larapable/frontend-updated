@@ -32,19 +32,14 @@ interface PrimaryFinancialScorecard {
   targetYear: string;
   evidence_link: string;
 }
-interface Department {
-  id: number;
-  department_name: string;
-}
 
 type QAPrimaryFinancialProps = {
   selectedDepartmentId: number;
-  departments: Department[];
   selectedYear: string;
 };
+
 export default function QAPrimaryFinancial({
   selectedDepartmentId,
-  departments,
   selectedYear,
 }: QAPrimaryFinancialProps) {
   const { data: session, status, update } = useSession();
@@ -53,6 +48,7 @@ export default function QAPrimaryFinancial({
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
   const userRole = user?.role;
 
+  console.log("Selected ID from QAPrimaryFinancial", selectedDepartmentId);
   // open modal
   const [primaryModalOpen, setPrimaryModalOpen] = useState(false);
 

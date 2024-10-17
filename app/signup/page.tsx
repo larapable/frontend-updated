@@ -195,7 +195,7 @@ export default function SignupPage() {
             // },
             head: selectedHead,
             department:
-              role === "qualityAssurance" ? null : { id: selectedDepartment }, // Set department to null for QA role
+              role === "qualityAssurance" ? 1 : { id: selectedDepartment }, // Set department to null for QA role
           }),
         }
       );

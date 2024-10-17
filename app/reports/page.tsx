@@ -614,7 +614,6 @@ const ReportsPage = () => {
     const headers = [
       ["Office Target"],
       ["KPI"],
-      ["In-charge"],
       ["Actual Performance"], // Separate array for line break
       ["Target Performance"],
       ["Year"],
@@ -632,7 +631,7 @@ const ReportsPage = () => {
         KPI: report.key_performance_indicator,
         // Actions: report.actions,
         // Budget: report.budget,
-        "In-charge": report.incharge,
+        // "In-charge": report.incharge,
         "Actual Performance": report.actual_performance,
         "Target Performance": report.target_performance,
         Year: report.targetYear,
@@ -649,7 +648,7 @@ const ReportsPage = () => {
       KPI: report.KPI,
       // Actions: report.Actions,
       // Budget: report.Budget,
-      "In-charge": report["In-charge"],
+      // "In-charge": report["In-charge"],
       "Actual Performance": report["Actual Performance"],
       "Target Performance": report["Target Performance"],
       Year: report["Year"],
@@ -666,7 +665,7 @@ const ReportsPage = () => {
       KPI: report.KPI,
       // Actions: report.Actions,
       // Budget: report.Budget,
-      "In-charge": report["In-charge"],
+      // "In-charge": report["In-charge"],
       "Actual Performance": report["Actual Performance"],
       "Target Performance": report["Target Performance"],
       Year: report["Year"],
@@ -682,7 +681,7 @@ const ReportsPage = () => {
       KPI: report.KPI,
       // Actions: report.Actions,
       // Budget: report.Budget,
-      "In-charge": report["In-charge"],
+      // "In-charge": report["In-charge"],
       "Actual Performance": report["Actual Performance"],
       "Target Performance": report["Target Performance"],
       Year: report["Year"],
@@ -698,7 +697,7 @@ const ReportsPage = () => {
       KPI: report.KPI,
       // Actions: report.Actions,
       // Budget: report.Budget,
-      "In-charge": report["In-charge"],
+      // "In-charge": report["In-charge"],
       "Actual Performance": report["Actual Performance"],
       "Target Performance": report["Target Performance"],
       Year: report["Year"],
@@ -735,13 +734,12 @@ const ReportsPage = () => {
       const canvas = await html2canvas(chartRef.current);
       const imgData = canvas.toDataURL("image/png");
 
-      // Add chart image to the PDF
+     
       doc.addImage(imgData, "PNG", 10, startY, 140, 50);
-      startY += 60; // Move startY down after adding the chart
+      startY += 60; 
     }
 
     const addSection = (reportTitle: string, reportData: any[]) => {
-      // Log the reportData to verify it contains expected values
       console.log(`Adding section: ${reportTitle}`, reportData);
 
       // Check if we need to add a new page
@@ -786,24 +784,55 @@ const ReportsPage = () => {
           halign: "center",
         },
         columnStyles: {
-          0: { cellWidth: 40 },
-          1: { cellWidth: 35 },
-          2: { cellWidth: 30 },
+          0: { cellWidth: 60 },
+          1: { cellWidth: 40 },
+          2: { cellWidth: 20 },
           3: { cellWidth: 20 },
-          4: { cellWidth: 20 },
-          5: { cellWidth: 10 },
-          6: { cellWidth: 20 },
+          4: { cellWidth: 18 },
+          5: { cellWidth: 25 },
         },
       });
 
       // Update startY after the table is drawn
-      startY += 5; // Add some padding after the table
+      startY += 2; // Add some padding after the table
     };
 
     addSection("FINANCIAL PERSPECTIVE", transformedFinancial);
     addSection("STAKEHOLDER PERSPECTIVE", transformedStakeholder);
     addSection("INTERNAL PERSPECTIVE", transformedInternal);
     addSection("LEARNING AND GROWTH PERSPECTIVE", transformedLearning);
+
+    // Check if we need a new page for the footer
+    if (startY > 270) {
+      doc.addPage();
+      startY = 20; 
+    }
+
+    startY += 20; 
+    console.log("Current startY before footer:", startY);
+
+      
+      doc.setFontSize(8);
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`Prepared By:`, 15, startY);
+      doc.setFont('Helvetica', 'bold');
+      doc.text(`${preparedByName}`,15,startY + 15);
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`${preparedByRole}`, 15, startY + 20); 
+
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`Reviewed By:`, 80, startY);
+      doc.setFont('Helvetica', 'bold');
+      doc.text(`${reviewedByName}`,80,startY + 15);
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`${reviewedByRole}`, 80, startY + 20);
+
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`Acknowledged By:`, 145, startY);
+      doc.setFont('Helvetica', 'bold');
+      doc.text(`${acknowledgedByName}`,145,startY + 15);
+      doc.setFont('Helvetica', 'normal');
+      doc.text(`${acknowledgedByRole}`, 145, startY + 20);
     console.log("Transformed Financial:", transformedFinancial);
     console.log("Transformed Stakeholder:", transformedStakeholder);
     console.log("Transformed Internal:", transformedInternal);

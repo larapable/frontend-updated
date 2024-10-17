@@ -1,17 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import QANavbar from "../components/Navbars/QANavbar";
-import QAPrimaryFinancial from "../components/QABSC/QAPrimaryFinancial";
-import QAPrimaryStakeholder from "../components/QABSC/QAPrimaryStakeholder";
-import QAPrimaryInternal from "../components/QABSC/QAPrimaryInternal";
-import QAPrimaryLearning from "../components/QABSC/QAPrimaryLearning";
-import { toast } from "react-toastify";
-import Select from "react-select"; // Import react-select
-import { useSession } from "next-auth/react";
-import QAFinancial from "../components/QABSC/QAFinancial";
-import QAStakeholder from "../components/QABSC/QAStakeholder";
-import QAInternal from "../components/QABSC/QAInternal";
-import QALearning from "../components/QABSC/QALearning";
+import { useParams } from "next/navigation";
 import {
   Box,
   Button,
@@ -21,6 +9,13 @@ import {
   ListItem,
   Typography,
 } from "@mui/material";
+import QANavbar from "@/app/components/Navbars/QANavbar";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
+import QAPrimaryFinancial from "@/app/components/QABSC/QAPrimaryFinancial";
+import QAPrimaryStakeholder from "@/app/components/QABSC/QAPrimaryStakeholder";
+import QAPrimaryInternal from "@/app/components/QABSC/QAPrimaryInternal";
+import QAPrimaryLearning from "@/app/components/QABSC/QAPrimaryLearning";
 
 interface Department {
   id: number;
@@ -33,13 +28,18 @@ type TargetYearsResponse = {
 };
 
 const QAScorecard = () => {
+  const { id } = useParams(); // Access the department ID here
   const { data: session, status, update } = useSession();
   let user;
   if (session?.user?.name) user = JSON.parse(session?.user?.name as string);
 
-  const [currentView, setCurrentView] = useState("");
-  const [departments, setDepartments] = useState<Department[]>([]);
-  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(1);
+  const [currentView, setCurrentView] = useState("primary");
+  const [selectedDepartmentId, setSelectedDepartmentId] = useState<number>(
+    parseInt(id as string, 10)
+  );
+
+  console.log("Selected Department ID: ", selectedDepartmentId);
+
   // To store the available years
   const [selectedYear, setSelectedYear] = useState("");
   const [targetYears, setTargetYears] = useState<string[]>([]);
@@ -76,6 +76,16 @@ const QAScorecard = () => {
               stakeholderResponse.json(),
             ]);
 
+          // Check if the responses are OK
+          if (
+            !financialResponse.ok ||
+            !internalResponse.ok ||
+            !learningResponse.ok ||
+            !stakeholderResponse.ok
+          ) {
+            throw new Error("Failed to fetch target years");
+          }
+
           const allData = [
             ...financialData,
             ...internalData,
@@ -108,56 +118,6 @@ const QAScorecard = () => {
     localStorage.setItem("lastView", view);
     setCurrentView(view);
   };
-
-  useEffect(() => {
-    const lastView = localStorage.getItem("lastView");
-
-    if (lastView) {
-      setCurrentView(lastView);
-    }
-  }, []);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          "http://localhost:8080/department/getAllDepartments",
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        setDepartments(data.departments);
-        //setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching departments:", error);
-        //setIsLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  // Handle the department selection change
-  const handleDepartmentChange = (
-    selectedOption: { value: number; label: string } | null
-  ) => {
-    setSelectedDepartmentId(selectedOption ? selectedOption.value : 1);
-  };
-
-  // Map departments to react-select options
-  const departmentOptions = departments.map((department) => ({
-    value: department.id,
-    label: department.department_name,
-  }));
 
   return (
     <Grid
@@ -298,49 +258,6 @@ const QAScorecard = () => {
               ))}
             </select>
           </div>
-          <Box>
-            <Select
-              options={departmentOptions}
-              onChange={handleDepartmentChange}
-              placeholder="Select Department"
-              value={
-                selectedDepartmentId
-                  ? departmentOptions.find(
-                      (option) => option.value === selectedDepartmentId
-                    )
-                  : null
-              }
-              className="w-80 border border-gray-300 rounded-lg"
-              styles={{
-                option: (provided, state) => ({
-                  ...provided,
-                  backgroundColor: state.isFocused ? "#A43214" : "white", // Background color when focused
-                  color: state.isFocused ? "white" : "black", // Text color when focused
-                  cursor: "pointer",
-                  "&:active": {
-                    backgroundColor: "#A43214", // Background color when selected
-                    color: "white", // Text color when selected
-                  },
-                }),
-                control: (provided) => ({
-                  ...provided,
-                  borderColor: "gray", // Border color for the select control
-                  boxShadow: "none", // Remove the default blue outline
-                  "&:hover": {
-                    borderColor: "#A43214", // Border color on hover
-                  },
-                }),
-                menu: (provided) => ({
-                  ...provided,
-                  zIndex: 9999, // Ensure dropdown appears above other elements
-                }),
-                menuList: (provided) => ({
-                  ...provided,
-                  padding: 0, // Remove padding for menu list
-                }),
-              }}
-            />
-          </Box>
         </Box>
 
         {currentView === "primary" && (
@@ -380,46 +297,10 @@ const QAScorecard = () => {
                   />
                 </CardContent>
               </Card>
-              <Card
-                sx={{
-                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
-                  border: "1px solid #D1D5DB",
-                  bgcolor: "#FFFFFF",
-                  p: 0.5,
-                  borderRadius: 2,
-                  mb: 3,
-                }}
-              >
-                <CardContent>
-                  <QAPrimaryInternal
-                    selectedDepartmentId={selectedDepartmentId}
-                    departments={departments}
-                    selectedYear={selectedYear}
-                  />
-                </CardContent>
-              </Card>
-              <Card
-                sx={{
-                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
-                  border: "1px solid #D1D5DB",
-                  bgcolor: "#FFFFFF",
-                  p: 0.5,
-                  borderRadius: 2,
-                  mb: 3,
-                }}
-              >
-                <CardContent>
-                  <QAPrimaryLearning
-                    selectedDepartmentId={selectedDepartmentId}
-                    departments={departments}
-                    selectedYear={selectedYear}
-                  />
-                </CardContent>
-              </Card>
             </Box>
           </Grid>
         )}
-        {currentView === "secondary" && (
+        {/* {currentView === "secondary" && (
           <Grid container>
             <Box width="100%">
               <Card
@@ -492,7 +373,7 @@ const QAScorecard = () => {
               </Card>
             </Box>
           </Grid>
-        )}
+        )} */}
       </Grid>
     </Grid>
   );

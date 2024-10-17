@@ -33,19 +33,13 @@ interface PrimaryStakeholderScorecard {
   targetYear: string;
   evidence_link: string;
 }
-interface Department {
-  id: number;
-  department_name: string;
-}
 
 type QAPrimaryStakeholderProps = {
   selectedDepartmentId: number;
-  departments: Department[];
   selectedYear: string;
 };
 export default function QAPrimaryStakeholder({
   selectedDepartmentId,
-  departments,
   selectedYear,
 }: QAPrimaryStakeholderProps) {
   const { data: session, status, update } = useSession();

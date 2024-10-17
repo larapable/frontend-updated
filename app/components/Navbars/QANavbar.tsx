@@ -34,7 +34,7 @@ import { useSession } from "next-auth/react";
 import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { BrowserRouter as Router } from "react-router-dom";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import HomeRoundedIcon from '@mui/icons-material/HomeRounded';
 
 interface Department {
   id: number;
@@ -79,9 +79,9 @@ export default function QANavbar() {
                   <Link href="/qaprofileview" legacyBehavior>
                     <ListItemButton sx={{ minHeight: '60px', fontSize: '40px' }}>
                       <ListItemIcon>
-                        <AccountCircleIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                        <HomeRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
                       </ListItemIcon>
-                      <ListItemText primary="Department Profile" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                      <ListItemText primary="Home" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>

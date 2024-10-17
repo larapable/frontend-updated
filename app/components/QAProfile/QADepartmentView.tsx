@@ -150,7 +150,7 @@ export default function QADepartmentView() {
                   fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
-                DEPARTMENT LIST
+                DEPARTMENT PORTAL
               </Typography>
               <Typography
                 variant="h5"
@@ -158,104 +158,81 @@ export default function QADepartmentView() {
                   marginBottom: 2,
                 }}
               >
-                This page provides an overview of all the departments managed by
-                the Quality Assurance (QA) team. Each department listed is
-                actively involved in processes overseen by QA. Browse through
-                the list to view detailed profiles for each department,
-                including key information about their role.
+                Welcome to the Department Portal! This central hub provides access to information and resources related to both the academic and administrative functions of the department. Use the button below to navigate to specific areas of interest.
               </Typography>
             </Grid>
 
             <Grid
-              item
+              container
+              spacing={2}
               sx={{
                 flexGrow: 1,
                 width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
                 p: 3,
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
                 alignItems: "center",
+                justifyContent: "center"
               }}
             >
-              {/* add table here */}
-              <TableContainer component={Paper} sx={{ boxShadow: 3 }}>
-                <Table sx={{ minWidth: 650 }} aria-label="department table">
-                  <TableHead sx={{ backgroundColor: "#AB3510" }}>
-                    <TableRow>
-                      <TableCell
+              <Grid item xs={12} md={6}>
+                <div className="items-center align-middle mt-10 justify-center text-center">
+                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
+                    <div className="flex flex-col mt-28">
+                      <span className="font-bold text-[3rem] text-gray-400 text-center">
+                        Administrative Department 
+                      </span>
+                      <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
+                        Manage department-related administrative tasks.
+                      </span>
+                      <Button
+                        href="/qaadministrative"
+                        variant="contained"
                         sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
+                          mt:7,
+                          width: "30%",
+                          background: "linear-gradient(to left, #8a252c, #AB3510)",
+                          p:1,
+                          paddingY:2,
+                          fontSize: '18px',
+                          alignSelf: "center",
                         }}
                       >
-                        Department Name
-                      </TableCell>
-                      <TableCell
+                        Administrative
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <div className="items-center align-middle mt-10 justify-center text-center">
+                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
+                    <div className="flex flex-col mt-28">
+                      <span className="font-bold text-[3rem] text-gray-400 text-center">
+                        Academic Department
+                      </span>
+                      <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
+                        Manage department-related academic tasks.
+                      </span>
+                      <Button
+                        href="/qaacademic"
+                        variant="contained"
                         sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
+                          mt:7,
+                          width: "30%",
+                          background: "linear-gradient(to left, #8a252c, #AB3510)",
+                          p:1,
+                          paddingY:2,
+                          fontSize: '18px',
+                          alignSelf: "center",
                         }}
                       >
-                        Head Officer
-                      </TableCell>
-                      <TableCell
-                        sx={{
-                          color: "white",
-                          fontWeight: "bold",
-                          fontSize: "1.2rem",
-                          textAlign: "right",
-                          pr: 4,
-                        }}
-                      >
-                        Action
-                      </TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {departments.map((department, index) => (
-                      <TableRow
-                        key={department.id}
-                        sx={{
-                          backgroundColor:
-                            index % 2 === 0 ? "white" : "#fff6d1",
-                        }}
-                      >
-                        <TableCell
-                          sx={{ fontWeight: "500", color: "#2e2c2c", fontSize: "1.2rem" }}
-                        >
-                          {department.department_name}
-                        </TableCell>
-                        <TableCell
-                          sx={{ fontWeight: "500", color: "#2e2c2c", fontSize: "1.2rem"  }}
-                        >
-                          {department.head_officer}
-                        </TableCell>
-                        <TableCell sx={{ textAlign: "right", p: 3 }}>
-                          <Link href={`/qaprofileview/${department.id}`}>
-                            <Button
-                              variant="contained"
-                              sx={{
-                                background:
-                                  "linear-gradient(to left, #8a252c, #AB3510)",
-                                color: "white",
-                                fontWeight: "semibold",
-                                borderRadius: "8px",
-                                padding: "8px 16px",
-                                textTransform: "none",
-                                fontSize: "1.2rem"
-                              }}
-                            >
-                              View
-                            </Button>
-                          </Link>
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              </TableContainer>
+                        Academic
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              </Grid>
             </Grid>
           </Grid>
         </StyledBox>

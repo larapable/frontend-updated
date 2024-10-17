@@ -31,6 +31,21 @@ interface ReportInternal {
   evidence_link: string;
   targetYear: string;
 }
+interface PrimaryReportInternal {
+  id: number;
+  actions: string;
+  budget: number;
+  incharge: string;
+  ofi: string;
+  target_code: string;
+  office_target: string;
+  key_performance_indicator: string;
+  target_performance: string;
+  actual_performance: string;
+  perspective: string;
+  evidence_link: string;
+  targetYear: string;
+}
 
 interface ReportInternalProps {
   selectedYear: string;
@@ -65,8 +80,23 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
 
   // Value for report
   const [internalReport, setInternalReport] = useState<ReportInternal[]>([]);
+
+  const [primaryActions, setPrimaryActions] = useState("");
+  const [primaryBudget, setPrimaryBudget] = useState<number>(0);
+  const [primaryIncharge, setPrimaryIncharge] = useState("");
+  const [primaryOfi, setPrimaryOfi] = useState("");
+
+  const [primaryTargetCode, setPrimaryTargetCode] = useState("");
+  const [primaryOfficeTarget, setPrimaryOfficeTarget] = useState("");
+  const [primaryKPI, setPrimaryKPI] = useState("");
+  const [primaryActualPerformance, setPrimaryActualPerformance] = useState("");
+  const [primaryTargetPerformance, setPrimaryTargetPerformance] = useState("");
+
+  const [primaryEvidenceLink, setPrimaryEvidenceLink] = useState(""); // link
+  const [primaryTargetYear, setPrimaryTargetYear] = useState("");
+
   const [primaryInternalReports, setPrimaryInternalReports] = useState<
-    ReportInternal[]
+    PrimaryReportInternal[]
   >([]);
   const allInternalReports = [...primaryInternalReports, ...internalReport];
   const [isPrimaryReport, setIsPrimaryReport] = useState(false);
@@ -74,6 +104,9 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
   // Modal and edit id
   const [openModal, setOpenModal] = useState(false);
   const [reportEditId, setReportEditId] = useState(0);
+
+  const [primaryOpenModal, setPrimaryOpenModal] = useState(false);
+  const [primaryReportEditId, setPrimaryReportEditId] = useState(0);
 
   useEffect(() => {
     const getAllInternal = async (department_id: number) => {
@@ -129,15 +162,15 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
     setOpenModal(false);
   };
 
-  const handleEditReport = (report: ReportInternal) => {
-    const isPrimary = primaryInternalReports.some((p) => p.id === report.id);
-    setIsPrimaryReport(isPrimary);
-    if (isPrimary) {
-      handleEditPrimaryReport(report);
-    } else {
-      handleEditInternalReport(report);
-    }
-  };
+  // const handleEditReport = (report: ReportInternal) => {
+  //   const isPrimary = primaryInternalReports.some((p) => p.id === report.id);
+  //   setIsPrimaryReport(isPrimary);
+  //   if (isPrimary) {
+  //     handleEditPrimaryReport(report);
+  //   } else {
+  //     handleEditInternalReport(report);
+  //   }
+  // };
 
   const handleEditInternalReport = (report: ReportInternal) => {
     setInternalTargetCode(report.target_code);
@@ -154,25 +187,24 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
     setInternalTargetYear(report.targetYear);
     setInternalEvidenceLink(report.evidence_link || ""); //link
     setOpenModal(true);
-    console.log("Report ID to edit: ", report);
+    console.log("Report ID to edit: ", report.id);
   };
 
-  const handleEditPrimaryReport = (report: ReportInternal) => {
-    setInternalTargetCode(report.target_code);
-    setInternalOfficeTarget(report.office_target);
-    setInternalKPI(report.key_performance_indicator);
-    setInternalActualPerformance(report.actual_performance || "0");
-    setInternalTargetPerformance(report.target_performance || "0");
-    setReportEditId(report.id);
-    setInternalPerspective(report.perspective);
-    setInternalActions(report.actions);
-    setInternalBudget(report.budget);
-    setInternalIncharge(report.incharge);
-    setInternalOFI(report.ofi);
-    setInternalTargetYear(report.targetYear);
-    setInternalEvidenceLink(report.evidence_link || ""); //link
-    setOpenModal(true);
-    console.log("Report ID to edit: ", report);
+  const handleEditPrimaryReport = (report: PrimaryReportInternal) => {
+    setPrimaryTargetCode(report.target_code);
+    setPrimaryOfficeTarget(report.office_target);
+    setPrimaryKPI(report.key_performance_indicator);
+    setPrimaryActualPerformance(report.actual_performance || "0");
+    setPrimaryTargetPerformance(report.target_performance || "0");
+    setPrimaryReportEditId(report.id);
+    setPrimaryActions(report.actions);
+    setPrimaryBudget(report.budget);
+    setPrimaryIncharge(report.incharge);
+    setPrimaryTargetYear(report.targetYear);
+    setPrimaryEvidenceLink(report.evidence_link || ""); // link
+    setPrimaryOfi(report.ofi);
+    setPrimaryOpenModal(true);
+    console.log("Primary Report ID to edit:", report.id);
   };
 
   const handleSaveReport = async () => {
@@ -207,7 +239,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
       if (!response.ok) {
         throw new Error("Failed to update stakeholder report");
       }
-      // Update the financialReports state directly
+      // Update the Internal Reports state directly
       setInternalReport((prevReports) =>
         prevReports.map((report) =>
           report.id === reportEditId ? updatedReport : report
@@ -223,20 +255,20 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
   };
 
   const handleSavePrimaryReport = async () => {
-    const updatedPrimaryReport: ReportInternal = {
-      id: reportEditId,
-      actions: internalActions,
+    const updatedPrimaryReport: PrimaryReportInternal = {
+      id: primaryReportEditId,
+      actions: primaryActions,
       perspective: InternalPerspective,
-      budget: internalBudget,
-      incharge: internalIncharge,
-      ofi: internalOFI,
-      target_code: internalTargetCode,
-      office_target: internalOfficeTarget,
-      key_performance_indicator: internalKPI,
-      target_performance: internalTargetPerformance,
-      actual_performance: internalActualPerformance,
-      targetYear: internalTargetYear,
-      evidence_link: internalEvidenceLink, //link
+      budget: primaryBudget,
+      incharge: primaryIncharge,
+      ofi: primaryOfi,
+      target_code: primaryTargetCode,
+      office_target: primaryOfficeTarget,
+      key_performance_indicator: primaryKPI,
+      target_performance: primaryTargetPerformance,
+      actual_performance: primaryActualPerformance,
+      targetYear: primaryTargetYear,
+      evidence_link: primaryEvidenceLink, //link
     };
 
     try {
@@ -256,7 +288,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
       }
       setPrimaryInternalReports((prevReports) =>
         prevReports.map((report) =>
-          report.id === reportEditId ? updatedPrimaryReport : report
+          report.id === primaryReportEditId ? updatedPrimaryReport : report
         )
       );
 
@@ -416,7 +448,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
 
             {/* Table Body */}
             <TableBody>
-              {allInternalReports
+              {primaryInternalReports
                 .filter((scorecard) => {
                   if (!selectedYear) return true;
                   return scorecard.targetYear === selectedYear;
@@ -426,7 +458,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                     key={index}
                     sx={{
                       borderBottom: `1px solid ${
-                        index < allInternalReports.length - 1
+                        index < primaryInternalReports.length - 1
                           ? "gray-200"
                           : "transparent"
                       }`,
@@ -489,7 +521,100 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                       )}
                     </TableCell>
                     <TableCell align="center" sx={{ color: "#c2410c" }}>
-                      <button onClick={() => handleEditReport(report)}>
+                      <button onClick={() => handleEditPrimaryReport(report)}>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          strokeWidth="1.5"
+                          stroke="currentColor"
+                          className="w-6 h-6"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                          />
+                        </svg>
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+
+              {internalReport
+                .filter((scorecard) => {
+                  if (!selectedYear) return true;
+                  return scorecard.targetYear === selectedYear;
+                })
+                .map((report, index) => (
+                  <TableRow
+                    key={index}
+                    sx={{
+                      borderBottom: `1px solid ${
+                        index < internalReport.length - 1
+                          ? "gray-200"
+                          : "transparent"
+                      }`,
+                    }}
+                  >
+                    {/* Table Cells */}
+                    <TableCell>
+                      <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                        {truncateString(report.office_target, 45)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report.key_performance_indicator, 20)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.actions || "...", 8)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {report?.budget || "..."}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.incharge || "...", 8)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] mr-2">
+                        {report.actual_performance}
+                      </span>
+                      <span className="text-center">|</span>
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] ml-2">
+                        {report.target_performance}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {truncateString(report?.ofi || "...", 4)}
+                      </span>
+                    </TableCell>
+                    <TableCell align="center">
+                      {report.evidence_link ? (
+                        <a
+                          href={report.evidence_link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-orange-500 underline font-medium text-[1.1rem]"
+                        >
+                          {report.evidence_link.length > 20
+                            ? `${report.evidence_link.substring(0, 15)}...`
+                            : report.evidence_link}
+                        </a>
+                      ) : (
+                        "..."
+                      )}
+                    </TableCell>
+                    <TableCell align="center" sx={{ color: "#c2410c" }}>
+                      <button onClick={() => handleEditInternalReport(report)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
@@ -739,33 +864,241 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
               >
                 Cancel
               </Button>
-              {isPrimaryReport ? (
-                <Button
-                  variant="contained"
-                  onClick={handleSavePrimaryReport}
+
+              <Button
+                variant="contained"
+                onClick={handleSaveReport}
+                sx={{
+                  minWidth: "10rem",
+                  background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  p: 1,
+                  fontSize: "18px",
+                }}
+              >
+                Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={primaryOpenModal} onClose={() => setPrimaryOpenModal(false)}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh",
+          }}
+        >
+          <Box
+            sx={{
+              background: "white",
+              padding: 6,
+              borderRadius: 2,
+              boxShadow: 24,
+              position: "relative",
+              maxWidth: "80vw",
+              overflowX: "hidden",
+            }}
+          >
+            <Typography
+              variant="h4"
+              component="h2"
+              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
+            >
+              Internal
+            </Typography>
+
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 4, mb: 6 }}>
+              <Box className="flex flex-col w-[23rem] h-10">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Target Code
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
                   sx={{
-                    minWidth: "10rem",
-                    background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    p: 1,
-                    fontSize: "18px",
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
                   }}
-                >
-                  Save
-                </Button>
-              ) : (
-                <Button
-                  variant="contained"
-                  onClick={handleSaveReport}
+                  value={primaryTargetCode}
+                  onChange={(e) => setPrimaryTargetCode(e.target.value)}
+                />
+              </Box>
+
+              <Box className="flex flex-col w-[23rem] h-10">
+                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                  Budget
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
                   sx={{
-                    minWidth: "10rem",
-                    background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    p: 1,
-                    fontSize: "18px",
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
                   }}
-                >
-                  Save
-                </Button>
-              )}
+                  value={primaryBudget}
+                  onChange={(e) =>
+                    setPrimaryBudget(parseFloat(e.target.value) || 0)
+                  }
+                />
+              </Box>
+
+              <Box className="flex flex-col w-[23rem] h-10">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  KPI
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={primaryKPI}
+                  disabled
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ display: "flex", flexDirection: "row", gap: 4, mb: 6 }}>
+              <Box className="flex flex-col w-[23rem] h-10">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  In Charge
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                  }}
+                  value={primaryIncharge}
+                  onChange={(e) => setPrimaryIncharge(e.target.value)}
+                />
+              </Box>
+
+              <Box className="flex flex-col w-[23rem] h-10">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Link of Evidence
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={primaryEvidenceLink}
+                  disabled
+                />
+              </Box>
+
+              <Box className="flex flex-col w-[23rem] h-10">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Performance (Actual | Target)
+                </span>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "50px",
+                    "& .MuiInputBase-root": { height: "50px" },
+                    background: "#f2f2f2",
+                  }}
+                  value={
+                    primaryActualPerformance + " | " + primaryTargetPerformance
+                  }
+                  disabled
+                />
+              </Box>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Office Target
+                </span>
+                <textarea
+                  value={primaryOfficeTarget}
+                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  disabled
+                />
+              </div>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  Actions
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <textarea
+                  value={primaryActions}
+                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  onChange={(e) => setPrimaryActions(e.target.value)}
+                />
+              </div>
+            </Box>
+
+            <Box sx={{ mb: 2 }}>
+              <div className="flex flex-col">
+                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                  OFI
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <textarea
+                  value={primaryOfi}
+                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  onChange={(e) => setPrimaryOfi(e.target.value)}
+                />
+              </div>
+            </Box>
+
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 2,
+                mt: 3,
+                flexWrap: "wrap",
+              }}
+            >
+              <Button
+                variant="contained"
+                onClick={() => setPrimaryOpenModal(false)}
+                sx={{
+                  minWidth: "10rem",
+                  color: "#AB3510",
+                  p: 1,
+                  fontSize: "18px",
+                }}
+                style={{
+                  background: "white",
+                  border: "1px solid #AB3510",
+                }}
+              >
+                Cancel
+              </Button>
+
+              <Button
+                variant="contained"
+                onClick={handleSavePrimaryReport}
+                sx={{
+                  minWidth: "10rem",
+                  background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  p: 1,
+                  fontSize: "18px",
+                }}
+              >
+                Save
+              </Button>
             </Box>
           </Box>
         </Box>
