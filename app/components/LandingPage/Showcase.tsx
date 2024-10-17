@@ -20,12 +20,12 @@ const Showcase = () => {
           Atlas Feature Showcase
         </Typography>
         <Typography sx={{ mt: 2, fontSize: '1.5rem' }}>
-          Dive into the feature showcase of Atlas and discover a comprehensive suite designed to elevate your strategic planning endeavors.
+          Dive into the feature showcase of Atlas and discover a comprehensive<br/> suite designed to elevate your strategic planning endeavors.
         </Typography>
       </Box>
 
       {/* Feature Items */}
-      <Grid container spacing={4} justifyContent="center">
+      <Grid container spacing={2} justifyContent="center">
         {[
           { img: "/goalFeature.png", title: "Goal Setting" },
           { img: "/swot.png", title: "SWOT Analysis" },
@@ -33,12 +33,13 @@ const Showcase = () => {
           { img: "/card.png", title: "Balance Scorecard" },
           { img: "/visualization.png", title: "Visualization" }
         ].map((feature, index) => (
-          <Grid item xs={12} sm={6} md={4} key={index}>
+          <Grid item xs={12} sm={6} md={2} key={index}>
             <Box
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                mt:5
                   // transition: 'transform 0.3s ease-in-out',
                   // '&:hover': {
                   //   transform: 'scale(1.1)',

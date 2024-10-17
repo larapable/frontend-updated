@@ -195,7 +195,9 @@ export default function SignupPage() {
             // },
             head: selectedHead,
             department:
-              role === "qualityAssurance" ? 1 : { id: selectedDepartment }, // Set department to null for QA role
+              role === "qualityAssurance"
+                ? { id: 1 }
+                : { id: selectedDepartment }, // Set department to null for QA role
           }),
         }
       );
@@ -325,7 +327,7 @@ export default function SignupPage() {
               <strong>Select a role</strong>
             </MenuItem>
             <MenuItem value="headOfficer">HEAD OFFICER</MenuItem>
-            <MenuItem value="faculty">FACULTY</MenuItem>
+            {/* <MenuItem value="faculty">FACULTY</MenuItem> */}
             <MenuItem value="qualityAssurance">QUALITY ASSURANCE</MenuItem>
           </Select>
         </FormControl>
@@ -347,11 +349,13 @@ export default function SignupPage() {
                 <strong>Select Head Officer</strong>
               </MenuItem>
               {Array.isArray(heads) &&
-                Array.from(new Set(heads)).map((headName, index) => (
-                  <MenuItem key={index} value={headName}>
-                    {headName}
-                  </MenuItem>
-                ))}
+                Array.from(new Set(heads.filter(Boolean))).map(
+                  (headName, index) => (
+                    <MenuItem key={index} value={headName}>
+                      {headName}
+                    </MenuItem>
+                  )
+                )}
             </Select>
           </FormControl>
         )}

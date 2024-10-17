@@ -16,6 +16,10 @@ import QAPrimaryFinancial from "@/app/components/QABSC/QAPrimaryFinancial";
 import QAPrimaryStakeholder from "@/app/components/QABSC/QAPrimaryStakeholder";
 import QAPrimaryInternal from "@/app/components/QABSC/QAPrimaryInternal";
 import QAPrimaryLearning from "@/app/components/QABSC/QAPrimaryLearning";
+import QAFinancial from "@/app/components/QABSC/QAFinancial";
+import QAStakeholder from "@/app/components/QABSC/QAStakeholder";
+import QAInternal from "@/app/components/QABSC/QAInternal";
+import QALearning from "@/app/components/QABSC/QALearning";
 
 interface Department {
   id: number;
@@ -297,10 +301,44 @@ const QAScorecard = () => {
                   />
                 </CardContent>
               </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAPrimaryInternal
+                    selectedDepartmentId={selectedDepartmentId}
+                    selectedYear={selectedYear}
+                  />
+                </CardContent>
+              </Card>
+              <Card
+                sx={{
+                  boxShadow: "0 0.3rem 0.3rem 0 rgba(0,0,0,0.25)",
+                  border: "1px solid #D1D5DB",
+                  bgcolor: "#FFFFFF",
+                  p: 0.5,
+                  borderRadius: 2,
+                  mb: 3,
+                }}
+              >
+                <CardContent>
+                  <QAPrimaryLearning
+                    selectedDepartmentId={selectedDepartmentId}
+                    selectedYear={selectedYear}
+                  />
+                </CardContent>
+              </Card>
             </Box>
           </Grid>
         )}
-        {/* {currentView === "secondary" && (
+        {currentView === "secondary" && (
           <Grid container>
             <Box width="100%">
               <Card
@@ -373,7 +411,7 @@ const QAScorecard = () => {
               </Card>
             </Box>
           </Grid>
-        )} */}
+        )}
       </Grid>
     </Grid>
   );

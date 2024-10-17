@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react';
 import '@/app/page.css'
 import { Box, Typography, Grid, SvgIcon } from '@mui/material';
+import React from 'react';
 
 const Benefits = () => {
 
@@ -17,7 +18,7 @@ const Benefits = () => {
                 flexDirection: 'column',
                 justifyContent: 'center', 
             }}
-            id="benefits-section"
+            id="benefit-section"
         >
             <Box display="flex" flexDirection="column" alignItems="center">
                 <Typography variant="h3" sx={{ mt: 5, fontWeight: 'bold', color: '#302E2E' }}>

@@ -158,7 +158,10 @@ export default function QADepartmentView() {
                   marginBottom: 2,
                 }}
               >
-                Welcome to the Department Portal! This central hub provides access to information and resources related to both the academic and administrative functions of the department. Use the button below to navigate to specific areas of interest.
+                Welcome to the Department Portal! This central hub provides
+                access to information and resources related to both the academic
+                and administrative functions of the department. Use the button
+                below to navigate to specific areas of interest.
               </Typography>
             </Grid>
 
@@ -172,7 +175,7 @@ export default function QADepartmentView() {
                 display: "flex",
                 flexDirection: "row",
                 alignItems: "center",
-                justifyContent: "center"
+                justifyContent: "center",
               }}
             >
               <Grid item xs={12} md={6}>
@@ -180,25 +183,26 @@ export default function QADepartmentView() {
                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
                     <div className="flex flex-col mt-28">
                       <span className="font-bold text-[3rem] text-gray-400 text-center">
-                        Administrative Department 
+                        ADMIN & ACADEMIC SUPPORT
                       </span>
                       <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
-                        Manage department-related administrative tasks.
+                        Institutional strategic framework
                       </span>
                       <Button
                         href="/qaadministrative"
                         variant="contained"
                         sx={{
-                          mt:7,
+                          mt: 7,
                           width: "30%",
-                          background: "linear-gradient(to left, #8a252c, #AB3510)",
-                          p:1,
-                          paddingY:2,
-                          fontSize: '18px',
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          paddingY: 2,
+                          fontSize: "18px",
                           alignSelf: "center",
                         }}
                       >
-                        Administrative
+                        Admin
                       </Button>
                     </div>
                   </div>
@@ -209,21 +213,23 @@ export default function QADepartmentView() {
                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
                     <div className="flex flex-col mt-28">
                       <span className="font-bold text-[3rem] text-gray-400 text-center">
-                        Academic Department
+                        ACADEMIC <br />
+                        DEPARTMENTS
                       </span>
                       <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
-                        Manage department-related academic tasks.
+                        Institutional strategic framework
                       </span>
                       <Button
                         href="/qaacademic"
                         variant="contained"
                         sx={{
-                          mt:7,
+                          mt: 7,
                           width: "30%",
-                          background: "linear-gradient(to left, #8a252c, #AB3510)",
-                          p:1,
-                          paddingY:2,
-                          fontSize: '18px',
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          paddingY: 2,
+                          fontSize: "18px",
                           alignSelf: "center",
                         }}
                       >

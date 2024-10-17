@@ -19,7 +19,7 @@ const Highlight = () => {
         <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
           Why Choose Atlas?
         </Typography>
-        <Typography variant="h6" sx={{ mt: 2, fontSize: '1.5rem' }}>
+        <Typography sx={{ mt: 2, fontSize: '1.5rem' }}>
           Discover how Atlas can revolutionize your strategic planning with AI-driven insights,
           <br /> comprehensive SWOT analysis, and balanced scorecard creation.
         </Typography>

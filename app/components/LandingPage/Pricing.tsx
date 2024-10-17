@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import '@/app/page.css'
 import { Box, Typography, Button, Paper, Avatar, Divider } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
@@ -6,164 +6,201 @@ import { CheckCircle } from '@mui/icons-material';
 
 const Pricing = () => {
 
+  const [isHovered, setIsHovered] = useState(false);
+
+  const titleStyle = {
+    color: isHovered ? '#AB3510' : '#FFFFFF',
+    transition: 'color 0.3s',
+  };
+
+  const textStyle = {
+    color: isHovered ? '#302E2E' : '#FFFFFF',
+    transition: 'color 0.3s',
+  };
 
   return (
     <Box
+      style={{ backgroundImage: `url('/landingbg.png')` }}
       sx={{
         backgroundColor: '#fafac2',
-        height: '110vh',
-        width: '100%',
-        mt: '12rem',
+        height: '100vh',
+        display: 'flex',
+        flexDirection: 'col',
+        flexWrap: 'wrap',
+        alignItems: 'center',
         textAlign: 'center',
         color: '#302E2E',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
         justifyContent: 'center',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        width: '100%',
+        padding: '2rem',
+        position: 'relative',
       }}
       id="pricing-section"
     >
-      <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-        <Typography variant="h4" fontWeight="bold">
-          Choose Your Plan
-        </Typography>
-        <Typography variant="h6" mt={2}>
-          Choose the right plan for your needs. Unlock powerful features and <br />
-          enhance your strategic planning today.
+      <Box sx={{mb: '-5rem' }}>
+        <Typography variant="h3" sx={{ fontWeight: 'bold', color: 'white' }}>
+          Start for free and upgrade to <br/>unlock more features
         </Typography>
       </Box>
+
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'row',
+          flexDirection: 'col',
+          gap: 5,
+          mt:10,
+          alignItems: 'center',
+          width: '100%',
+          height: 'auto',
           justifyContent: 'center',
-          gap: 10,
-          mt: 4,
+          textAlign: 'center',
         }}
       >
-        {/* FREE */}
-        <Paper
-          elevation={3}
+        <Box
           sx={{
-            height: '35rem',
+            backgroundColor: isHovered ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)',
+            border: '1px solid #fad655',
+            borderRadius: '2rem',
+            height: '33rem',
             width: '25rem',
-            borderRadius: '16px',
+            textAlign: 'start',
+            p:5,
             transition: 'transform 0.3s ease-in-out',
             '&:hover': {
               transform: 'scale(1.1)',
             },
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'row', p: 3 }}>
-            <Avatar sx={{ bgcolor: '#FFF9C4', height: '6rem', width: '6rem' }}>
-              <img src="/coins.png" alt="" style={{ height: '5rem', width: '5rem' }} />
-            </Avatar>
-            <Box sx={{ ml: 2, mt: 1 }}>
-              <Typography variant="h6" fontWeight="medium">
-                Free
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-                <Typography variant="h4" fontWeight="extrabold" mt={1}>
-                  $0.00
-                </Typography>
-                <Typography variant="body1" color="text.secondary" ml={1}>
-                  /month
-                </Typography>
-              </Box>
-            </Box>
-          </Box>
-          <Divider sx={{ mx: 2, my: 1 }} />
-          <Box sx={{ p: 2 }}>
-            {Array(5)
-              .fill('lorem')
-              .map((text, index) => (
-                <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2, color: '#d14330' }}>
-                  <CheckCircle sx={{ color: '#d14330' }} />
-                  <Typography variant="body1" sx={{ ml: 2 }}>
-                    {text}
-                  </Typography>
-                </Box>
-              ))}
-          </Box>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: '#e0e0e0',
-              width: '20rem',
-              margin: 'auto',
-              marginTop: '2rem',
-              borderRadius: '30px',
-              '&:hover': {
-                bgcolor: '#AB3510',
-                color: 'white',
-              },
-            }}
-          >
-            Get Started
-          </Button>
-        </Paper>
+          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+            Free
+          </Typography>
+          <Typography variant="h4" sx={{...titleStyle, fontWeight:'600' }}>
+            PHP 0.00
+          </Typography>
+          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+            Forever
+          </Typography>
 
-        {/* BASIC */}
-        <Paper
-          elevation={3}
+          <Divider sx={{ mx: 1, my: 2, background: 'white' }} />
+          {[
+            'Limited user accounts',
+            'Limited Strategic Goals',
+            'Maximum of 5 SWOT items',
+            'Limited AI-generated insights',
+            'PDF report download is not available',
+          ].map((feature, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 1, // Add margin-bottom between items
+              }}
+            >
+              <CheckCircle
+                sx={{mr: 1, mt:2, color:'white' }}
+              />
+              <Typography sx={{ ...textStyle, fontSize: '18px', mt:2 }}>
+                {feature}
+              </Typography>
+            </Box>
+          ))}
+          <div className="flex justify-center space-x-4 mt-3">
+            <Button
+              href="/signup"
+              sx={{
+                background: '#ffffff',
+                fontSize: "18px",
+                fontWeight: "bold",
+                color: '#AB3510', 
+                width: '13rem',
+                height: '3rem',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  background: '#fad655'
+                },
+              }}
+            >
+            Get Started
+          </Button>
+          </div>
+        </Box>
+
+        <Box
           sx={{
-            height: '35rem',
+            backgroundColor: isHovered ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)',
+            border: '1px solid #fad655',
+            borderRadius: '2rem',
+            height: '38rem',
             width: '25rem',
-            borderRadius: '16px',
+            textAlign: 'start',
+            p:5,
             transition: 'transform 0.3s ease-in-out',
             '&:hover': {
               transform: 'scale(1.1)',
             },
           }}
         >
-          <Box sx={{ display: 'flex', flexDirection: 'row', p: 3 }}>
-            <Avatar sx={{ bgcolor: '#FFF9C4', height: '6rem', width: '6rem' }}>
-              <img src="/coins.png" alt="" style={{ height: '5rem', width: '5rem' }} />
-            </Avatar>
-            <Box sx={{ ml: 2, mt: 1 }}>
-              <Typography variant="h6" fontWeight="medium">
-                Basic
+          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+            Pro
+          </Typography>
+          <Typography variant="h4" sx={{...titleStyle, fontWeight:'600' }}>
+            PHP 200.00
+          </Typography>
+          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+            Forever
+          </Typography>
+
+          <Divider sx={{ mx: 1, my: 2, background: 'white' }} />
+          {[
+            'Unlimited user accounts',
+            'Unlimited strategic goals',
+            'Unlimited SWOT analysis input',
+            'Advanced AI-generated insights',
+            'PDF report download available',
+            'Unlimited strategy maps',
+            'Unlimited balanced scorecards',
+          ].map((feature, index) => (
+            <Box
+              key={index}
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 1, // Add margin-bottom between items
+              }}
+            >
+              <CheckCircle
+                sx={{mr: 1, mt:2, color:'white' }}
+              />
+              <Typography sx={{ ...textStyle, fontSize: '18px', mt:2 }}>
+                {feature}
               </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'baseline' }}>
-                <Typography variant="h4" fontWeight="extrabold" mt={1}>
-                  $10.00
-                </Typography>
-                <Typography variant="body1" color="text.secondary" ml={1}>
-                  /month
-                </Typography>
-              </Box>
             </Box>
-          </Box>
-          <Divider sx={{ mx: 2, my: 1 }} />
-          <Box sx={{ p: 2 }}>
-            {Array(5)
-              .fill('lorem')
-              .map((text, index) => (
-                <Box key={index} sx={{ display: 'flex', alignItems: 'center', mt: 2, color: '#d14330' }}>
-                  <CheckCircle sx={{ color: '#d14330' }} />
-                  <Typography variant="body1" sx={{ ml: 2 }}>
-                    {text}
-                  </Typography>
-                </Box>
-              ))}
-          </Box>
-          <Button
-            variant="contained"
-            sx={{
-              bgcolor: '#e0e0e0',
-              width: '20rem',
-              margin: 'auto',
-              marginTop: '2rem',
-              borderRadius: '30px',
-              '&:hover': {
-                bgcolor: '#AB3510',
-                color: 'white',
-              },
-            }}
-          >
+          ))}
+          <div className="flex justify-center space-x-4 mt-3">
+            <Button
+              href="/payment"
+              sx={{
+                background: '#ffffff',
+                fontSize: "18px",
+                fontWeight: "bold",
+                color: '#AB3510', 
+                width: '13rem',
+                height: '3rem',
+                '&:hover': {
+                  transform: 'scale(1.1)',
+                  background: '#fad655'
+                },
+              }}
+            >
             Get Started
           </Button>
-        </Paper>
+          </div>
+        </Box>
+
       </Box>
     </Box>
   );

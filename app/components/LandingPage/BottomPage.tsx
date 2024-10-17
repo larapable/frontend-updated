@@ -12,8 +12,8 @@ const BottomPage = () => {
     }
   };
   // WHEN FEATURE IS CLICKED
-  const handleFeatureClick = () => {
-    const element = document.getElementById("feature-section");
+  const handleBenefitClick = () => {
+    const element = document.getElementById("benefit-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
     }
@@ -61,7 +61,7 @@ const BottomPage = () => {
           <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
             <Typography variant="subtitle1" sx={{ fontWeight: 'bold', color: '#686666' }}>Atlas</Typography>
             <Typography variant="body2" sx={{ color: '#686666', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }} onClick={handleAboutUsClick}>About us</Typography>
-            <Typography variant="body2" sx={{ color: '#686666', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }} onClick={handleFeatureClick}>Features</Typography>
+            <Typography variant="body2" sx={{ color: '#686666', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }} onClick={handleBenefitClick}>Benefits</Typography>
             <Typography variant="body2" sx={{ color: '#686666', cursor: 'pointer', '&:hover': { textDecoration: 'underline' } }} onClick={handlePricingClick}>Pricing</Typography>
           </Box>
 

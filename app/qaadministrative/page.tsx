@@ -156,7 +156,7 @@ export default function QAAdministrative() {
                   fontSize: { xs: "2rem", sm: "3.5rem" },
                 }}
               >
-                ADMINISTARTIVE
+                ADMIN & ACADEMIC SUPPORT
               </Typography>
             </Grid>
 

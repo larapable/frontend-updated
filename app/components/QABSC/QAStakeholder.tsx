@@ -243,6 +243,16 @@ export default function QAStakeholder({
                 >
                   Stakeholder Office Target
                 </TableCell>
+                {/* {added KPI} */}
+                <TableCell
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  KPI 
+                </TableCell>
                 {/* {added target Year} */}
                 <TableCell
                   align="center"
@@ -272,7 +282,18 @@ export default function QAStakeholder({
                     color: "#2e2c2c",
                   }}
                 >
-                  Target Performance
+                  Target 
+                </TableCell>
+                 {/* {added actual} */}
+                 <TableCell
+                  align="center"
+                  sx={{
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    color: "#2e2c2c",
+                  }}
+                >
+                  Actual 
                 </TableCell>
                 <TableCell
                   align="center"
@@ -354,6 +375,14 @@ export default function QAStakeholder({
                             {scorecard.office_target || "N/A"}
                           </span>
                         </TableCell>
+                        {/* {added KPI} */}
+                        <TableCell>
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.key_performance_indicator && scorecard.key_performance_indicator.length > 20
+                              ? `${scorecard.key_performance_indicator.substring(0, 15)}...`
+                              : scorecard.key_performance_indicator || "N/A"}
+                          </span>
+                        </TableCell>
                         {/* {added target year} */}
                         <TableCell align="center">
                           <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
@@ -368,6 +397,12 @@ export default function QAStakeholder({
                         <TableCell align="center">
                           <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                             {scorecard.target_performance || "N/A"}
+                          </span>
+                        </TableCell>
+                        {/* {added actual performance} */}
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.actual_performance || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">

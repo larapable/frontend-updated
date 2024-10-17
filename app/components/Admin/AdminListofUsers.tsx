@@ -24,7 +24,7 @@ interface UserEntity {
   role: string;
   age: number;
   birthdate: Date;
-  generatedAiStrats: number;
+  //generatedAiStrats: number;
   // Add other fields if they exist in your UserEntity class
 }
 
@@ -167,7 +167,7 @@ const AdminListOfUser: React.FC = () => {
                       "Role",
                       "Age",
                       "Birthdate",
-                      "Generated AI Strats",
+                      //"Generated AI Strats",
                     ].map((header) => (
                       <TableCell
                         key={header}
@@ -240,12 +240,12 @@ const AdminListOfUser: React.FC = () => {
                           ? new Date(user.birthdate).toLocaleDateString()
                           : "N/A"}
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         className="border border-gray-400 max-w-xs break-words"
                         sx={{ fontSize: "1rem", textAlign: "center" }}
                       >
                         {user.generatedAiStrats}
-                      </TableCell>
+                      </TableCell>*/}
                     </TableRow>
                   ))}
                 </TableBody>

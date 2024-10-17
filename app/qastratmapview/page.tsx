@@ -59,7 +59,7 @@ export default function QAStratmapView() {
 
     const postToPrimaryStrategies = async () => {
       const response = await fetch(
-        `http://localhost:8080/user/getHasPrimaryStrats/${username}`
+        `http://localhost:8080/department/getHasPrimaryStrats/1`
       );
       const data = await response.json();
 
@@ -235,9 +235,9 @@ export default function QAStratmapView() {
           await Promise.all(postPromises);
 
           // Update hasPrimaryStrats in the user entity
-          if (username) {
+          if (department_id) {
             const response = await fetch(
-              `http://localhost:8080/user/update/primaryStrats/${username}`,
+              `http://localhost:8080/department/update/primaryStrats/${department_id}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -378,18 +378,17 @@ export default function QAStratmapView() {
   const handlePrimaryFSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`,
+        office_target: `${newPrimaryFTargetCode}: ${newPrimaryFStrategy}`, 
         department: { id: department_id }, // Initialize with current department ID
       };
-
-      for (const department of departments) {
-        // Loop through all departments
+  
+      for (const department of departments) { // Loop through all departments
         data.department.id = department.id; // Update department ID for each iteration
-
-        console.log("Data to be sent:", data);
-
+  
+        console.log("Data to be sent:", data); 
+  
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryFinancial/insert",
+          "http://localhost:8080/stratmap/primaryFinancial/insert", 
           {
             method: "POST",
             headers: {
@@ -398,16 +397,12 @@ export default function QAStratmapView() {
             body: JSON.stringify(data),
           }
         );
-
+  
         if (!response.ok) {
-          console.error(
-            "Error saving primary financial strategy to department",
-            department.id,
-            response.status
-          );
+          console.error("Error saving primary financial strategy to department", department.id, response.status);
         }
       }
-
+  
       closePrimaryFModal();
       fetchPrimaryFinancialStrategies(department_id);
     } catch (error) {
@@ -419,16 +414,16 @@ export default function QAStratmapView() {
     try {
       const data = {
         office_target: `${newPrimarySTargetCode}: ${newPrimarySStrategy}`,
-        department: { id: department_id },
+        department: { id: department_id }, 
       };
-
-      for (const department of departments) {
-        data.department.id = department.id;
-
+  
+      for (const department of departments) { 
+        data.department.id = department.id; 
+  
         console.log("Data to be sent (Stakeholder):", data);
-
+  
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryStakeholder/insert",
+          "http://localhost:8080/stratmap/primaryStakeholder/insert", 
           {
             method: "POST",
             headers: {
@@ -437,16 +432,12 @@ export default function QAStratmapView() {
             body: JSON.stringify(data),
           }
         );
-
+  
         if (!response.ok) {
-          console.error(
-            "Error saving primary stakeholder strategy to department",
-            department.id,
-            response.status
-          );
+          console.error("Error saving primary stakeholder strategy to department", department.id, response.status);
         }
       }
-
+  
       closePrimarySModal();
       fetchPrimaryStakeholderStrategies(department_id);
     } catch (error) {
@@ -457,15 +448,15 @@ export default function QAStratmapView() {
   const handlePrimaryLGSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`,
-        department: { id: department_id },
+        office_target: `${newPrimaryLGTargetCode}: ${newPrimaryLGStrategy}`, 
+        department: { id: department_id }, 
       };
-
+  
       for (const department of departments) {
         data.department.id = department.id;
-
-        console.log("Data to be sent (Learning & Growth):", data);
-
+  
+        console.log("Data to be sent (Learning & Growth):", data); 
+  
         const response = await fetch(
           "http://localhost:8080/stratmap/primaryLearning/insert",
           {
@@ -476,16 +467,12 @@ export default function QAStratmapView() {
             body: JSON.stringify(data),
           }
         );
-
+  
         if (!response.ok) {
-          console.error(
-            "Error saving primary learning & growth strategy to department",
-            department.id,
-            response.status
-          );
+          console.error("Error saving primary learning & growth strategy to department", department.id, response.status);
         }
       }
-
+  
       closePrimaryLGModal();
     } catch (error) {
       console.error("Error saving primary learning & growth strategy:", error);
@@ -495,17 +482,17 @@ export default function QAStratmapView() {
   const handlePrimaryIPSave = async () => {
     try {
       const data = {
-        office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`,
-        department: { id: department_id },
+        office_target: `${newPrimaryIPTargetCode}: ${newPrimaryIPStrategy}`, 
+        department: { id: department_id }, 
       };
-
-      for (const department of departments) {
-        data.department.id = department.id;
-
-        console.log("Data to be sent (Internal Process):", data);
-
+  
+      for (const department of departments) { 
+        data.department.id = department.id; 
+  
+        console.log("Data to be sent (Internal Process):", data); 
+  
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryInternal/insert",
+          "http://localhost:8080/stratmap/primaryInternal/insert", 
           {
             method: "POST",
             headers: {
@@ -514,16 +501,12 @@ export default function QAStratmapView() {
             body: JSON.stringify(data),
           }
         );
-
+  
         if (!response.ok) {
-          console.error(
-            "Error saving primary internal process strategy to department",
-            department.id,
-            response.status
-          );
+          console.error("Error saving primary internal process strategy to department", department.id, response.status);
         }
       }
-
+  
       closePrimaryIPModal();
     } catch (error) {
       console.error("Error saving primary internal process strategy:", error);

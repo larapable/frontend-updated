@@ -35,7 +35,6 @@ const StyledBox = styled(Box)({
   height: "auto",
 });
 
-
 export default function RegisterDepartment() {
   const [departmentName, setDepartmentName] = useState("");
   const [headOfficer, setHeadOfficer] = useState("");
@@ -46,7 +45,7 @@ export default function RegisterDepartment() {
   const [email, setEmail] = useState("");
   const [category, setCategory] = useState("");
   const [showModal, setShowModal] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+  const [modalMessage, setModalMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
   const handleDepartmentNameChange = (e: any) =>
@@ -63,21 +62,21 @@ export default function RegisterDepartment() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    if (
-      !departmentName ||
-      !headOfficer ||
-      !departmentLandline ||
-      !location ||
-      !university ||
-      !description ||
-      !email ||
-      !category
-    ) {
-      // alert("Please fill in all required fields.");
-      setModalMessage('Please fill in all required fields.');
-      setShowModal(true);
-      return;
-    }
+    // if (
+    //   !departmentName ||
+    //   !headOfficer ||
+    //   !departmentLandline ||
+    //   !location ||
+    //   !university ||
+    //   !description ||
+    //   !email ||
+    //   !category
+    // ) {
+    //   // alert("Please fill in all required fields.");
+    //   setModalMessage("Please fill in all required fields.");
+    //   setShowModal(true);
+    //   return;
+    // }
 
     try {
       const response = await fetch(
@@ -102,8 +101,8 @@ export default function RegisterDepartment() {
 
       if (!response.ok) {
         // Handle non-successful responses
-        const errorMessage = await response.text(); 
-        throw new Error(errorMessage || "Failed to register department."); 
+        const errorMessage = await response.text();
+        throw new Error(errorMessage || "Failed to register department.");
       }
       setDepartmentName("");
       setHeadOfficer("");
@@ -115,14 +114,16 @@ export default function RegisterDepartment() {
       setCategory("");
 
       // alert("Department registered successfully!");
-      setModalMessage('Department registered successfully!');
+      setModalMessage("Department registered successfully!");
       setShowModal(true);
     } catch (error) {
       console.error("Error:", error);
       // alert(
       //   "An error occurred while registering the department. Please try again later."
       // );
-      setModalMessage('An error occurred while registering the department. Please try again later.');
+      setModalMessage(
+        "An error occurred while registering the department. Please try again later."
+      );
       setShowModal(true);
     }
   };
@@ -159,105 +160,129 @@ export default function RegisterDepartment() {
         }}
       >
         <StyledBox sx={{ width: "100%", maxWidth: "800px" }}>
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Typography
-                variant="h4"
-                component="h1"
-                sx={{
-                  fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
-                }}
-              >
-                REGISTER DEPARTMENT
-              </Typography>
+              variant="h4"
+              component="h1"
+              sx={{
+                fontWeight: "bold",
+                marginBottom: 2,
+                fontSize: { xs: "2rem", sm: "3.5rem" },
+              }}
+            >
+              REGISTER DEPARTMENT
+            </Typography>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Typography
-                variant="h5"
-                component="h1"
-                sx={{
-                  fontWeight: "400",
-                  marginBottom: 2,
-                }}
-              >
-                Enter the details to get going
-              </Typography>
+              variant="h5"
+              component="h1"
+              sx={{
+                fontWeight: "400",
+                marginBottom: 2,
+              }}
+            >
+              Enter the details to get going
+            </Typography>
           </Box>
-          <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             {/* indicator */}
             <div className="w-full max-w-3xl mx-auto px-4 py-6 mt-5 mb-5">
-                <div className="flex items-center justify-between">
-                  <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center">
-                      <span className="font-semibold text-white">1</span>
-                    </div>
-                    <span className="mt-2 text-sm font-medium">Information</span>
+              <div className="flex items-center justify-between">
+                <div className="flex flex-col items-center">
+                  <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center">
+                    <span className="font-semibold text-white">1</span>
                   </div>
-                  <div className="w-[15rem] h-2 bg-[#c7360a] mt-[-1rem] ml-[-0.6rem]"></div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
-                        <span className="font-semibold text-white">2</span>
-                    </div>
-                    <span className="mt-2 text-sm font-medium">Contact</span>
+                  <span className="mt-2 text-sm font-medium">Information</span>
+                </div>
+                <div className="w-[15rem] h-2 bg-[#c7360a] mt-[-1rem] ml-[-0.6rem]"></div>
+                <div className="flex flex-col items-center">
+                  <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
+                    <span className="font-semibold text-white">2</span>
                   </div>
-                  <div className="w-[15rem] h-2 bg-[#c7360a] mt-[-1rem] ml-[-0.6rem]"></div>
-                  <div className="flex flex-col items-center">
-                    <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
-                        <span className="font-semibold text-white">3</span>
-                    </div>
-                    <span className="mt-2 text-sm font-medium">Details</span>
+                  <span className="mt-2 text-sm font-medium">Contact</span>
+                </div>
+                <div className="w-[15rem] h-2 bg-[#c7360a] mt-[-1rem] ml-[-0.6rem]"></div>
+                <div className="flex flex-col items-center">
+                  <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
+                    <span className="font-semibold text-white">3</span>
                   </div>
+                  <span className="mt-2 text-sm font-medium">Details</span>
                 </div>
               </div>
+            </div>
             {/* end */}
           </Box>
 
-            <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-            
+          <Box
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Box
               sx={{
-                borderRadius:"10px",
+                borderRadius: "10px",
                 background: "white",
                 fontSize: "20px",
                 fontWeight: "600",
-                p:5,
-                width:"50%",
-                height:"auto",
-                borderColor:"#e9e8e8",
-                borderStyle:"solid",
+                p: 5,
+                width: "50%",
+                height: "auto",
+                borderColor: "#e9e8e8",
+                borderStyle: "solid",
                 borderWidth: "1px",
                 boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
               }}
             >
-              <Typography variant="h5" sx={{fontWeight:"600", mb:2}}>
-                    Basic Information
-                </Typography>
+              <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
+                Basic Information
+              </Typography>
 
-                <Typography variant="h6" sx={{fontWeight:"400"}}>
-                    Department Name
-                    <span className="text-[#DD1414]">*</span>
-                </Typography>
-                <Grid>
-                  <TextField
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiInputBase-root": { height: "40px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={departmentName}
-                          onChange={handleDepartmentNameChange}
-                        />
-                </Grid>
-                <Typography variant="h6" sx={{fontWeight:"400", mt:3}}>
-                    Department Category
-                    <span className="text-[#DD1414]">*</span>
-                </Typography>
-                <Grid>
+              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                Department Name
+                <span className="text-[#DD1414]">*</span>
+              </Typography>
+              <Grid>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      // Target the input element specifically
+                      fontSize: "18px", // Adjust the font size as needed
+                    },
+                  }}
+                  value={departmentName}
+                  onChange={handleDepartmentNameChange}
+                />
+              </Grid>
+              <Typography variant="h6" sx={{ fontWeight: "400", mt: 3 }}>
+                Department Category
+                <span className="text-[#DD1414]">*</span>
+              </Typography>
+              <Grid>
                 <FormControl fullWidth>
                   <Select
                     value={category}
@@ -273,256 +298,281 @@ export default function RegisterDepartment() {
                     <MenuItem value="" disabled>
                       Select
                     </MenuItem>
-                    <MenuItem value="Administrative">Administrative</MenuItem>
+                    <MenuItem value="Administrative">
+                      Admin & Acad Support Offices
+                    </MenuItem>
                     <MenuItem value="Academic">Academic</MenuItem>
                   </Select>
                 </FormControl>
-                </Grid>
+              </Grid>
 
-                <Grid container alignItems="center" sx={{mt:3}}>
-                  <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{fontWeight:"400"}}>
-                      University
-                      <span className="text-[#DD1414]">*</span>
+              <Grid container alignItems="center" sx={{ mt: 3 }}>
+                <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                    University
+                    <span className="text-[#DD1414]">*</span>
                   </Typography>
-                    <TextField
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiInputBase-root": { height: "40px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={university}
-                          onChange={handleUniversityChange}
-                        />
-                  </Grid>
-                  <Grid item xs={1}></Grid>
-                  <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{fontWeight:"400"}}>
-                      Location
-                      <span className="text-[#DD1414]">*</span>
-                  </Typography>
-                    <TextField
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiInputBase-root": { height: "40px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={location}
-                          onChange={handleLocationChange}
-                        />
-                  </Grid>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiOutlinedInput-input": {
+                        // Target the input element specifically
+                        fontSize: "18px", // Adjust the font size as needed
+                      },
+                    }}
+                    value={university}
+                    onChange={handleUniversityChange}
+                  />
                 </Grid>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                    Location
+                    <span className="text-[#DD1414]">*</span>
+                  </Typography>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiOutlinedInput-input": {
+                        // Target the input element specifically
+                        fontSize: "18px", // Adjust the font size as needed
+                      },
+                    }}
+                    value={location}
+                    onChange={handleLocationChange}
+                  />
+                </Grid>
+              </Grid>
             </Box>
-            </Box>
+          </Box>
 
-            <Box sx={{mt:5, display: "flex", flexDirection: "column", alignItems: "center" }}>
-            
+          <Box
+            sx={{
+              mt: 5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Box
               sx={{
-                borderRadius:"10px",
+                borderRadius: "10px",
                 background: "white",
                 fontSize: "20px",
                 fontWeight: "600",
-                p:5,
-                width:"50%",
-                height:"auto",
-                borderColor:"#e9e8e8",
-                borderStyle:"solid",
+                p: 5,
+                width: "50%",
+                height: "auto",
+                borderColor: "#e9e8e8",
+                borderStyle: "solid",
                 borderWidth: "1px",
                 boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
               }}
             >
-              <Typography variant="h5" sx={{fontWeight:"600", mb:2}}>
-                    Contact Information
-                </Typography>
+              <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
+                Contact Information
+              </Typography>
 
-                <Typography variant="h6" sx={{fontWeight:"400"}}>
-                    Head Officer
+              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                Head Officer
+                <span className="text-[#DD1414]">*</span>
+              </Typography>
+              <Grid>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  sx={{
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      // Target the input element specifically
+                      fontSize: "18px", // Adjust the font size as needed
+                    },
+                  }}
+                  value={headOfficer}
+                  onChange={handleHeadOfficerChange}
+                />
+              </Grid>
+
+              <Grid container alignItems="center" sx={{ mt: 3 }}>
+                <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                    Department Landline
                     <span className="text-[#DD1414]">*</span>
-                </Typography>
-                <Grid>
+                  </Typography>
                   <TextField
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiInputBase-root": { height: "40px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={headOfficer}
-                          onChange={handleHeadOfficerChange}
-                        />
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiOutlinedInput-input": {
+                        // Target the input element specifically
+                        fontSize: "18px", // Adjust the font size as needed
+                      },
+                    }}
+                    value={departmentLandline}
+                    onChange={handleDepartmentLandlineChange}
+                  />
                 </Grid>
-
-                <Grid container alignItems="center" sx={{mt:3}}>
-                  <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{fontWeight:"400"}}>
-                      Department Landline
-                      <span className="text-[#DD1414]">*</span>
+                <Grid item xs={1}></Grid>
+                <Grid item xs={5.5}>
+                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                    Email
+                    <span className="text-[#DD1414]">*</span>
                   </Typography>
-                    <TextField
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiInputBase-root": { height: "40px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={departmentLandline}
-                          onChange={handleDepartmentLandlineChange}
-                        />
-                  </Grid>
-                  <Grid item xs={1}></Grid>
-                  <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{fontWeight:"400"}}>
-                      Email
-                      <span className="text-[#DD1414]">*</span>
-                  </Typography>
-                    <TextField
-                          fullWidth
-                          variant="outlined"
-                          sx={{
-                            height: "40px",
-                            "& .MuiInputBase-root": { height: "40px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={email}
-                          onChange={handleEmailChange}
-                        />
-                  </Grid>
+                  <TextField
+                    fullWidth
+                    variant="outlined"
+                    sx={{
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiOutlinedInput-input": {
+                        // Target the input element specifically
+                        fontSize: "18px", // Adjust the font size as needed
+                      },
+                    }}
+                    value={email}
+                    onChange={handleEmailChange}
+                  />
                 </Grid>
-              </Box>
+              </Grid>
             </Box>
+          </Box>
 
-            <Box sx={{mt:5, display: "flex", flexDirection: "column", alignItems: "center" }}>
-            
+          <Box
+            sx={{
+              mt: 5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <Box
               sx={{
-                borderRadius:"10px",
+                borderRadius: "10px",
                 background: "white",
                 fontSize: "20px",
                 fontWeight: "600",
-                p:5,
-                width:"50%",
-                height:"auto",
-                borderColor:"#e9e8e8",
-                borderStyle:"solid",
+                p: 5,
+                width: "50%",
+                height: "auto",
+                borderColor: "#e9e8e8",
+                borderStyle: "solid",
                 borderWidth: "1px",
                 boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
               }}
             >
-              <Typography variant="h5" sx={{fontWeight:"600", mb:2}}>
-                    Details About Department
-                </Typography>
+              <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
+                Details About Department
+              </Typography>
 
-                <Typography variant="h6" sx={{fontWeight:"400"}}>
-                    Description
-                    <span className="text-[#DD1414]">*</span>
-                </Typography>
-                <Grid>
-                  <TextField
-                          fullWidth
-                          variant="outlined"
-                          multiline
-                          sx={{
-                            "& .MuiInputBase-root": {  },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                          value={description}
-                          onChange={handleDescriptionChange}
-                        />
-                </Grid>
-              </Box>
+              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                Description
+                <span className="text-[#DD1414]">*</span>
+              </Typography>
+              <Grid>
+                <TextField
+                  fullWidth
+                  variant="outlined"
+                  multiline
+                  sx={{
+                    "& .MuiInputBase-root": {},
+                    "& .MuiOutlinedInput-input": {
+                      // Target the input element specifically
+                      fontSize: "18px", // Adjust the font size as needed
+                    },
+                  }}
+                  value={description}
+                  onChange={handleDescriptionChange}
+                />
+              </Grid>
             </Box>
-            <Box sx={{mt:5, display: "flex", flexDirection: "column", alignItems: "center" }}>
+          </Box>
+          <Box
+            sx={{
+              mt: 5,
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+            }}
+          >
             <button
-                className="rounded-lg text-white font-bold text-xl mt-5 px-32 py-5 border[0.1rem] border-white hover:text-[#f3deb0] mb-10"
-                style={{
-                    backgroundImage: `url('bgimagemaroon.png')`,
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
-                    backgroundRepeat: "no-repeat",
-                }}
-                onClick={handleSubmit}
-                >
-                Register
+              className="rounded-lg text-white font-bold text-xl mt-5 px-32 py-5 border[0.1rem] border-white hover:text-[#f3deb0] mb-10"
+              style={{
+                backgroundImage: `url('bgimagemaroon.png')`,
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                backgroundRepeat: "no-repeat",
+              }}
+              onClick={handleSubmit}
+            >
+              Register
             </button>
-            </Box>
+          </Box>
 
-            <Modal open={showModal} onClose={() => setShowModal(false)}>
+          <Modal open={showModal} onClose={() => setShowModal(false)}>
+            <Box
+              sx={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                height: "100vh", // Occupy full viewport height
+              }}
+            >
               <Box
                 sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  height: "100vh", // Occupy full viewport height
+                  background: "white",
+                  padding: 6,
+                  borderRadius: 2,
+                  boxShadow: 24,
+                  textAlign: "center",
+                  position: "relative",
+                  width: "30%", // Limit modal width to 80% of viewport width
                 }}
               >
+                <Typography
+                  variant="h4"
+                  component="h2"
+                  sx={{ fontWeight: "bold", mb: 3 }}
+                >
+                  Notice!
+                </Typography>
+                <Typography variant="h5" sx={{ mb: 5 }}>
+                  {modalMessage}
+                </Typography>
                 <Box
                   sx={{
-                    background: "white",
-                    padding: 6,
-                    borderRadius: 2,
-                    boxShadow: 24,
-                    textAlign: "center",
-                    position: "relative",
-                    width: "30%", // Limit modal width to 80% of viewport width
+                    display: "flex",
+                    justifyContent: "center",
+                    gap: 2,
+                    mt: 3,
+                    flexWrap: "wrap", // Allow buttons to wrap on smaller screens
                   }}
                 >
-                  <Typography
-                    variant="h4"
-                    component="h2"
-                    sx={{ fontWeight: "bold", mb: 3 }}
-                  >
-                    Notice!
-                  </Typography>
-                  <Typography variant="h5" sx={{ mb: 5 }}>
-                    {modalMessage}
-                  </Typography>
-                  <Box
+                  <Button
+                    variant="contained"
+                    onClick={() => setShowModal(false)}
                     sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      gap: 2,
-                      mt: 3,
-                      flexWrap: "wrap", // Allow buttons to wrap on smaller screens
+                      width: "40%",
+                      background: "linear-gradient(to left, #8a252c, #AB3510)",
+                      p: 1,
+                      fontSize: "18px",
                     }}
                   >
-                    <Button
-                      variant="contained"
-                      onClick={() => setShowModal(false)}
-                      sx={{
-                        width: "40%",
-                        background: "linear-gradient(to left, #8a252c, #AB3510)",
-                        p:1,
-                        fontSize: '18px',
-                      }}
-                    >
-                      Close
-                    </Button>
-                  </Box>
+                    Close
+                  </Button>
                 </Box>
               </Box>
-            </Modal>
-
+            </Box>
+          </Modal>
         </StyledBox>
-
       </Box>
     </Box>
   );
