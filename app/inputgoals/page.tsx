@@ -6,7 +6,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Spinner from "../components/Misc/Spinner";
 
-export default function page() {
+export default function Page() {
   const { data: session, status } = useSession();
   const router = useRouter();
 
