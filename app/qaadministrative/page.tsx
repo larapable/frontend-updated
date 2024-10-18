@@ -289,14 +289,21 @@ export default function QAAdministrative() {
                             }}
                           >
                             <TableCell>
-                              <Link
-                                href={`/qascorecard/${department.id}`}
-                                passHref
-                              >
-                                <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
+                              {department.department_name ===
+                              "QA Department" ? (
+                                <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                                   {department.department_name}
                                 </span>
-                              </Link>
+                              ) : (
+                                <Link
+                                  href={`/qascorecard/${department.id}`}
+                                  passHref
+                                >
+                                  <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
+                                    {department.department_name}
+                                  </span>
+                                </Link>
+                              )}
                             </TableCell>
                             <TableCell>
                               <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
