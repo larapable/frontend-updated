@@ -393,7 +393,6 @@ const QAScorecard = () => {
                 <CardContent>
                   <QAPrimaryInternal
                     selectedDepartmentId={selectedDepartmentId}
-                    departments={departments}
                     selectedYear={selectedYear}
                   />
                 </CardContent>
@@ -411,7 +410,6 @@ const QAScorecard = () => {
                 <CardContent>
                   <QAPrimaryLearning
                     selectedDepartmentId={selectedDepartmentId}
-                    departments={departments}
                     selectedYear={selectedYear}
                   />
                 </CardContent>
