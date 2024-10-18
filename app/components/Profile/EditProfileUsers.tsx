@@ -89,7 +89,7 @@ export default function EditProfileUsers() {
   useEffect(() => {
     const fetchUserPersonalProfileData = async () => {
       try {
-        const response = await fetch(`http://localhost:8080/user/${user_id}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${user_id}`);
         if (response.ok) {
           const data = await response.json();
           console.log("Received data:", data);
@@ -116,7 +116,7 @@ export default function EditProfileUsers() {
     const fetchUserImageData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/userImage/getImage/${user_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userImage/getImage/${user_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -158,7 +158,7 @@ export default function EditProfileUsers() {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/user/update/profile/${user_id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/update/profile/${user_id}`,
         {
           method: "PUT",
           headers: {
@@ -218,7 +218,7 @@ export default function EditProfileUsers() {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/userImage/insertUserImage",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userImage/insertUserImage`,
           {
             method: "POST",
             body: formData,
@@ -278,7 +278,7 @@ export default function EditProfileUsers() {
     const fetchRoleCounts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/user/department/${department_id}/roleCounts`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/department/${department_id}/roleCounts`
         );
         if (response.ok) {
           const data = await response.json();

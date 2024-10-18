@@ -120,7 +120,7 @@ const ReportLearning: React.FC<ReportLearningProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch learning reports");
@@ -145,7 +145,7 @@ const ReportLearning: React.FC<ReportLearningProps> = ({ selectedYear }) => {
       }
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary learning report.");
@@ -229,7 +229,7 @@ const ReportLearning: React.FC<ReportLearningProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/learning/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {
@@ -276,7 +276,7 @@ const ReportLearning: React.FC<ReportLearningProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryLearningBsc/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {

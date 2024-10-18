@@ -107,7 +107,7 @@ export default function QAStakeholder({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${selectedDepartmentId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -160,7 +160,7 @@ export default function QAStakeholder({
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/stakeholder/update/${stakeholderEditID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/update/${stakeholderEditID}`,
         {
           method: "PUT",
           headers: {

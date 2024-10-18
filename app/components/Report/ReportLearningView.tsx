@@ -53,7 +53,7 @@ const ReportLearningView: React.FC<ReportLearningViewProps> = ({ selectedYear })
     const getReports = async (department_id: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch learning reports");
@@ -72,7 +72,7 @@ const ReportLearningView: React.FC<ReportLearningViewProps> = ({ selectedYear })
     const getPrimaryReports = async (department_id: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary learning reports");

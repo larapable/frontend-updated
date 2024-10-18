@@ -75,7 +75,7 @@ const Page = () => {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/stratmap/byDepartment/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/byDepartment/${department_id}`
         );
   
         if (!response.ok) {
@@ -120,7 +120,7 @@ const Page = () => {
 
     const postToPrimaryStrategies = async () => {
       const response = await fetch(
-        `http://localhost:8080/department/getHasPrimaryStrats/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getHasPrimaryStrats/${department_id}`
       );
       const data = await response.json();
 
@@ -296,7 +296,7 @@ const Page = () => {
           // Post each strategy individually
           const postPromises = primaryStrategiesData.map(
             async (strategyData) => {
-              const endpoint = `http://localhost:8080/stratmap/primary${
+              const endpoint = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primary${
                 strategyData.perspective.charAt(0).toUpperCase() +
                 strategyData.perspective.slice(1)
               }/insert`;
@@ -321,7 +321,7 @@ const Page = () => {
           // Update hasPrimaryStrats in the user entity
           if (username) {
             const response = await fetch(
-              `http://localhost:8080/department/update/primaryStrats/${department_id}`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/update/primaryStrats/${department_id}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -492,7 +492,7 @@ const Page = () => {
         department: { id: department_id }, // Include the department ID in the payload
       };
       const response = await fetch(
-        `http://localhost:8080/stratmap/financial/edit/${fID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/financial/edit/${fID}`,
         {
           method: "PUT",
           headers: {
@@ -543,7 +543,7 @@ const Page = () => {
         department: { id: department_id }, // Include the department ID in the payload
       };
       const response = await fetch(
-        `http://localhost:8080/stratmap/learning/edit/${fID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/learning/edit/${fID}`,
         {
           method: "PUT",
           headers: {
@@ -594,7 +594,7 @@ const Page = () => {
         department: { id: department_id }, // Include the department ID in the payload
       };
       const response = await fetch(
-        `http://localhost:8080/stratmap/stakeholder/edit/${fID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/stakeholder/edit/${fID}`,
         {
           method: "PUT",
           headers: {
@@ -644,7 +644,7 @@ const Page = () => {
         department: { id: department_id }, // Include the department ID in the payload
       };
       const response = await fetch(
-        `http://localhost:8080/stratmap/internal/edit/${fID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/internal/edit/${fID}`,
         {
           method: "PUT",
           headers: {
@@ -685,10 +685,10 @@ const Page = () => {
   };
 
   const API_ENDPOINTS = [
-    `http://localhost:8080/stStrat/getNonSorted/${department_id}`,
-    `http://localhost:8080/soStrat/getNonSorted/${department_id}`,
-    `http://localhost:8080/wtStrat/getNonSorted/${department_id}`,
-    `http://localhost:8080/woStrat/getNonSorted/${department_id}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/stStrat/getNonSorted/${department_id}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/soStrat/getNonSorted/${department_id}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/wtStrat/getNonSorted/${department_id}`,
+    `${process.env.NEXT_PUBLIC_BACKEND_URL}/woStrat/getNonSorted/${department_id}`,
   ];
 
   const SYSTEM_PROMPT = `Categorize the following responses into the following categories:
@@ -715,7 +715,7 @@ const Page = () => {
     console.log("Fetching profile goals...");
     try {
       const response = await fetch(
-        `http://localhost:8080/goals/get/department/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/get/department/${department_id}`
       );
       if (response.ok) {
         const data = await response.json();
@@ -771,7 +771,7 @@ const Page = () => {
         targetYear: currentYear,
       };
       const response = await fetch(
-        "http://localhost:8080/stratmap/financial/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/financial/insert`,
         {
           method: "POST",
           headers: {
@@ -836,7 +836,7 @@ const Page = () => {
         targetYear: currentYear,
       };
       const response = await fetch(
-        "http://localhost:8080/stratmap/stakeholder/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/stakeholder/insert`,
         {
           method: "POST",
           headers: {
@@ -886,7 +886,7 @@ const Page = () => {
         targetYear: currentYear,
       };
       const response = await fetch(
-        "http://localhost:8080/stratmap/internal/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/internal/insert`,
         {
           method: "POST",
           headers: {
@@ -941,7 +941,7 @@ const Page = () => {
         targetYear: currentYear,
       };
       const response = await fetch(
-        "http://localhost:8080/stratmap/learning/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/learning/insert`,
         {
           method: "POST",
           headers: {
@@ -1101,13 +1101,13 @@ const Page = () => {
 
   const getUpdateEndpoint = (row: any): string => {
     if (row.type === "st") {
-      return `http://localhost:8080/stStrat/updateSorted/${row.id}`;
+      return `${process.env.NEXT_PUBLIC_BACKEND_URL}/stStrat/updateSorted/${row.id}`;
     } else if (row.type === "so") {
-      return `http://localhost:8080/soStrat/updateSorted/${row.id}`;
+      return `${process.env.NEXT_PUBLIC_BACKEND_URL}/soStrat/updateSorted/${row.id}`;
     } else if (row.type === "wt") {
-      return `http://localhost:8080/wtStrat/updateSorted/${row.id}`;
+      return `${process.env.NEXT_PUBLIC_BACKEND_URL}/wtStrat/updateSorted/${row.id}`;
     } else if (row.type === "wo") {
-      return `http://localhost:8080/woStrat/updateSorted/${row.id}`;
+      return `${process.env.NEXT_PUBLIC_BACKEND_URL}/woStrat/updateSorted/${row.id}`;
     } else {
       console.warn("Unknown row type:", row);
       return "";
@@ -1140,7 +1140,7 @@ const Page = () => {
           target_code: sentence.code,
         };
         console.log("financial data: ", data);
-        return fetch("http://localhost:8080/stratmap/financial/insert", {
+        return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/financial/insert`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1165,7 +1165,7 @@ const Page = () => {
           //@ts-ignore
           target_code: sentence.code,
         };
-        return fetch("http://localhost:8080/stratmap/stakeholder/insert", {
+        return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/stakeholder/insert`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -1191,7 +1191,7 @@ const Page = () => {
             //@ts-ignore
             target_code: sentence.code,
           };
-          return fetch("http://localhost:8080/stratmap/internal/insert", {
+          return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/internal/insert`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1218,7 +1218,7 @@ const Page = () => {
             //@ts-ignore
             target_code: sentence.code,
           };
-          return fetch("http://localhost:8080/stratmap/learning/insert", {
+          return fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/learning/insert`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -1281,7 +1281,7 @@ const Page = () => {
   const fetchPrimaryFinancialStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}` // Assuming this is your API endpoint
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryFinancial/get/${department_id}` // Assuming this is your API endpoint
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1307,7 +1307,7 @@ const Page = () => {
   const fetchPrimaryStakeholderStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}` // Assuming this is your API endpoint
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryStakeholder/get/${department_id}` // Assuming this is your API endpoint
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1333,7 +1333,7 @@ const Page = () => {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryInternal/get/${department_id}` // Assuming this is your API endpoint
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryInternal/get/${department_id}` // Assuming this is your API endpoint
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1362,7 +1362,7 @@ const Page = () => {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryLearning/get/${department_id}` // Assuming this is your API endpoint
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryLearning/get/${department_id}` // Assuming this is your API endpoint
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1394,7 +1394,7 @@ const Page = () => {
   }> => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/byDepartment/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/byDepartment/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -1445,7 +1445,7 @@ const Page = () => {
   const handleFinancialDelete = async (id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/financial/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/financial/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -1471,7 +1471,7 @@ const Page = () => {
   const handleLGDelete = async (id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/learning/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/learning/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -1497,7 +1497,7 @@ const Page = () => {
   const handleStakeholderDelete = async (id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/stakeholder/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/stakeholder/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -1523,7 +1523,7 @@ const Page = () => {
   const handleInternalDelete = async (id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/internal/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/internal/delete/${id}`,
         {
           method: "DELETE",
           headers: {

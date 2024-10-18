@@ -104,7 +104,7 @@ export default function QAInternal({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${selectedDepartmentId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -155,7 +155,7 @@ export default function QAInternal({
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/internal/update/${internalEditID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/update/${internalEditID}`,
         {
           method: "PUT",
           headers: {

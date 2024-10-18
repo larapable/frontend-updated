@@ -52,7 +52,7 @@ interface ReportFinancial {
     const getReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/financial/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch financial reports");
@@ -72,7 +72,7 @@ interface ReportFinancial {
     const getPrimaryReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary financial reports");

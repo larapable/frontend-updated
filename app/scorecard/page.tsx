@@ -52,10 +52,10 @@ const ScorecardPage = () => {
             learningResponse,
             stakeholderResponse,
           ] = await Promise.all([
-            fetch(`http://localhost:8080/bsc/getFinancialTargetYears/${departmentId}`),
-            fetch(`http://localhost:8080/bsc/getInternalTargetYears/${departmentId}`),
-            fetch(`http://localhost:8080/bsc/getLearningTargetYears/${departmentId}`),
-            fetch(`http://localhost:8080/bsc/getStakeholderTargetYears/${departmentId}`),
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getFinancialTargetYears/${departmentId}`),
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getInternalTargetYears/${departmentId}`),
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getLearningTargetYears/${departmentId}`),
+            fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getStakeholderTargetYears/${departmentId}`),
           ]);
   
           const [financialData, internalData, learningData, stakeholderData] = await Promise.all([

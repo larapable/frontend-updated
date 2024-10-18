@@ -135,7 +135,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
       );
       try {
         const response = await fetch(
-          `http://3.107.42.174:8080/bsc/financial/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch financial scorecards");
@@ -187,7 +187,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://3.107.42.174:8080/bsc/financialBsc/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financialBsc/insert`,
         {
           method: "POST",
           headers: {
@@ -243,7 +243,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://3.107.42.174:8080/bsc/financial/update/${financialEditID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/update/${financialEditID}`,
         {
           method: "PUT",
           headers: {

@@ -92,7 +92,7 @@ export default function DepartmentProfile() {
     const fetchDepartment = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/department/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/${department_id}`,
           {
             method: "GET",
             headers: {
@@ -122,7 +122,7 @@ export default function DepartmentProfile() {
     const fetchRoleCounts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/user/department/${department_id}/roleCounts`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/department/${department_id}/roleCounts`
         );
         if (response.ok) {
           const data = await response.json();

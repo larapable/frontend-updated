@@ -109,7 +109,7 @@ export default function QAFinancial({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/financial/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${selectedDepartmentId}`
         );
 
         // No need to throw an error if the response is not ok,
@@ -165,7 +165,7 @@ export default function QAFinancial({
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/financial/update/${financialEditID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/update/${financialEditID}`,
         {
           method: "PUT",
           headers: {

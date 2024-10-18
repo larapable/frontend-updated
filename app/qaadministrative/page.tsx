@@ -83,7 +83,7 @@ export default function QAAdministrative() {
     const fetchDepartments = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/getAllDepartments"
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`
         );
         const data = await response.json();
         const administrativeDepartments = data.departments.filter(

@@ -85,7 +85,7 @@ const ReportsPage = () => {
     const fetchImageData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/image/getImage/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/image/getImage/${department_id}`
         );
         if (response.ok) {
           const { imageData, imageFormat } = await response.json();
@@ -162,7 +162,7 @@ const ReportsPage = () => {
     const fetchUserProfileData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/department/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/${department_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -214,16 +214,16 @@ const ReportsPage = () => {
             stakeholderResponse,
           ] = await Promise.all([
             fetch(
-              `http://localhost:8080/bsc/getFinancialTargetYears/${department_id}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getFinancialTargetYears/${department_id}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getInternalTargetYears/${department_id}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getInternalTargetYears/${department_id}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getLearningTargetYears/${department_id}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getLearningTargetYears/${department_id}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getStakeholderTargetYears/${department_id}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getStakeholderTargetYears/${department_id}`
             ),
           ]);
 
@@ -291,7 +291,7 @@ const ReportsPage = () => {
     const fetchApproval = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/approval/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/approval/get/${department_id}`
         );
         if (!res.ok) {
           throw new Error("Failed to fetch approval data");
@@ -340,7 +340,7 @@ const ReportsPage = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:8080/approval/insert", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/approval/insert`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -387,7 +387,7 @@ const ReportsPage = () => {
       setIsReadOnly(true); // Set to read-only when done editing
       try {
         const res = await fetch(
-          `http://localhost:8080/approval/update/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/approval/update/${department_id}`,
           {
             method: "PUT",
             headers: {
@@ -438,7 +438,7 @@ const ReportsPage = () => {
       try {
         // Fetch financial reports
         const financialResponse = await fetch(
-          `http://localhost:8080/bsc/financial/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${department_id}`
         );
         if (!financialResponse.ok) {
           throw new Error("Failed to fetch financial reports");
@@ -447,7 +447,7 @@ const ReportsPage = () => {
 
         // Fetch primary financial reports
         const primaryFinancialResponse = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${department_id}`
         );
         if (!primaryFinancialResponse.ok) {
           throw new Error("Failed to fetch primary financial reports");
@@ -489,7 +489,7 @@ const ReportsPage = () => {
         setFinancialReports(completeFinancialReports);
 
         const stakeholderResponse = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${department_id}`
         );
         if (!stakeholderResponse.ok) {
           throw new Error("Failed to fetch stakeholder reports");
@@ -498,7 +498,7 @@ const ReportsPage = () => {
 
         // Fetch primary stakeholder reports
         const primaryStakeholderResponse = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${department_id}`
         );
         if (!primaryStakeholderResponse.ok) {
           throw new Error("Failed to fetch primary stakeholder reports");
@@ -542,7 +542,7 @@ const ReportsPage = () => {
 
         //Fetch internal reports
         const internalResponse = await fetch(
-          `http://localhost:8080/bsc/internal/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${department_id}`
         );
         if (!internalResponse.ok) {
           throw new Error("Failed to fetch internal reports");
@@ -551,7 +551,7 @@ const ReportsPage = () => {
 
         // Fetch primary stakeholder reports
         const primaryInternalResponse = await fetch(
-          `http://localhost:8080/bsc/primaryInternalBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryInternalBsc/get/${department_id}`
         );
         if (!primaryInternalResponse.ok) {
           throw new Error("Failed to fetch primary Internal reports");
@@ -594,7 +594,7 @@ const ReportsPage = () => {
 
         //Fetch learning reports
         const learningResponse = await fetch(
-          `http://localhost:8080/bsc/learning/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${department_id}`
         );
         if (!learningResponse.ok) {
           throw new Error("Failed to fetch learning reports");
@@ -603,7 +603,7 @@ const ReportsPage = () => {
 
         // Fetch primary stakeholder reports
         const primaryLearningResponse = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${department_id}`
         );
         if (!primaryLearningResponse.ok) {
           throw new Error("Failed to fetch primary learning reports");

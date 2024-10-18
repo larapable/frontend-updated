@@ -91,7 +91,7 @@ export default function UserEditProfile() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/department/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/${department_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -123,7 +123,7 @@ export default function UserEditProfile() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/image/getImage/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/image/getImage/${department_id}`
         );
         if (response.ok) {
           const { imageData, imageFormat } = await response.json();
@@ -167,7 +167,7 @@ export default function UserEditProfile() {
 
     try {
       const res = await fetch(
-        `http://localhost:8080/department/update/${department_id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/update/${department_id}`,
         {
           method: "PUT",
           headers: {
@@ -220,7 +220,7 @@ export default function UserEditProfile() {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/image/insertImage",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/image/insertImage`,
           {
             method: "POST",
             body: formData,
@@ -249,7 +249,7 @@ export default function UserEditProfile() {
     const fetchRoleCounts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/user/department/${department_id}/roleCounts`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/department/${department_id}/roleCounts`
         );
         if (response.ok) {
           const data = await response.json();

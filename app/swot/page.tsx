@@ -219,7 +219,7 @@ const Swot = () => {
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/wtStrat/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/wtStrat/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -289,7 +289,7 @@ const Swot = () => {
       // Save each strategy individually to the database
       for (const strategy of strategiesArray) {
         const databaseResponse = await fetch(
-          "http://localhost:8080/wtStrat/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/wtStrat/insert`,
           {
             method: "POST",
             headers: {
@@ -319,7 +319,7 @@ const Swot = () => {
   const deleteStrategy = async (id: string, department_id: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/wtStrat/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/wtStrat/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -344,7 +344,7 @@ const Swot = () => {
   const fetchstData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stStrat/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stStrat/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -414,7 +414,7 @@ const Swot = () => {
       // Save each strategy individually to the database
       for (const strategy of strategiesArray) {
         const databaseResponse = await fetch(
-          "http://localhost:8080/stStrat/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stStrat/insert`,
           {
             method: "POST",
             headers: {
@@ -443,7 +443,7 @@ const Swot = () => {
   const deletestStrategy = async (id: string, department_id: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stStrat/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stStrat/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -469,7 +469,7 @@ const Swot = () => {
   const fetchsoData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/soStrat/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/soStrat/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -542,7 +542,7 @@ const Swot = () => {
       // Save each strategy individually to the database
       for (const strategy of strategiesArray) {
         const databaseResponse = await fetch(
-          "http://localhost:8080/soStrat/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/soStrat/insert`,
           {
             method: "POST",
             headers: {
@@ -577,7 +577,7 @@ const Swot = () => {
     // Explicitly return Response
     try {
       const response = await fetch(
-        `http://localhost:8080/soStrat/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/soStrat/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -609,7 +609,7 @@ const Swot = () => {
   const fetchwoData = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/woStrat/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/woStrat/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch data");
@@ -682,7 +682,7 @@ const Swot = () => {
       // Save each strategy individually to the database
       for (const strategy of strategiesArray) {
         const databaseResponse = await fetch(
-          "http://localhost:8080/woStrat/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/woStrat/insert`,
           {
             method: "POST",
             headers: {
@@ -711,7 +711,7 @@ const Swot = () => {
   const deletewoStrategy = async (id: string, department_id: string) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/woStrat/delete/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/woStrat/delete/${id}`,
         {
           method: "DELETE",
           headers: {
@@ -755,7 +755,7 @@ const Swot = () => {
           try {
             // Send data to backend
             const response = await fetch(
-              `http://localhost:8080/strengths/insert`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/strengths/insert`,
               {
                 method: "POST",
                 headers: {
@@ -805,7 +805,7 @@ const Swot = () => {
           try {
             // Send data to backend
             const response = await fetch(
-              `http://localhost:8080/weaknesses/insert`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/weaknesses/insert`,
               {
                 method: "POST",
                 headers: {
@@ -853,7 +853,7 @@ const Swot = () => {
         } else {
           try {
             const response = await fetch(
-              `http://localhost:8080/opportunities/insert`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/opportunities/insert`,
               {
                 method: "POST",
                 headers: {
@@ -904,7 +904,7 @@ const Swot = () => {
         } else {
           try {
             const response = await fetch(
-              `http://localhost:8080/threats/insert`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/threats/insert`,
               {
                 method: "POST",
                 headers: {
@@ -952,7 +952,7 @@ const Swot = () => {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/strengths/update/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/strengths/update/${department_id}`,
           {
             method: "PUT",
             headers: {
@@ -1002,7 +1002,7 @@ const Swot = () => {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/weaknesses/update/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/weaknesses/update/${department_id}`,
           {
             method: "PUT",
             headers: {
@@ -1052,7 +1052,7 @@ const Swot = () => {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/opportunities/update/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/opportunities/update/${department_id}`,
           {
             method: "PUT",
             headers: {
@@ -1103,7 +1103,7 @@ const Swot = () => {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/threats/update/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/threats/update/${department_id}`,
           {
             method: "PUT",
             headers: {
@@ -1152,7 +1152,7 @@ const Swot = () => {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/${endpoint}/delete/${id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/${endpoint}/delete/${id}`,
           {
             method: "DELETE",
             headers: {
@@ -1181,7 +1181,7 @@ const Swot = () => {
     ) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/${endpoint}/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/${endpoint}/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error(`Failed to fetch updated ${endpoint}`);
@@ -1258,7 +1258,7 @@ const Swot = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/strengths/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/strengths/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch strengths");
@@ -1288,7 +1288,7 @@ const Swot = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/weaknesses/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/weaknesses/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch weaknesses");
@@ -1317,7 +1317,7 @@ const Swot = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/opportunities/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/opportunities/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch opportunities");
@@ -1345,7 +1345,7 @@ const Swot = () => {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/threats/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/threats/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch threats");
@@ -1371,7 +1371,7 @@ const Swot = () => {
   const fetchUpdatedStrengths = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/strengths/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/strengths/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch updated strengths");
@@ -1386,7 +1386,7 @@ const Swot = () => {
   const fetchUpdatedWeaknesses = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/weaknesses/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/weaknesses/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch updated weaknesses");
@@ -1401,7 +1401,7 @@ const Swot = () => {
   const fetchUpdatedOpportunities = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/opportunities/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/opportunities/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch updated opportunities");
@@ -1416,7 +1416,7 @@ const Swot = () => {
   const fetchUpdatedThreats = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/threats/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/threats/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error("Failed to fetch updated threats");
@@ -1493,7 +1493,7 @@ const Swot = () => {
   ): Promise<void> => {
     try {
       const response = await fetch(
-        `http://localhost:8080/${type}/${endpoint}/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${type}/${endpoint}/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`Failed to fetch ${type}`);
@@ -1521,7 +1521,7 @@ const Swot = () => {
       }
 
       const response = await fetch(
-        `http://localhost:8080/${type}/restore/${id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/${type}/restore/${id}`,
         {
           method: "PUT",
         }

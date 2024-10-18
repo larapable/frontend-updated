@@ -80,7 +80,7 @@ export default function RegisterDepartment() {
 
     try {
       const response = await fetch(
-        "http://3.107.42.174:8080/department/register",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/register`,
         {
           method: "POST",
           headers: {

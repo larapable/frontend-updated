@@ -177,7 +177,7 @@ export default function Inputgoals() {
   const fetchCurrentGoals = async (departmentId: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/goals/getCurrent/${departmentId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/getCurrent/${departmentId}`
       );
       if (!response.ok) throw new Error("Failed to fetch current goals");
       const data = await response.json();
@@ -201,7 +201,7 @@ export default function Inputgoals() {
   const fetchAccomplishedGoals = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/goals/getAccomplished/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/getAccomplished/${department_id}`
       );
       if (!response.ok) throw new Error("Failed to fetch accomplished goals");
       const data = await response.json();
@@ -232,7 +232,7 @@ export default function Inputgoals() {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/goals/${goalId}/status?accomplished=true`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/${goalId}/status?accomplished=true`,
         {
           method: "PATCH",
         }
@@ -263,7 +263,7 @@ export default function Inputgoals() {
     const fetchProfileGoals = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/goals/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/get/${department_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -307,7 +307,7 @@ export default function Inputgoals() {
     const fetchGoals = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/goals/getAll/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/getAll/${department_id}`
         );
         if (!response.ok) throw new Error("Failed to fetch goals");
         const data = await response.json();
@@ -323,7 +323,7 @@ export default function Inputgoals() {
     const fetchLatestData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/goals/latest/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/latest/${department_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -548,7 +548,7 @@ export default function Inputgoals() {
     }
 
     const postPromises = strategiesData.map(async (strategyData) => {
-      const endpoint = `http://localhost:8080/stratmap/primary${
+      const endpoint = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primary${
         strategyData.perspective.charAt(0).toUpperCase() +
         strategyData.perspective.slice(1)
       }/insert`;
@@ -581,7 +581,7 @@ export default function Inputgoals() {
 
       if (department_id) {
         const response = await fetch(
-          `http://localhost:8080/department/update/primaryStrats/${department_id}`,
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/update/primaryStrats/${department_id}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -659,7 +659,7 @@ export default function Inputgoals() {
       const targetYearToCheck = `${currentYear}`; // Check only the current year
 
       const yearcheck = await fetch(
-        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryFinancial/get/${department_id}`
       );
 
       let yearExists = false;
@@ -685,8 +685,8 @@ export default function Inputgoals() {
       }
 
       const url = isNew
-        ? "http://localhost:8080/goals/insert"
-        : `http://localhost:8080/goals/update/${goalId}`;
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/insert`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/update/${goalId}`;
       const method = isNew ? "POST" : "PUT";
 
       const response = await fetch(url, {
@@ -754,7 +754,7 @@ export default function Inputgoals() {
   const fetchGoals = async () => {
     try {
       const response = await fetch(
-        `http://localhost:8080/goals/getAll/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/getAll/${department_id}`
       );
       if (!response.ok) throw new Error("Failed to fetch goals");
       const data = await response.json();
@@ -786,7 +786,7 @@ export default function Inputgoals() {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/goals/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/goals/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch data");

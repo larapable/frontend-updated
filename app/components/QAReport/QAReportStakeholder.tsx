@@ -52,7 +52,7 @@ interface ReportStakeholder {
     const getReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch stakeholder reports");
@@ -72,7 +72,7 @@ interface ReportStakeholder {
     const getPrimaryReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary stakeholder reports");

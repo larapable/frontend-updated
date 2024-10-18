@@ -60,7 +60,7 @@ export default function QAStratmapView() {
 
     const postToPrimaryStrategies = async () => {
       const response = await fetch(
-        `http://localhost:8080/department/getHasPrimaryStrats/1`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getHasPrimaryStrats/1`
       );
       const data = await response.json();
 
@@ -213,7 +213,7 @@ export default function QAStratmapView() {
           // Post each strategy individually
           const postPromises = primaryStrategiesData.map(
             async (strategyData) => {
-              const endpoint = `http://localhost:8080/stratmap/primary${
+              const endpoint = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primary${
                 strategyData.perspective.charAt(0).toUpperCase() +
                 strategyData.perspective.slice(1)
               }/insert`;
@@ -238,7 +238,7 @@ export default function QAStratmapView() {
           // Update hasPrimaryStrats in the user entity
           if (department_id) {
             const response = await fetch(
-              `http://localhost:8080/department/update/primaryStrats/${department_id}`,
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/update/primaryStrats/${department_id}`,
               {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
@@ -291,16 +291,16 @@ export default function QAStratmapView() {
           const [financial, stakeholder, internal, learning] =
             await Promise.all([
               fetch(
-                `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryFinancial/get/${department_id}`
               ).then((res) => res.json()),
               fetch(
-                `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}`
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryStakeholder/get/${department_id}`
               ).then((res) => res.json()),
               fetch(
-                `http://localhost:8080/stratmap/primaryInternal/get/${department_id}`
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryInternal/get/${department_id}`
               ).then((res) => res.json()),
               fetch(
-                `http://localhost:8080/stratmap/primaryLearning/get/${department_id}`
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryLearning/get/${department_id}`
               ).then((res) => res.json()),
             ]);
 
@@ -391,7 +391,7 @@ export default function QAStratmapView() {
         console.log("Data to be sent:", data);
 
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryFinancial/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryFinancial/insert`,
           {
             method: "POST",
             headers: {
@@ -431,7 +431,7 @@ export default function QAStratmapView() {
         console.log("Data to be sent (Stakeholder):", data);
 
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryStakeholder/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryStakeholder/insert`,
           {
             method: "POST",
             headers: {
@@ -471,7 +471,7 @@ export default function QAStratmapView() {
         console.log("Data to be sent (Learning & Growth):", data);
 
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryLearning/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryLearning/insert`,
           {
             method: "POST",
             headers: {
@@ -510,7 +510,7 @@ export default function QAStratmapView() {
         console.log("Data to be sent (Internal Process):", data);
 
         const response = await fetch(
-          "http://localhost:8080/stratmap/primaryInternal/insert",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryInternal/insert`,
           {
             method: "POST",
             headers: {
@@ -602,7 +602,7 @@ export default function QAStratmapView() {
   const fetchPrimaryFinancialStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryFinancial/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryFinancial/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -635,7 +635,7 @@ export default function QAStratmapView() {
   const fetchPrimaryStakeholderStrategies = async (department_id: number) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryStakeholder/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryStakeholder/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -666,7 +666,7 @@ export default function QAStratmapView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryInternal/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryInternal/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -700,7 +700,7 @@ export default function QAStratmapView() {
   ) => {
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/primaryLearning/get/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primaryLearning/get/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -735,7 +735,7 @@ export default function QAStratmapView() {
     }
     try {
       const response = await fetch(
-        `http://localhost:8080/stratmap/byDepartment/${department_id}`
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/byDepartment/${department_id}`
       );
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
@@ -806,7 +806,7 @@ export default function QAStratmapView() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/getAllDepartments",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`,
           {
             method: "GET",
             headers: {
@@ -840,7 +840,7 @@ export default function QAStratmapView() {
       const perspectives = ["financial", "internal", "learning", "stakeholder"];
       const promises = perspectives.map((perspective) =>
         fetch(
-          `http://localhost:8080/stratmap/${perspective}/get/${departmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/${perspective}/get/${departmentId}`
         )
           .then((res) => {
             if (!res.ok) {

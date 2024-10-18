@@ -79,7 +79,7 @@ export default function QADepartmentView() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/getAllDepartments",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`,
           {
             method: "GET",
             headers: {
