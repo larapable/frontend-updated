@@ -113,7 +113,8 @@ interface Threat {
   isDelete: boolean;
 }
 
-const Swot = () => { 
+const Swot = () => {
+  const [loading, setLoading] = useState(false);
   const [displaySwot, setDisplaySwot] = useState(true);
   const [soApiResponse, setSoApiResponse] = useState("");
   const [woApiResponse, setWoApiResponse] = useState("");
@@ -1254,6 +1255,7 @@ const Swot = () => {
 
   useEffect(() => {
     const fetchStrengths = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           `http://localhost:8080/strengths/get/${department_id}`
@@ -1267,6 +1269,8 @@ const Swot = () => {
         setLastFetchedDepartmentId(department_id);
       } catch (error: any) {
         console.error("Error fetching strengths:", error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -1281,6 +1285,7 @@ const Swot = () => {
 
   useEffect(() => {
     const FetchWeaknesses = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           `http://localhost:8080/weaknesses/get/${department_id}`
@@ -1293,6 +1298,8 @@ const Swot = () => {
         setLastFetchedDepartmentId(department_id);
       } catch (error: any) {
         console.error("Error fetching weaknesses:", error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -1307,6 +1314,7 @@ const Swot = () => {
 
   useEffect(() => {
     const FetchOpportunites = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           `http://localhost:8080/opportunities/get/${department_id}`
@@ -1319,6 +1327,8 @@ const Swot = () => {
         setLastFetchedDepartmentId(department_id);
       } catch (error: any) {
         console.error("Error fetching opportunities:", error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -1332,6 +1342,7 @@ const Swot = () => {
 
   useEffect(() => {
     const FetchThreats = async () => {
+      setLoading(true);
       try {
         const response = await fetch(
           `http://localhost:8080/threats/get/${department_id}`
@@ -1344,6 +1355,8 @@ const Swot = () => {
         setLastFetchedDepartmentId(department_id);
       } catch (error: any) {
         console.error("Error fetching threats:", error.message);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -1691,74 +1704,79 @@ const Swot = () => {
             </Grid>
 
             <Grid item>
-            <Box
-              display="flex"
-              justifyContent="center"
-              alignItems="center"
-              width="20rem"
-              height="4rem"
-              borderRadius={2}
-              sx={{ gap: 1, p: 1, borderWidth: 0.5, mt:-2 }}
-            >
-              <Button
-                onClick={() => setCurrentView("swot")}
-                variant={currentView === "swot" ? "contained" : "outlined"}
-                fullWidth
-                sx={{
-                  p:3,
-                  fontSize: '18px',
-                  background:
-                    currentView === "swot"
-                      ? "linear-gradient(to left, #8a252c, #AB3510)"
-                      : "transparent",
-                  color: currentView === "swot" ? "white" : "#AB3510",
-                  flexGrow: 2, 
-                  height: "100%",
-                  border: "1px solid transparent",
-                  transition: "background-color 0.3s, color 0.3s", 
-                  "&:hover": {
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", 
-                    color: "white", 
-                    border:
-                      currentView === "swot" ? "none" : "0.5px solid #AB3510", 
-                  },
-                }}
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="20rem"
+                height="4rem"
+                borderRadius={2}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
               >
-                SWOT
-              </Button>
-              <Button
-                onClick={() => setCurrentView("strategies")}
-                variant={currentView === "strategies" ? "contained" : "outlined"}
-                fullWidth
-                sx={{
-                  p:3,
-                  fontSize: '18px',
-                  background:
-                    currentView === "strategies"
-                      ? "linear-gradient(to left, #8a252c, #AB3510)"
-                      : "transparent",
-                  color: currentView === "strategies" ? "white" : "#AB3510",
-                  flexGrow: 2, // Ensure both buttons have equal size
-                  height: "100%", // Match the height of the container
-                  border: "1px solid transparent", // Keep border style consistent
-                  transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
-                  "&:hover": {
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
-                    color: "white", // Change text color on hover
-                    border:
+                <Button
+                  onClick={() => setCurrentView("swot")}
+                  variant={currentView === "swot" ? "contained" : "outlined"}
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
+                      currentView === "swot"
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "swot" ? "white" : "#AB3510",
+                    flexGrow: 2,
+                    height: "100%",
+                    border: "1px solid transparent",
+                    transition: "background-color 0.3s, color 0.3s",
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)",
+                      color: "white",
+                      border:
+                        currentView === "swot" ? "none" : "0.5px solid #AB3510",
+                    },
+                  }}
+                >
+                  SWOT
+                </Button>
+                <Button
+                  onClick={() => setCurrentView("strategies")}
+                  variant={
+                    currentView === "strategies" ? "contained" : "outlined"
+                  }
+                  fullWidth
+                  sx={{
+                    p: 3,
+                    fontSize: "18px",
+                    background:
                       currentView === "strategies"
-                        ? "none"
-                        : "0.5px solid #AB3510", // Border on hover if not current
-                  },
-                }}
-              >
-                STRATEGIES
-              </Button>
-            </Box>
+                        ? "linear-gradient(to left, #8a252c, #AB3510)"
+                        : "transparent",
+                    color: currentView === "strategies" ? "white" : "#AB3510",
+                    flexGrow: 2, // Ensure both buttons have equal size
+                    height: "100%", // Match the height of the container
+                    border: "1px solid transparent", // Keep border style consistent
+                    transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                    "&:hover": {
+                      background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
+                      color: "white", // Change text color on hover
+                      border:
+                        currentView === "strategies"
+                          ? "none"
+                          : "0.5px solid #AB3510", // Border on hover if not current
+                    },
+                  }}
+                >
+                  STRATEGIES
+                </Button>
+              </Box>
             </Grid>
 
             <Typography variant="h5">
-              The SWOT Analysis feature allows you to input your Strengths, Weaknesses, Opportunities, and Threats. Based on your inputs, the AI will automatically generate strategic recommendations to help you achieve your goals
+              The SWOT Analysis feature allows you to input your Strengths,
+              Weaknesses, Opportunities, and Threats. Based on your inputs, the
+              AI will automatically generate strategic recommendations to help
+              you achieve your goals
             </Typography>
           </Grid>
 
@@ -1766,12 +1784,13 @@ const Swot = () => {
           {currentView === "swot" ? (
             <>
               {/* STRENGTH */}
-              <Box sx={{mt:5}}>
+              <Box sx={{ mt: 5 }}>
                 <Button
                   variant="contained"
-                  sx={{p:1}}
+                  sx={{ p: 1 }}
                   style={{
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", fontSize: '18px'
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                    fontSize: "18px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -1794,11 +1813,15 @@ const Swot = () => {
 
                 {isStrengthVisible && (
                   <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                    <Typography variant="h6" sx={{ fontWeight: "600", mb: 1}}>
+                    <Typography variant="h6" sx={{ fontWeight: "600", mb: 1 }}>
                       Deleted Strengths
                     </Typography>
                     {deletedStrengths.length === 0 ? (
-                      <Typography variant="h6" className="text-gray-500" sx={{pb:1 }}>
+                      <Typography
+                        variant="h6"
+                        className="text-gray-500"
+                        sx={{ pb: 1 }}
+                      >
                         No deleted strengths found.
                       </Typography>
                     ) : (
@@ -1807,7 +1830,12 @@ const Swot = () => {
                         {deletedStrengths.map((strength, index) => (
                           <li
                             key={strength.id}
-                            className={`flex items-center justify-between p-3 ${index < deletedStrengths.length - 1 ? "border-b border-gray-200" : ""}`}> 
+                            className={`flex items-center justify-between p-3 ${
+                              index < deletedStrengths.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
+                          >
                             <Typography
                               variant="h6"
                               sx={{
@@ -1922,11 +1950,12 @@ const Swot = () => {
                           onChange={strengths.handleChange}
                           onKeyDown={strengths.addStrength}
                           sx={{
-                            mt:3,
+                            mt: 3,
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                         />
@@ -1945,7 +1974,11 @@ const Swot = () => {
                         <div
                           key={strength.id}
                           className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto 
-                            ${index < fetchedStrengths.length - 1 ? "border-b border-gray-200" : ""}`}
+                            ${
+                              index < fetchedStrengths.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
                         >
                           <Box className="flex flex-row overflow-y-auto">
                             <Typography
@@ -1992,7 +2025,10 @@ const Swot = () => {
                                 autoFocus
                               />
                             ) : (
-                              <Typography variant="h6" sx={{fontWeight: "400"}}>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: "400" }}
+                              >
                                 {strength.value.length > 110
                                   ? strength.value.slice(0, 110) + "..."
                                   : strength.value}
@@ -2047,24 +2083,24 @@ const Swot = () => {
                             </div>
                           </div>
                           {isStrengthModalOpen && strengthToDelete && (
-                            <Modal 
-                            open={isStrengthModalOpen} 
-                            onClose={() => setIsStrengthModalOpen(false)}
-                            BackdropProps={{
-                              style: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)', // Adjust the last value (alpha) to control darkness
-                              },
-                            }}
-                          >
-                            <Box 
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                height: "100vh",
+                            <Modal
+                              open={isStrengthModalOpen}
+                              onClose={() => setIsStrengthModalOpen(false)}
+                              BackdropProps={{
+                                style: {
+                                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
+                                },
                               }}
                             >
                               <Box
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "100vh",
+                                }}
+                              >
+                                <Box
                                   sx={{
                                     background: "white",
                                     padding: 6,
@@ -2074,60 +2110,68 @@ const Swot = () => {
                                     maxWidth: "100vw", // Limit modal width to 80% of viewport width
                                   }}
                                 >
-                                <Typography
+                                  <Typography
                                     variant="h4"
                                     component="h2"
-                                    sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
-                                  >
-                                  Confirm Deletion
-                                </Typography>
-                                <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
-                                  Are you sure you want to delete this strength?{" "}
-                                  <br />
-                                  You can still restore it later if needed.
-                                </Typography>
-                                <Box
-                                  sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    gap: 2,
-                                    mt: 3,
-                                    flexWrap: "wrap", // Allow buttons to wrap
-                                  }}
-                                >
-                                  <Button
-                                    variant="contained"
-                                    onClick={() =>
-                                      setIsStrengthModalOpen(false)
-                                    }
                                     sx={{
-                                      width: "30%",
-                                      color: "#AB3510",
-                                      p:1,
-                                      fontSize: '18px',
-                                    }}
-                                    style={{
-                                      background: "white",
-                                      border: "1px solid #AB3510",
+                                      fontWeight: "bold",
+                                      mb: 3,
+                                      color: "#4D4C4C",
                                     }}
                                   >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="contained"
-                                    onClick={handleStrengthDeleteConfirm}
+                                    Confirm Deletion
+                                  </Typography>
+                                  <Typography
+                                    variant="h5"
+                                    sx={{ mb: 5, color: "#4D4C4C" }}
+                                  >
+                                    Are you sure you want to delete this
+                                    strength? <br />
+                                    You can still restore it later if needed.
+                                  </Typography>
+                                  <Box
                                     sx={{
-                                      width: "30%",
-                                      background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                      p:1,
-                                      fontSize: '18px',
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      gap: 2,
+                                      mt: 3,
+                                      flexWrap: "wrap", // Allow buttons to wrap
                                     }}
                                   >
-                                    Delete
-                                  </Button>
+                                    <Button
+                                      variant="contained"
+                                      onClick={() =>
+                                        setIsStrengthModalOpen(false)
+                                      }
+                                      sx={{
+                                        width: "30%",
+                                        color: "#AB3510",
+                                        p: 1,
+                                        fontSize: "18px",
+                                      }}
+                                      style={{
+                                        background: "white",
+                                        border: "1px solid #AB3510",
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      onClick={handleStrengthDeleteConfirm}
+                                      sx={{
+                                        width: "30%",
+                                        background:
+                                          "linear-gradient(to left, #8a252c, #AB3510)",
+                                        p: 1,
+                                        fontSize: "18px",
+                                      }}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </Box>
                                 </Box>
                               </Box>
-                            </Box>
                             </Modal>
                           )}
                         </div>
@@ -2141,9 +2185,10 @@ const Swot = () => {
               <Box sx={{ mt: 5 }}>
                 <Button
                   variant="contained"
-                  sx={{p:1}}
+                  sx={{ p: 1 }}
                   style={{
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", fontSize: '18px'
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                    fontSize: "18px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -2178,7 +2223,12 @@ const Swot = () => {
                         {deletedWeaknesses.map((weakness, index) => (
                           <li
                             key={weakness.id}
-                            className={`flex items-center justify-between p-3 ${index < deletedWeaknesses.length - 1 ? "border-b border-gray-200" : ""}`}>
+                            className={`flex items-center justify-between p-3 ${
+                              index < deletedWeaknesses.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
+                          >
                             <Typography
                               variant="h6"
                               sx={{
@@ -2293,11 +2343,12 @@ const Swot = () => {
                           onChange={weaknesses.handleChange}
                           onKeyDown={weaknesses.addWeakness}
                           sx={{
-                            mt:3,
+                            mt: 3,
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                         />
@@ -2315,8 +2366,12 @@ const Swot = () => {
                       {fetchedWeaknesses.map((weakness, index: number) => (
                         <div
                           key={weakness.id}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < fetchedWeaknesses.length - 1 ? "border-b border-gray-200" : ""}`}>
-                        
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            index < fetchedWeaknesses.length - 1
+                              ? "border-b border-gray-200"
+                              : ""
+                          }`}
+                        >
                           <Box className="flex flex-row overflow-y-auto">
                             <Typography
                               variant="h6"
@@ -2362,7 +2417,10 @@ const Swot = () => {
                                 autoFocus
                               />
                             ) : (
-                              <Typography variant="h6" sx={{fontWeight: "400"}}>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: "400" }}
+                              >
                                 {weakness.value.length > 110
                                   ? weakness.value.slice(0, 110) + "..."
                                   : weakness.value}
@@ -2417,87 +2475,95 @@ const Swot = () => {
                             </div>
                           </div>
                           {isWeaknessModalOpen && weaknessToDelete && (
-                            <Modal 
-                            open={isWeaknessModalOpen} 
-                            onClose={() => setIsWeaknessModalOpen(false)}
-                            BackdropProps={{
-                              style: {
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)', // Adjust the last value (alpha) to control darkness
-                              },
-                            }}
-                          >
-                            <Box 
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                height: "100vh",
+                            <Modal
+                              open={isWeaknessModalOpen}
+                              onClose={() => setIsWeaknessModalOpen(false)}
+                              BackdropProps={{
+                                style: {
+                                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
+                                },
                               }}
                             >
                               <Box
                                 sx={{
-                                  background: "white",
-                                  padding: 6,
-                                  borderRadius: 2,
-                                  textAlign: "center",
-                                  position: "relative",
-                                  maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "100vh",
                                 }}
                               >
-                                <Typography
-                                    variant="h4"
-                                    component="h2"
-                                    sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
-                                  >
-                                  Confirm Deletion
-                                </Typography>
-                                <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
-                                  Are you sure you want to delete this weakness?{" "}
-                                  <br />
-                                  You can still restore it later if needed.
-                                </Typography>
                                 <Box
                                   sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    gap: 2,
-                                    mt: 3,
-                                    flexWrap: "wrap", // Allow buttons to wrap
+                                    background: "white",
+                                    padding: 6,
+                                    borderRadius: 2,
+                                    textAlign: "center",
+                                    position: "relative",
+                                    maxWidth: "100vw", // Limit modal width to 80% of viewport width
                                   }}
                                 >
-                                  <Button
-                                    variant="contained"
-                                    onClick={() =>
-                                      setIsWeaknessModalOpen(false)
-                                    }
+                                  <Typography
+                                    variant="h4"
+                                    component="h2"
                                     sx={{
-                                      width: "30%",
-                                      color: "#AB3510",
-                                      p:1,
-                                      fontSize: '18px',
-                                    }}
-                                    style={{
-                                      background: "white",
-                                      border: "1px solid #AB3510",
+                                      fontWeight: "bold",
+                                      mb: 3,
+                                      color: "#4D4C4C",
                                     }}
                                   >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="contained"
-                                    onClick={handleWeaknessDeleteConfirm}
+                                    Confirm Deletion
+                                  </Typography>
+                                  <Typography
+                                    variant="h5"
+                                    sx={{ mb: 5, color: "#4D4C4C" }}
+                                  >
+                                    Are you sure you want to delete this
+                                    weakness? <br />
+                                    You can still restore it later if needed.
+                                  </Typography>
+                                  <Box
                                     sx={{
-                                      width: "30%",
-                                      background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                      p:1,
-                                      fontSize: '18px',
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      gap: 2,
+                                      mt: 3,
+                                      flexWrap: "wrap", // Allow buttons to wrap
                                     }}
                                   >
-                                    Delete
-                                  </Button>
+                                    <Button
+                                      variant="contained"
+                                      onClick={() =>
+                                        setIsWeaknessModalOpen(false)
+                                      }
+                                      sx={{
+                                        width: "30%",
+                                        color: "#AB3510",
+                                        p: 1,
+                                        fontSize: "18px",
+                                      }}
+                                      style={{
+                                        background: "white",
+                                        border: "1px solid #AB3510",
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      onClick={handleWeaknessDeleteConfirm}
+                                      sx={{
+                                        width: "30%",
+                                        background:
+                                          "linear-gradient(to left, #8a252c, #AB3510)",
+                                        p: 1,
+                                        fontSize: "18px",
+                                      }}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </Box>
                                 </Box>
                               </Box>
-                            </Box>
                             </Modal>
                           )}
                         </div>
@@ -2510,9 +2576,10 @@ const Swot = () => {
               <Box sx={{ mt: 5 }}>
                 <Button
                   variant="contained"
-                  sx={{p:1}}
+                  sx={{ p: 1 }}
                   style={{
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", fontSize: '18px'
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                    fontSize: "18px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -2534,7 +2601,10 @@ const Swot = () => {
                 </Button>
                 {isOpportunitiesVisible && (
                   <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                    <Typography variant="h6" sx={{ fontWeight: "bolder", mb: 1 }}>
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bolder", mb: 1 }}
+                    >
                       Deleted Opportunities
                     </Typography>
                     {deletedOpportunities.length === 0 ? (
@@ -2547,11 +2617,16 @@ const Swot = () => {
                         {deletedOpportunities.map((opportunity, index) => (
                           <li
                             key={opportunity.id}
-                            className={`flex items-center justify-between p-3 ${index < deletedOpportunities.length - 1 ? "border-b border-gray-200" : ""}`}> 
+                            className={`flex items-center justify-between p-3 ${
+                              index < deletedOpportunities.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
+                          >
                             <Typography
                               variant="h6"
                               sx={{
-                                fontWeight:"400",
+                                fontWeight: "400",
                                 overflowWrap: "break-word", // Allow long words to break
                                 wordBreak: "break-word", // Break words at any character
                               }}
@@ -2668,11 +2743,12 @@ const Swot = () => {
                           onChange={opportunities.handleChange}
                           onKeyDown={opportunities.addOpportunities}
                           sx={{
-                            mt:3,
+                            mt: 3,
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                         />
@@ -2691,8 +2767,12 @@ const Swot = () => {
                         (opportunity, index: number) => (
                           <div
                             key={opportunity.id}
-                            className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < fetchedOpportunities.length - 1 ? "border-b border-gray-200" : ""}`}> 
-                          
+                            className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                              index < fetchedOpportunities.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
+                          >
                             <Box className="flex flex-row overflow-y-auto">
                               <Typography
                                 variant="h6"
@@ -2740,7 +2820,10 @@ const Swot = () => {
                                   autoFocus
                                 />
                               ) : (
-                                <Typography variant="h6" sx={{fontWeight: "400"}}>
+                                <Typography
+                                  variant="h6"
+                                  sx={{ fontWeight: "400" }}
+                                >
                                   {opportunity.value.length > 110
                                     ? opportunity.value.slice(0, 110) + "..."
                                     : opportunity.value}
@@ -2795,87 +2878,95 @@ const Swot = () => {
                               </div>
                             </div>
                             {isOpportunityModalOpen && opportunityToDelete && (
-                              <Modal 
-                                open={isOpportunityModalOpen} 
+                              <Modal
+                                open={isOpportunityModalOpen}
                                 onClose={() => setIsOpportunityModalOpen(false)}
                                 BackdropProps={{
                                   style: {
-                                    backgroundColor: 'rgba(0, 0, 0, 0.1)', // Adjust the last value (alpha) to control darkness
+                                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
                                   },
-                                }}
-                              >
-                              <Box 
-                                sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "center",
-                                  height: "100vh",
                                 }}
                               >
                                 <Box
                                   sx={{
-                                    background: "white",
-                                    padding: 6,
-                                    borderRadius: 2,
-                                    textAlign: "center",
-                                    position: "relative",
-                                    maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    height: "100vh",
                                   }}
                                 >
-                                  <Typography
-                                    variant="h4"
-                                    component="h2"
-                                    sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
-                                  >
-                                    Confirm Deletion
-                                  </Typography>
-                                  <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
-                                    Are you sure you want to delete this
-                                    opportunity? <br />
-                                    You can still restore it later if needed.
-                                  </Typography>
                                   <Box
                                     sx={{
-                                      display: "flex",
-                                      justifyContent: "center",
-                                      gap: 2,
-                                      mt: 3,
-                                      flexWrap: "wrap", // Allow buttons to wrap
+                                      background: "white",
+                                      padding: 6,
+                                      borderRadius: 2,
+                                      textAlign: "center",
+                                      position: "relative",
+                                      maxWidth: "100vw", // Limit modal width to 80% of viewport width
                                     }}
                                   >
-                                    <Button
-                                      variant="contained"
-                                      onClick={() =>
-                                        setIsOpportunityModalOpen(false)
-                                      }
+                                    <Typography
+                                      variant="h4"
+                                      component="h2"
                                       sx={{
-                                        width: "30%",
-                                        color: "#AB3510",
-                                        p:1,
-                                        fontSize: '18px',
-                                      }}
-                                      style={{
-                                        background: "white",
-                                        border: "1px solid #AB3510",
+                                        fontWeight: "bold",
+                                        mb: 3,
+                                        color: "#4D4C4C",
                                       }}
                                     >
-                                      Cancel
-                                    </Button>
-                                    <Button
-                                      variant="contained"
-                                      onClick={handleOpportunityDeleteConfirm}
+                                      Confirm Deletion
+                                    </Typography>
+                                    <Typography
+                                      variant="h5"
+                                      sx={{ mb: 5, color: "#4D4C4C" }}
+                                    >
+                                      Are you sure you want to delete this
+                                      opportunity? <br />
+                                      You can still restore it later if needed.
+                                    </Typography>
+                                    <Box
                                       sx={{
-                                        width: "30%",
-                                        background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                        p:1,
-                                        fontSize: '18px',
+                                        display: "flex",
+                                        justifyContent: "center",
+                                        gap: 2,
+                                        mt: 3,
+                                        flexWrap: "wrap", // Allow buttons to wrap
                                       }}
                                     >
-                                      Delete
-                                    </Button>
+                                      <Button
+                                        variant="contained"
+                                        onClick={() =>
+                                          setIsOpportunityModalOpen(false)
+                                        }
+                                        sx={{
+                                          width: "30%",
+                                          color: "#AB3510",
+                                          p: 1,
+                                          fontSize: "18px",
+                                        }}
+                                        style={{
+                                          background: "white",
+                                          border: "1px solid #AB3510",
+                                        }}
+                                      >
+                                        Cancel
+                                      </Button>
+                                      <Button
+                                        variant="contained"
+                                        onClick={handleOpportunityDeleteConfirm}
+                                        sx={{
+                                          width: "30%",
+                                          background:
+                                            "linear-gradient(to left, #8a252c, #AB3510)",
+                                          p: 1,
+                                          fontSize: "18px",
+                                        }}
+                                      >
+                                        Delete
+                                      </Button>
+                                    </Box>
                                   </Box>
                                 </Box>
-                              </Box>
                               </Modal>
                             )}
                           </div>
@@ -2889,9 +2980,10 @@ const Swot = () => {
               <Box sx={{ mt: 5 }}>
                 <Button
                   variant="contained"
-                  sx={{p:1}}
+                  sx={{ p: 1 }}
                   style={{
-                    background: "linear-gradient(to left, #8a252c, #AB3510)", fontSize: '18px'
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                    fontSize: "18px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -2922,7 +3014,12 @@ const Swot = () => {
                         {deletedThreats.map((threat, index) => (
                           <li
                             key={threat.id}
-                            className={`flex items-center justify-between p-3 ${index < deletedThreats.length - 1 ? "border-b border-gray-200" : ""}`}>
+                            className={`flex items-center justify-between p-3 ${
+                              index < deletedThreats.length - 1
+                                ? "border-b border-gray-200"
+                                : ""
+                            }`}
+                          >
                             <Typography
                               variant="h6"
                               sx={{
@@ -3037,11 +3134,12 @@ const Swot = () => {
                           onChange={threats.handleChange}
                           onKeyDown={threats.addThreats}
                           sx={{
-                            mt:3,
+                            mt: 3,
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                         />
@@ -3059,7 +3157,12 @@ const Swot = () => {
                       {fetchedThreats.map((threat, index: number) => (
                         <div
                           key={threat.id}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < fetchedThreats.length - 1 ? "border-b border-gray-200" : ""}`}> 
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            index < fetchedThreats.length - 1
+                              ? "border-b border-gray-200"
+                              : ""
+                          }`}
+                        >
                           <Box className="flex flex-row overflow-y-auto">
                             <Typography
                               variant="h6"
@@ -3105,7 +3208,10 @@ const Swot = () => {
                                 autoFocus
                               />
                             ) : (
-                              <Typography variant="h6" sx={{fontWeight: "400"}}>
+                              <Typography
+                                variant="h6"
+                                sx={{ fontWeight: "400" }}
+                              >
                                 {threat.value.length > 110
                                   ? threat.value.slice(0, 110) + "..."
                                   : threat.value}
@@ -3156,85 +3262,95 @@ const Swot = () => {
                             </div>
                           </div>
                           {isThreatModalOpen && threatToDelete && (
-                            <Modal 
-                              open={isThreatModalOpen} 
+                            <Modal
+                              open={isThreatModalOpen}
                               onClose={() => setIsThreatModalOpen(false)}
                               BackdropProps={{
                                 style: {
-                                  backgroundColor: 'rgba(0, 0, 0, 0.1)', // Adjust the last value (alpha) to control darkness
+                                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
                                 },
-                              }}
-                            >
-                            <Box 
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                height: "100vh",
                               }}
                             >
                               <Box
                                 sx={{
-                                  background: "white",
-                                  padding: 6,
-                                  borderRadius: 2,
-                                  textAlign: "center",
-                                  position: "relative",
-                                  maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  height: "100vh",
                                 }}
                               >
-                                <Typography
-                                    variant="h4"
-                                    component="h2"
-                                    sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
-                                  >
-                                  Confirm Deletion
-                                </Typography>
-                                <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
-                                  Are you sure you want to delete this threat?{" "}
-                                  <br />
-                                  You can still restore it later if needed.
-                                </Typography>
                                 <Box
                                   sx={{
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    gap: 2,
-                                    mt: 3,
-                                    flexWrap: "wrap", // Allow buttons to wrap
+                                    background: "white",
+                                    padding: 6,
+                                    borderRadius: 2,
+                                    textAlign: "center",
+                                    position: "relative",
+                                    maxWidth: "100vw", // Limit modal width to 80% of viewport width
                                   }}
                                 >
-                                  <Button
-                                    variant="contained"
-                                    onClick={() => setIsThreatModalOpen(false)}
+                                  <Typography
+                                    variant="h4"
+                                    component="h2"
                                     sx={{
-                                      width: "30%",
-                                      color: "#AB3510",
-                                      p:1,
-                                      fontSize: '18px',
-                                    }}
-                                    style={{
-                                      background: "white",
-                                      border: "1px solid #AB3510",
+                                      fontWeight: "bold",
+                                      mb: 3,
+                                      color: "#4D4C4C",
                                     }}
                                   >
-                                    Cancel
-                                  </Button>
-                                  <Button
-                                    variant="contained"
-                                    onClick={handleThreatDeleteConfirm}
+                                    Confirm Deletion
+                                  </Typography>
+                                  <Typography
+                                    variant="h5"
+                                    sx={{ mb: 5, color: "#4D4C4C" }}
+                                  >
+                                    Are you sure you want to delete this threat?{" "}
+                                    <br />
+                                    You can still restore it later if needed.
+                                  </Typography>
+                                  <Box
                                     sx={{
-                                      width: "30%",
-                                      background: "linear-gradient(to left, #8a252c, #AB3510)",
-                                      p:1,
-                                      fontSize: '18px',
+                                      display: "flex",
+                                      justifyContent: "center",
+                                      gap: 2,
+                                      mt: 3,
+                                      flexWrap: "wrap", // Allow buttons to wrap
                                     }}
                                   >
-                                    Delete
-                                  </Button>
+                                    <Button
+                                      variant="contained"
+                                      onClick={() =>
+                                        setIsThreatModalOpen(false)
+                                      }
+                                      sx={{
+                                        width: "30%",
+                                        color: "#AB3510",
+                                        p: 1,
+                                        fontSize: "18px",
+                                      }}
+                                      style={{
+                                        background: "white",
+                                        border: "1px solid #AB3510",
+                                      }}
+                                    >
+                                      Cancel
+                                    </Button>
+                                    <Button
+                                      variant="contained"
+                                      onClick={handleThreatDeleteConfirm}
+                                      sx={{
+                                        width: "30%",
+                                        background:
+                                          "linear-gradient(to left, #8a252c, #AB3510)",
+                                        p: 1,
+                                        fontSize: "18px",
+                                      }}
+                                    >
+                                      Delete
+                                    </Button>
+                                  </Box>
                                 </Box>
                               </Box>
-                            </Box>
                             </Modal>
                           )}
                         </div>
@@ -3259,12 +3375,12 @@ const Swot = () => {
                   onClick={generateStrategies}
                   sx={{
                     p: 2,
-                    fontSize: '18px',
+                    fontSize: "18px",
                   }}
                   style={{
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    width: '20%',
-                    borderRadius: '12px'
+                    width: "20%",
+                    borderRadius: "12px",
                   }}
                 >
                   Generate Strategies
@@ -3272,66 +3388,68 @@ const Swot = () => {
               </Box>
 
               {isModalVisible && (
-                <Modal 
-                  open={isModalVisible} 
+                <Modal
+                  open={isModalVisible}
                   BackdropProps={{
                     style: {
-                      backgroundColor: 'rgba(0, 0, 0, 0.3)', // Adjust the last value (alpha) to control darkness
+                      backgroundColor: "rgba(0, 0, 0, 0.3)", // Adjust the last value (alpha) to control darkness
                     },
-                  }}>
-                <Box 
-                  sx={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    height: "100vh",
                   }}
                 >
                   <Box
                     sx={{
-                      background: "white",
-                      padding: 6,
-                      borderRadius: 2,
-                      textAlign: "center",
-                      position: "relative",
-                      maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      height: "100vh",
                     }}
                   >
-                    <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
-                    >
-                      Strategies Successfully Generated
-                    </Typography>
-                    <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
-                      The AI has analyzed the inputted SWOT <br/>data and created
-                      strategies.
-                    </Typography>
                     <Box
                       sx={{
-                        display: "flex",
-                        justifyContent: "center",
-                        gap: 2,
-                        mt: 3,
-                        flexWrap: "wrap", // Allow buttons to wrap
+                        background: "white",
+                        padding: 6,
+                        borderRadius: 2,
+                        textAlign: "center",
+                        position: "relative",
+                        maxWidth: "100vw", // Limit modal width to 80% of viewport width
                       }}
                     >
-                      <Button
-                        variant="contained"
-                        onClick={closeModal}
+                      <Typography
+                        variant="h4"
+                        component="h2"
+                        sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
+                      >
+                        Strategies Successfully Generated
+                      </Typography>
+                      <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
+                        The AI has analyzed the inputted SWOT <br />
+                        data and created strategies.
+                      </Typography>
+                      <Box
                         sx={{
-                          width: "30%",
-                          background: "linear-gradient(to left, #8a252c, #AB3510)",
-                          p:1,
-                          fontSize: '18px',
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: 2,
+                          mt: 3,
+                          flexWrap: "wrap", // Allow buttons to wrap
                         }}
                       >
-                        Close
-                      </Button>
+                        <Button
+                          variant="contained"
+                          onClick={closeModal}
+                          sx={{
+                            width: "30%",
+                            background:
+                              "linear-gradient(to left, #8a252c, #AB3510)",
+                            p: 1,
+                            fontSize: "18px",
+                          }}
+                        >
+                          Close
+                        </Button>
+                      </Box>
                     </Box>
                   </Box>
-                </Box>
                 </Modal>
               )}
             </>
@@ -3377,9 +3495,14 @@ const Swot = () => {
                       {soApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < soApiresponse.length - 1 ? "border-b border-gray-200" : ""}`}> 
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            index < soApiresponse.length - 1
+                              ? "border-b border-gray-200"
+                              : ""
+                          }`}
+                        >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{fontWeight: "400"}}>
+                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
                               {strategy["s_oResponses"]}
                             </Typography>
                           </Box>
@@ -3454,9 +3577,14 @@ const Swot = () => {
                       {woApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < woApiresponse.length - 1 ? "border-b border-gray-200" : ""}`}> 
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            index < woApiresponse.length - 1
+                              ? "border-b border-gray-200"
+                              : ""
+                          }`}
+                        >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{fontWeight: "400"}}>
+                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
                               {strategy["w_oResponses"]}
                             </Typography>
                           </Box>
@@ -3529,9 +3657,14 @@ const Swot = () => {
                       {stApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < stApiresponse.length - 1 ? "border-b border-gray-200" : ""}`}> 
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            index < stApiresponse.length - 1
+                              ? "border-b border-gray-200"
+                              : ""
+                          }`}
+                        >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{fontWeight: "400"}}>
+                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
                               {strategy["s_tResponses"]}
                             </Typography>
                           </Box>
@@ -3605,10 +3738,14 @@ const Swot = () => {
                       {wtApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${index < wtApiresponse.length - 1 ? "border-b border-gray-200" : ""}`}> 
-                        
+                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            index < wtApiresponse.length - 1
+                              ? "border-b border-gray-200"
+                              : ""
+                          }`}
+                        >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{fontWeight: "400"}}>
+                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
                               {strategy["w_tResponses"]}
                             </Typography>
                           </Box>
@@ -3680,8 +3817,8 @@ const Swot = () => {
                         sx={{
                           width: "30%",
                           color: "#AB3510",
-                          p:1,
-                          fontSize: '18px',
+                          p: 1,
+                          fontSize: "18px",
                         }}
                         style={{
                           background: "white",
@@ -3696,9 +3833,10 @@ const Swot = () => {
                         onClick={handleDeleteConfirm}
                         sx={{
                           width: "30%",
-                          background: "linear-gradient(to left, #8a252c, #AB3510)",
-                          p:1,
-                          fontSize: '18px',
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          fontSize: "18px",
                         }}
                       >
                         Delete

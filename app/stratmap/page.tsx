@@ -62,13 +62,58 @@ const Page = () => {
   const department_id = user?.department_id;
   const role = user?.role;
   const username = user?.username;
-
+  
   useEffect(() => {
     const lastComponent = localStorage.getItem("lastComponent");
     if (lastComponent) {
       setSelectedComponent(lastComponent);
     }
+
   }, []);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/stratmap/byDepartment/${department_id}`
+        );
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+  
+        // Update the strategies state
+        setStrategies({
+          financial: data.financial.map((item: any) => ({
+            id: 1,
+            fID: item.id, // fID should be present in the response or calculated
+            value: item.office_target,
+          })),
+          stakeholder: data.stakeholder.map((item: any) => ({
+            id: 2,
+            fID: item.id,
+            value: item.office_target,
+          })),
+          internalProcess: data.internalProcess.map((item: any) => ({
+            id: 3,
+            fID: item.id,
+            value: item.office_target,
+          })),
+          learningGrowth: data.learningGrowth.map((item: any) => ({
+            id: 4,
+            fID: item.id,
+            value: item.office_target,
+          })),
+        });
+      } catch (error) {
+        console.error("Error fetching existing strategies:", error);
+      }
+    };
+  
+    fetchData();
+  }, [department_id, selectedComponent]);
 
   useEffect(() => {
     let isMounted = true;
@@ -348,6 +393,7 @@ const Page = () => {
     id: number;
     fID: number;
     value: string;
+    code?: string | number;
   }
 
   interface StrategyCategories {
@@ -462,30 +508,24 @@ const Page = () => {
       }
 
       const result = await response.json();
-      const updatedStrategy = result.updatedFinancial;
+      const updatedStrategy = result;
 
       setStrategies((prevStrategies) => {
         const newStrategies = { ...prevStrategies };
-        const financial = newStrategies.financial || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
-        if (updatedStrategy) {
-          const strategyIndex = financial.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            financial[strategyIndex] = updatedStrategy;
-            newStrategies.financial = financial;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
+        const updatedFinancial = newStrategies.financial.map((strategy) => {
+          if (strategy.fID === fID) {
+            return { ...strategy, value: updatedStrategy.office_target }; 
           }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
-        }
-
-        return newStrategies;
+          return strategy; 
+        });
+  
+        return {
+          ...newStrategies,
+          financial: updatedFinancial, 
+        };
       });
-
+  
       fetchExistingStrategies(department_id);
     } catch (error) {
       console.error("An error occurred while updating the strategy:", error);
@@ -519,31 +559,25 @@ const Page = () => {
       }
 
       const result = await response.json();
-      const updatedStrategy = result.updatedLG;
+      const updatedStrategy = result;
 
       setStrategies((prevStrategies) => {
         const newStrategies = { ...prevStrategies };
-        const learningGrowth = newStrategies.learningGrowth || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
-        if (updatedStrategy) {
-          const strategyIndex = learningGrowth.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            learningGrowth[strategyIndex] = updatedStrategy;
-            newStrategies.learningGrowth = learningGrowth;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
-          }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
+      const updatedlearningGrowth = newStrategies.learningGrowth.map((strategy) => {
+        if (strategy.fID === fID) {
+          return { ...strategy, value: updatedStrategy.office_target }; 
         }
-
-        return newStrategies;
+        return strategy; 
       });
 
-      fetchExistingStrategies(department_id);
+      return {
+        ...newStrategies,
+        learningGrowth: updatedlearningGrowth, 
+      };
+    });
+
+    fetchExistingStrategies(department_id);
     } catch (error) {
       console.error("An error occurred while updating the strategy:", error);
     }
@@ -576,31 +610,24 @@ const Page = () => {
       }
 
       const result = await response.json();
-      const updatedStrategy = result.stakeholderUpdated;
-
+      const updatedStrategy = result;
       setStrategies((prevStrategies) => {
         const newStrategies = { ...prevStrategies };
-        const stakeholder = newStrategies.stakeholder || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
-        if (updatedStrategy) {
-          const strategyIndex = stakeholder.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            stakeholder[strategyIndex] = updatedStrategy;
-            newStrategies.stakeholder = stakeholder;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
-          }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
+      const updatedStakeholder = newStrategies.stakeholder.map((strategy) => {
+        if (strategy.fID === fID) {
+          return { ...strategy, value: updatedStrategy.office_target }; 
         }
-
-        return newStrategies;
+        return strategy; 
       });
 
-      fetchExistingStrategies(department_id);
+      return {
+        ...newStrategies,
+        stakeholder: updatedStakeholder, 
+      };
+    });
+
+    fetchExistingStrategies(department_id);
     } catch (error) {
       console.error("An error occurred while updating the strategy:", error);
     }
@@ -633,31 +660,25 @@ const Page = () => {
       }
 
       const result = await response.json();
-      const updatedStrategy = result.updatedIP;
+      const updatedStrategy = result;
 
       setStrategies((prevStrategies) => {
         const newStrategies = { ...prevStrategies };
-        const internalProcess = newStrategies.internalProcess || [];
-        console.log(`updatedStrategy for fID ${fID}:`, updatedStrategy);
 
-        if (updatedStrategy) {
-          const strategyIndex = internalProcess.findIndex(
-            (strategy) => strategy.id === fID
-          );
-          if (strategyIndex !== -1) {
-            internalProcess[strategyIndex] = updatedStrategy;
-            newStrategies.internalProcess = internalProcess;
-          } else {
-            console.error(`Strategy with id ${fID} not found`);
-          }
-        } else {
-          console.error(`updatedStrategy for fID ${fID} is undefined`);
+      const updatedInternalProcess = newStrategies.internalProcess.map((strategy) => {
+        if (strategy.fID === fID) {
+          return { ...strategy, value: updatedStrategy.office_target }; 
         }
-
-        return newStrategies;
+        return strategy; 
       });
 
-      fetchExistingStrategies(department_id);
+      return {
+        ...newStrategies,
+        internalProcess: updatedInternalProcess, 
+      };
+    });
+
+    fetchExistingStrategies(department_id);
     } catch (error) {
       console.error("An error occurred while updating the strategy:", error);
     }
@@ -893,17 +914,6 @@ const Page = () => {
   const [newPrimaryLGStrategy, setNewPrimaryLGStrategy] = useState("");
   const [newPrimaryLGTargetCode, setNewPrimaryLGTargetCode] = useState("");
 
-  const openPrimaryLGModal = () => {
-    setIsPrimaryLGModalOpen(true);
-    setNewPrimaryLGTargetCode("");
-    setNewPrimaryLGStrategy("");
-  };
-
-  const closePrimaryLGModal = () => {
-    setNewPrimaryLGTargetCode("");
-    setIsPrimaryLGModalOpen(false);
-  };
-
   // learning&growth
   const [isLGModalOpen, setIsLGModalOpen] = useState(false);
   const [newLGStrategy, setNewLGStrategy] = useState("");
@@ -960,6 +970,13 @@ const Page = () => {
   ) => {
     try {
       const response = await fetch(apiEndpoint);
+      if (!response.ok) {
+        if (response.status === 404) {
+          // If all apiEndpoints 404, throw an error to be caught later
+          throw new Error("No data found at API endpoint."); 
+        }
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
       const data = await response.json();
       console.log("swot data: ", data);
 
@@ -1007,7 +1024,8 @@ const Page = () => {
           if (match) {
             const [, idStr, strategicTheme, code, content] = match;
             const id = parseInt(idStr, 10);
-            const fID = id; // No longer using fID
+            const fID = id;
+
             return {
               code,
               id,
@@ -1096,140 +1114,168 @@ const Page = () => {
     }
   };
 
-  const fetchAllData = async (department_id: number) => {
-    for (const apiEndpoint of API_ENDPOINTS) {
-      const categorizedSentences = await fetchDataAndCategorize(
-        apiEndpoint,
-        department_id
+  const saveToDatabase = async (
+    strategies: {
+      financial: GeneratedSentence[];
+      stakeholder: GeneratedSentence[];
+      internalProcess: GeneratedSentence[];
+      learningGrowth: GeneratedSentence[];
+    },
+    department_id: number
+  ) => {
+    try {
+      // Financial entity (with frontend check)
+      const processedFinancial = new Set(); 
+      const financialPromises = strategies.financial.map((sentence) => {
+        if (processedFinancial.has(sentence.value)) {
+          return Promise.resolve(); 
+        }
+        processedFinancial.add(sentence.value);
+  
+        const data = {
+          office_target: sentence.value,
+          department: { id: department_id },
+          targetYear: currentYear,
+          //@ts-ignore
+          target_code: sentence.code,
+        };
+        console.log("financial data: ", data);
+        return fetch("http://localhost:8080/stratmap/financial/insert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      });
+      await Promise.all(financialPromises);
+  
+      // Stakeholder entity (with frontend check)
+      const processedStakeholder = new Set();
+      const stakeholderPromises = strategies.stakeholder.map((sentence) => {
+        if (processedStakeholder.has(sentence.value)) {
+          return Promise.resolve();
+        }
+        processedStakeholder.add(sentence.value);
+  
+        const data = {
+          office_target: sentence.value,
+          department: { id: department_id },
+          targetYear: currentYear,
+          //@ts-ignore
+          target_code: sentence.code,
+        };
+        return fetch("http://localhost:8080/stratmap/stakeholder/insert", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+      });
+      await Promise.all(stakeholderPromises);
+  
+      // Internal process entity (with frontend check)
+      const processedInternalProcess = new Set();
+      const internalProcessPromises = strategies.internalProcess.map(
+        (sentence) => {
+          if (processedInternalProcess.has(sentence.value)) {
+            return Promise.resolve();
+          }
+          processedInternalProcess.add(sentence.value);
+  
+          const data = {
+            office_target: sentence.value,
+            department: { id: department_id },
+            targetYear: currentYear,
+            //@ts-ignore
+            target_code: sentence.code,
+          };
+          return fetch("http://localhost:8080/stratmap/internal/insert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+        }
       );
+      await Promise.all(internalProcessPromises);
+  
+      // Learning and growth entity (with frontend check)
+      const processedLearningGrowth = new Set();
+      const learningGrowthPromises = strategies.learningGrowth.map(
+        (sentence) => {
+          if (processedLearningGrowth.has(sentence.value)) {
+            return Promise.resolve();
+          }
+          processedLearningGrowth.add(sentence.value);
+  
+          const data = {
+            office_target: sentence.value,
+            department: { id: department_id },
+            targetYear: currentYear,
+            //@ts-ignore
+            target_code: sentence.code,
+          };
+          return fetch("http://localhost:8080/stratmap/learning/insert", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          });
+        }
+      );
+      await Promise.all(learningGrowthPromises);
+  
+      console.log("Data saved to database");
+    } catch (error) {
+      console.error("Error saving data to database:", error);
+    } finally {
+        try {
+            await fetchExistingStrategies(department_id); 
+            setIsButtonDisabled(false); 
+  
+          } catch (error) {
+            console.error("Error in sorting or saving:", error);
+            setIsButtonDisabled(false); 
+          }
+      }
+  };
 
+  const fetchAllData = async (department_id: number) => {
+    const newStrategies = {
+      financial: [] as GeneratedSentence[],
+      stakeholder: [] as GeneratedSentence[],
+      internalProcess: [] as GeneratedSentence[],
+      learningGrowth: [] as GeneratedSentence[],
+    };
+
+    for (const apiEndpoint of API_ENDPOINTS) {
+      const categorizedSentences = await fetchDataAndCategorize(apiEndpoint, department_id);
+  
       // Process the categorizedSentences for each API endpoint (e.g., organize them into strategies)
       for (const sentence of categorizedSentences) {
         switch (sentence.id) {
           case 1:
-            strategies.financial.push(sentence);
+            newStrategies.financial.push(sentence);
             break;
           case 2:
-            strategies.stakeholder.push(sentence);
+            newStrategies.stakeholder.push(sentence);
             break;
           case 3:
-            strategies.internalProcess.push(sentence);
+            newStrategies.internalProcess.push(sentence);
             break;
           case 4:
-            strategies.learningGrowth.push(sentence);
+            newStrategies.learningGrowth.push(sentence);
             break;
         }
       }
     }
-
-    setStrategies(strategies);
-
-    const saveToDatabase = async (
-      strategies: {
-        financial: GeneratedSentence[];
-        stakeholder: GeneratedSentence[];
-        internalProcess: GeneratedSentence[];
-        learningGrowth: GeneratedSentence[];
-      },
-      department_id: number
-    ) => {
-      try {
-        // Financial entity
-        const financialPromises = strategies.financial.map((sentence) => {
-          const data = {
-            office_target: sentence.value,
-            department: { id: department_id },
-            targetYear: currentYear,
-            //@ts-ignore
-            target_code: sentence.code,
-          };
-          console.log("financial data: ", data);
-          return fetch("http://localhost:8080/stratmap/financial/insert", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        });
-        await Promise.all(financialPromises);
-
-        // Stakeholder entity
-        const stakeholderPromises = strategies.stakeholder.map((sentence) => {
-          const data = {
-            office_target: sentence.value,
-            department: { id: department_id },
-            targetYear: currentYear,
-            //@ts-ignore
-            target_code: sentence.code,
-          };
-          return fetch("http://localhost:8080/stratmap/stakeholder/insert", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          });
-        });
-        await Promise.all(stakeholderPromises);
-
-        // Internal process entity
-        const internalProcessPromises = strategies.internalProcess.map(
-          (sentence) => {
-            const data = {
-              office_target: sentence.value,
-              department: { id: department_id },
-              targetYear: currentYear,
-              //@ts-ignore
-              target_code: sentence.code,
-            };
-            return fetch("http://localhost:8080/stratmap/internal/insert", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-          }
-        );
-        await Promise.all(internalProcessPromises);
-
-        // Learning and growth entity
-        const learningGrowthPromises = strategies.learningGrowth.map(
-          (sentence) => {
-            const data = {
-              office_target: sentence.value,
-              department: { id: department_id },
-              targetYear: currentYear,
-              //@ts-ignore
-              target_code: sentence.code,
-            };
-            return fetch("http://localhost:8080/stratmap/learning/insert", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(data),
-            });
-          }
-        );
-        await Promise.all(learningGrowthPromises);
-
-        console.log("Data saved to database");
-      } catch (error) {
-        console.error("Error saving data to database:", error);
-      } finally {
-        try {
-          await fetchExistingStrategies(department_id);
-          setIsButtonDisabled(false);
-        } catch (error) {
-          console.error("Error in sorting or saving:", error);
-          setIsButtonDisabled(false);
-        }
-      }
-    };
-
-    await saveToDatabase(strategies, department_id);
+  
+    setStrategies(newStrategies);
+    await saveToDatabase(newStrategies, department_id);
   };
 
   const fetchPrimaryFinancialStrategies = async (department_id: number) => {
@@ -1340,7 +1386,12 @@ const Page = () => {
     }
   };
 
-  const fetchExistingStrategies = async (department_id: number) => {
+  const fetchExistingStrategies = async (department_id: number): Promise<{
+    financial: GeneratedSentence[];
+    stakeholder: GeneratedSentence[];
+    internalProcess: GeneratedSentence[];
+    learningGrowth: GeneratedSentence[];
+  }> => {
     try {
       const response = await fetch(
         `http://localhost:8080/stratmap/byDepartment/${department_id}`
@@ -1349,38 +1400,47 @@ const Page = () => {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
       const data = await response.json();
+      console.log("datahhhhhhh: ", data);
 
-      console.log("existing data: ", data);
+      const currentYear = new Date().getFullYear().toString();
+
 
       const strategies = {
-        financial: data.financial.map((item: any) => ({
+        financial: data.financial.filter((item: any) => item.targetYear === currentYear).map((item: any) => ({
           id: 1,
           fID: item.id,
           value: item.office_target,
         })),
-        stakeholder: data.stakeholder.map((item: any) => ({
+        
+        stakeholder: data.stakeholder.filter((item: any) => item.targetYear === currentYear).map((item: any) => ({
           id: 2,
           fID: item.id,
           value: item.office_target,
         })),
-        internalProcess: data.internalProcess.map((item: any) => ({
+        internalProcess: data.internalProcess.filter((item: any) => item.targetYear === currentYear).map((item: any) => ({
           id: 3,
           fID: item.id,
           value: item.office_target,
         })),
-        learningGrowth: data.learningGrowth.map((item: any) => ({
+        learningGrowth: data.learningGrowth.filter((item: any) => item.targetYear === currentYear).map((item: any) => ({
           id: 4,
           fID: item.id,
           value: item.office_target,
         })),
       };
-
-      setStrategies(strategies);
-      console.log(strategies);
+  
+      console.log("Existing strategies:", strategies);
+      return strategies;
     } catch (error) {
       console.error("Error fetching existing strategies:", error);
+      return {
+        financial: [],
+        stakeholder: [],
+        internalProcess: [],
+        learningGrowth: [],
+      }; // Return empty object on error
     }
-  };
+  }; 
 
   const handleFinancialDelete = async (id: number) => {
     try {

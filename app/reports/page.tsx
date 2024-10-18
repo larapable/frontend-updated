@@ -82,6 +82,110 @@ const ReportsPage = () => {
     []
   );
 
+  const [image, setImage] = useState("");
+  useEffect(() => {
+    const fetchImageData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/image/getImage/${department_id}`
+        );
+        if (response.ok) {
+          const { imageData, imageFormat } = await response.json();
+          console.log(
+            "Received image data:",
+            imageData,
+            "Image format:",
+            imageFormat
+          );
+
+          if (!imageData || !imageFormat) {
+            console.error(
+              "Invalid image data or format:",
+              imageData,
+              imageFormat
+            );
+            return;
+          }
+
+          const image = `data:image/${imageFormat};base64,${imageData}`;
+          setImage(image);
+          console.log("Image URL:", image);
+        } else {
+          console.error("Error fetching image data:", response.statusText);
+        }
+      } catch (error) {
+        console.error("Error fetching image data:", error);
+      } finally {
+      }
+    };
+    fetchImageData();
+  }, [department_id]);
+
+  function makeCircularImage(imageUrl: string): Promise<string> {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        if (!ctx) {
+          reject(new Error("Failed to get 2D rendering context"));
+          return;
+        }
+
+        const size = Math.min(img.width, img.height);
+        canvas.width = size;
+        canvas.height = size;
+
+        ctx.beginPath();
+        ctx.arc(size / 2, size / 2, size / 2, 0, 2 * Math.PI);
+        ctx.closePath();
+        ctx.clip();
+
+        ctx.drawImage(img, 0, 0, size, size);
+
+        const circularImageData = canvas.toDataURL("image/png");
+        resolve(circularImageData);
+      };
+      img.onerror = () => {
+        reject(new Error("Failed to load image."));
+      };
+      img.src = imageUrl;
+    });
+  }
+
+  const [university, setUniversity] = useState("");
+  const [departmentName, setDepartmentName] = useState("");
+  const [email, setEmail] = useState("");
+  const [departmentLandline, setDepartmentLandline] = useState("");
+
+  useEffect(() => {
+    const fetchUserProfileData = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:8080/department/${department_id}`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Received data:", data);
+          setDepartmentName(data.department_name);
+          setDepartmentLandline(data.department_landline);
+          setEmail(data.email);
+          setUniversity(data.university);
+        } else {
+          console.error(
+            "Error fetching user profile data:",
+            response.statusText
+          );
+        }
+      } catch (error) {
+        console.error("Error fetching user profile data:", error);
+      } finally {
+      }
+    };
+    fetchUserProfileData();
+  }, [department_id]);
+
   const [preparedByName, setPreparedByName] = useState("");
   const [preparedByRole, setPreparedByRole] = useState("");
   const [acknowledgedByName, setAcknowledgedByName] = useState("");
@@ -708,18 +812,28 @@ const ReportsPage = () => {
     const doc = new jsPDF();
     let startY = 5;
 
-    const imgProps = doc.getImageProperties("/cit.png"); // Replace with your image path
-    const imgWidth = imgProps.width;
-    const imgHeight = imgProps.height;
-
-    doc.addImage("/cit.png", "PNG", 10, 5, 20, 20); // Adjust position and size as needed
+    if (image) {
+      makeCircularImage(image)
+        .then((circularImageData) => {
+          const circularImage = new Image();
+          circularImage.src = circularImageData;
+          circularImage.onload = () => {
+            doc.addImage(circularImage, "PNG", 10, 5, 20, 20);
+          };
+        })
+        .catch((error) => {
+          console.error("Error making circular image:", error);
+        });
+    } else {
+      console.warn("No department image found.");
+    }
     doc.setFont("Helvetica", "bold");
     doc.setFontSize(8); // Adjust font size as needed
-    doc.text("CEBU INSTITUTE OF TECHNOLOGY - UNIVERSITY", 35, 10);
-    doc.text("CENTER FOR ELEARNING AND TECHNOLOGY", 35, 15);
+    doc.text(`${university.toUpperCase()}`, 35, 10);
+    doc.text(`${departmentName.toUpperCase()}`, 35, 15);
     doc.setFontSize(6);
     doc.setFont("Helvetica", "bold");
-    doc.text("office email address | office local number", 35, 20);
+    doc.text(`${email} | ${departmentLandline}`, 35, 20);
     doc.setFontSize(9);
     doc.setFont("Helvetica", "bold");
     doc.setTextColor(170, 0, 0); // Set text color to dark red or adjust
@@ -728,17 +842,20 @@ const ReportsPage = () => {
 
     startY = 40;
 
-    // Export the chart to an image
+    doc.setFont("Helvetica", "bold");
+    doc.setFontSize(10); // Adjust font size as needed
+    doc.text("AVERAGE REPORT VISUALIZATION", 15, 35);
     if (chartRef.current) {
       // Check if current is not null
       const canvas = await html2canvas(chartRef.current);
       const imgData = canvas.toDataURL("image/png");
 
-     
       doc.addImage(imgData, "PNG", 10, startY, 140, 50);
-      startY += 60; 
+      startY += 60;
     }
 
+    doc.setFontSize(10); // Adjust font size as needed
+    doc.text("FINAL REPORT OF EACH PERSPECTIVES", 15, 100);
     const addSection = (reportTitle: string, reportData: any[]) => {
       console.log(`Adding section: ${reportTitle}`, reportData);
 
@@ -805,34 +922,33 @@ const ReportsPage = () => {
     // Check if we need a new page for the footer
     if (startY > 270) {
       doc.addPage();
-      startY = 20; 
+      startY = 20;
     }
 
-    startY += 20; 
+    startY += 20;
     console.log("Current startY before footer:", startY);
 
-      
-      doc.setFontSize(8);
-      doc.setFont('Helvetica', 'normal');
-      doc.text(`Prepared By:`, 15, startY);
-      doc.setFont('Helvetica', 'bold');
-      doc.text(`${preparedByName}`,15,startY + 15);
-      doc.setFont('Helvetica', 'normal');
-      doc.text(`${preparedByRole}`, 15, startY + 20); 
+    doc.setFontSize(8);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Prepared By:`, 15, startY);
+    doc.setFont("Helvetica", "bold");
+    doc.text(`${preparedByName}`, 15, startY + 15);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`${preparedByRole}`, 15, startY + 20);
 
-      doc.setFont('Helvetica', 'normal');
-      doc.text(`Reviewed By:`, 80, startY);
-      doc.setFont('Helvetica', 'bold');
-      doc.text(`${reviewedByName}`,80,startY + 15);
-      doc.setFont('Helvetica', 'normal');
-      doc.text(`${reviewedByRole}`, 80, startY + 20);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Reviewed By:`, 80, startY);
+    doc.setFont("Helvetica", "bold");
+    doc.text(`${reviewedByName}`, 80, startY + 15);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`${reviewedByRole}`, 80, startY + 20);
 
-      doc.setFont('Helvetica', 'normal');
-      doc.text(`Acknowledged By:`, 145, startY);
-      doc.setFont('Helvetica', 'bold');
-      doc.text(`${acknowledgedByName}`,145,startY + 15);
-      doc.setFont('Helvetica', 'normal');
-      doc.text(`${acknowledgedByRole}`, 145, startY + 20);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`Acknowledged By:`, 145, startY);
+    doc.setFont("Helvetica", "bold");
+    doc.text(`${acknowledgedByName}`, 145, startY + 15);
+    doc.setFont("Helvetica", "normal");
+    doc.text(`${acknowledgedByRole}`, 145, startY + 20);
     console.log("Transformed Financial:", transformedFinancial);
     console.log("Transformed Stakeholder:", transformedStakeholder);
     console.log("Transformed Internal:", transformedInternal);
@@ -991,6 +1107,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   background:
                     selectedComponent === "Financial"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1019,6 +1137,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   background:
                     selectedComponent === "Stakeholder"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1047,6 +1167,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Internal")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   background:
                     selectedComponent === "Internal"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1074,6 +1196,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Learning")}
                 sx={{
+                  p: 3,
+                  fontSize: "18px",
                   background:
                     selectedComponent === "Learning"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"

@@ -142,6 +142,10 @@ export default function Inputgoals() {
     useState(strategicGoals);
   const [initialStartYear, setInitialStartYear] = useState(startYear);
   const [initialEndYear, setInitialEndYear] = useState(endYear);
+  //Modals
+  const [showModal, setShowModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
 
   const handleAddGoal = () => {
     setStrategicGoals([...strategicGoals, ""]);
@@ -250,7 +254,8 @@ export default function Inputgoals() {
       setShowSuccessMessageWithButtons(true);
     } catch (error) {
       console.error("Error updating goal:", error);
-      toast.error("An error occurred while updating the goal");
+      setModalMessage("An error occurred while updating the goal");
+      setShowErrorModal(true);
     }
   };
 
@@ -615,25 +620,30 @@ export default function Inputgoals() {
       !valueProposition ||
       !strategicGoals
     ) {
-      toast.error("Please fill out all required fields");
+      setModalMessage("Please fill out all required fields");
+      setShowErrorModal(true);
       return;
     }
 
     // Check character limits (assuming the fields are limited to 255 chars)
     if (officeVision.length > 255) {
-      toast.error("Office Vision Field reached its character limit.");
+      setModalMessage("Office Vision Field reached its character limit.");
+      setShowErrorModal(true);
       return;
     }
     if (valueProposition.length > 255) {
-      toast.error("Value Proposition Field reached its character limit.");
+      setModalMessage("Value Proposition Field reached its character limit.");
+      setShowErrorModal(true);
       return;
     }
     if (mission.length > 255) {
-      toast.error("Mission Field reached its character limit.");
+      setModalMessage("Mission Field reached its character limit.");
+      setShowErrorModal(true);
       return;
     }
     if (strategicGoals.length > 255) {
-      toast.error("Strategic Goals Field reached its character limit.");
+      setModalMessage("Strategic Goals Field reached its character limit.");
+      setShowErrorModal(true);
       return;
     }
 
@@ -727,10 +737,12 @@ export default function Inputgoals() {
     } catch (error) {
       if (error instanceof Error) {
         console.error("Error in handleSave:", error.message);
-        toast.error("An error occurred while saving: " + error.message);
+        setModalMessage("An error occurred while saving: " + error.message);
+        setShowErrorModal(true);
       } else {
         console.error("Unexpected error:", error);
-        toast.error("An unexpected error occurred.");
+        setModalMessage("An unexpected error occurred.");
+        setShowErrorModal(true);
       }
     }
   };
@@ -1443,19 +1455,17 @@ export default function Inputgoals() {
                               boxShadow: 24,
                               textAlign: "center",
                               position: "relative",
-                              maxWidth: "100vw",
+                              minWidth: "30%",
+                              maxWidth: "40%",
                             }}
                           >
                             <Typography
                               variant="h5"
-                              sx={{ fontWeight: "600", marginBottom: 1 }}
+                              sx={{ fontWeight: "600", marginBottom: 3 }}
                             >
                               Success!
                             </Typography>
-                            <Typography
-                              variant="h6"
-                              sx={{ marginBottom: 1, fontWeight: "500" }}
-                            >
+                            <Typography variant="h5" sx={{ marginBottom: 5 }}>
                               Goal has been accomplished.
                             </Typography>
                             <Box
@@ -1468,7 +1478,7 @@ export default function Inputgoals() {
                               <Button
                                 variant="contained"
                                 sx={{
-                                  width: "30%",
+                                  width: "50%",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
                                   p: 1,
@@ -1661,6 +1671,67 @@ export default function Inputgoals() {
                 </Box>
               </Modal>
             </Grid>
+
+            <Modal
+              open={showErrorModal}
+              onClose={() => setShowErrorModal(false)}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  height: "100vh", // Occupy full viewport height
+                }}
+              >
+                <Box
+                  sx={{
+                    background: "white",
+                    padding: 6,
+                    borderRadius: 2,
+                    boxShadow: 24,
+                    textAlign: "center",
+                    position: "relative",
+                    minWidth: "30%", // Limit modal width to 80% of viewport width
+                    maxWidth: "40%",
+                  }}
+                >
+                  <Typography
+                    variant="h4"
+                    component="h2"
+                    sx={{ fontWeight: "bold", mb: 3 }}
+                  >
+                    Notice!
+                  </Typography>
+                  <Typography variant="h5" sx={{ mb: 5 }}>
+                    {modalMessage}
+                  </Typography>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: 2,
+                      mt: 3,
+                      flexWrap: "wrap", // Allow buttons to wrap on smaller screens
+                    }}
+                  >
+                    <Button
+                      variant="contained"
+                      onClick={() => setShowErrorModal(false)}
+                      sx={{
+                        width: "30%",
+                        background:
+                          "linear-gradient(to left, #8a252c, #AB3510)",
+                        p: 1,
+                        fontSize: "18px",
+                      }}
+                    >
+                      Close
+                    </Button>
+                  </Box>
+                </Box>
+              </Box>
+            </Modal>
           </Grid>
         </StyledBox>
       </Box>

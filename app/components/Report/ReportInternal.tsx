@@ -1027,7 +1027,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                 </span>
                 <textarea
                   value={primaryOfficeTarget}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   disabled
                 />
               </div>
@@ -1041,7 +1041,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                 </span>
                 <textarea
                   value={primaryActions}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setPrimaryActions(e.target.value)}
                 />
               </div>
@@ -1055,7 +1055,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                 </span>
                 <textarea
                   value={primaryOfi}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setPrimaryOfi(e.target.value)}
                 />
               </div>

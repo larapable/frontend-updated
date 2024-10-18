@@ -45,7 +45,12 @@ const AboutUs = () => {
 
   return (
     <Box
-      style={{ backgroundImage: `url('/landingbg.png')` }}
+      style={{
+        backgroundImage: `url('/landingbg.png')`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        animation: 'moveBackground 5s ease-in-out infinite',
+      }}
       sx={{
         backgroundColor: '#fafac2',
         height: '100vh',
@@ -66,7 +71,7 @@ const AboutUs = () => {
       }}
       id="strategic-management-section"
     >
-      <Box sx={{mb: '-5rem' }}>
+      <Box sx={{ mb: '-5rem' }}>
         <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'white' }}>
           What Makes Atlas Stand Out?
         </Typography>
@@ -105,17 +110,17 @@ const FeatureBox = ({ icon, term, definition }: FeatureBoxProps) => {
     border: '1px solid #fad655',
     borderRadius: '2rem',
     padding: '2rem',
-    width: '300px', 
+    width: '300px',
     textAlign: 'center',
     justifyContent: 'center',
-    height: '400px', 
+    height: '400px',
     cursor: 'pointer',
-    overflow: 'hidden', 
+    overflow: 'hidden',
     wordWrap: 'break-word',
     transition: 'transform 0.3s ease-in-out',
-            '&:hover': {
-              transform: 'scale(1.1)',
-            },
+    '&:hover': {
+      transform: 'scale(1.1)',
+    },
   };
 
   const titleStyle = {
@@ -141,7 +146,7 @@ const FeatureBox = ({ icon, term, definition }: FeatureBoxProps) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Icon icon={icon} style={iconStyle} />
-      <Typography variant="h5" sx={{ mt: 2, ...titleStyle, fontWeight:'600' }}>
+      <Typography variant="h5" sx={{ mt: 2, ...titleStyle, fontWeight: '600' }}>
         {term}
       </Typography>
       <Typography sx={{ mt: 3, ...textStyle, fontSize: '18px' }}>

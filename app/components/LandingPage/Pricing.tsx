@@ -20,7 +20,12 @@ const Pricing = () => {
 
   return (
     <Box
-      style={{ backgroundImage: `url('/landingbg.png')` }}
+      style={{
+        backgroundImage: `url('/landingbg.png')`,
+        backgroundSize: 'cover',
+        backgroundRepeat: 'no-repeat',
+        animation: 'moveBackground 5s ease-in-out infinite',
+      }}
       sx={{
         backgroundColor: '#fafac2',
         height: '100vh',
@@ -40,9 +45,9 @@ const Pricing = () => {
       }}
       id="pricing-section"
     >
-      <Box sx={{mb: '-5rem' }}>
+      <Box sx={{ mb: '-5rem' }}>
         <Typography variant="h3" sx={{ fontWeight: 'bold', color: 'white' }}>
-          Start for free and upgrade to <br/>unlock more features
+          Start for free and upgrade to <br />unlock more features
         </Typography>
       </Box>
 
@@ -51,7 +56,7 @@ const Pricing = () => {
           display: 'flex',
           flexDirection: 'col',
           gap: 5,
-          mt:10,
+          mt: 10,
           alignItems: 'center',
           width: '100%',
           height: 'auto',
@@ -67,7 +72,7 @@ const Pricing = () => {
             height: '33rem',
             width: '25rem',
             textAlign: 'start',
-            p:5,
+            p: 5,
             transition: 'transform 0.3s ease-in-out',
             '&:hover': {
               transform: 'scale(1.1)',
@@ -77,7 +82,7 @@ const Pricing = () => {
           <Typography sx={{ ...textStyle, fontSize: '18px' }}>
             Free
           </Typography>
-          <Typography variant="h4" sx={{...titleStyle, fontWeight:'600' }}>
+          <Typography variant="h4" sx={{ ...titleStyle, fontWeight: '600' }}>
             PHP 0.00
           </Typography>
           <Typography sx={{ ...textStyle, fontSize: '18px' }}>
@@ -101,9 +106,9 @@ const Pricing = () => {
               }}
             >
               <CheckCircle
-                sx={{mr: 1, mt:2, color:'white' }}
+                sx={{ mr: 1, mt: 2, color: 'white' }}
               />
-              <Typography sx={{ ...textStyle, fontSize: '18px', mt:2 }}>
+              <Typography sx={{ ...textStyle, fontSize: '18px', mt: 2 }}>
                 {feature}
               </Typography>
             </Box>
@@ -115,7 +120,7 @@ const Pricing = () => {
                 background: '#ffffff',
                 fontSize: "18px",
                 fontWeight: "bold",
-                color: '#AB3510', 
+                color: '#AB3510',
                 width: '13rem',
                 height: '3rem',
                 '&:hover': {
@@ -124,8 +129,8 @@ const Pricing = () => {
                 },
               }}
             >
-            Get Started
-          </Button>
+              Get Started
+            </Button>
           </div>
         </Box>
 
@@ -137,7 +142,7 @@ const Pricing = () => {
             height: '38rem',
             width: '25rem',
             textAlign: 'start',
-            p:5,
+            p: 5,
             transition: 'transform 0.3s ease-in-out',
             '&:hover': {
               transform: 'scale(1.1)',
@@ -147,7 +152,7 @@ const Pricing = () => {
           <Typography sx={{ ...textStyle, fontSize: '18px' }}>
             Pro
           </Typography>
-          <Typography variant="h4" sx={{...titleStyle, fontWeight:'600' }}>
+          <Typography variant="h4" sx={{ ...titleStyle, fontWeight: '600' }}>
             PHP 200.00
           </Typography>
           <Typography sx={{ ...textStyle, fontSize: '18px' }}>
@@ -173,9 +178,9 @@ const Pricing = () => {
               }}
             >
               <CheckCircle
-                sx={{mr: 1, mt:2, color:'white' }}
+                sx={{ mr: 1, mt: 2, color: 'white' }}
               />
-              <Typography sx={{ ...textStyle, fontSize: '18px', mt:2 }}>
+              <Typography sx={{ ...textStyle, fontSize: '18px', mt: 2 }}>
                 {feature}
               </Typography>
             </Box>
@@ -187,7 +192,7 @@ const Pricing = () => {
                 background: '#ffffff',
                 fontSize: "18px",
                 fontWeight: "bold",
-                color: '#AB3510', 
+                color: '#AB3510',
                 width: '13rem',
                 height: '3rem',
                 '&:hover': {
@@ -196,8 +201,8 @@ const Pricing = () => {
                 },
               }}
             >
-            Get Started
-          </Button>
+              Get Started
+            </Button>
           </div>
         </Box>
 

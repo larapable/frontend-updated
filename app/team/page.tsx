@@ -34,7 +34,6 @@ const page = () => {
         <br />
         ensuring top-notch quality and results for our clients.
       </Typography>
-
       <Box
         sx={{
           display: "flex",
@@ -47,19 +46,24 @@ const page = () => {
         <Button
           variant="outlined"
           sx={{
-            borderColor: "#AB3510", // Initial border color
-            color: "#AB3510", // Text color
+            borderColor: "#AB3510",
+            color: "#AB3510",
             fontWeight: "medium",
             fontSize: "1rem",
             padding: "0.5rem 1.5rem",
+            transition: "all 0.3s ease",
             "&:hover": {
-              backgroundColor: "#AB3510", // Background color on hover
-              color: "white", // Text color on hover
-              borderColor: "#AB3510", // Border color on hover
+              backgroundColor: "#AB3510",
+              color: "white",
+              borderColor: "#AB3510",
+              transform: "scale(1.05)",
+              borderWidth: "2px",
             },
           }}
         >
-          <Link href="/">Home</Link>
+          <Link href="/" style={{ textDecoration: "none", color: "inherit" }}>
+            Home
+          </Link>
         </Button>
         <Button
           variant="contained"
@@ -69,12 +73,20 @@ const page = () => {
             fontWeight: "medium",
             fontSize: "1rem",
             padding: "0.5rem 1.5rem",
+            transition: "all 0.3s ease",
+            boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.1)",
+            "&:hover": {
+              background: "linear-gradient(to right, #AB3510, #8a252c)",
+              boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.2)",
+              transform: "scale(1.05)",
+            },
           }}
         >
-          <Link href="/contact">Contact</Link>
+          <Link href="/contact" style={{ textDecoration: "none", color: "inherit" }}>
+            Contact
+          </Link>
         </Button>
       </Box>
-
       <Box
         sx={{
           backgroundImage: 'url("landingbg.png")',
@@ -85,9 +97,15 @@ const page = () => {
           height: "56vh",
           display: "flex",
           justifyContent: "center",
-          alignItems: "center", // Change from 'flex-end' to 'center'
+          alignItems: "center",
           padding: "2rem",
           position: "relative",
+          animation: "floatingBackground 10s ease-in-out infinite",
+          "@keyframes floatingBackground": {
+            "0%": { backgroundPosition: "center top" },
+            "50%": { backgroundPosition: "center bottom" },
+            "100%": { backgroundPosition: "center top" },
+          },
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "center", gap: 3 }}>
@@ -124,6 +142,11 @@ const page = () => {
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
+                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                "&:hover": {
+                  transform: "scale(1.05)",
+                  boxShadow: "0px 10px 20px rgba(0, 0, 0, 0.2)",
+                },
               }}
             >
               <img
@@ -141,6 +164,7 @@ const page = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
+                  boxShadow: "0px 5px 15px rgba(0, 0, 0, 0.1)",
                 }}
               >
                 <Box sx={{ textAlign: "center" }}>
@@ -157,7 +181,6 @@ const page = () => {
           ))}
         </Box>
       </Box>
-
       <Typography
         variant="body1"
         sx={{

@@ -1,5 +1,4 @@
 "use client";
-
 import {
   Box,
   Button,
@@ -8,7 +7,10 @@ import {
   Modal,
   TextField,
   Typography,
+  Grid
 } from "@mui/material";
+import Image from 'next/image';
+import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
 import { signIn } from "next-auth/react";
 import Spinner from "../components/Misc/Spinner";
@@ -16,6 +18,35 @@ import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ReCAPTCHA from "react-google-recaptcha";
 import CloseIcon from "@mui/icons-material/Close";
+
+const drawerWidth = 0;
+
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
+const MainFont = styled(Box)({
+  fontSize: "0.9rem",
+  mt: 2,
+});
+
+const Cards = styled(Box)({
+  width: "100%",
+  height: "auto",
+  borderRadius: "20px",
+  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+  borderColor: "#e9e8e8",
+  borderStyle: "solid", 
+  borderWidth: "1px",
+});
+
+const Boxes = styled(Box)({
+  height: "auto",
+  width: "100%",
+});
 
 declare global {
   interface Window {
@@ -34,6 +65,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [captchaVerified, setCaptchaVerified] = useState(false);
   const reCaptchaRef = useRef<ReCAPTCHA | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const handleCaptchaVerify = (response: string) => {
     setCaptchaVerified(true);
@@ -132,211 +164,187 @@ export default function LoginPage() {
 
   return (
     <Box
-      justifyContent="center"
-      height="100vh"
-      display="flex"
-      flexDirection={{ lg: "row", md: "column" }}
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#2e2c2c",
+        height: "100vh",
+      }}
     >
       <Box
-          display="flex"
-          flexDirection="column"
-          justifyContent="center"
-          alignItems="center"
-          // mt={{ lg: 20, md: 10 }}
-          // ml={{ lg: 15, md: 3 }}
-          mx="auto" // Center the Box horizontally
-      >
-        <Typography variant="h3" fontWeight="bold" mb={4}>
-          Login
-        </Typography>
-        <Box
-          display="flex"
-          alignItems="center"
-          mb={2}
-          py={1}
-          px={2}
-          width="35rem"
-          border="1px solid rgba(0, 0, 0, 0.6)"
-          borderRadius="8px"
-        >
-          <img
-            src="/usernamelogo.png"
-            alt="Username"
-            width={28}
-            height={28}
-            style={{ marginRight: 16 }}
-          />
-          <TextField
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            placeholder="Username"
-            variant="standard"
-            InputProps={{ disableUnderline: true }}
-            fullWidth
-          />
-        </Box>
-        <Box
-          display="flex"
-          alignItems="center"
-          mb={2}
-          py={1}
-          px={2}
-          width="35rem"
-          border="1px solid rgba(0, 0, 0, 0.6)"
-          borderRadius="8px"
-        >
-          <img
-            src="/passwordlogo.png"
-            alt="Password"
-            width={28}
-            height={28}
-            style={{ marginRight: 16 }}
-          />
-          <TextField
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            type="password"
-            placeholder="Password"
-            variant="standard"
-            InputProps={{ disableUnderline: true }}
-            fullWidth
-          />
-        </Box>
-        <Box display="flex" gap={3} mb={2}>
-          {/* <ReCAPTCHA
-            ref={reCaptchaRef}
-            sitekey="6LdT5T0qAAAAADX-EG0m12My_ZFX1PlPYZzLLwZf"
-            onChange={(token) => {
-              setCaptchaVerified(!!token);
-              console.log("reCAPTCHA verified:", token);
-            }}
-            onExpired={handleCaptchaExpired}
-          /> */}
-          <Button
-            variant="contained"
-            style={{
-              background: "linear-gradient(to left, #8a252c, #AB3510)",
-              fontWeight: "bold",
-            }}
-            onClick={handleSubmit}
-            sx={{
-              background: "linear-gradient(to left, #8a252c, #AB3510)",
-              borderRadius: "8px",
-              padding: "12px 24px",
-              width: "14rem",
-              height: "3rem",
-              "&:hover": {
-                backgroundColor: "#eec160",
-              },
-            }}
-          >
-            Login
-          </Button>
-        </Box>
-        <Typography variant="body1" mb={2}>
-          Don't have an account?{" "}
-          <Typography
-            component="a"
-            href="/signup"
-            fontWeight="bold"
-            sx={{ textDecoration: "underline", color: "black" }}
-          >
-            Click here!
-          </Typography>
-        </Typography>
-        <Box display="flex" alignItems="center" width="100%">
-          <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
-          <Typography sx={{ mx: 2 }}>or</Typography>
-          <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
-        </Box>
-        <Button
-          href="/"
-          sx={{
-            mt: 2,
-            color: "#8a252c",
-            fontWeight: "bold",
-            fontSize: "20px",
-            textDecoration: "underline",
-          }}
-        >
-          Back Home
-        </Button>
-      </Box>
-      <Box
         sx={{
-          background: "linear-gradient(to left, #8a252c, #AB3510)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "justify",
-          justifyContent: "center",
-          height: "auto",
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
         }}
       >
-        <img
-          src="wc-screen-scorecard.png"
-          alt="Scorecard"
-          style={{ width: 100, height: 100, marginLeft: 50 }}
-        />
-        <Typography
-          variant="h6"
-          color="white"
-          sx={{
-            px: 4,
-            mb: 4,
-            textAlign: "justify",
-            fontWeight: "bold",
-            mt: 4,
-            mr: 4,
-            ml: 4,
-          }}
-        >
-          <span style={{ color: "#fad655" }}>Track key metrics</span>, analyze
-          trends, and make informed decisions to drive success.
-        </Typography>
-        <img
-          src="wc-screen-swot.png"
-          alt="SWOT"
-          style={{ width: 100, height: 100, marginLeft: 50 }}
-        />
-        <Typography
-          variant="h6"
-          color="white"
-          sx={{
-            px: 4,
-            mb: 4,
-            textAlign: "justify",
-            fontWeight: "bold",
-            mt: 4,
-            mr: 4,
-            ml: 4,
-          }}
-        >
-          <span style={{ color: "#fad655" }}>
-            Identify strength, weaknesses, opportunities, and threats
-          </span>{" "}
-          to your business.
-        </Typography>
-        <img
-          src="wc-screen-stratmap.png"
-          alt="Strategy"
-          style={{ width: 100, height: 100, marginLeft: 50 }}
-        />
-        <Typography
-          variant="h6"
-          color="white"
-          sx={{
-            px: 4,
-            mb: 4,
-            textAlign: "justify",
-            fontWeight: "bold",
-            mt: 4,
-            mr: 4,
-            ml: 4,
-          }}
-        >
-          <span style={{ color: "#fad655" }}>Define objectives</span>, outline
-          initiatives, and map out your path to success.
-        </Typography>
+        <StyledBox>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item xs={12} md={6}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center", 
+              padding: "4rem", 
+            }}
+          >
+            <Box sx={{
+              border: '1px solid #ee552a',
+              borderRadius: '2rem',
+              width: '40rem',
+              padding:5,
+              textAlign: "center", 
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+            }}>
+            <Typography variant="h3" fontWeight="bold" gutterBottom>
+              Login
+            </Typography>
+            <Typography variant="h6" color="textSecondary">
+              Welcome back! Please enter your details
+            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              mt={5}
+              mb={3}
+              py={1}
+              px={2}
+              width="35rem"
+              border="1px solid rgba(0, 0, 0, 0.6)"
+              borderRadius="8px"
+            >
+              <img
+                src="/usernamelogo.png"
+                alt="Username"
+                width={28}
+                height={28}
+                style={{ marginRight: 16 }}
+              />
+              <TextField
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Username"
+                variant="standard"
+                InputProps={{ disableUnderline: true }}
+                fullWidth
+              />
+            </Box>
+            <Box
+              display="flex"
+              alignItems="center"
+              mb={5}
+              py={1}
+              px={2}
+              width="35rem"
+              border="1px solid rgba(0, 0, 0, 0.6)"
+              borderRadius="8px"
+            >
+              <img
+                src="/passwordlogo.png"
+                alt="Password"
+                width={28}
+                height={28}
+                style={{ marginRight: 16 }}
+              />
+              <TextField
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                type="password"
+                placeholder="Password"
+                variant="standard"
+                InputProps={{ disableUnderline: true }}
+                fullWidth
+              />
+            </Box>
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              sx={{
+                width: "100%",
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                px:10,
+                fontSize: '18px',
+                mb:5,
+                py:2
+              }}
+            >
+              Login
+            </Button>
+            <Typography variant="h6" mb={2}>
+              Don't have an account?{" "}
+              <Typography
+                component="a"
+                href="/signup"
+                fontWeight="bold"
+                variant="h6"
+                sx={{ textDecoration: "underline", color: "black" }}
+              >
+                Click here!
+              </Typography>
+            </Typography>
+            <Box display="flex" alignItems="center" width="100%">
+              <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
+              <Typography sx={{ mx: 2 }}>or</Typography>
+              <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
+            </Box>
+            <Button
+              href="/"
+              sx={{
+                mt: 2,
+                color: "#AB3510",
+                fontWeight: "bold",
+                fontSize: "20px",
+                textDecoration: "underline",
+              }}
+            >
+              Back Home
+            </Button>
+            </Box>
+          </Grid>
+
+          <Grid item xs={12} md={6}
+            sx={{
+              backgroundImage: `url('/landingbg.png')`, 
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "4rem",
+              color: "white",
+              position: "relative",
+              borderRadius: "20px",
+              textAlign: "center", 
+              animation: "floatingBackground 10s ease-in-out infinite",
+              "@keyframes floatingBackground": {
+                "0%": { backgroundPosition: "center top" },
+                "50%": { backgroundPosition: "center bottom" },
+                "100%": { backgroundPosition: "center top" },
+              }}}
+
+          >
+            <Image src="/logo.png" alt="Logo" width={150} height={150}/>
+            <Typography variant="h4" fontWeight="bold" mt={3} mb={3}>
+              Welcome to Atlas! <br/> Please login to your atlas account
+            </Typography>
+            <Typography color="textSecondary" textAlign="center" sx={{fontSize: '18px', color:'white', mb:5}}>
+              Gain insights, track progress, and achieve your goals.
+            </Typography>
+            <Box
+              sx={{
+                borderRadius: "20px",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+                overflow: "hidden", // This ensures the image is clipped to the rounded corners
+              }}
+            >
+              <Image src="/loginimg.png" alt="Logo" width={800} height={400} />
+            </Box>
+          </Grid>
+        </Grid>
+        </StyledBox>
       </Box>
 
       <Modal
@@ -366,29 +374,22 @@ export default function LoginPage() {
               sx={{ position: "absolute", top: 8, right: 8 }}
             ></IconButton>
             <Typography
-              id="error-modal-title"
               variant="h4"
-              fontWeight="bold"
-              mb={2}
+              component="h2"
+              sx={{ fontWeight: "bold", mb: 3 }}
             >
               Attention!
             </Typography>
-            <Typography id="error-modal-description" variant="body1" mb={2}>
+            <Typography id="error-modal-description" variant="h5" sx={{ mb: 5 }}>
               {errorMessage}
             </Typography>
             <Button
               variant="contained"
               sx={{
+                width: "30%",
                 background: "linear-gradient(to left, #8a252c, #AB3510)",
-                borderRadius: "8px",
-                padding: "12px 24px",
-                width: "14rem",
-                height: "2.5rem",
-                color: "white",
-                mt: 2,
-                "&:hover": {
-                  backgroundColor: "#eec160",
-                },
+                p:1,
+                fontSize: '18px',
               }}
               onClick={handleCloseErrorModal}
             >
@@ -397,6 +398,7 @@ export default function LoginPage() {
           </Box>
         </Box>
       </Modal>
+      
     </Box>
   );
 }

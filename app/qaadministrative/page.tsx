@@ -1,6 +1,5 @@
 "use client";
 import { getSession, useSession } from "next-auth/react";
-import SpinnerPages from "../components/Misc/SpinnerPages";
 import QANavbar from "../components/Navbars/QANavbar";
 import UserProfile from "../components/Profile/UserProfile";
 import { useEffect, useState } from "react";
@@ -70,7 +69,9 @@ interface Department {
 }
 
 export default function QAAdministrative() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+
   const [isMobile, setIsMobile] = useState(false);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [filteredDepartments, setFilteredDepartments] = useState<Department[]>(
@@ -90,10 +91,8 @@ export default function QAAdministrative() {
         );
         setDepartments(administrativeDepartments);
         setFilteredDepartments(administrativeDepartments);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching departments:", error);
-        setIsLoading(false);
       }
     };
 
@@ -113,6 +112,10 @@ export default function QAAdministrative() {
 
     setFilteredDepartments(filtered);
   };
+
+  if (status === "loading") {
+    return <Spinner />;
+  }
 
   return (
     <Box
@@ -232,95 +235,75 @@ export default function QAAdministrative() {
               <Grid item xs={12} md={12}>
                 {/* insert the table here */}
                 <Grid item xs={12} md={12}>
-                  {isLoading ? (
-                    <Spinner />
-                  ) : (
-                    <TableContainer
-                      component={Paper}
-                      sx={{
-                        rounded: "18px",
-                        borderColor: "#e9e8e8",
-                        borderStyle: "solid",
-                        borderWidth: "1px",
-                      }}
-                    >
-                      <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
-                        <TableHead>
-                          <TableRow
-                            sx={{ bgcolor: "#fff6d1", fontSize: "18px" }}
+                  <TableContainer
+                    component={Paper}
+                    sx={{
+                      rounded: "18px",
+                      borderColor: "#e9e8e8",
+                      borderStyle: "solid",
+                      borderWidth: "1px",
+                    }}
+                  >
+                    <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
+                      <TableHead>
+                        <TableRow sx={{ bgcolor: "#fff6d1", fontSize: "18px" }}>
+                          <TableCell
+                            sx={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              width: "70%",
+                            }}
                           >
-                            <TableCell
-                              sx={{
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                width: "70%",
-                              }}
-                            >
-                              Department Name
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                width: "15%",
-                              }}
-                            >
-                              Head Officer
-                            </TableCell>
-                            {/* <TableCell
+                            Department Name
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              width: "15%",
+                            }}
+                          >
+                            Head Officer
+                          </TableCell>
+                          {/* <TableCell
                               sx={{ fontSize: "18px", fontWeight: "bold" }}
                               align="right"
                             >
                               Action
                             </TableCell> */}
-                          </TableRow>
-                        </TableHead>
+                        </TableRow>
+                      </TableHead>
 
-                        <TableBody>
-                          {filteredDepartments.map((department) => (
-                            <TableRow
-                              key={department.id}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell>
-                                <Link
-                                  href={`/qascorecard/${department.id}`}
-                                  passHref
-                                >
-                                  <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
-                                    {department.department_name}
-                                  </span>
-                                </Link>
-                              </TableCell>
-                              <TableCell>
-                                <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                                  {department.head_officer}
+                      <TableBody>
+                        {filteredDepartments.slice(1).map((department) => (
+                          <TableRow
+                            key={department.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                border: 0,
+                              },
+                            }}
+                          >
+                            <TableCell>
+                              <Link
+                                href={`/qascorecard/${department.id}`}
+                                passHref
+                              >
+                                <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
+                                  {department.department_name}
                                 </span>
-                              </TableCell>
-                              {/* <TableCell align="right">
-                                <Button
-                                  variant="contained"
-                                  sx={{
-                                    minWidth: "5rem",
-                                    background:
-                                      "linear-gradient(to left, #8a252c, #AB3510)",
-                                    p: 1,
-                                    fontSize: "15px",
-                                  }}
-                                >
-                                  View
-                                </Button>
-                              </TableCell> */}
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
+                              </Link>
+                            </TableCell>
+                            <TableCell>
+                              <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                                {department.head_officer}
+                              </span>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </Grid>
               </Grid>
             </Grid>

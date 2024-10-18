@@ -6,6 +6,7 @@ import {
   Button,
   Divider,
   FormControl,
+  Grid,
   IconButton,
   InputLabel,
   Link,
@@ -16,8 +17,43 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useRouter } from "next/navigation";
+import Image from 'next/image';
+import styled from "@emotion/styled";
+import { signIn } from "next-auth/react";
 import Spinner from "../components/Misc/Spinner";
+import { getSession, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import ReCAPTCHA from "react-google-recaptcha";
+import CloseIcon from "@mui/icons-material/Close";
+
+const drawerWidth = 0;
+
+const StyledBox = styled(Box)({
+  wordWrap: "break-word",
+  overflowWrap: "break-word",
+  maxWidth: "100%",
+  height: "auto",
+});
+
+const MainFont = styled(Box)({
+  fontSize: "0.9rem",
+  mt: 2,
+});
+
+const Cards = styled(Box)({
+  width: "100%",
+  height: "auto",
+  borderRadius: "20px",
+  boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
+  borderColor: "#e9e8e8",
+  borderStyle: "solid", 
+  borderWidth: "1px",
+});
+
+const Boxes = styled(Box)({
+  height: "auto",
+  width: "100%",
+});
 
 type Department = {
   id: number;
@@ -54,6 +90,7 @@ export default function SignupPage() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successModal, setSuccessModal] = useState(false);
   const [loading, setLoading] = useState(false); // Add loading state
+  const [isMobile, setIsMobile] = useState(false);
 
   const [passwordRequirementsMet, setPasswordRequirementsMet] = useState({
     minLength: false,
@@ -270,381 +307,358 @@ export default function SignupPage() {
 
   return (
     <Box
-      justifyContent="center"
-      height="auto"
-      display="flex"
-      flexDirection={{ lg: "row", md: "column" }}
+      sx={{
+        display: "flex",
+        flexDirection: isMobile ? "column" : "row",
+        color: "#2e2c2c",
+        height: "100vh",
+      }}
     >
       <Box
-        display="flex"
-        flexDirection="column"
-        justifyContent="center"
-        alignItems="center"
-        // mt={{ lg: 20, md: 10 }}
-        // ml={{ lg: 15, md: 3 }}
-        mx="auto" // Center the Box horizontally
+        sx={{
+          flexGrow: 1,
+          ml: isMobile ? 0 : `${drawerWidth}px`,
+          width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
+          p: 3,
+        }}
       >
-        <Typography variant="h4" fontWeight="bold" mb={5}>
-          {" "}
-          {/* Changed h2 to h4 for smaller size */}
-          Sign Up
-        </Typography>
-
-        <div className="flex flex-row space-x-4 mt-[-1rem]">
-          {" "}
-          {/* Reduced space between fields */}
-          <TextField
-            value={firstname}
-            onChange={(e) => setFirstname(e.target.value)}
-            label="First Name"
-            variant="outlined"
-            className="w-[14.5rem] mb-4"
-            InputLabelProps={{ className: "font-medium" }}
-            InputProps={{ className: "placeholder-[#807979]" }}
-          />
-          <TextField
-            value={lastname}
-            onChange={(e) => setLastname(e.target.value)}
-            label="Last Name"
-            variant="outlined"
-            className="w-[14.5rem] mb-4"
-            InputLabelProps={{ className: "font-medium" }}
-            InputProps={{ className: "placeholder-[#807979]" }}
-          />
-        </div>
-
-        <FormControl variant="outlined" className="w-[30rem] mb-4">
-          {" "}
-          {/* Reduced width */}
-          <InputLabel id="role-select-label">Select a role</InputLabel>
-          <Select
-            labelId="role-select-label"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            label="Select a role"
+        <StyledBox>
+        <Grid container alignItems="center" justifyContent="space-between">
+          <Grid item xs={12} md={6}
+            sx={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center", 
+              padding: "4rem", 
+            }}
           >
-            <MenuItem value="">
-              <strong>Select a role</strong>
-            </MenuItem>
-            <MenuItem value="headOfficer">HEAD OFFICER</MenuItem>
-            {/* <MenuItem value="faculty">FACULTY</MenuItem> */}
-            <MenuItem value="qualityAssurance">QUALITY ASSURANCE</MenuItem>
-          </Select>
-        </FormControl>
-
-        {role === "faculty" && (
-          <FormControl variant="outlined" className="w-[30rem] mb-4">
-            {" "}
-            {/* Reduced width */}
-            <InputLabel id="head-officer-select-label">
-              Select Head Officer
-            </InputLabel>
-            <Select
-              labelId="head-officer-select-label"
-              value={selectedHead || ""}
-              onChange={(e) => setSelectedHead(e.target.value)}
-              label="Select Head Officer"
+            <Box sx={{
+              border: '1px solid #ee552a',
+              borderRadius: '2rem',
+              width: '40rem',
+              // height: '40rem',
+              padding:5,
+              textAlign: "center", 
+              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+              // overflowY: "auto"
+            }}>
+            <Typography variant="h3" fontWeight="bold" gutterBottom>
+              Sign Up
+            </Typography>
+            <Typography variant="h6" color="textSecondary">
+              Welcome to atlas! Please enter your details
+            </Typography>
+            <Box
+              display="flex"
+              alignItems="center"
+              mt={2}
+              mb={1}
+              py={1}
+              px={2}
+              gap={2}
             >
-              <MenuItem value="">
-                <strong>Select Head Officer</strong>
-              </MenuItem>
-              {Array.isArray(heads) &&
-                Array.from(new Set(heads.filter(Boolean))).map(
-                  (headName, index) => (
-                    <MenuItem key={index} value={headName}>
-                      {headName}
-                    </MenuItem>
-                  )
-                )}
-            </Select>
-          </FormControl>
-        )}
-
-        {role !== "qualityAssurance" && (
-          <FormControl variant="outlined" className="w-[30rem] mb-4">
-            {" "}
-            {/* Reduced width */}
-            <InputLabel id="department-select-label">
-              Select a default department
-            </InputLabel>
-            <Select
-              labelId="department-select-label"
-              value={
-                selectedDepartment !== null ? selectedDepartment.toString() : ""
-              }
-              onChange={(e: SelectChangeEvent<string>) => {
-                const value = e.target.value;
-                const departmentId = value ? parseInt(value) : null; // Handle parsing
-                setSelectedDepartment(departmentId); // Set the state
-              }}
-              label="Select a default department"
-            >
-              <MenuItem value="">
-                <strong>Select a default department</strong>
-              </MenuItem>
-              {departments &&
-                departments
-                  .filter(
-                    (department: Department) =>
-                      department.head_officer === selectedHead
-                  )
-                  .map((department) => (
-                    <MenuItem key={department.id} value={department.id}>
-                      {department.department_name}
-                    </MenuItem>
-                  ))}
-            </Select>
-          </FormControl>
-        )}
-
-        <TextField
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          label="Email"
-          variant="outlined"
-          className="w-[30rem] mb-4"
-          InputLabelProps={{ className: "font-medium" }}
-          InputProps={{ className: "placeholder-[#807979]" }}
-        />
-
-        <TextField
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
-          label="Username"
-          variant="outlined"
-          className="w-[30rem] mb-4"
-          InputLabelProps={{ className: "font-medium" }}
-          InputProps={{ className: "placeholder-[#807979]" }}
-        />
-
-        <div className="flex flex-row space-x-4">
-          {" "}
-          {/* Keep the row layout for the text fields */}
-          <div className="flex flex-col">
-            {" "}
-            {/* Wrap the password field and requirements in a column */}
-            <TextField
-              value={password}
-              onChange={handlePasswordChange}
-              onFocus={handlePasswordFocus} // Show requirements when focused
-              onBlur={handlePasswordBlur} // Hide requirements on blur
-              label="Password"
-              type="password"
+             <TextField
+              value={firstname}
+              onChange={(e) => setFirstname(e.target.value)}
+              label="First Name"
               variant="outlined"
-              className="w-[14.5rem] mb-1" // Add margin bottom for spacing
+              className="w-[17rem]"
               InputLabelProps={{ className: "font-medium" }}
               InputProps={{ className: "placeholder-[#807979]" }}
             />
-            {/* Display password requirements */}
-            <div
-              className={`bg-white border border-gray-300 rounded-md p-2 shadow-lg ${
-                passwordRequirementsMet.show ? "" : "hidden"
-              }`}
-              style={{ zIndex: 1000, fontSize: "0.8rem" }} // Add z-index for overlay
+            <TextField
+              value={lastname}
+              onChange={(e) => setLastname(e.target.value)}
+              label="Last Name"
+              variant="outlined"
+              className="w-[17rem]"
+              InputLabelProps={{ className: "font-medium" }}
+              InputProps={{ className: "placeholder-[#807979]" }}
+            />
+            </Box>
+            <FormControl variant="outlined" className="w-[33rem] mb-4">
+              {" "}
+              <InputLabel id="role-select-label">Select a role</InputLabel>
+              <Select
+                labelId="role-select-label"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                label="Select a role"
+              >
+                <MenuItem value="">
+                  <strong>Select a role</strong>
+                </MenuItem>
+                <MenuItem value="headOfficer">HEAD OFFICER</MenuItem>
+                {/* <MenuItem value="faculty">FACULTY</MenuItem> */}
+                <MenuItem value="qualityAssurance">QUALITY ASSURANCE</MenuItem>
+              </Select>
+            </FormControl>
+
+            {role === "faculty" && (
+              <FormControl variant="outlined" className="w-[33rem] mb-4">
+                  {" "}
+                  {/* Reduced width */}
+                  <InputLabel id="head-officer-select-label">
+                    Select Head Officer
+                  </InputLabel>
+                  <Select
+                    labelId="head-officer-select-label"
+                    value={selectedHead || ""}
+                    onChange={(e) => setSelectedHead(e.target.value)}
+                    label="Select Head Officer"
+                  >
+                    <MenuItem value="">
+                      <strong>Select Head Officer</strong>
+                    </MenuItem>
+                    {Array.isArray(heads) &&
+                      Array.from(new Set(heads.filter(Boolean))).map(
+                        (headName, index) => (
+                          <MenuItem key={index} value={headName}>
+                            {headName}
+                          </MenuItem>
+                        )
+                      )}
+                  </Select>
+                </FormControl>
+              )}
+
+            {role !== "qualityAssurance" && (
+              <FormControl variant="outlined" className="w-[33rem] mb-4">
+                {" "}
+                {/* Reduced width */}
+                <InputLabel id="department-select-label">
+                  Select a default department
+                </InputLabel>
+                <Select
+                  labelId="department-select-label"
+                  value={
+                    selectedDepartment !== null ? selectedDepartment.toString() : ""
+                  }
+                  onChange={(e: SelectChangeEvent<string>) => {
+                    const value = e.target.value;
+                    const departmentId = value ? parseInt(value) : null; // Handle parsing
+                    setSelectedDepartment(departmentId); // Set the state
+                  }}
+                  label="Select a default department"
+                >
+                  <MenuItem value="">
+                    <strong>Select a default department</strong>
+                  </MenuItem>
+                  {departments &&
+                    departments
+                      .filter(
+                        (department: Department) =>
+                          department.head_officer === selectedHead
+                      )
+                      .map((department) => (
+                        <MenuItem key={department.id} value={department.id}>
+                          {department.department_name}
+                        </MenuItem>
+                      ))}
+                </Select>
+              </FormControl>
+            )}
+
+              <TextField
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                label="Email"
+                variant="outlined"
+                className="w-[33rem] mb-4"
+                InputLabelProps={{ className: "font-medium" }}
+                InputProps={{ className: "placeholder-[#807979]" }}
+              />
+              <TextField
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                label="Username"
+                variant="outlined"
+                className="w-[33rem] mb-2"
+                InputLabelProps={{ className: "font-medium" }}
+                InputProps={{ className: "placeholder-[#807979]" }}
+              />
+
+            <Box
+              display="flex"
+              alignItems="center"
+              mb={3}
+              py={1}
+              px={2}
+              gap={2}
             >
-              <ul className="list-disc list-inside space-y-1">
-                <li
-                  className={`${
-                    passwordRequirementsMet.minLength
-                      ? "text-green-500"
-                      : "text-red-500"
+              <div className="flex flex-row space-x-4">
+              {" "}
+              {/* Keep the row layout for the text fields */}
+              <div className="flex flex-col">
+                {" "}
+                {/* Wrap the password field and requirements in a column */}
+                <TextField
+                  value={password}
+                  onChange={handlePasswordChange}
+                  onFocus={handlePasswordFocus} // Show requirements when focused
+                  onBlur={handlePasswordBlur} // Hide requirements on blur
+                  label="Password"
+                  type="password"
+                  variant="outlined"
+                  className="w-[16rem] mb-1" // Add margin bottom for spacing
+                  InputLabelProps={{ className: "font-medium" }}
+                  InputProps={{ className: "placeholder-[#807979]" }}
+                />
+                {/* Display password requirements */}
+                <div
+                  className={`bg-white border border-gray-300 rounded-md p-2 shadow-lg ${
+                    passwordRequirementsMet.show ? "" : "hidden"
                   }`}
+                  style={{ zIndex: 1000, fontSize: "0.8rem" }} // Add z-index for overlay
                 >
-                  Minimum 8 characters
-                </li>
-                <li
-                  className={`${
-                    passwordRequirementsMet.uppercase
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  At least one uppercase letter
-                </li>
-                <li
-                  className={`${
-                    passwordRequirementsMet.lowercase
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  At least one lowercase letter
-                </li>
-                <li
-                  className={`${
-                    passwordRequirementsMet.number
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  At least one number
-                </li>
-                <li
-                  className={`${
-                    passwordRequirementsMet.specialChar
-                      ? "text-green-500"
-                      : "text-red-500"
-                  }`}
-                >
-                  At least one special character
-                </li>
-              </ul>
+                  <ul className="list-disc list-inside space-y-1">
+                    <li
+                      className={`${
+                        passwordRequirementsMet.minLength
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      Minimum 8 characters
+                    </li>
+                    <li
+                      className={`${
+                        passwordRequirementsMet.uppercase
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      At least one uppercase letter
+                    </li>
+                    <li
+                      className={`${
+                        passwordRequirementsMet.lowercase
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      At least one lowercase letter
+                    </li>
+                    <li
+                      className={`${
+                        passwordRequirementsMet.number
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      At least one number
+                    </li>
+                    <li
+                      className={`${
+                        passwordRequirementsMet.specialChar
+                          ? "text-green-500"
+                          : "text-red-500"
+                      }`}
+                    >
+                      At least one special character
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <TextField
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                label="Confirm Password"
+                type="password"
+                variant="outlined"
+                className="w-[16rem]"
+                InputLabelProps={{ className: "font-medium" }}
+                InputProps={{ className: "placeholder-[#807979]" }}
+              />
             </div>
-          </div>
-          <TextField
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            label="Confirm Password"
-            type="password"
-            variant="outlined"
-            className="w-[14.5rem]"
-            InputLabelProps={{ className: "font-medium" }}
-            InputProps={{ className: "placeholder-[#807979]" }}
-          />
-        </div>
+            </Box>
 
-        <Button
-          variant="contained"
-          style={{
-            background: "linear-gradient(to left, #8a252c, #AB3510)",
-            fontWeight: "bold",
-            marginTop: "1rem",
-            marginBottom: "1rem",
-            width: "29.5rem",
-          }}
-          onClick={handleSubmit}
-          sx={{
-            background: "linear-gradient(to left, #8a252c, #AB3510)",
-            borderRadius: "8px",
-            padding: "12px 24px",
-            width: "14rem",
-            height: "2.5rem",
-            "&:hover": {
-              backgroundColor: "#eec160",
-            },
-          }}
-        >
-          Sign Up
-        </Button>
-
-        <Box textAlign="center" mb={2}>
-          <Typography variant="body1" className="font-light">
-            Already have an account?{" "}
-            <Link
-              href="/login"
-              className="font-bold text-black"
-              underline="hover"
+            <Button
+              variant="contained"
+              onClick={handleSubmit}
+              sx={{
+                width: "100%",
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+                px:10,
+                fontSize: '18px',
+                mb:2,
+                py:2,
+                mt:1
+              }}
             >
-              Log in
-            </Link>
-          </Typography>
-
-          <Box display="flex" alignItems="center" mt={2}>
-            <Divider
-              sx={{
-                flex: 1,
-                bgcolor: "#807979",
-                height: "2px",
-                width: "12rem",
-              }}
-            />
-            <Typography variant="body1" className="mx-4 font-bold">
-              or
+              Sign Up
+            </Button>
+            <Typography variant="h6" mb={1}>
+              Already have an account?{" "}
+              <Link
+                href="/login"
+                className="font-bold text-black"
+                underline="hover"
+              >
+                Click here!
+              </Link>
             </Typography>
-            <Divider
+            <Box display="flex" alignItems="center" width="100%">
+              <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
+              <Typography sx={{ mx: 2 }}>or</Typography>
+              <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
+            </Box>
+            <Button
+              href="/"
               sx={{
-                flex: 1,
-                bgcolor: "#807979",
-                height: "2px",
-                width: "12rem",
+                color: "#AB3510",
+                fontWeight: "bold",
+                fontSize: "20px",
+                textDecoration: "underline",
               }}
-            />
-          </Box>
-        </Box>
+            >
+              Back Home
+            </Button>
+            </Box>
+          </Grid>
 
-        <a
-          href="/"
-          className="text-xl text-[#8a252c] font-bold lg:mt-4 md:mb-16 hover:underline"
-        >
-          Back Home
-        </a>
-      </Box>
+          <Grid item xs={12} md={6}
+            sx={{
+              backgroundImage: `url('/landingbg.png')`, 
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              justifyContent: "center",
+              padding: "4rem",
+              color: "white",
+              position: "relative",
+              borderRadius: "20px",
+              textAlign: "center", 
+              animation: "floatingBackground 10s ease-in-out infinite",
+              "@keyframes floatingBackground": {
+                "0%": { backgroundPosition: "center top" },
+                "50%": { backgroundPosition: "center bottom" },
+                "100%": { backgroundPosition: "center top" },
+              }}}
 
-      <Box
-        sx={{
-          background: "linear-gradient(to left, #8a252c, #AB3510)",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "justify",
-          justifyContent: "center",
-          height: "100vh",
-        }}
-      >
-        <img
-          src="wc-screen-scorecard.png"
-          alt="Scorecard"
-          style={{ width: 100, height: 100, marginLeft: 50 }}
-        />
-        <Typography
-          variant="h6"
-          color="white"
-          sx={{
-            px: 4,
-            mb: 4,
-            textAlign: "justify",
-            fontWeight: "bold",
-            mt: 4,
-            mr: 4,
-            ml: 4,
-          }}
-        >
-          <span style={{ color: "#fad655" }}>Track key metrics</span>, analyze
-          trends, and make informed decisions to drive success.
-        </Typography>
-        <img
-          src="wc-screen-swot.png"
-          alt="SWOT"
-          style={{ width: 100, height: 100, marginLeft: 50 }}
-        />
-        <Typography
-          variant="h6"
-          color="white"
-          sx={{
-            px: 4,
-            mb: 4,
-            textAlign: "justify",
-            fontWeight: "bold",
-            mt: 4,
-            mr: 4,
-            ml: 4,
-          }}
-        >
-          <span style={{ color: "#fad655" }}>
-            Identify strength, weaknesses, opportunities, and threats
-          </span>{" "}
-          to your business.
-        </Typography>
-        <img
-          src="wc-screen-stratmap.png"
-          alt="Strategy"
-          style={{ width: 100, height: 100, marginLeft: 50 }}
-        />
-        <Typography
-          variant="h6"
-          color="white"
-          sx={{
-            px: 4,
-            mb: 4,
-            textAlign: "justify",
-            fontWeight: "bold",
-            mt: 4,
-            mr: 4,
-            ml: 4,
-          }}
-        >
-          <span style={{ color: "#fad655" }}>Define objectives</span>, outline
-          initiatives, and map out your path to success.
-        </Typography>
+          >
+            <Image src="/logo.png" alt="Logo" width={150} height={150}/>
+            <Typography variant="h4" fontWeight="bold" mt={3} mb={3}>
+              Welcome to Atlas! <br/> Please login to your atlas account
+            </Typography>
+            <Typography color="textSecondary" textAlign="center" sx={{fontSize: '18px', color:'white', mb:5}}>
+              Gain insights, track progress, and achieve your goals.
+            </Typography>
+            <Box
+              sx={{
+                borderRadius: "20px",
+                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+                overflow: "hidden", // This ensures the image is clipped to the rounded corners
+              }}
+            >
+              <Image src="/loginimg.png" alt="Logo" width={800} height={400} />
+            </Box>
+          </Grid>
+        </Grid>
+        </StyledBox>
       </Box>
 
       <Modal
@@ -674,29 +688,22 @@ export default function SignupPage() {
               sx={{ position: "absolute", top: 8, right: 8 }}
             ></IconButton>
             <Typography
-              id="error-modal-title"
               variant="h4"
-              fontWeight="bold"
-              mb={2}
+              component="h2"
+              sx={{ fontWeight: "bold", mb: 3 }}
             >
               Attention!
             </Typography>
-            <Typography id="error-modal-description" variant="body1" mb={2}>
+            <Typography id="error-modal-description" variant="h5" sx={{ mb: 5 }}>
               {errorMessage}
             </Typography>
             <Button
               variant="contained"
               sx={{
+                width: "30%",
                 background: "linear-gradient(to left, #8a252c, #AB3510)",
-                borderRadius: "8px",
-                padding: "12px 24px",
-                width: "14rem",
-                height: "2.5rem",
-                color: "white",
-                mt: 2,
-                "&:hover": {
-                  backgroundColor: "#eec160",
-                },
+                p:1,
+                fontSize: '18px',
               }}
               onClick={handleCloseErrorModal}
             >
@@ -731,40 +738,32 @@ export default function SignupPage() {
             <Typography
               id="success-modal-title"
               variant="h4"
-              fontWeight="bold"
-              mb={2}
+              component="h2"
+              sx={{ fontWeight: "bold", mb: 3 }}
             >
               Success!
             </Typography>
-            <Typography
-              id="success-modal-description"
-              variant="h6"
-              mb={4}
-              mt={2}
-            >
+            <Typography id="success-modal-description" variant="h5" sx={{ mb: 5 }}>
               Account successfully created.
             </Typography>
             <Button
               variant="contained"
               sx={{
+                width: "30%",
                 background: "linear-gradient(to left, #8a252c, #AB3510)",
-                borderRadius: "8px",
-                padding: "12px 24px",
-                width: "14rem",
-                height: "2.5rem",
-                color: "white",
-                mt: 2,
-                "&:hover": {
-                  backgroundColor: "#eec160",
-                },
+                p:1,
+                fontSize: '18px',
               }}
               onClick={handleCloseSuccessModal}
             >
-              OK
+              Close
             </Button>
           </Box>
         </Box>
       </Modal>
+
+
+      
     </Box>
   );
 }

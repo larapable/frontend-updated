@@ -1,11 +1,10 @@
 "use client";
 import { getSession, useSession } from "next-auth/react";
-import SpinnerPages from "../Misc/SpinnerPages";
+import Spinner from "../Misc/Spinner";
 import QANavbar from "../Navbars/QANavbar";
 import UserProfile from "../Profile/UserProfile";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import Spinner from "../Misc/Spinner";
 import {
   Box,
   Drawer,
@@ -70,9 +69,10 @@ interface Department {
 }
 
 export default function QADepartmentView() {
-  //temporary kay wala pamay table nga naa ang role sa qa
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  
   const [departments, setDepartments] = useState<Department[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -94,18 +94,16 @@ export default function QADepartmentView() {
 
         const data = await response.json();
         setDepartments(data.departments);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching departments:", error);
-        setIsLoading(false);
-      }
+      } 
     };
 
     fetchData();
   }, []);
 
-  if (isLoading) {
-    return <SpinnerPages />;
+  if (status === "loading") {
+    return <Spinner />;
   }
 
   return (
@@ -183,7 +181,7 @@ export default function QADepartmentView() {
                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
                     <div className="flex flex-col mt-28">
                       <span className="font-bold text-[3rem] text-gray-400 text-center">
-                        ADMIN & ACADEMIC SUPPORT
+                        ADMIN & <br/>ACADEMIC SUPPORT
                       </span>
                       <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
                         Institutional strategic framework

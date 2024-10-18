@@ -70,7 +70,9 @@ interface Department {
 }
 
 export default function QAAcademic() {
-  const [isLoading, setIsLoading] = useState(true);
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  
   const [isMobile, setIsMobile] = useState(false);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [filteredDepartments, setFilteredDepartments] = useState<Department[]>(
@@ -90,10 +92,8 @@ export default function QAAcademic() {
         );
         setDepartments(academicDepartments);
         setFilteredDepartments(academicDepartments);
-        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching departments:", error);
-        setIsLoading(false);
       }
     };
 
@@ -113,6 +113,10 @@ export default function QAAcademic() {
 
     setFilteredDepartments(filtered);
   };
+
+  if (status === "loading") {
+    return <Spinner />;
+  }
 
   return (
     <Box
@@ -232,9 +236,6 @@ export default function QAAcademic() {
               <Grid item xs={12} md={12}>
                 {/* insert the table here */}
                 <Grid item xs={12} md={12}>
-                  {isLoading ? (
-                    <Spinner />
-                  ) : (
                     <TableContainer
                       component={Paper}
                       sx={{
@@ -320,7 +321,6 @@ export default function QAAcademic() {
                         </TableBody>
                       </Table>
                     </TableContainer>
-                  )}
                 </Grid>
               </Grid>
             </Grid>

@@ -20,16 +20,8 @@ import QAFinancial from "@/app/components/QABSC/QAFinancial";
 import QAStakeholder from "@/app/components/QABSC/QAStakeholder";
 import QAInternal from "@/app/components/QABSC/QAInternal";
 import QALearning from "@/app/components/QABSC/QALearning";
-
-interface Department {
-  id: number;
-  department_name: string;
-}
-
-// Define a type for the target years
-type TargetYearsResponse = {
-  target_year: string[];
-};
+import Link from "next/link";
+import Spinner from "@/app/components/Misc/Spinner";
 
 const QAScorecard = () => {
   const { id } = useParams(); // Access the department ID here
@@ -122,6 +114,10 @@ const QAScorecard = () => {
     localStorage.setItem("lastView", view);
     setCurrentView(view);
   };
+
+  if (status === "loading") {
+    return <Spinner />;
+  }
 
   return (
     <Grid
@@ -412,6 +408,22 @@ const QAScorecard = () => {
             </Box>
           </Grid>
         )}
+        <Box className="flex flex-row justify-end items-end mb-10 ">
+          <Link href={`/qareportview/${selectedDepartmentId}`} passHref>
+            <Button
+              variant="contained"
+              sx={{
+                py: 2,
+                px: 3,
+                borderRadius: "8px",
+                fontWeight: "500",
+                background: "linear-gradient(to left, #8a252c, #AB3510)",
+              }}
+            >
+              View Report
+            </Button>
+          </Link>
+        </Box>
       </Grid>
     </Grid>
   );
