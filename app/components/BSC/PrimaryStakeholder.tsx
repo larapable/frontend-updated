@@ -154,11 +154,7 @@ const PrimaryStakeholder: React.FC<PrimaryStakeholderProps> = ({ selectedYear })
     console.log("Primary Edit Id", primaryEditId);
     try {
       const response = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
-=======
-        `http://3.107.42.174:8080/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
 
         {
           method: "PUT",

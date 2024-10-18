@@ -157,11 +157,7 @@ const AdminPage = () => {
   useEffect(() => {
     async function fetchRoleData() {
       try {
-<<<<<<< HEAD
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/roles`);
-=======
-        const response = await fetch("http://3.107.42.174:8080/user/roles");
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         if (Array.isArray(data)) {
