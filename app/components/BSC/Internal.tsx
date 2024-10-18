@@ -130,7 +130,11 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${department_id}`
+=======
+          `http://3.107.42.174:8080/bsc/internal/get/${department_id}`
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal scorecards");
@@ -181,7 +185,11 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
+<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internalBsc/insert`,
+=======
+        "http://3.107.42.174:8080/bsc/internalBsc/insert",
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         {
           method: "POST",
           headers: {
@@ -235,7 +243,11 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
+<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/update/${internalEditID}`,
+=======
+        `http://3.107.42.174:8080/bsc/internal/update/${internalEditID}`,
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         {
           method: "PUT",
           headers: {

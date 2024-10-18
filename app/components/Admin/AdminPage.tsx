@@ -135,7 +135,11 @@ const AdminPage = () => {
       try {
         // Fetch university count
         const universityResponse = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/universityCount`
+=======
+          "http://3.107.42.174:8080/department/universityCount"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (universityResponse.ok) {
           const universityData = await universityResponse.json();
@@ -157,7 +161,11 @@ const AdminPage = () => {
   useEffect(() => {
     async function fetchRoleData() {
       try {
+<<<<<<< HEAD
         const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/roles`);
+=======
+        const response = await fetch("http://3.107.42.174:8080/user/roles");
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -178,10 +186,17 @@ const AdminPage = () => {
     async function fetchSWOTData() {
       try {
         const responses = await Promise.all([
+<<<<<<< HEAD
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/strengths/getAll`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/weaknesses/getAll`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/opportunities/getAll`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/threats/getAll`),
+=======
+          fetch("http://3.107.42.174:8080/strengths/getAll"),
+          fetch("http://3.107.42.174:8080/weaknesses/getAll"),
+          fetch("http://3.107.42.174:8080/opportunities/getAll"),
+          fetch("http://3.107.42.174:8080/threats/getAll"),
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
           // Add other fetch calls here
         ]);
 
@@ -295,7 +310,11 @@ const AdminPage = () => {
     async function fetchDepartmentUserCounts() {
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/departmentUserCounts`
+=======
+          "http://3.107.42.174:8080/department/departmentUserCounts"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         const data: Record<string, number> = await response.json();
         const formattedData = Object.keys(data).map((department) => ({
@@ -315,7 +334,11 @@ const AdminPage = () => {
     async function fetchUserCountData() {
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/userCountByDepartment`
+=======
+          "http://3.107.42.174:8080/department/userCountByDepartment"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         const data = await response.json();
 
@@ -332,10 +355,17 @@ const AdminPage = () => {
     async function fetchData() {
       try {
         const responses = await Promise.all([
+<<<<<<< HEAD
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financialBscCount`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholderBscCount`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internalBscCount`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learningBscCount`),
+=======
+          fetch("http://3.107.42.174:8080/bsc/financialBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/stakeholderBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/internalBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/learningBscCount"),
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         ]);
         const data = await Promise.all(
           responses.map((response) => response.json())
@@ -393,7 +423,11 @@ const AdminPage = () => {
   const [departmentCount, setDepartmentCount] = useState(0);
 
   useEffect(() => {
+<<<<<<< HEAD
     fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/getAllUsers`)
+=======
+    fetch("http://3.107.42.174:8080/user/getAllUsers")
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
       .then((response) => response.json())
       .then((data: User[]) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -404,7 +438,11 @@ const AdminPage = () => {
       try {
         // Fetch department count
         const departmentResponse = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getDepartmentCount`
+=======
+          "http://3.107.42.174:8080/department/getDepartmentCount"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (departmentResponse.ok) {
           const departmentData = await departmentResponse.json();
@@ -418,7 +456,11 @@ const AdminPage = () => {
 
         // Fetch user count
         const userResponse = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/userCount`
+=======
+          "http://3.107.42.174:8080/user/userCount"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (userResponse.ok) {
           const userData = await userResponse.json();
@@ -476,10 +518,17 @@ const AdminPage = () => {
     async function fetchSemesterCounts() {
       try {
         const responses = await Promise.all([
+<<<<<<< HEAD
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financialSemesterCounts`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholderSemesterCounts`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internalSemesterCounts`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learningSemesterCounts`),
+=======
+          fetch("http://3.107.42.174:8080/bsc/financialSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/stakeholderSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/internalSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/learningSemesterCounts"),
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         ]);
 
         const data = await Promise.all(
@@ -571,7 +620,11 @@ const AdminPage = () => {
     async function fetchStrengthCounts() {
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/strengthCountByDepartment`
+=======
+          "http://3.107.42.174:8080/department/strengthCountByDepartment"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -588,7 +641,11 @@ const AdminPage = () => {
     async function fetchWeaknessCounts() {
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/weaknessCountByDepartment`
+=======
+          "http://3.107.42.174:8080/department/weaknessCountByDepartment"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -605,7 +662,11 @@ const AdminPage = () => {
     async function fetchOpportunityCounts() {
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/opportunityCountByDepartment`
+=======
+          "http://3.107.42.174:8080/department/opportunityCountByDepartment"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -622,7 +683,11 @@ const AdminPage = () => {
     async function fetchThreatCounts() {
       try {
         const response = await fetch(
+<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/threatCountByDepartment`
+=======
+          "http://3.107.42.174:8080/department/threatCountByDepartment"
+>>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
