@@ -251,11 +251,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/update/${financialEditID}`,
-=======
-        `http://3.107.42.174:8080/bsc/financial/update/${financialEditID}`,
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         {
           method: "PUT",
           headers: {

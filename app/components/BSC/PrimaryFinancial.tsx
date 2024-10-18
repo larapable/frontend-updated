@@ -158,11 +158,7 @@ const PrimaryFinancial: React.FC<PrimaryFinancialProps> = ({ selectedYear }) => 
     console.log("Priamry Edit Id", primaryEditId);
     try {
       const response = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/update/${primaryEditId}`,
-=======
-        `http://3.107.42.174:8080/bsc/primaryFinancialBsc/update/${primaryEditId}`,
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
 
         {
           method: "PUT",

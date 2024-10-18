@@ -188,11 +188,7 @@ export default function SignupPage() {
     try {
       setLoading(true); // Show spinner
       const resUserExists = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/userExists`,
-=======
-        "http://3.107.42.174:8080/user/userExists",
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         {
           method: "POST",
           headers: {

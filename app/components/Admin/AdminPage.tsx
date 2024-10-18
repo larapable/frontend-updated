@@ -135,11 +135,7 @@ const AdminPage = () => {
       try {
         // Fetch university count
         const universityResponse = await fetch(
-<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/universityCount`
-=======
-          "http://3.107.42.174:8080/department/universityCount"
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (universityResponse.ok) {
           const universityData = await universityResponse.json();
@@ -518,17 +514,10 @@ const AdminPage = () => {
     async function fetchSemesterCounts() {
       try {
         const responses = await Promise.all([
-<<<<<<< HEAD
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financialSemesterCounts`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholderSemesterCounts`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internalSemesterCounts`),
           fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learningSemesterCounts`),
-=======
-          fetch("http://3.107.42.174:8080/bsc/financialSemesterCounts"),
-          fetch("http://3.107.42.174:8080/bsc/stakeholderSemesterCounts"),
-          fetch("http://3.107.42.174:8080/bsc/internalSemesterCounts"),
-          fetch("http://3.107.42.174:8080/bsc/learningSemesterCounts"),
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         ]);
 
         const data = await Promise.all(
