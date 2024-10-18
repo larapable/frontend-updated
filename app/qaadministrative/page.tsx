@@ -100,13 +100,13 @@ export default function QAAdministrative() {
   }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = event.target.value.toLowerCase();
+    const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm);
 
     const filtered = departments.filter((department) => {
       return (
-        department.department_name.toLowerCase().includes(newSearchTerm) ||
-        department.head_officer.toLowerCase().includes(newSearchTerm)
+        department.department_name.toLowerCase().includes(newSearchTerm.toLowerCase()) ||
+        department.head_officer.toLowerCase().includes(newSearchTerm.toLowerCase())
       );
     });
 
@@ -208,7 +208,7 @@ export default function QAAdministrative() {
                 fullWidth
                 value={searchTerm}
                 onChange={handleSearchChange}
-                sx={{ width: "500px" }}
+                sx={{ width: "500px"}}
                 InputProps={{
                   endAdornment: (
                     <SearchIcon

@@ -36,7 +36,7 @@ interface PrimaryLearningScorecard {
 }
 
 interface PrimaryLearningProps {
-  selectedYear: string; 
+  selectedYear: string;
 }
 
 const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
@@ -47,10 +47,9 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
   const department_id = user?.department_id;
   const userRole = user?.role;
 
-   //set current year
-   const currentYear = new Date().getFullYear();
-   const yearAsString = currentYear.toString(); 
- 
+  //set current year
+  const currentYear = new Date().getFullYear();
+  const yearAsString = currentYear.toString();
 
   // open modal
   const [primaryModalOpen, setPrimaryModalOpen] = useState(false);
@@ -148,7 +147,7 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
       target_performance: primaryTargetPerformance,
       actual_performance: primaryActualPerformance,
       targetYear: primaryTargetYear,
-      evidence_link: primaryEvidenceLink
+      evidence_link: primaryEvidenceLink,
     };
     console.log("Priamry Edit Id", primaryEditId);
     try {
@@ -240,19 +239,19 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
                 >
                   Learning Office Target
                 </TableCell>
-                 {/* {added KPI} */}
-                 <TableCell
+                {/* {added KPI} */}
+                <TableCell
                   sx={{
                     fontWeight: "bold",
                     fontSize: "18px",
                     color: "#2e2c2c",
                   }}
                 >
-                  KPI 
+                  KPI
                 </TableCell>
-                 {/* {added target Year} */}
-                 <TableCell
-                 align="center"
+                {/* {added target Year} */}
+                <TableCell
+                  align="center"
                   sx={{
                     fontWeight: "bold",
                     fontSize: "18px",
@@ -279,7 +278,7 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
                     color: "#2e2c2c",
                   }}
                 >
-                  Target 
+                  Target
                 </TableCell>
                 {/* {added actual} */}
                 <TableCell
@@ -290,7 +289,7 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
                     color: "#2e2c2c",
                   }}
                 >
-                  Actual 
+                  Actual
                 </TableCell>
                 <TableCell
                   align="center"
@@ -332,125 +331,134 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
               {primaryLearningScorecard &&
                 primaryLearningScorecard.length > 0 &&
                 primaryLearningScorecard
-                .filter((scorecard) => {
-                  if (!selectedYear) return true; 
-                  return scorecard.targetYear === selectedYear;
-                })
-                .map((scorecard, index) => {
-                  if (!scorecard) return null;
+                  .filter((scorecard) => {
+                    if (!selectedYear) return true;
+                    return scorecard.targetYear === selectedYear;
+                  })
+                  .map((scorecard, index) => {
+                    if (!scorecard) return null;
 
-                  // Calculate the attainment level
-                  const levelOfAttainment = calculateLevelOfAttainment(
-                    parseFloat(scorecard.actual_performance),
-                    parseFloat(scorecard.target_performance)
-                  );
-                  const validatedLevelOfAttainment = Math.min(
-                    Math.max(parseFloat(levelOfAttainment), 1),
-                    100
-                  );
+                    // Calculate the attainment level
+                    const levelOfAttainment = calculateLevelOfAttainment(
+                      parseFloat(scorecard.actual_performance),
+                      parseFloat(scorecard.target_performance)
+                    );
+                    const validatedLevelOfAttainment = Math.min(
+                      Math.max(parseFloat(levelOfAttainment), 1),
+                      100
+                    );
 
-                  return (
-                    <TableRow
-                      key={index}
-                      sx={{
-                        borderBottom: `1px solid ${
-                          index < primaryLearningScorecard.length - 1
-                            ? "gray-200"
-                            : "transparent"
-                        }`,
-                      }}
-                    >
-                      {/* Table Cells */}
-                      <TableCell>
-                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
-                          {scorecard.target_code || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell sx={{ maxWidth: "35rem" }}>
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                          {scorecard.office_target || "N/A"}
-                        </span>
-                      </TableCell>
-                       {/* {added KPI} */}
-                       <TableCell>
+                    return (
+                      <TableRow
+                        key={index}
+                        sx={{
+                          borderBottom: `1px solid ${
+                            index < primaryLearningScorecard.length - 1
+                              ? "gray-200"
+                              : "transparent"
+                          }`,
+                        }}
+                      >
+                        {/* Table Cells */}
+                        <TableCell>
+                          <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                            {scorecard.target_code || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell sx={{ maxWidth: "35rem" }}>
                           <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                            {scorecard.key_performance_indicator && scorecard.key_performance_indicator.length > 20
-                              ? `${scorecard.key_performance_indicator.substring(0, 15)}...`
+                            {scorecard.office_target || "N/A"}
+                          </span>
+                        </TableCell>
+                        {/* {added KPI} */}
+                        <TableCell>
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.key_performance_indicator &&
+                            scorecard.key_performance_indicator.length > 20
+                              ? `${scorecard.key_performance_indicator.substring(
+                                  0,
+                                  15
+                                )}...`
                               : scorecard.key_performance_indicator || "N/A"}
                           </span>
                         </TableCell>
-                       {/* {added target year} */}
-                       <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                          {scorecard.targetYear || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                          {scorecard.metric || "N/A"}
-                        </span>
-                      </TableCell>
-                      <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                          {scorecard.target_performance || "N/A"}
-                        </span>
-                      </TableCell>
-                       {/* {added actual performance} */}
-                       <TableCell align="center">
+                        {/* {added target year} */}
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.targetYear || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.metric || "N/A"}
+                          </span>
+                        </TableCell>
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.target_performance || "N/A"}
+                          </span>
+                        </TableCell>
+                        {/* {added actual performance} */}
+                        <TableCell align="center">
                           <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
                             {scorecard.actual_performance || "N/A"}
                           </span>
                         </TableCell>
-                      <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                          {validatedLevelOfAttainment || "N/A"}%
-                        </span>
-                      </TableCell>
+                        <TableCell align="center">
+                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                            {validatedLevelOfAttainment || "N/A"}%
+                          </span>
+                        </TableCell>
                         {/* {added Link of evidence} */}
                         <TableCell align="center">
-                    {scorecard.evidence_link ? (
-                      <a
-                        href={scorecard.evidence_link}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-orange-500 underline"
-                      >
-                        {scorecard.evidence_link.length > 20
-                          ? `${scorecard.evidence_link.substring(0, 15)}...`
-                          : scorecard.evidence_link}
-                      </a>
-                    ) : (
-                      "..."
-                    )}
-                  </TableCell>
-                      <TableCell align="center">
-                        <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
-                          {scorecard.status || "N/A"}
-                        </div>
-                      </TableCell>
-                      <TableCell align="center" sx={{ color: "#c2410c" }}>
-                        <button
-                          onClick={() => handlePrimaryEditScorecard(scorecard)}
-                        >
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            strokeWidth="1.5"
-                            stroke="currentColor"
-                            className="w-6 h-6"
+                          {scorecard.evidence_link ? (
+                            <a
+                              href={scorecard.evidence_link}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-orange-500 underline"
+                            >
+                              {scorecard.evidence_link.length > 20
+                                ? `${scorecard.evidence_link.substring(
+                                    0,
+                                    15
+                                  )}...`
+                                : scorecard.evidence_link}
+                            </a>
+                          ) : (
+                            "..."
+                          )}
+                        </TableCell>
+                        <TableCell align="center">
+                          <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
+                            {scorecard.status || "N/A"}
+                          </div>
+                        </TableCell>
+                        <TableCell align="center" sx={{ color: "#c2410c" }}>
+                          <button
+                            onClick={() =>
+                              handlePrimaryEditScorecard(scorecard)
+                            }
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
-                            />
-                          </svg>
-                        </button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              fill="none"
+                              viewBox="0 0 24 24"
+                              strokeWidth="1.5"
+                              stroke="currentColor"
+                              className="w-6 h-6"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10"
+                              />
+                            </svg>
+                          </button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
             </TableBody>
           </Table>
         </TableContainer>
@@ -481,7 +489,7 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
               component="h2"
               sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
             >
-              Financial
+              Learning & Growth
             </Typography>
             <Box
               sx={{
@@ -762,11 +770,11 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
                 )}
               </div>
             </Box>
-             {/* {added link of evidence} */}
-             <Box>
+            {/* {added link of evidence} */}
+            <Box>
               <div className="flex flex-col mt-5">
                 <span className="mr-3 break-words font-regular text-lg text-[#000000]">
-                 Link of Evidence
+                  Link of Evidence
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <TextField
@@ -837,8 +845,6 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
       </Modal>
     </Grid>
   );
-}
-
-
+};
 
 export default PrimaryLearning;

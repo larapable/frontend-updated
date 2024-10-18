@@ -2270,11 +2270,11 @@ const Page = () => {
                       component="h2"
                       sx={{ fontWeight: "bold", mb: 3 }}
                     >
-                      Sort new strategies?
+                      Map new strategies?
                     </Typography>
                     <Typography variant="h5" sx={{ mb: 5 }}>
-                      Are you sure you want to sort? This will take unsorted
-                      strategies and sort them into the correct categories.
+                      Are you sure you want to map strategies? This will take unmapped
+                      strategies and map them into the correct categories.
                     </Typography>
                     <Box
                       sx={{

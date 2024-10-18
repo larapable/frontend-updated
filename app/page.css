@@ -238,10 +238,15 @@
 
 /* Styling for the month name */
 .react-calendar__navigation__label {
-  font-size: 2rem !important;
+  font-size: 1rem !important;
   font-weight: bold;
   color: #333;
   margin-top: 2rem;
+  text-align: center;
+  flex-grow: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Styling for the previous and next buttons */
@@ -249,9 +254,12 @@
   font-size: 1.5rem;
   color: #fff;
   background: #b83216 !important;
-  width: 2rem !important;
+  width: 1rem !important;
   height: 3rem !important;
   border-radius: 2rem !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 /* Ensure navigation buttons have no underline */
@@ -291,9 +299,15 @@
 }
 
 @keyframes rotate {
-  0% { transform: rotate(0deg) scale(0.8) }
-  50% { transform: rotate(360deg) scale(1.2) }
-  100% { transform: rotate(720deg) scale(0.8) }
+  0% {
+    transform: rotate(0deg) scale(0.8);
+  }
+  50% {
+    transform: rotate(360deg) scale(1.2);
+  }
+  100% {
+    transform: rotate(720deg) scale(0.8);
+  }
 }
 
 @keyframes ball1 {
@@ -325,8 +339,3 @@
     margin-top: 0;
   }
 }
-
-
-
-
-

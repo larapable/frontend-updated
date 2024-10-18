@@ -809,7 +809,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                 </span>
                 <textarea
                   value={stakeholderOfficeTarget}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   disabled
                 />
               </div>
@@ -826,7 +826,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                 </span>
                 <textarea
                   value={stakeholderActions}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setStakeholderActions(e.target.value)}
                 />
               </div>
@@ -844,7 +844,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
                 <textarea
                   value={stakeholderOFI}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setStakeholderOFI(e.target.value)}
                 />
               </div>

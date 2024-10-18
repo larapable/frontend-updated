@@ -799,7 +799,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                 </span>
                 <textarea
                   value={internalOfficeTarget}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   disabled
                 />
               </div>
@@ -816,7 +816,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
                 </span>
                 <textarea
                   value={internalActions}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setInternalActions(e.target.value)}
                 />
               </div>
@@ -834,7 +834,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
 
                 <textarea
                   value={internalOFI}
-                  className="text-lg font-regular border border-gray-300 bg-gray-50 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setInternalOFI(e.target.value)}
                 />
               </div>

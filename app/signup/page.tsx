@@ -642,7 +642,7 @@ export default function SignupPage() {
           >
             <Image src="/logo.png" alt="Logo" width={150} height={150}/>
             <Typography variant="h4" fontWeight="bold" mt={3} mb={3}>
-              Welcome to Atlas! <br/> Please login to your atlas account
+              Welcome to Atlas! <br/> Please sign up to your atlas account
             </Typography>
             <Typography color="textSecondary" textAlign="center" sx={{fontSize: '18px', color:'white', mb:5}}>
               Gain insights, track progress, and achieve your goals.

@@ -70,6 +70,8 @@ export default function EditProfileUsers() {
   const [lastname, setLastname] = useState("");
   const [role, setRole] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState("");
   const [confirmationMessage, setConfirmationMessage] = useState("");
   const [isMobile, setIsMobile] = useState(false);
   const [roles, setRoles] = useState("");
@@ -89,7 +91,9 @@ export default function EditProfileUsers() {
   useEffect(() => {
     const fetchUserPersonalProfileData = async () => {
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${user_id}`);
+        const response = await fetch(
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${user_id}`
+        );
         if (response.ok) {
           const data = await response.json();
           console.log("Received data:", data);
@@ -257,7 +261,8 @@ export default function EditProfileUsers() {
     const calculatedAge = calculateAge(selectedDate);
 
     if (calculatedAge < 18) {
-      alert("You must be at least 18 years old.");
+      setModalMessage("You must be at least 18 years old.");
+      setShowErrorModal(true);
       setBirthdate("");
       setAge("");
     } else {
@@ -340,24 +345,27 @@ export default function EditProfileUsers() {
                 EDIT PROFILE
               </Typography>
             </Grid>
-              <Typography variant="h5">
-                The Profile feature allows you to view your department’s details, including department name, while also giving you access to your personal profile where you can update your contact information, and upload your profile picture.
-              </Typography>
+            <Typography variant="h5">
+              The Profile feature allows you to view your department’s details,
+              including department name, while also giving you access to your
+              personal profile where you can update your contact information,
+              and upload your profile picture.
+            </Typography>
           </Grid>
 
-          <Cards sx={{mt:5}}>
+          <Cards sx={{ mt: 5 }}>
             <StyledBox sx={{ background: "white", borderRadius: 5 }}>
               <Grid item style={{ textAlign: "center" }}>
                 <Button
                   variant="contained"
                   onClick={handleConfirmSave}
-                  sx={{ width: 'auto', color: "#AB3510" }}
+                  sx={{ width: "auto", color: "#AB3510" }}
                   style={{
                     background: "white",
                     borderRadius: "20px",
                     marginTop: -20,
                     border: "1px solid #d9d9d9",
-                    padding: '10px 30px',
+                    padding: "10px 30px",
                   }}
                 >
                   {<CheckRoundedIcon />}
@@ -393,43 +401,46 @@ export default function EditProfileUsers() {
                       )}
                     </Grid>
 
-                    <Grid item xs={12} sm={8} sx={{ml:-2}}>
+                    <Grid item xs={12} sm={8} sx={{ ml: -2 }}>
                       <Typography
                         variant="h4"
                         component="h2"
-                        sx={{ fontWeight: "bold",mr:5 }}
+                        sx={{ fontWeight: "bold", mr: 5 }}
                       >
                         {username}
                       </Typography>
                       <Grid item sm={4}>
-                      <Typography variant="h5" color="textSecondary">
-                        <Select
-                          value={role}
-                          onChange={handleRoleChange}
-                          fullWidth
-                          variant="outlined"
-                          inputProps={{ readOnly: true }}
-                          sx={{
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
-                            },
-                          }}
-                        >
-                          <MenuItem value="" disabled>
-                            Select Role
-                          </MenuItem>
-                          <MenuItem value="headOfficer">HEAD OFFICER</MenuItem>
-                          <MenuItem value="faculty">FACULTY</MenuItem>
-                        </Select>
-                      </Typography>
+                        <Typography variant="h5" color="textSecondary">
+                          <Select
+                            value={role}
+                            onChange={handleRoleChange}
+                            fullWidth
+                            variant="outlined"
+                            inputProps={{ readOnly: true }}
+                            sx={{
+                              height: "50px",
+                              "& .MuiInputBase-root": { height: "50px" },
+                              "& .MuiOutlinedInput-input": {
+                                // Target the input element specifically
+                                fontSize: "18px", // Adjust the font size as needed
+                              },
+                            }}
+                          >
+                            <MenuItem value="" disabled>
+                              Select Role
+                            </MenuItem>
+                            <MenuItem value="headOfficer">
+                              HEAD OFFICER
+                            </MenuItem>
+                            <MenuItem value="faculty">FACULTY</MenuItem>
+                          </Select>
+                        </Typography>
                       </Grid>
 
                       <Button
                         variant="contained"
                         component="label"
-                        sx={{p:1, fontSize: '20px'}}
+                        sx={{ p: 1, fontSize: "20px" }}
                         style={{
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
@@ -461,10 +472,7 @@ export default function EditProfileUsers() {
                     <Typography variant="h5" sx={{ fontWeight: "500", mb: 1 }}>
                       USER PROFILE
                     </Typography>
-                    <Typography
-                      variant="h6"
-                      sx={{ fontWeight: "400", mb: 1 }}
-                    >
+                    <Typography variant="h6" sx={{ fontWeight: "400", mb: 1 }}>
                       Access and view your personal <br />
                       information here.
                     </Typography>
@@ -499,19 +507,16 @@ export default function EditProfileUsers() {
                             mt: 2,
                           }}
                         >
-                          <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
-                            {roleCounts.headOfficer}
-                          </Typography>
                           <Typography
                             variant="h5"
-                            sx={{ fontWeight: "500" }}
+                            sx={{ fontWeight: "bolder" }}
                           >
+                            {roleCounts.headOfficer}
+                          </Typography>
+                          <Typography variant="h5" sx={{ fontWeight: "500" }}>
                             HEAD
                           </Typography>
-                          <Typography
-                            variant="h6"
-                            sx={{ fontWeight: "500" }}
-                          >
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
                             Users
                           </Typography>
                         </Grid>
@@ -526,19 +531,16 @@ export default function EditProfileUsers() {
                             mt: 2,
                           }}
                         >
-                          <Typography variant="h5" sx={{ fontWeight: "bolder" }}>
-                            {roleCounts.faculty}
-                          </Typography>
                           <Typography
                             variant="h5"
-                            sx={{ fontWeight: "500" }}
+                            sx={{ fontWeight: "bolder" }}
                           >
+                            {roleCounts.faculty}
+                          </Typography>
+                          <Typography variant="h5" sx={{ fontWeight: "500" }}>
                             FACULTIES
                           </Typography>
-                          <Typography
-                            variant="h6"
-                            sx={{ fontWeight: "500" }}
-                          >
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
                             Users
                           </Typography>
                         </Grid>
@@ -584,8 +586,9 @@ export default function EditProfileUsers() {
                           sx={{
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                           value={firstname}
@@ -606,8 +609,9 @@ export default function EditProfileUsers() {
                           sx={{
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                           value={lastname}
@@ -628,8 +632,9 @@ export default function EditProfileUsers() {
                           sx={{
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                           value={email}
@@ -664,8 +669,9 @@ export default function EditProfileUsers() {
                           sx={{
                             height: "50px",
                             "& .MuiInputBase-root": { height: "50px" },
-                            "& .MuiOutlinedInput-input": { // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed 
+                            "& .MuiOutlinedInput-input": {
+                              // Target the input element specifically
+                              fontSize: "18px", // Adjust the font size as needed
                             },
                           }}
                           value={birthdate}
@@ -748,8 +754,8 @@ export default function EditProfileUsers() {
                 sx={{
                   width: "30%",
                   color: "#AB3510",
-                  p:1,
-                  fontSize: '18px',
+                  p: 1,
+                  fontSize: "18px",
                 }}
                 style={{
                   background: "white",
@@ -765,11 +771,67 @@ export default function EditProfileUsers() {
                 sx={{
                   width: "30%",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
-                  p:1,
-                  fontSize: '18px',
+                  p: 1,
+                  fontSize: "18px",
                 }}
               >
                 Save
+              </Button>
+            </Box>
+          </Box>
+        </Box>
+      </Modal>
+
+      <Modal open={showErrorModal} onClose={() => setShowErrorModal(false)}>
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100vh", // Occupy full viewport height
+          }}
+        >
+          <Box
+            sx={{
+              background: "white",
+              padding: 6,
+              borderRadius: 2,
+              boxShadow: 24,
+              textAlign: "center",
+              position: "relative",
+              maxWidth: "100vw", // Limit modal width to 80% of viewport width
+            }}
+          >
+            <Typography
+              variant="h4"
+              component="h2"
+              sx={{ fontWeight: "bold", mb: 3 }}
+            >
+              Notice!
+            </Typography>
+            <Typography variant="h5" sx={{ mb: 5 }}>
+              {modalMessage}
+            </Typography>
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                gap: 2,
+                mt: 3,
+                flexWrap: "wrap", // Allow buttons to wrap on smaller screens
+              }}
+            >
+              <Button
+                variant="contained"
+                onClick={() => setShowErrorModal(false)}
+                sx={{
+                  width: "30%",
+                  background: "linear-gradient(to left, #8a252c, #AB3510)",
+                  p: 1,
+                  fontSize: "18px",
+                }}
+              >
+                Close
               </Button>
             </Box>
           </Box>

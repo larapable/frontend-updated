@@ -245,7 +245,7 @@ const FeedbackForm: React.FC = () => {
               >
                 FEEDBACK FORM
               </Typography>
-              <Typography 
+              <Typography
                 variant="h5"
                 sx={{
                   marginBottom: 2,
@@ -450,7 +450,7 @@ const FeedbackForm: React.FC = () => {
                     background: "white",
                   }}
                 >
-                  <Typography variant="h6" sx={{fontWeight: '500'}}>
+                  <Typography variant="h6" sx={{ fontWeight: "500" }}>
                     <textarea
                       className="w-full p-2 border rounded-md shadow-md border-[#ccc]"
                       rows={4}
@@ -473,7 +473,7 @@ const FeedbackForm: React.FC = () => {
                 >
                   <Button
                     type="submit"
-                    sx={{ py:2, px:5, fontSize: "18px" }}
+                    sx={{ py: 2, px: 5, fontSize: "18px" }}
                     style={{
                       background: "linear-gradient(to left, #8a252c, #AB3510)",
                       color: "white",
@@ -497,7 +497,7 @@ const FeedbackForm: React.FC = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 4,
+                      padding: 6,
                       borderRadius: 2,
                       boxShadow: 24,
                       textAlign: "center",
@@ -506,13 +506,13 @@ const FeedbackForm: React.FC = () => {
                     }}
                   >
                     <Typography
-                      variant="h6"
+                      variant="h4"
                       component="h2"
-                      sx={{ fontWeight: "bold", mb: 2 }}
+                      sx={{ fontWeight: "bold", mb: 3 }}
                     >
                       Success!
                     </Typography>
-                    <Typography variant="body2" sx={{ mb: 3 }}>
+                    <Typography variant="h5" sx={{ mb: 5 }}>
                       Your feedback has been submitted successfully.
                     </Typography>
                     <Box
@@ -528,9 +528,11 @@ const FeedbackForm: React.FC = () => {
                         variant="contained"
                         onClick={() => setShowModal(false)}
                         sx={{
-                          width: "auto",
+                          width: "30%",
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          fontSize: "18px",
                         }}
                       >
                         Close
@@ -587,9 +589,10 @@ const FeedbackForm: React.FC = () => {
                         onClick={() => setShowErrorModal(false)}
                         sx={{
                           width: "30%",
-                          background: "linear-gradient(to left, #8a252c, #AB3510)",
-                          p:1,
-                          fontSize: '18px',
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          fontSize: "18px",
                         }}
                       >
                         Close
