@@ -208,17 +208,10 @@ export default function SignupPage() {
       }
 
       const res = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/insert`,
         // role === "qualityAssurance"
         //   ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/qauser/insert`
         //   : `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/insert`,
-=======
-        "http://3.107.42.174:8080/user/insert",
-        // role === "qualityAssurance"
-        //   ? "http://3.107.42.174:8080/qauser/insert"
-        //   : "http://3.107.42.174:8080/user/insert",
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         {
           method: "POST",
           headers: {
@@ -278,11 +271,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchDepartments = async () => {
       const res = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`
-=======
-        "http://3.107.42.174:8080/department/getAllDepartments"
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
       );
       const data = await res.json();
       setDepartments(data.departments);
@@ -294,11 +283,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchHeadDepartments = async () => {
       const res = await fetch(
-<<<<<<< HEAD
         `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartmentsHead`
-=======
-        "http://3.107.42.174:8080/department/getAllDepartmentsHead"
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
       );
       const data = await res.json();
       setHeads(data.departmentsHead);

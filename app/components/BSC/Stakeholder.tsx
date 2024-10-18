@@ -182,7 +182,7 @@ const Stakeholder: React.FC<StakeholderProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://3.107.42.174:8080/bsc/stakeholderBsc/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholderBsc/insert`,
         {
           method: "POST",
           headers: {

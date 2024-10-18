@@ -220,7 +220,7 @@ export default function UserEditProfile() {
 
       try {
         const response = await fetch(
-          "http://localhost:8080/image/insertImage",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/image/insertImage`,
           {
             method: "POST",
             body: formData,

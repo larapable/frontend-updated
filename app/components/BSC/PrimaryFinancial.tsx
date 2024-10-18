@@ -104,11 +104,7 @@ const PrimaryFinancial: React.FC<PrimaryFinancialProps> = ({ selectedYear }) => 
 
       try {
         const response = await fetch(
-<<<<<<< HEAD
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${department_id}`
-=======
-          `http://3.107.42.174:8080/bsc/primaryFinancialBsc/get/${department_id}`
->>>>>>> 1333e1eb49a1885902719b9a5a82afa115043793
         );
         if (!response.ok) {
           throw new Error("An error occurred while fetching data");
