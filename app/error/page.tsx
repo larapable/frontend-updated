@@ -1,13 +1,13 @@
 "use client";
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
 interface ErrorDetails {
   reason: string;
   message?: string;
 }
 
-export default function ErrorPage() {
+function ErrorPage() {
   const [errorDetails, setErrorDetails] = useState<ErrorDetails | null>(null);
   const searchParams = useSearchParams();
 
@@ -109,4 +109,12 @@ export default function ErrorPage() {
       </div>
     </div>
   );
+}
+
+export default function PageExport() {
+
+  return (
+  <Suspense>
+    <ErrorPage />
+  </Suspense>)
 }

@@ -1,11 +1,13 @@
-import React from 'react'
-import Link from "next/link"
-import { Box, Typography, Button, IconButton } from '@mui/material';
+"use client"
+
+import { Box, IconButton, Typography } from '@mui/material';
+import Link from "next/link";
 
 const BottomPage = () => {
 
   // WHEN ABOUT US IS CLICKED
   const handleAboutUsClick = () => {
+    if(typeof document === 'undefined') return;
     const element = document.getElementById("strategic-management-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -13,6 +15,7 @@ const BottomPage = () => {
   };
   // WHEN FEATURE IS CLICKED
   const handleBenefitClick = () => {
+    if(typeof document === 'undefined') return;
     const element = document.getElementById("benefit-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -21,6 +24,7 @@ const BottomPage = () => {
 
   // WHEN PRICING IS CLICKED
   const handlePricingClick = () => {
+    if(typeof document === 'undefined') return;
     const element = document.getElementById("pricing-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });

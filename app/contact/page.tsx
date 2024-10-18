@@ -1,4 +1,4 @@
-import TeamsPage from '../components/TeamsPage'
+import TeamsPage from '../components/LandingPage/TeamsPage';
 import React from 'react'
 import Link from 'next/link'
 import { Box, Button, Typography } from "@mui/material";

@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import Link from 'next/link';
+"use client"
+
+import { Typography } from "@mui/material";
 import Image from 'next/image';
-import { AppBar, Box, Button, IconButton, Toolbar, Typography } from "@mui/material";
+import Link from 'next/link';
+import { useState } from 'react';
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -15,6 +17,7 @@ const Navbar = () => {
   };
 
   const handleAboutUsClick = () => {
+    if(typeof document === 'undefined') return;
     const element = document.getElementById("strategic-management-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -22,6 +25,7 @@ const Navbar = () => {
   };
 
   const handleBenefitClick = () => {
+    if(typeof document === 'undefined') return;
     const element = document.getElementById("benefit-section");
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });

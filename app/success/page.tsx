@@ -1,13 +1,13 @@
 'use client';
-import { useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
+import { Suspense, useEffect, useState } from 'react';
 
 interface PaymentDetails {
   paymentId?: string;
   PayerID?: string;
 }
 
-export default function SuccessfulPage() {
+function SuccessfulPage() {
   const [paymentDetails, setPaymentDetails] = useState<PaymentDetails | null>(null);
   const searchParams = useSearchParams();
 
@@ -103,4 +103,12 @@ export default function SuccessfulPage() {
       </div>
     </div>
   );
+}
+
+export default function PageExport() {
+
+  return (
+  <Suspense>
+    <SuccessfulPage />
+  </Suspense>)
 }
