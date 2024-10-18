@@ -120,7 +120,7 @@ const ReportFinancial: React.FC<ReportFinancialProps> = ({ selectedYear }) => {
       }
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/financial/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch financial reports");
@@ -146,7 +146,7 @@ const ReportFinancial: React.FC<ReportFinancialProps> = ({ selectedYear }) => {
 
       try {
         const res = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${department_id}`
         );
         if (!res.ok) {
           throw new Error("Failed to fetch primary financial report.");
@@ -250,7 +250,7 @@ const ReportFinancial: React.FC<ReportFinancialProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/financial/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {
@@ -297,7 +297,7 @@ const ReportFinancial: React.FC<ReportFinancialProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryFinancialBsc/update/${primaryReportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/update/${primaryReportEditId}`,
         {
           method: "PUT",
           headers: {

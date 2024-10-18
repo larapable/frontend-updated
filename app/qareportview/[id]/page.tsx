@@ -100,16 +100,16 @@ const QAReportview = () => {
             stakeholderResponse,
           ] = await Promise.all([
             fetch(
-              `http://localhost:8080/bsc/getFinancialTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getFinancialTargetYears/${selectedDepartmentId}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getInternalTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getInternalTargetYears/${selectedDepartmentId}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getLearningTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getLearningTargetYears/${selectedDepartmentId}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getStakeholderTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getStakeholderTargetYears/${selectedDepartmentId}`
             ),
           ]);
 
@@ -163,7 +163,7 @@ const QAReportview = () => {
     const fetchImageData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/image/getImage/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/image/getImage/${selectedDepartmentId}`
         );
         if (response.ok) {
           const { imageData, imageFormat } = await response.json();
@@ -240,7 +240,7 @@ const QAReportview = () => {
     const fetchUserProfileData = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/department/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/${selectedDepartmentId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -281,7 +281,7 @@ const QAReportview = () => {
     const fetchApproval = async () => {
       try {
         const res = await fetch(
-          `http://localhost:8080/approval/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/approval/get/${selectedDepartmentId}`
         );
         if (!res.ok) {
           throw new Error("Failed to fetch approval data");
@@ -343,7 +343,7 @@ const QAReportview = () => {
       try {
         // Fetch financial reports
         const financialResponse = await fetch(
-          `http://localhost:8080/bsc/financial/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${selectedDepartmentId}`
         );
         if (!financialResponse.ok) {
           throw new Error("Failed to fetch financial reports");
@@ -352,7 +352,7 @@ const QAReportview = () => {
 
         // Fetch primary financial reports
         const primaryFinancialResponse = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
         );
         if (!primaryFinancialResponse.ok) {
           throw new Error("Failed to fetch primary financial reports");
@@ -394,7 +394,7 @@ const QAReportview = () => {
         setFinancialReports(completeFinancialReports);
 
         const stakeholderResponse = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${selectedDepartmentId}`
         );
         if (!stakeholderResponse.ok) {
           throw new Error("Failed to fetch stakeholder reports");
@@ -403,7 +403,7 @@ const QAReportview = () => {
 
         // Fetch primary stakeholder reports
         const primaryStakeholderResponse = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
         );
         if (!primaryStakeholderResponse.ok) {
           throw new Error("Failed to fetch primary stakeholder reports");
@@ -447,7 +447,7 @@ const QAReportview = () => {
 
         //Fetch internal reports
         const internalResponse = await fetch(
-          `http://localhost:8080/bsc/internal/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${selectedDepartmentId}`
         );
         if (!internalResponse.ok) {
           throw new Error("Failed to fetch internal reports");
@@ -456,7 +456,7 @@ const QAReportview = () => {
 
         // Fetch primary stakeholder reports
         const primaryInternalResponse = await fetch(
-          `http://localhost:8080/bsc/primaryInternalBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryInternalBsc/get/${selectedDepartmentId}`
         );
         if (!primaryInternalResponse.ok) {
           throw new Error("Failed to fetch primary Internal reports");
@@ -499,7 +499,7 @@ const QAReportview = () => {
 
         //Fetch learning reports
         const learningResponse = await fetch(
-          `http://localhost:8080/bsc/learning/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${selectedDepartmentId}`
         );
         if (!learningResponse.ok) {
           throw new Error("Failed to fetch learning reports");
@@ -508,7 +508,7 @@ const QAReportview = () => {
 
         // Fetch primary stakeholder reports
         const primaryLearningResponse = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${selectedDepartmentId}`
         );
         if (!primaryLearningResponse.ok) {
           throw new Error("Failed to fetch primary learning reports");

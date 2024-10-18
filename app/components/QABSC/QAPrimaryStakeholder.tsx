@@ -99,7 +99,7 @@ export default function QAPrimaryStakeholder({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("An error occurred while fetching data");
@@ -151,7 +151,7 @@ export default function QAPrimaryStakeholder({
     console.log("Primary Edit Id", primaryEditId);
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
 
         {
           method: "PUT",

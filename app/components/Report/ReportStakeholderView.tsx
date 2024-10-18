@@ -57,7 +57,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
     const getReports = async (department_id: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch stakeholder reports");
@@ -77,7 +77,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
     const getPrimaryReports = async (department_id: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary stakeholder reports");

@@ -55,16 +55,16 @@ const QAScorecard = () => {
             stakeholderResponse,
           ] = await Promise.all([
             fetch(
-              `http://localhost:8080/bsc/getFinancialTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getFinancialTargetYears/${selectedDepartmentId}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getInternalTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getInternalTargetYears/${selectedDepartmentId}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getLearningTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getLearningTargetYears/${selectedDepartmentId}`
             ),
             fetch(
-              `http://localhost:8080/bsc/getStakeholderTargetYears/${selectedDepartmentId}`
+              `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/getStakeholderTargetYears/${selectedDepartmentId}`
             ),
           ]);
 

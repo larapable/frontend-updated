@@ -62,7 +62,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartments"
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`
       );
       const data = await res.json();
       setDepartments(data.departments);
@@ -74,7 +74,7 @@ export default function Navbar() {
   useEffect(() => {
     const fetchHeadDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartmentsHead"
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartmentsHead`
       );
       const data = await res.json();
       setHeads(data.departmentsHead);

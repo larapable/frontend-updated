@@ -104,7 +104,7 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("An error occurred while fetching data");
@@ -153,7 +153,7 @@ const PrimaryLearning: React.FC<PrimaryLearningProps> = ({ selectedYear }) => {
     console.log("Priamry Edit Id", primaryEditId);
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryLearningBsc/update/${primaryEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/update/${primaryEditId}`,
 
         {
           method: "PUT",

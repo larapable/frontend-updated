@@ -114,7 +114,7 @@ export default function QAPrimaryFinancial({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("An error occurred while fetching data");
@@ -164,7 +164,7 @@ export default function QAPrimaryFinancial({
     console.log("Priamry Edit Id", primaryEditId);
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryFinancialBsc/update/${primaryEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/update/${primaryEditId}`,
 
         {
           method: "PUT",

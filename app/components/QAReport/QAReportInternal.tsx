@@ -50,7 +50,7 @@ interface ReportInternal {
     const getReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal reports");
@@ -70,7 +70,7 @@ interface ReportInternal {
     const getPrimaryReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryInternalBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryInternalBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary internal reports");

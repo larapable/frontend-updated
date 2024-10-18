@@ -188,7 +188,7 @@ export default function SignupPage() {
     try {
       setLoading(true); // Show spinner
       const resUserExists = await fetch(
-        "http://localhost:8080/user/userExists",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/userExists`,
         {
           method: "POST",
           headers: {
@@ -208,10 +208,10 @@ export default function SignupPage() {
       }
 
       const res = await fetch(
-        "http://localhost:8080/user/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/insert`,
         // role === "qualityAssurance"
-        //   ? "http://localhost:8080/qauser/insert"
-        //   : "http://localhost:8080/user/insert",
+        //   ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/qauser/insert`
+        //   : `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/insert`,
         {
           method: "POST",
           headers: {
@@ -271,7 +271,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartments"
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`
       );
       const data = await res.json();
       setDepartments(data.departments);
@@ -283,7 +283,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchHeadDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartmentsHead"
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartmentsHead`
       );
       const data = await res.json();
       setHeads(data.departmentsHead);

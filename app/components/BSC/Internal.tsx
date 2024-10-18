@@ -130,7 +130,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal scorecards");
@@ -181,7 +181,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://localhost:8080/bsc/internalBsc/insert",
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internalBsc/insert`,
         {
           method: "POST",
           headers: {
@@ -235,7 +235,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/internal/update/${internalEditID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/update/${internalEditID}`,
         {
           method: "PUT",
           headers: {

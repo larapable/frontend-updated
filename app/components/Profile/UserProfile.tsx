@@ -96,7 +96,7 @@ export default function UserProfile() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/department/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/${department_id}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -128,7 +128,7 @@ export default function UserProfile() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/image/getImage/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/image/getImage/${department_id}`
         );
         if (response.ok) {
           const { imageData, imageFormat } = await response.json();
@@ -177,7 +177,7 @@ export default function UserProfile() {
     const fetchUserPersonalProfileData = async () => {
       setLoading(true);
       try {
-        const response = await fetch(`http://localhost:8080/user/${user_id}`);
+        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${user_id}`);
         if (response.ok) {
           const data = await response.json();
           console.log("Received data:", data);
@@ -215,7 +215,7 @@ export default function UserProfile() {
       setLoading(true);
       try {
         const response = await fetch(
-          `http://localhost:8080/userImage/getImage/${user_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/userImage/getImage/${user_id}`
         );
 
         if (response.ok) {
@@ -258,7 +258,7 @@ export default function UserProfile() {
     const fetchRoleCounts = async () => {
       try {
         const response = await fetch(
-          `http://localhost:8080/user/department/${department_id}/roleCounts`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/user/department/${department_id}/roleCounts`
         );
         if (response.ok) {
           const data = await response.json();

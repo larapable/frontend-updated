@@ -58,7 +58,7 @@ const ReportFinancialView: React.FC<ReportFinancialViewProps> = ({ selectedYear 
     const getReports = async (department_id: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/financial/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch financial reports");
@@ -78,7 +78,7 @@ const ReportFinancialView: React.FC<ReportFinancialViewProps> = ({ selectedYear 
     const getPrimaryReports = async (department_id: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary financial reports");

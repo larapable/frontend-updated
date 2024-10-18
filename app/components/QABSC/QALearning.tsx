@@ -101,7 +101,7 @@ export default function QALearning({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${selectedDepartmentId}`
         );
         if (response.ok) {
           const data = await response.json();
@@ -153,7 +153,7 @@ export default function QALearning({
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/learning/update/${learningEditID}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/update/${learningEditID}`,
         {
           method: "PUT",
           headers: {

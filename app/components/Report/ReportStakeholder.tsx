@@ -125,7 +125,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch stakeholder reports");
@@ -149,7 +149,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
       }
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary stakeholder report.");
@@ -233,7 +233,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/stakeholder/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {
@@ -280,7 +280,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryStakeholderBsc/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {

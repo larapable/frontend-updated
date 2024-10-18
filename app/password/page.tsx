@@ -92,7 +92,7 @@ export default function Password() {
     
         try {
             // Make an API call to update the password
-            const response = await fetch(`http://localhost:8080/user/${userId}/password`, {
+            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/${userId}/password`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",

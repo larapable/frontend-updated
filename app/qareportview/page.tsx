@@ -154,7 +154,7 @@ export default function QAReportView() {
     const fetchData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/getAllDepartments",
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/department/getAllDepartments`,
           {
             method: "GET",
             headers: {
@@ -227,7 +227,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/financial/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/financial/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch financial scorecards");
@@ -256,7 +256,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryFinancialBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary financial scorecards");
@@ -301,7 +301,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/stakeholder/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch stakeholder scorecards");
@@ -330,7 +330,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryStakeholderBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary stakeholder scorecards");
@@ -373,7 +373,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal scorecards");
@@ -402,7 +402,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryInternalBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryInternalBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary internal scorecards");
@@ -445,7 +445,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch learning scorecards");
@@ -474,7 +474,7 @@ export default function QAReportView() {
       );
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary learning scorecards");

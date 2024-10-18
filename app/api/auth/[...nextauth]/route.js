@@ -28,7 +28,7 @@ import bcrypt from "bcryptjs";
           }
 
           // Make HTTP request to check if user exists
-          const response = await fetch(`http://localhost:8080/user/login`, {
+          const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/user/login`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",

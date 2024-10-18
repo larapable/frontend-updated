@@ -117,7 +117,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal reports");
@@ -142,7 +142,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
       }
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryInternalBsc/get/${department_id}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryInternalBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary internal report.");
@@ -226,7 +226,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/internal/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/internal/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {
@@ -273,7 +273,7 @@ const ReportInternal: React.FC<ReportInternalProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryInternalBsc/update/${reportEditId}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryInternalBsc/update/${reportEditId}`,
         {
           method: "PUT",
           headers: {

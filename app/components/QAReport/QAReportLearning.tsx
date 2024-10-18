@@ -50,7 +50,7 @@ interface ReportLearning {
     const getReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/learning/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch learning reports");
@@ -69,7 +69,7 @@ interface ReportLearning {
     const getPrimaryReports = async (selectedDepartmentId: number) => {
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryLearningBsc/get/${selectedDepartmentId}`
+          `${process.env.NEXT_PUBLIC_BACKEND_URL}/bsc/primaryLearningBsc/get/${selectedDepartmentId}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch primary learning reports");

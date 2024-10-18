@@ -164,7 +164,7 @@ const FeedbackForm: React.FC = () => {
     setIsSubmitting(true);
     try {
       const response = await fetch(
-        `http://localhost:8080/feedback?departmentId=${department_id}`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/feedback?departmentId=${department_id}`,
         {
           method: "POST",
           headers: {
