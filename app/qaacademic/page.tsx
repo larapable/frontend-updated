@@ -72,7 +72,7 @@ interface Department {
 export default function QAAcademic() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  
+
   const [isMobile, setIsMobile] = useState(false);
   const [departments, setDepartments] = useState<Department[]>([]);
   const [filteredDepartments, setFilteredDepartments] = useState<Department[]>(
@@ -101,13 +101,17 @@ export default function QAAcademic() {
   }, []);
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newSearchTerm = event.target.value.toLowerCase();
+    const newSearchTerm = event.target.value;
     setSearchTerm(newSearchTerm);
 
     const filtered = departments.filter((department) => {
       return (
-        department.department_name.toLowerCase().includes(newSearchTerm) ||
-        department.head_officer.toLowerCase().includes(newSearchTerm)
+        department.department_name
+          .toLowerCase()
+          .includes(newSearchTerm.toLowerCase()) ||
+        department.head_officer
+          .toLowerCase()
+          .includes(newSearchTerm.toLowerCase())
       );
     });
 
@@ -236,73 +240,71 @@ export default function QAAcademic() {
               <Grid item xs={12} md={12}>
                 {/* insert the table here */}
                 <Grid item xs={12} md={12}>
-                    <TableContainer
-                      component={Paper}
-                      sx={{
-                        rounded: "18px",
-                        borderColor: "#e9e8e8",
-                        borderStyle: "solid",
-                        borderWidth: "1px",
-                      }}
-                    >
-                      <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
-                        <TableHead>
-                          <TableRow
-                            sx={{ bgcolor: "#fff6d1", fontSize: "18px" }}
+                  <TableContainer
+                    component={Paper}
+                    sx={{
+                      rounded: "18px",
+                      borderColor: "#e9e8e8",
+                      borderStyle: "solid",
+                      borderWidth: "1px",
+                    }}
+                  >
+                    <Table sx={{ minWidth: 650, tableLayout: "fixed" }}>
+                      <TableHead>
+                        <TableRow sx={{ bgcolor: "#fff6d1", fontSize: "18px" }}>
+                          <TableCell
+                            sx={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              width: "70%",
+                            }}
                           >
-                            <TableCell
-                              sx={{
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                width: "70%",
-                              }}
-                            >
-                              Department Name
-                            </TableCell>
-                            <TableCell
-                              sx={{
-                                fontSize: "18px",
-                                fontWeight: "bold",
-                                width: "15%",
-                              }}
-                            >
-                              Head Officer
-                            </TableCell>
-                            {/* <TableCell
+                            Department Name
+                          </TableCell>
+                          <TableCell
+                            sx={{
+                              fontSize: "18px",
+                              fontWeight: "bold",
+                              width: "15%",
+                            }}
+                          >
+                            Head Officer
+                          </TableCell>
+                          {/* <TableCell
                               sx={{ fontSize: "18px", fontWeight: "bold" }}
                               align="right"
                             >
                               Action
                             </TableCell> */}
-                          </TableRow>
-                        </TableHead>
+                        </TableRow>
+                      </TableHead>
 
-                        <TableBody>
-                          {filteredDepartments.map((department) => (
-                            <TableRow
-                              key={department.id}
-                              sx={{
-                                "&:last-child td, &:last-child th": {
-                                  border: 0,
-                                },
-                              }}
-                            >
-                              <TableCell>
-                                <Link
-                                  href={`/qascorecard/${department.id}`}
-                                  passHref
-                                >
-                                  <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
-                                    {department.department_name}
-                                  </span>
-                                </Link>
-                              </TableCell>
-                              <TableCell>
-                                <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                                  {department.head_officer}
+                      <TableBody>
+                        {filteredDepartments.map((department) => (
+                          <TableRow
+                            key={department.id}
+                            sx={{
+                              "&:last-child td, &:last-child th": {
+                                border: 0,
+                              },
+                            }}
+                          >
+                            <TableCell>
+                              <Link
+                                href={`/qascorecard/${department.id}`}
+                                passHref
+                              >
+                                <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
+                                  {department.department_name}
                                 </span>
-                              </TableCell>
-                              {/* <TableCell align="right">
+                              </Link>
+                            </TableCell>
+                            <TableCell>
+                              <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                                {department.head_officer}
+                              </span>
+                            </TableCell>
+                            {/* <TableCell align="right">
                                 <Button
                                   variant="contained"
                                   sx={{
@@ -316,11 +318,11 @@ export default function QAAcademic() {
                                   View
                                 </Button>
                               </TableCell> */}
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
                 </Grid>
               </Grid>
             </Grid>

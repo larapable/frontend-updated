@@ -105,8 +105,12 @@ export default function QAAdministrative() {
 
     const filtered = departments.filter((department) => {
       return (
-        department.department_name.toLowerCase().includes(newSearchTerm.toLowerCase()) ||
-        department.head_officer.toLowerCase().includes(newSearchTerm.toLowerCase())
+        department.department_name
+          .toLowerCase()
+          .includes(newSearchTerm.toLowerCase()) ||
+        department.head_officer
+          .toLowerCase()
+          .includes(newSearchTerm.toLowerCase())
       );
     });
 
@@ -208,7 +212,7 @@ export default function QAAdministrative() {
                 fullWidth
                 value={searchTerm}
                 onChange={handleSearchChange}
-                sx={{ width: "500px"}}
+                sx={{ width: "500px" }}
                 InputProps={{
                   endAdornment: (
                     <SearchIcon
@@ -275,7 +279,7 @@ export default function QAAdministrative() {
                       </TableHead>
 
                       <TableBody>
-                        {filteredDepartments.slice(1).map((department) => (
+                        {filteredDepartments.map((department) => (
                           <TableRow
                             key={department.id}
                             sx={{
