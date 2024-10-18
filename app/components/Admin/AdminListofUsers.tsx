@@ -43,7 +43,7 @@ const AdminListOfUser: React.FC = () => {
     // Fetch the list of users from the backend
     const fetchUsers = async () => {
       try {
-        const response = await fetch("http://localhost:8080/user/getAllUsers");
+        const response = await fetch("http://3.107.42.174:8080/user/getAllUsers");
         if (!response.ok) {
           throw new Error("Failed to fetch users");
         }
@@ -53,7 +53,7 @@ const AdminListOfUser: React.FC = () => {
 
         // Fetch the user count
         const countResponse = await fetch(
-          "http://localhost:8080/user/userCount"
+          "http://3.107.42.174:8080/user/userCount"
         );
         if (!countResponse.ok) {
           throw new Error("Failed to fetch user count");

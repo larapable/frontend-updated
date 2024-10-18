@@ -130,7 +130,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/internal/get/${department_id}`
+          `http://3.107.42.174:8080/bsc/internal/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch internal scorecards");
@@ -181,7 +181,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://localhost:8080/bsc/internalBsc/insert",
+        "http://3.107.42.174:8080/bsc/internalBsc/insert",
         {
           method: "POST",
           headers: {
@@ -235,7 +235,7 @@ const Internal: React.FC<InternalProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/internal/update/${internalEditID}`,
+        `http://3.107.42.174:8080/bsc/internal/update/${internalEditID}`,
         {
           method: "PUT",
           headers: {

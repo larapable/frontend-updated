@@ -102,7 +102,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryInternalBsc/get/${department_id}`
+          `http://3.107.42.174:8080/bsc/primaryInternalBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("An error occurred while fetching data");
@@ -151,7 +151,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
     console.log("Priamry Edit Id", primaryEditId);
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryInternalBsc/update/${primaryEditId}`,
+        `http://3.107.42.174:8080/bsc/primaryInternalBsc/update/${primaryEditId}`,
 
         {
           method: "PUT",

@@ -135,7 +135,7 @@ const AdminPage = () => {
       try {
         // Fetch university count
         const universityResponse = await fetch(
-          "http://localhost:8080/department/universityCount"
+          "http://3.107.42.174:8080/department/universityCount"
         );
         if (universityResponse.ok) {
           const universityData = await universityResponse.json();
@@ -157,7 +157,7 @@ const AdminPage = () => {
   useEffect(() => {
     async function fetchRoleData() {
       try {
-        const response = await fetch("http://localhost:8080/user/roles");
+        const response = await fetch("http://3.107.42.174:8080/user/roles");
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
         if (Array.isArray(data)) {
@@ -178,10 +178,10 @@ const AdminPage = () => {
     async function fetchSWOTData() {
       try {
         const responses = await Promise.all([
-          fetch("http://localhost:8080/strengths/getAll"),
-          fetch("http://localhost:8080/weaknesses/getAll"),
-          fetch("http://localhost:8080/opportunities/getAll"),
-          fetch("http://localhost:8080/threats/getAll"),
+          fetch("http://3.107.42.174:8080/strengths/getAll"),
+          fetch("http://3.107.42.174:8080/weaknesses/getAll"),
+          fetch("http://3.107.42.174:8080/opportunities/getAll"),
+          fetch("http://3.107.42.174:8080/threats/getAll"),
           // Add other fetch calls here
         ]);
 
@@ -295,7 +295,7 @@ const AdminPage = () => {
     async function fetchDepartmentUserCounts() {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/departmentUserCounts"
+          "http://3.107.42.174:8080/department/departmentUserCounts"
         );
         const data: Record<string, number> = await response.json();
         const formattedData = Object.keys(data).map((department) => ({
@@ -315,7 +315,7 @@ const AdminPage = () => {
     async function fetchUserCountData() {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/userCountByDepartment"
+          "http://3.107.42.174:8080/department/userCountByDepartment"
         );
         const data = await response.json();
 
@@ -332,10 +332,10 @@ const AdminPage = () => {
     async function fetchData() {
       try {
         const responses = await Promise.all([
-          fetch("http://localhost:8080/bsc/financialBscCount"),
-          fetch("http://localhost:8080/bsc/stakeholderBscCount"),
-          fetch("http://localhost:8080/bsc/internalBscCount"),
-          fetch("http://localhost:8080/bsc/learningBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/financialBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/stakeholderBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/internalBscCount"),
+          fetch("http://3.107.42.174:8080/bsc/learningBscCount"),
         ]);
         const data = await Promise.all(
           responses.map((response) => response.json())
@@ -393,7 +393,7 @@ const AdminPage = () => {
   const [departmentCount, setDepartmentCount] = useState(0);
 
   useEffect(() => {
-    fetch("http://localhost:8080/user/getAllUsers")
+    fetch("http://3.107.42.174:8080/user/getAllUsers")
       .then((response) => response.json())
       .then((data: User[]) => setUsers(data))
       .catch((error) => console.error("Error fetching users:", error));
@@ -404,7 +404,7 @@ const AdminPage = () => {
       try {
         // Fetch department count
         const departmentResponse = await fetch(
-          "http://localhost:8080/department/getDepartmentCount"
+          "http://3.107.42.174:8080/department/getDepartmentCount"
         );
         if (departmentResponse.ok) {
           const departmentData = await departmentResponse.json();
@@ -418,7 +418,7 @@ const AdminPage = () => {
 
         // Fetch user count
         const userResponse = await fetch(
-          "http://localhost:8080/user/userCount"
+          "http://3.107.42.174:8080/user/userCount"
         );
         if (userResponse.ok) {
           const userData = await userResponse.json();
@@ -476,10 +476,10 @@ const AdminPage = () => {
     async function fetchSemesterCounts() {
       try {
         const responses = await Promise.all([
-          fetch("http://localhost:8080/bsc/financialSemesterCounts"),
-          fetch("http://localhost:8080/bsc/stakeholderSemesterCounts"),
-          fetch("http://localhost:8080/bsc/internalSemesterCounts"),
-          fetch("http://localhost:8080/bsc/learningSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/financialSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/stakeholderSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/internalSemesterCounts"),
+          fetch("http://3.107.42.174:8080/bsc/learningSemesterCounts"),
         ]);
 
         const data = await Promise.all(
@@ -571,7 +571,7 @@ const AdminPage = () => {
     async function fetchStrengthCounts() {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/strengthCountByDepartment"
+          "http://3.107.42.174:8080/department/strengthCountByDepartment"
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -588,7 +588,7 @@ const AdminPage = () => {
     async function fetchWeaknessCounts() {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/weaknessCountByDepartment"
+          "http://3.107.42.174:8080/department/weaknessCountByDepartment"
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -605,7 +605,7 @@ const AdminPage = () => {
     async function fetchOpportunityCounts() {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/opportunityCountByDepartment"
+          "http://3.107.42.174:8080/department/opportunityCountByDepartment"
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();
@@ -622,7 +622,7 @@ const AdminPage = () => {
     async function fetchThreatCounts() {
       try {
         const response = await fetch(
-          "http://localhost:8080/department/threatCountByDepartment"
+          "http://3.107.42.174:8080/department/threatCountByDepartment"
         );
         if (!response.ok) throw new Error("Network response was not ok");
         const data = await response.json();

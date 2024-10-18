@@ -80,7 +80,7 @@ export default function RegisterDepartment() {
 
     try {
       const response = await fetch(
-        "http://localhost:8080/department/register",
+        "http://3.107.42.174:8080/department/register",
         {
           method: "POST",
           headers: {

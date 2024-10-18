@@ -188,7 +188,7 @@ export default function SignupPage() {
     try {
       setLoading(true); // Show spinner
       const resUserExists = await fetch(
-        "http://localhost:8080/user/userExists",
+        "http://3.107.42.174:8080/user/userExists",
         {
           method: "POST",
           headers: {
@@ -208,10 +208,10 @@ export default function SignupPage() {
       }
 
       const res = await fetch(
-        "http://localhost:8080/user/insert",
+        "http://3.107.42.174:8080/user/insert",
         // role === "qualityAssurance"
-        //   ? "http://localhost:8080/qauser/insert"
-        //   : "http://localhost:8080/user/insert",
+        //   ? "http://3.107.42.174:8080/qauser/insert"
+        //   : "http://3.107.42.174:8080/user/insert",
         {
           method: "POST",
           headers: {
@@ -271,7 +271,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartments"
+        "http://3.107.42.174:8080/department/getAllDepartments"
       );
       const data = await res.json();
       setDepartments(data.departments);
@@ -283,7 +283,7 @@ export default function SignupPage() {
   useEffect(() => {
     const fetchHeadDepartments = async () => {
       const res = await fetch(
-        "http://localhost:8080/department/getAllDepartmentsHead"
+        "http://3.107.42.174:8080/department/getAllDepartmentsHead"
       );
       const data = await res.json();
       setHeads(data.departmentsHead);

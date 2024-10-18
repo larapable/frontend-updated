@@ -131,7 +131,7 @@ const Stakeholder: React.FC<StakeholderProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/stakeholder/get/${department_id}`
+          `http://3.107.42.174:8080/bsc/stakeholder/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch stakeholder scorecards");
@@ -182,7 +182,7 @@ const Stakeholder: React.FC<StakeholderProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://localhost:8080/bsc/stakeholderBsc/insert",
+        "http://3.107.42.174:8080/bsc/stakeholderBsc/insert",
         {
           method: "POST",
           headers: {
@@ -237,7 +237,7 @@ const Stakeholder: React.FC<StakeholderProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/stakeholder/update/${stakeholderEditID}`,
+        `http://3.107.42.174:8080/bsc/stakeholder/update/${stakeholderEditID}`,
         {
           method: "PUT",
           headers: {

@@ -128,7 +128,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/learning/get/${department_id}`
+          `http://3.107.42.174:8080/bsc/learning/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("Failed to fetch learning scorecards");
@@ -179,7 +179,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
     try {
       // Send the POST request to the server
       const response = await fetch(
-        "http://localhost:8080/bsc/learningBsc/insert",
+        "http://3.107.42.174:8080/bsc/learningBsc/insert",
         {
           method: "POST",
           headers: {
@@ -232,7 +232,7 @@ const Learning: React.FC<LearningProps> = ({ selectedYear }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/learning/update/${learningEditID}`,
+        `http://3.107.42.174:8080/bsc/learning/update/${learningEditID}`,
         {
           method: "PUT",
           headers: {

@@ -103,7 +103,7 @@ const PrimaryStakeholder: React.FC<PrimaryStakeholderProps> = ({ selectedYear })
 
       try {
         const response = await fetch(
-          `http://localhost:8080/bsc/primaryStakeholderBsc/get/${department_id}`
+          `http://3.107.42.174:8080/bsc/primaryStakeholderBsc/get/${department_id}`
         );
         if (!response.ok) {
           throw new Error("An error occurred while fetching data");
@@ -154,7 +154,7 @@ const PrimaryStakeholder: React.FC<PrimaryStakeholderProps> = ({ selectedYear })
     console.log("Primary Edit Id", primaryEditId);
     try {
       const response = await fetch(
-        `http://localhost:8080/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
+        `http://3.107.42.174:8080/bsc/primaryStakeholderBsc/update/${primaryEditId}`,
 
         {
           method: "PUT",
