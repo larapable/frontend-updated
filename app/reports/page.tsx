@@ -1,39 +1,37 @@
 "use client";
-import Navbar from "../components/Navbars/Navbar";
-import React, { useState, useEffect, useRef } from "react";
-import ReportFinancial from "../components/Report/ReportFinancial";
-import ReportLearning from "../components/Report/ReportLearning";
-import ReportStakeholder from "../components/Report/ReportStakeholder";
-import ReportInternal from "../components/Report/ReportInternal";
-import ReportFinancialView from "../components/Report/ReportFinancialView";
-import ReportStakeholderView from "../components/Report/ReportStakeholderView";
-import ReportInternalView from "../components/Report/ReportInternalView";
-import ReportLearningView from "../components/Report/ReportLearningView";
-import { useSession } from "next-auth/react";
-import { IconButton, Modal } from "@mui/material";
+import { Modal } from "@mui/material";
 import Box from "@mui/material/Box";
-import Grid from "@mui/material/Grid";
-import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
 import html2canvas from "html2canvas";
+import { useSession } from "next-auth/react";
+import React, { useEffect, useRef, useState } from "react";
+import Navbar from "../components/Navbars/Navbar";
+import ReportFinancial from "../components/Report/ReportFinancial";
+import ReportFinancialView from "../components/Report/ReportFinancialView";
+import ReportInternal from "../components/Report/ReportInternal";
+import ReportInternalView from "../components/Report/ReportInternalView";
+import ReportLearning from "../components/Report/ReportLearning";
+import ReportLearningView from "../components/Report/ReportLearningView";
+import ReportStakeholder from "../components/Report/ReportStakeholder";
+import ReportStakeholderView from "../components/Report/ReportStakeholderView";
 
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // Import the autoTable plugin
-import { report } from "process";
-import CloseIcon from "@mui/icons-material/Close";
 
-import { Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
   BarElement,
+  CategoryScale,
+  Chart as ChartJS,
+  Legend,
+  LinearScale,
   Title,
   Tooltip,
-  Legend,
 } from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -125,6 +123,7 @@ const ReportsPage = () => {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
+        if (typeof document === "undefined") return;
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 

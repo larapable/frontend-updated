@@ -1,42 +1,41 @@
 "use client";
-import { useParams } from "next/navigation";
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Grid,
-  ListItem,
-  Typography,
-} from "@mui/material";
 import QANavbar from "@/app/components/Navbars/QANavbar";
-import { useSession } from "next-auth/react";
-import { useEffect, useState, useRef } from "react";
-import Link from "next/link";
+import {
+    Box,
+    Button,
+    Card,
+    CardContent,
+    Grid,
+    Typography
+} from "@mui/material";
+import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // Import the autoTable plugin
-import html2canvas from "html2canvas";
+import { useSession } from "next-auth/react";
+import Link from "next/link";
+import { useParams } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 
 import QAReportFinancial from "@/app/components/QAReport/QAReportFinancial";
-import QAReportStakeholder from "@/app/components/QAReport/QAReportStakeholder";
 import QAReportInternal from "@/app/components/QAReport/QAReportInternal";
 import QAReportLearning from "@/app/components/QAReport/QAReportLearning";
+import QAReportStakeholder from "@/app/components/QAReport/QAReportStakeholder";
 
 import ReportFinancialView from "@/app/components/Report/ReportFinancialView";
-import ReportStakeholderView from "@/app/components/Report/ReportStakeholderView";
 import ReportInternalView from "@/app/components/Report/ReportInternalView";
 import ReportLearningView from "@/app/components/Report/ReportLearningView";
+import ReportStakeholderView from "@/app/components/Report/ReportStakeholderView";
 
-import { Bar } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  Title,
-  Tooltip,
-  Legend,
+    BarElement,
+    CategoryScale,
+    Chart as ChartJS,
+    Legend,
+    LinearScale,
+    Title,
+    Tooltip,
 } from "chart.js";
+import { Bar } from "react-chartjs-2";
 
 ChartJS.register(
   CategoryScale,
@@ -202,6 +201,7 @@ const QAReportview = () => {
     return new Promise((resolve, reject) => {
       const img = new Image();
       img.onload = () => {
+        if(typeof document === 'undefined') return;
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
 
