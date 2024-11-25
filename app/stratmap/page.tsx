@@ -20,7 +20,7 @@ import "@/app/page.css";
 import { Dialog, DialogActions, DialogContent } from "@mui/material";
 import SwapVertRoundedIcon from "@mui/icons-material/SwapVertRounded";
 
-const drawerWidth = 310;
+const drawerWidth = 220;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -741,7 +741,7 @@ const Page = () => {
     }
   };
 
-  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-exp-0827:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
+  const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY}`;
 
   // financial
   const [isFModalOpen, setIsFModalOpen] = useState(false);
@@ -1560,7 +1560,7 @@ const Page = () => {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -1587,12 +1587,9 @@ const Page = () => {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 STRATEGY MAPPING
@@ -1607,17 +1604,18 @@ const Page = () => {
                 justifyContent="center"
                 alignItems="center"
                 width="auto"
-                height="4rem"
+                height="3rem"
                 borderRadius={2}
-                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: {lg: '-2'}, mb: 1 }}
               >
                 <Button
                   onClick={() => setCurrentView("primary")}
                   variant={currentView === "primary" ? "contained" : "outlined"}
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    py: 2,
+                    px: 3,
+                    fontSize: "13px",
                     background:
                       currentView === "primary"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1646,8 +1644,8 @@ const Page = () => {
                   }
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    py: 2,
+                    fontSize: "13px",
                     background:
                       currentView === "secondary"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1672,7 +1670,7 @@ const Page = () => {
               </Box>
             </Grid>
 
-            <Typography variant="h5">
+            <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
               The Strategy Mapping feature uses AI to automatically generate
               strategies based on your inputs from four key perspectives:
               Financial, Stakeholder, Internal Processes, and Learning & Growth.
@@ -1701,7 +1699,7 @@ const Page = () => {
                     style={{
                       top: 0,
                       left: 0, // Move to the left edge
-                      height: "60px", // Adjust height to match "Vision" text height
+                      height: "45px", // Adjust height to match "Vision" text height
                       width: "8px",
                       backgroundColor: "#A43214",
                       marginRight: 10,
@@ -1710,16 +1708,16 @@ const Page = () => {
                     }}
                   ></div>
                   <div className="flex flex-col">
-                    <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                  <Typography sx={{fontWeight: "600", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Vision
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography sx={{fontSize: { lg: '0.8rem', sm: '0.8rem', md: '0.8rem', xs: '0.7rem' }}}>
                       Define what you hope to achieve.
                     </Typography>
                   </div>
                 </div>
                 <Divider />
-                <Typography variant="h6" sx={{ mt: 1 }}>
+                <Typography sx={{fontSize: { lg: '0.8rem', sm: '0.8rem', md: '0.8rem', xs: '0.7rem' }, mt:2}}>
                   {officeVision}
                 </Typography>
               </div>
@@ -1738,7 +1736,7 @@ const Page = () => {
                     style={{
                       top: 0,
                       left: 0, // Move to the left edge
-                      height: "60px", // Adjust height to match "Vision" text height
+                      height: "45px", // Adjust height to match "Vision" text height
                       width: "8px",
                       backgroundColor: "#A43214",
                       marginRight: 10,
@@ -1747,16 +1745,16 @@ const Page = () => {
                     }}
                   ></div>
                   <div className="flex flex-col">
-                    <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                  <Typography sx={{fontWeight: "600", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Value
                     </Typography>
-                    <Typography variant="h6">
+                    <Typography sx={{fontSize: { lg: '0.8rem', sm: '0.8rem', md: '0.8rem', xs: '0.7rem' }}}>
                       Define what makes you unique.
                     </Typography>
                   </div>
                 </div>
                 <Divider />
-                <Typography variant="h6" sx={{ mt: 1 }}>
+                <Typography sx={{fontSize: { lg: '0.8rem', sm: '0.8rem', md: '0.8rem', xs: '0.7rem' }, mt:2}}>
                   {valueProposition}
                 </Typography>
               </div>
@@ -1775,7 +1773,7 @@ const Page = () => {
                     style={{
                       top: 0,
                       left: 0, // Move to the left edge
-                      height: "60px", // Adjust height to match "Vision" text height
+                      height: "45px", // Adjust height to match "Vision" text height
                       width: "8px",
                       backgroundColor: "#A43214",
                       marginRight: 10,
@@ -1784,14 +1782,16 @@ const Page = () => {
                     }}
                   ></div>
                   <div className="flex flex-col">
-                    <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                    <Typography sx={{fontWeight: "600", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Mission
                     </Typography>
-                    <Typography variant="h6">Define your purpose.</Typography>
+                    <Typography sx={{fontSize: { lg: '0.8rem', sm: '0.8rem', md: '0.8rem', xs: '0.7rem' }}}>
+                      Define your purpose.
+                    </Typography>
                   </div>
                 </div>
                 <Divider />
-                <Typography variant="h6" sx={{ mt: 1 }}>
+                <Typography sx={{fontSize: { lg: '0.8rem', sm: '0.8rem', md: '0.8rem', xs: '0.7rem' }, mt:2}}>
                   {mission}
                 </Typography>
               </div>
@@ -1803,17 +1803,17 @@ const Page = () => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              height="4rem"
+              height="3rem"
               borderRadius={2}
               sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
             >
-              <Grid item xs={12} sx={{height:'15px', mt:-5, gap:1}}>
+              <Grid item xs={12} sx={{height:'15px', mt:-2.5, gap:1}}>
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
                   mr:1,
-                  p: 3,
-                  fontSize: "18px",
+                  py: 2,
+                  fontSize: "13px",
                   bgcolor:
                     selectedComponent === "Financial"
                       ? "#A43214"
@@ -1832,9 +1832,9 @@ const Page = () => {
                         ? "none"
                         : "0.5px solid #A43214", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Financial
@@ -1843,8 +1843,8 @@ const Page = () => {
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
                   mr:1,
-                  p: 3,
-                  fontSize: "18px",
+                  p: 2,
+                  fontSize: "13px",
                   bgcolor:
                     selectedComponent === "Stakeholder"
                       ? "#A43214"
@@ -1863,9 +1863,9 @@ const Page = () => {
                         ? "none"
                         : "0.5px solid #A43214", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Stakeholder
@@ -1874,8 +1874,8 @@ const Page = () => {
                 onClick={() => changeComponent("Internal")}
                 sx={{
                   mr:1,
-                  p: 3,
-                  fontSize: "18px",
+                  p: 2,
+                  fontSize: "13px",
                   bgcolor:
                     selectedComponent === "Internal"
                       ? "#A43214"
@@ -1893,9 +1893,9 @@ const Page = () => {
                         ? "none"
                         : "0.5px solid #A43214", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Internal
@@ -1903,8 +1903,8 @@ const Page = () => {
               <Button
                 onClick={() => changeComponent("Learning")}
                 sx={{
-                  p: 3,
-                  fontSize: "18px",
+                  p: 2,
+                  fontSize: "13px",
                   bgcolor:
                     selectedComponent === "Learning"
                       ? "#A43214"
@@ -1922,9 +1922,9 @@ const Page = () => {
                         ? "none"
                         : "0.5px solid #A43214", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Learning
@@ -1932,12 +1932,12 @@ const Page = () => {
               </Grid>
             </Box>
 
-            <Box sx={{display: 'flex', justifyContent: 'flex-end', width: '100%', mt:-9 }}>
+            <Box sx={{display: 'flex', justifyContent: 'flex-end', width: '100%', mt:-6.5 }}>
               {currentView === "secondary" && role !== "FACULTY" && (
                   <button
                     onClick={() => handleButtonClick(department_id)}
                     disabled={isButtonDisabled}
-                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-8 py-5 font-bold text-[18px]"
+                    className="bg-[#fff6d1] text-[#A43214] hover:bg-[#ff7b00d3] border border-orange-200 hover:text-white text-center items-center rounded-lg px-5 py-2 font-bold text-[13px]"
                   >
                     MAP STRATEGIES
                   </button>
@@ -1956,8 +1956,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -1965,23 +1965,17 @@ const Page = () => {
                               <img
                                 src="/financial.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Financial:
                                 </span>{" "}
                                 Stewardship Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Measures financial performance and
                                 profitability.
                               </Typography>
@@ -2000,17 +1994,14 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index <
                                     primaryFinancialStrategies.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
                                   }`}
                                 >
-                                  <Typography
-                                    variant="h6"
-                                    sx={{ fontWeight: "400" }}
-                                  >
+                                  <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                     {strategy.value}
                                   </Typography>
                                 </div>
@@ -2030,8 +2021,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -2039,23 +2030,17 @@ const Page = () => {
                               <img
                                 src="/learning.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Learning & Growth:
                                 </span>{" "}
                                 Culture & People Development Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Enhances organizational culture and employee
                                 growth.
                               </Typography>
@@ -2074,17 +2059,14 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index <
                                     primaryLearningGrowthStrategies.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
                                   }`}
                                 >
-                                  <Typography
-                                    variant="h6"
-                                    sx={{ fontWeight: "400" }}
-                                  >
+                                  <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                     {strategy.value}
                                   </Typography>
                                 </div>
@@ -2104,8 +2086,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -2113,23 +2095,17 @@ const Page = () => {
                               <img
                                 src="/internal.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Internal Process:
                                 </span>{" "}
                                 Process & Technology Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Optimizes and manages internal processes and
                                 technology.
                               </Typography>
@@ -2148,17 +2124,14 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index <
                                     primaryInternalProcessStrategies.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
                                   }`}
                                 >
-                                  <Typography
-                                    variant="h6"
-                                    sx={{ fontWeight: "400" }}
-                                  >
+                                  <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                     {strategy.value}
                                   </Typography>
                                 </div>
@@ -2178,8 +2151,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -2187,23 +2160,17 @@ const Page = () => {
                               <img
                                 src="/stakeholder.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Stakeholder:
                                 </span>{" "}
                                 Client Relationship Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Measures client engagement quality and value.
                               </Typography>
                             </Box>
@@ -2221,17 +2188,14 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index <
                                     primaryStakeholderStrategies.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
                                   }`}
                                 >
-                                  <Typography
-                                    variant="h6"
-                                    sx={{ fontWeight: "400" }}
-                                  >
+                                  <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                     {strategy.value}
                                   </Typography>
                                 </div>
@@ -2257,7 +2221,7 @@ const Page = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 6,
+                      padding: 4,
                       borderRadius: 2,
                       boxShadow: 24,
                       textAlign: "center",
@@ -2266,13 +2230,11 @@ const Page = () => {
                     }}
                   >
                     <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{ fontWeight: "bold", mb: 3 }}
-                    >
+                      sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                      >
                       Map new strategies?
                     </Typography>
-                    <Typography variant="h5" sx={{ mb: 5 }}>
+                    <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                       Are you sure you want to map strategies? This will take unmapped
                       strategies and map them into the correct categories.
                     </Typography>
@@ -2292,7 +2254,7 @@ const Page = () => {
                           width: "30%",
                           color: "#AB3510",
                           p: 1,
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
                         style={{
                           background: "white",
@@ -2309,7 +2271,7 @@ const Page = () => {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           p: 1,
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
                       >
                         Confirm
@@ -2331,8 +2293,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -2340,23 +2302,17 @@ const Page = () => {
                               <img
                                 src="/financial.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Financial:
                                 </span>{" "}
                                 Stewardship Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Measures financial performance and
                                 profitability.
                               </Typography>
@@ -2372,8 +2328,8 @@ const Page = () => {
                                 p: 1,
                                 background: "#ff7b00d3",
                                 borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
+                                width: "2.5rem",
+                                height: "2.5rem",
                                 alignItems: "center",
                                 justifyContent: "center",
                               }}
@@ -2387,7 +2343,7 @@ const Page = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="size-8"
+                                    className="size-6"
                                   >
                                     <path
                                       fill-rule="evenodd"
@@ -2413,19 +2369,11 @@ const Page = () => {
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <Typography
-                                variant="h4"
-                                component="h2"
-                                sx={{
-                                  fontWeight: "bold",
-                                  mb: 2,
-                                  color: "#2e2c2c",
-                                }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                                 Financial Strategy
                               </Typography>
                               <div className="flex flex-col mb-1">
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
@@ -2437,21 +2385,24 @@ const Page = () => {
                                   setNewFTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "50px",
-                                  "& .MuiInputBase-root": { height: "50px" },
+                                  height: "40px",
+                                  "& .MuiInputBase-root": { height: "40px" },
+                                  "& .MuiOutlinedInput-input": {
+                                    fontSize: "15px", 
+                                  },
                                 }}
                               />
                               <Box sx={{ mt: 3 }}>
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
-                                <span className="mb-3 text-[1.1rem]">
+                                <span className="mb-3 text-[13px]">
                                   <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -2459,7 +2410,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                                <ul className="list-disc ml-10 mb-2 text-[13px]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -2470,27 +2421,26 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
-                                <br />
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold text-[1.1rem]">
+                                <span className="font-bold text-[13px]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -2506,11 +2456,14 @@ const Page = () => {
                                       setNewFStrategy(e.target.value)
                                     }
                                     multiline
-                                    rows={3}
+                                    rows={5}
                                     sx={{
                                       width: "100%",
                                       overflowY: "auto",
                                       "& .MuiInputBase-root": {},
+                                      "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                     }}
                                   />
                                 </Grid>
@@ -2529,10 +2482,10 @@ const Page = () => {
                                   variant="contained"
                                   onClick={closeFModal}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     color: "#AB3510",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                   style={{
                                     background: "white",
@@ -2548,11 +2501,11 @@ const Page = () => {
                                     fetchExistingStrategies(department_id);
                                   }}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                 >
                                   Save
@@ -2573,7 +2526,7 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index < strategies.financial.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
@@ -2588,7 +2541,7 @@ const Page = () => {
                                         onChange={(e) =>
                                           setNewStrategyValue(e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                        className="w-full rounded-lg border border-orange-400 px-2 text-[13px]"
                                       />
                                       <button
                                         onClick={() => {
@@ -2599,16 +2552,13 @@ const Page = () => {
                                             department_id
                                           );
                                         }}
-                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2 text-[13px]"
                                       >
                                         Save
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography
-                                      variant="h6"
-                                      sx={{ fontWeight: "400" }}
-                                    >
+                                    <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                       {strategy.value}
                                     </Typography>
                                   )}
@@ -2623,7 +2573,7 @@ const Page = () => {
                                         viewBox="0 0 24 24"
                                         strokeWidth="1.5"
                                         stroke="currentColor"
-                                        className="w-6 h-6"
+                                        className="w-5 h-5"
                                       >
                                         <path
                                           strokeLinecap="round"
@@ -2687,7 +2637,7 @@ const Page = () => {
                                           viewBox="0 0 24 24"
                                           strokeWidth="1.5"
                                           stroke="currentColor"
-                                          className="size-6"
+                                          className="size-5"
                                         >
                                           <path
                                             strokeLinecap="round"
@@ -2715,8 +2665,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -2724,23 +2674,17 @@ const Page = () => {
                               <img
                                 src="/learning.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Learning & Growth:
                                 </span>{" "}
                                 Culture & People Development Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Enhances organizational culture and employee
                                 growth.
                               </Typography>
@@ -2756,8 +2700,8 @@ const Page = () => {
                                 p: 1,
                                 background: "#ff7b00d3",
                                 borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
+                                width: "2.5rem",
+                                height: "2.5rem",
                                 alignItems: "center",
                                 justifyContent: "center",
                               }}
@@ -2771,7 +2715,7 @@ const Page = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="size-8"
+                                    className="size-6"
                                   >
                                     <path
                                       fill-rule="evenodd"
@@ -2797,19 +2741,11 @@ const Page = () => {
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <Typography
-                                variant="h4"
-                                component="h2"
-                                sx={{
-                                  fontWeight: "bold",
-                                  mb: 2,
-                                  color: "#2e2c2c",
-                                }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                                 Learning & Growth Strategy
                               </Typography>
                               <div className="flex flex-col mb-1">
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
@@ -2821,21 +2757,24 @@ const Page = () => {
                                   setNewLGTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "50px",
-                                  "& .MuiInputBase-root": { height: "50px" },
+                                  height: "40px",
+                                  "& .MuiInputBase-root": { height: "40px" },
+                                  "& .MuiOutlinedInput-input": {
+                                    fontSize: "15px", 
+                                  },
                                 }}
                               />
                               <Box sx={{ mt: 3 }}>
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
-                                <span className="mb-3 text-[1.1rem]">
+                                <span className="mb-3 text-[13px]">
                                   <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -2843,7 +2782,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                                <ul className="list-disc ml-10 mb-2 text-[13px]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -2854,27 +2793,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold text-[1.1rem]">
+                                <span className="font-bold text-[13px]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -2890,11 +2829,14 @@ const Page = () => {
                                       setNewLGStrategy(e.target.value)
                                     }
                                     multiline
-                                    rows={3}
+                                    rows={5}
                                     sx={{
                                       width: "100%",
                                       overflowY: "auto",
                                       "& .MuiInputBase-root": {},
+                                      "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                     }}
                                   />
                                 </Grid>
@@ -2913,10 +2855,10 @@ const Page = () => {
                                   variant="contained"
                                   onClick={closeLGModal}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     color: "#AB3510",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                   style={{
                                     background: "white",
@@ -2932,11 +2874,11 @@ const Page = () => {
                                     fetchExistingStrategies(department_id);
                                   }}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                 >
                                   Save
@@ -2957,7 +2899,7 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index < strategies.learningGrowth.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
@@ -2972,7 +2914,7 @@ const Page = () => {
                                         onChange={(e) =>
                                           setNewStrategyValue(e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                        className="w-full rounded-lg border border-orange-400 px-2 text-[13px]"
                                       />
                                       <button
                                         onClick={() => {
@@ -2983,16 +2925,13 @@ const Page = () => {
                                             department_id
                                           );
                                         }}
-                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2 text-[13px]"
                                       >
                                         Save
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography
-                                      variant="h6"
-                                      sx={{ fontWeight: "400" }}
-                                    >
+                                    <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                       {strategy.value}
                                     </Typography>
                                   )}
@@ -3007,7 +2946,7 @@ const Page = () => {
                                         viewBox="0 0 24 24"
                                         strokeWidth="1.5"
                                         stroke="currentColor"
-                                        className="w-6 h-6"
+                                        className="w-5 h-5"
                                       >
                                         <path
                                           strokeLinecap="round"
@@ -3071,7 +3010,7 @@ const Page = () => {
                                           viewBox="0 0 24 24"
                                           strokeWidth="1.5"
                                           stroke="currentColor"
-                                          className="size-6"
+                                          className="size-5"
                                         >
                                           <path
                                             strokeLinecap="round"
@@ -3099,8 +3038,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -3108,23 +3047,17 @@ const Page = () => {
                               <img
                                 src="/internal.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Internal Process:
                                 </span>{" "}
                                 Process & Technology Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Optimizes and manages internal processes and
                                 technology.
                               </Typography>
@@ -3140,8 +3073,8 @@ const Page = () => {
                                 p: 1,
                                 background: "#ff7b00d3",
                                 borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
+                                width: "2.5rem",
+                                height: "2.5rem",
                                 alignItems: "center",
                                 justifyContent: "center",
                               }}
@@ -3155,7 +3088,7 @@ const Page = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="size-8"
+                                    className="size-6"
                                   >
                                     <path
                                       fill-rule="evenodd"
@@ -3181,19 +3114,11 @@ const Page = () => {
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <Typography
-                                variant="h4"
-                                component="h2"
-                                sx={{
-                                  fontWeight: "bold",
-                                  mb: 2,
-                                  color: "#2e2c2c",
-                                }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                                 Internal Process Strategy
                               </Typography>
                               <div className="flex flex-col mb-1">
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
@@ -3205,21 +3130,24 @@ const Page = () => {
                                   setNewIPTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "50px",
-                                  "& .MuiInputBase-root": { height: "50px" },
+                                  height: "40px",
+                                  "& .MuiInputBase-root": { height: "40px" },
+                                  "& .MuiOutlinedInput-input": {
+                                    fontSize: "15px", 
+                                  },
                                 }}
                               />
                               <Box sx={{ mt: 3 }}>
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
-                                <span className="mb-3 text-[1.1rem]">
+                                <span className="mb-3 text-[13px]">
                                   <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -3227,7 +3155,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                                <ul className="list-disc ml-10 mb-2 text-[13px]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -3238,27 +3166,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold text-[1.1rem]">
+                                <span className="font-bold text-[13px]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -3274,11 +3202,14 @@ const Page = () => {
                                       setNewIPStrategy(e.target.value)
                                     }
                                     multiline
-                                    rows={3}
+                                    rows={5}
                                     sx={{
                                       width: "100%",
                                       overflowY: "auto",
                                       "& .MuiInputBase-root": {},
+                                      "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                     }}
                                   />
                                 </Grid>
@@ -3297,10 +3228,10 @@ const Page = () => {
                                   variant="contained"
                                   onClick={closeIPModal}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     color: "#AB3510",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                   style={{
                                     background: "white",
@@ -3316,11 +3247,11 @@ const Page = () => {
                                     fetchExistingStrategies(department_id);
                                   }}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                 >
                                   Save
@@ -3341,7 +3272,7 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index <
                                     strategies.internalProcess.length - 1
                                       ? "border-b border-gray-200"
@@ -3357,7 +3288,7 @@ const Page = () => {
                                         onChange={(e) =>
                                           setNewStrategyValue(e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                        className="w-full rounded-lg border border-orange-400 px-2 text-[13px]"
                                       />
                                       <button
                                         onClick={() => {
@@ -3368,16 +3299,13 @@ const Page = () => {
                                             department_id
                                           );
                                         }}
-                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2 text-[13px]"
                                       >
                                         Save
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography
-                                      variant="h6"
-                                      sx={{ fontWeight: "400" }}
-                                    >
+                                    <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                       {strategy.value}
                                     </Typography>
                                   )}
@@ -3392,7 +3320,7 @@ const Page = () => {
                                         viewBox="0 0 24 24"
                                         strokeWidth="1.5"
                                         stroke="currentColor"
-                                        className="w-6 h-6"
+                                        className="w-5 h-5"
                                       >
                                         <path
                                           strokeLinecap="round"
@@ -3456,7 +3384,7 @@ const Page = () => {
                                           viewBox="0 0 24 24"
                                           strokeWidth="1.5"
                                           stroke="currentColor"
-                                          className="size-6"
+                                          className="size-5"
                                         >
                                           <path
                                             strokeLinecap="round"
@@ -3484,8 +3412,8 @@ const Page = () => {
                           p={1}
                           sx={{
                             ml: 1,
-                            height: "85px",
-                            "& .MuiInputBase-root": { height: "85px" },
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
                           }}
                         >
                           <Grid item sm={11.3} container alignItems="center">
@@ -3493,23 +3421,17 @@ const Page = () => {
                               <img
                                 src="/stakeholder.png"
                                 alt=""
-                                className="h-[6rem]"
+                                className="h-[4rem]"
                               />
                             </Box>
                             <Box sx={{ ml: 1 }}>
-                              <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "600" }}
-                              >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                 <span className="text-[#ff7b00d3]">
                                   Stakeholder:
                                 </span>{" "}
                                 Client Relationship Overview
                               </Typography>
-                              <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
-                              >
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                 Measures client engagement quality and value.
                               </Typography>
                             </Box>
@@ -3524,8 +3446,8 @@ const Page = () => {
                                 p: 1,
                                 background: "#ff7b00d3",
                                 borderRadius: "50%",
-                                width: "3rem",
-                                height: "3rem",
+                                width: "2.5rem",
+                                height: "2.5rem",
                                 alignItems: "center",
                                 justifyContent: "center",
                               }}
@@ -3539,7 +3461,7 @@ const Page = () => {
                                     xmlns="http://www.w3.org/2000/svg"
                                     viewBox="0 0 24 24"
                                     fill="currentColor"
-                                    className="size-8"
+                                    className="size-6"
                                   >
                                     <path
                                       fill-rule="evenodd"
@@ -3565,19 +3487,11 @@ const Page = () => {
                                 // maxHeight: '100vh',
                               }}
                             >
-                              <Typography
-                                variant="h4"
-                                component="h2"
-                                sx={{
-                                  fontWeight: "bold",
-                                  mb: 2,
-                                  color: "#2e2c2c",
-                                }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                                 Stakeholder Strategy
                               </Typography>
                               <div className="flex flex-col mb-1">
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Target Code
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
@@ -3589,21 +3503,24 @@ const Page = () => {
                                   setNewSTargetCode(e.target.value)
                                 }
                                 sx={{
-                                  height: "50px",
-                                  "& .MuiInputBase-root": { height: "50px" },
+                                  height: "40px",
+                                  "& .MuiInputBase-root": { height: "40px" },
+                                  "& .MuiOutlinedInput-input": {
+                                    fontSize: "15px", 
+                                  },
                                 }}
                               />
                               <Box sx={{ mt: 3 }}>
-                                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                                <span className="mr-3 break-words font-regular text-[13px]">
                                   Strategy
                                   <span className="text-[#DD1414]">*</span>
                                 </span>
-                                <span className="mb-3 text-[1.1rem]">
+                                <span className="mb-3 text-[13px]">
                                   <br />
                                   Before inputting a strategy, please follow
                                   this format.
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   1. Choose one of the following{" "}
                                   <span className="font-bold">
@@ -3611,7 +3528,7 @@ const Page = () => {
                                   </span>
                                   :
                                 </span>
-                                <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                                <ul className="list-disc ml-10 mb-2 text-[13px]">
                                   <li className="font-bold">
                                     Excellence in Service Quality
                                   </li>
@@ -3622,27 +3539,27 @@ const Page = () => {
                                     Excellence in Organizational Stewardship
                                   </li>
                                 </ul>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   2. After selecting the theme, leave a space
                                   and then input the{" "}
                                   <span className="font-bold">target code</span>{" "}
                                   followed by a colon{" "}
                                   <span className="font-bold">(:)</span>
                                 </span>
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   3. Finally, write the{" "}
                                   <span className="font-bold">strategy.</span>
                                 </span>
                                 <br />
-                                <span className="text-[1.1rem]">
+                                <span className="text-[13px]">
                                   <br />
                                   The correct format should be:{" "}
                                   <span className="font-bold">
                                     Strategic Theme Target Code: Strategy
                                   </span>
                                 </span>
-                                <span className="font-bold text-[1.1rem]">
+                                <span className="font-bold text-[13px]">
                                   <br />
                                   Example:{" "}
                                   <span className="font-bold text-red-500">
@@ -3658,11 +3575,14 @@ const Page = () => {
                                       setNewSStrategy(e.target.value)
                                     }
                                     multiline
-                                    rows={3}
+                                    rows={5}
                                     sx={{
                                       width: "100%",
                                       overflowY: "auto",
                                       "& .MuiInputBase-root": {},
+                                      "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                     }}
                                   />
                                 </Grid>
@@ -3681,10 +3601,10 @@ const Page = () => {
                                   variant="contained"
                                   onClick={closeSModal}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     color: "#AB3510",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                   style={{
                                     background: "white",
@@ -3700,11 +3620,11 @@ const Page = () => {
                                     fetchExistingStrategies(department_id);
                                   }}
                                   sx={{
-                                    minWidth: "10rem",
+                                    width: "15%",
                                     background:
                                       "linear-gradient(to left, #8a252c, #AB3510)",
                                     p: 1,
-                                    fontSize: "18px",
+                                    fontSize: "13px",
                                   }}
                                 >
                                   Save
@@ -3725,7 +3645,7 @@ const Page = () => {
                               (strategy: GeneratedSentence, index: number) => (
                                 <div
                                   key={strategy.id}
-                                  className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                  className={`flex justify-between items-center p-2 m-3 w-auto ${
                                     index < strategies.stakeholder.length - 1
                                       ? "border-b border-gray-200"
                                       : ""
@@ -3740,7 +3660,7 @@ const Page = () => {
                                         onChange={(e) =>
                                           setNewStrategyValue(e.target.value)
                                         }
-                                        className="w-full rounded-lg border border-orange-400 px-2"
+                                        className="w-full rounded-lg border border-orange-400 px-2 text-[13px]"
                                       />
                                       <button
                                         onClick={() => {
@@ -3751,16 +3671,13 @@ const Page = () => {
                                             department_id
                                           );
                                         }}
-                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2"
+                                        className="bg-[#AB3510] hover:bg-[#ee6c44] text-white font-bold py-2 px-4 rounded ml-2 text-[13px]"
                                       >
                                         Save
                                       </button>
                                     </div>
                                   ) : (
-                                    <Typography
-                                      variant="h6"
-                                      sx={{ fontWeight: "400" }}
-                                    >
+                                    <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                       {strategy.value}
                                     </Typography>
                                   )}
@@ -3775,7 +3692,7 @@ const Page = () => {
                                         viewBox="0 0 24 24"
                                         strokeWidth="1.5"
                                         stroke="currentColor"
-                                        className="w-6 h-6"
+                                        className="w-5 h-5"
                                       >
                                         <path
                                           strokeLinecap="round"
@@ -3839,7 +3756,7 @@ const Page = () => {
                                           viewBox="0 0 24 24"
                                           strokeWidth="1.5"
                                           stroke="currentColor"
-                                          className="size-6"
+                                          className="size-5"
                                         >
                                           <path
                                             strokeLinecap="round"
