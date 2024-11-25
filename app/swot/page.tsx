@@ -31,7 +31,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import SpinnerPages from "../components/Misc/SpinnerPages";
 import "@/app/page.css";
 
-const drawerWidth = 310;
+const drawerWidth = 220;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -255,7 +255,7 @@ const Swot = () => {
       console.log("Threats Input:", threatsInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyATO5xndEGhEgXrHdeYLOiTbZqtUwYuZqE`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
         {
           method: "POST",
           headers: {
@@ -380,7 +380,7 @@ const Swot = () => {
       console.log("threats Input:", threatsInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyATO5xndEGhEgXrHdeYLOiTbZqtUwYuZqE`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
         {
           method: "POST",
           headers: {
@@ -508,7 +508,7 @@ const Swot = () => {
       console.log("Opportunities Input:", OpportunitiesInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCHBgtESP-yMWPw--FOhDCvHynp3syYpXk`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
         {
           method: "POST",
           headers: {
@@ -648,7 +648,7 @@ const Swot = () => {
       console.log("Opportunities Input:", OpportunitiesInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCHBgtESP-yMWPw--FOhDCvHynp3syYpXk`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
         {
           method: "POST",
           headers: {
@@ -1665,7 +1665,7 @@ const Swot = () => {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -1691,12 +1691,9 @@ const Swot = () => {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 SWOT ANALYSIS
@@ -1708,18 +1705,19 @@ const Swot = () => {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                width="20rem"
-                height="4rem"
+                width="15rem"
+                height="3rem"
                 borderRadius={2}
-                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: {lg: '-2'}, mb: 1 }}
               >
                 <Button
                   onClick={() => setCurrentView("swot")}
                   variant={currentView === "swot" ? "contained" : "outlined"}
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    py: 2,
+                    px: 3,
+                    fontSize: "13px",
                     background:
                       currentView === "swot"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1746,8 +1744,8 @@ const Swot = () => {
                   }
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    p: 2,
+                    fontSize: "13px",
                     background:
                       currentView === "strategies"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1772,7 +1770,7 @@ const Swot = () => {
               </Box>
             </Grid>
 
-            <Typography variant="h5">
+            <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
               The SWOT Analysis feature allows you to input your Strengths,
               Weaknesses, Opportunities, and Threats. Based on your inputs, the
               AI will automatically generate strategic recommendations to help
@@ -1790,7 +1788,7 @@ const Swot = () => {
                   sx={{ p: 1 }}
                   style={{
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    fontSize: "18px",
+                    fontSize: "13px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -1813,35 +1811,31 @@ const Swot = () => {
 
                 {isStrengthVisible && (
                   <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                    <Typography variant="h6" sx={{ fontWeight: "600", mb: 1 }}>
+                    <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Deleted Strengths
                     </Typography>
                     {deletedStrengths.length === 0 ? (
-                      <Typography
-                        variant="h6"
-                        className="text-gray-500"
-                        sx={{ pb: 1 }}
-                      >
+                      <Typography sx={{pb:1 , fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                         No deleted strengths found.
                       </Typography>
                     ) : (
-                      <ul className="space-y-3">
-                        <Divider sx={{ my: 2 }} />
+                      <ul className="space-y-1">
+                        <Divider sx={{ my: 1 }} />
                         {deletedStrengths.map((strength, index) => (
                           <li
                             key={strength.id}
-                            className={`flex items-center justify-between p-3 ${
+                            className={`flex items-center justify-between p-2 ${
                               index < deletedStrengths.length - 1
                                 ? "border-b border-gray-200"
                                 : ""
                             }`}
                           >
                             <Typography
-                              variant="h6"
                               sx={{
+                                fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' },
                                 fontWeight: "400",
-                                overflowWrap: "break-word", // Allow long words to break
-                                wordBreak: "break-word", // Break words at any character
+                                overflowWrap: "break-word", 
+                                wordBreak: "break-word", 
                               }}
                             >
                               {strength.value}
@@ -1855,7 +1849,7 @@ const Swot = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="w-6 h-6"
+                                className="w-5 h-5"
                               >
                                 <path
                                   fillRule="evenodd"
@@ -1880,19 +1874,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/strength.png" alt="" className="h-[6rem]" />
+                        <img src="/strength.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                       <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           Strength
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           An internal advantage or resource.
                         </Typography>
                       </Box>
@@ -1904,8 +1898,8 @@ const Swot = () => {
                           p: 1,
                           background: "#ff7b00d3",
                           borderRadius: "50%",
-                          width: "3rem",
-                          height: "3rem",
+                          width: "2.5rem",
+                          height: "2.5rem",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
@@ -1919,7 +1913,7 @@ const Swot = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 24 24"
                               fill="currentColor"
-                              className="size-8"
+                              className="size-6"
                             >
                               <path
                                 fill-rule="evenodd"
@@ -1950,12 +1944,11 @@ const Swot = () => {
                           onChange={strengths.handleChange}
                           onKeyDown={strengths.addStrength}
                           sx={{
-                            mt: 3,
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            mt: 2,
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
-                              // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", 
                             },
                           }}
                         />
@@ -1973,7 +1966,7 @@ const Swot = () => {
                       {fetchedStrengths.map((strength, index: number) => (
                         <div
                           key={strength.id}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto 
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto 
                             ${
                               index < fetchedStrengths.length - 1
                                 ? "border-b border-gray-200"
@@ -1982,8 +1975,7 @@ const Swot = () => {
                         >
                           <Box className="flex flex-row overflow-y-auto">
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "bold", mr: 1 }}
+                              sx={{ fontWeight: "bold", mr: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                             >
                               {"S" + (index + 1)}:
                             </Typography>
@@ -1991,7 +1983,7 @@ const Swot = () => {
                             {strengthEditingId === strength.id ? (
                               <input
                                 value={strength.value}
-                                className="bg-white border border-orange-400 absolute p-4 shadow-2xl font-semibold rounded-md mt-[-1rem] w-full"
+                                className="bg-white border border-orange-400 absolute p-1 shadow-2xl font-semibold rounded-md mt-[-1rem] w-full"
                                 style={{
                                   maxWidth: "70%", // Limit the maximum width to 70%
                                 }}
@@ -2026,8 +2018,7 @@ const Swot = () => {
                               />
                             ) : (
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "400" }}
+                                sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {strength.value.length > 110
                                   ? strength.value.slice(0, 110) + "..."
@@ -2050,7 +2041,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
-                                  className="w-6 h-6"
+                                  className="w-5 h-5"
                                 >
                                   <path
                                     strokeLinecap="round"
@@ -2071,7 +2062,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -2088,7 +2079,7 @@ const Swot = () => {
                               onClose={() => setIsStrengthModalOpen(false)}
                               BackdropProps={{
                                 style: {
-                                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
+                                  backgroundColor: "rgba(0, 0, 0, 0.2)", // Adjust the last value (alpha) to control darkness
                                 },
                               }}
                             >
@@ -2103,28 +2094,19 @@ const Swot = () => {
                                 <Box
                                   sx={{
                                     background: "white",
-                                    padding: 6,
+                                    padding: 4,
                                     borderRadius: 2,
                                     textAlign: "center",
                                     position: "relative",
-                                    maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                    width: "25rem",
                                   }}
                                 >
                                   <Typography
-                                    variant="h4"
-                                    component="h2"
-                                    sx={{
-                                      fontWeight: "bold",
-                                      mb: 3,
-                                      color: "#4D4C4C",
-                                    }}
-                                  >
+                                    sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                    >
                                     Confirm Deletion
                                   </Typography>
-                                  <Typography
-                                    variant="h5"
-                                    sx={{ mb: 5, color: "#4D4C4C" }}
-                                  >
+                                  <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                                     Are you sure you want to delete this
                                     strength? <br />
                                     You can still restore it later if needed.
@@ -2147,7 +2129,7 @@ const Swot = () => {
                                         width: "30%",
                                         color: "#AB3510",
                                         p: 1,
-                                        fontSize: "18px",
+                                        fontSize: "15px",
                                       }}
                                       style={{
                                         background: "white",
@@ -2164,7 +2146,7 @@ const Swot = () => {
                                         background:
                                           "linear-gradient(to left, #8a252c, #AB3510)",
                                         p: 1,
-                                        fontSize: "18px",
+                                        fontSize: "15px",
                                       }}
                                     >
                                       Delete
@@ -2188,7 +2170,7 @@ const Swot = () => {
                   sx={{ p: 1 }}
                   style={{
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    fontSize: "18px",
+                    fontSize: "13px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -2210,45 +2192,45 @@ const Swot = () => {
                 </Button>
                 {isWeaknessesVisible && (
                   <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                    <Typography variant="h6" sx={{ fontWeight: "600", mb: 1 }}>
+                    <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Deleted Weaknesses
                     </Typography>
                     {deletedWeaknesses.length === 0 ? (
-                      <Typography variant="h6" className="text-gray-500">
+                      <Typography sx={{pb:1 , fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                         No deleted weaknesses found.
                       </Typography>
                     ) : (
-                      <ul className="space-y-3">
-                        <Divider sx={{ my: 2 }} />
+                      <ul className="space-y-1">
+                        <Divider sx={{ my: 1 }} />
                         {deletedWeaknesses.map((weakness, index) => (
                           <li
                             key={weakness.id}
-                            className={`flex items-center justify-between p-3 ${
+                            className={`flex items-center justify-between p-2 ${
                               index < deletedWeaknesses.length - 1
                                 ? "border-b border-gray-200"
                                 : ""
                             }`}
                           >
                             <Typography
-                              variant="h6"
                               sx={{
+                                fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' },
                                 fontWeight: "400",
-                                overflowWrap: "break-word", // Allow long words to break
-                                wordBreak: "break-word", // Break words at any character
+                                overflowWrap: "break-word", 
+                                wordBreak: "break-word", 
                               }}
                             >
                               {weakness.value}
                             </Typography>
                             <button
                               onClick={() => handleRestoreWeakness(weakness.id)}
-                              className="text-[#A43214] hover:text-[#7A2812] transition-colors"
+                              className="text-[#A43214] hover:text-[#7A2812] transition-colors pr-5"
                               title="Restore weakness"
                             >
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="w-6 h-6"
+                                className="w-5 h-5"
                               >
                                 <path
                                   fillRule="evenodd"
@@ -2273,19 +2255,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/weakness.png" alt="" className="h-[6rem]" />
+                        <img src="/weakness.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                        <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           Weakness
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           An internal limitation or deficiency.
                         </Typography>
                       </Box>
@@ -2297,8 +2279,8 @@ const Swot = () => {
                           p: 1,
                           background: "#ff7b00d3",
                           borderRadius: "50%",
-                          width: "3rem",
-                          height: "3rem",
+                          width: "2.5rem",
+                          height: "2.5rem",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
@@ -2312,7 +2294,7 @@ const Swot = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 24 24"
                               fill="currentColor"
-                              className="size-8"
+                              className="size-6"
                             >
                               <path
                                 fill-rule="evenodd"
@@ -2343,12 +2325,11 @@ const Swot = () => {
                           onChange={weaknesses.handleChange}
                           onKeyDown={weaknesses.addWeakness}
                           sx={{
-                            mt: 3,
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            mt: 2,
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
-                              // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", 
                             },
                           }}
                         />
@@ -2366,7 +2347,7 @@ const Swot = () => {
                       {fetchedWeaknesses.map((weakness, index: number) => (
                         <div
                           key={weakness.id}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                             index < fetchedWeaknesses.length - 1
                               ? "border-b border-gray-200"
                               : ""
@@ -2374,8 +2355,7 @@ const Swot = () => {
                         >
                           <Box className="flex flex-row overflow-y-auto">
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "bold", mr: 1 }}
+                              sx={{ fontWeight: "bold", mr: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                             >
                               {"W" + (index + 1)}:
                             </Typography>
@@ -2418,8 +2398,7 @@ const Swot = () => {
                               />
                             ) : (
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "400" }}
+                                sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {weakness.value.length > 110
                                   ? weakness.value.slice(0, 110) + "..."
@@ -2442,7 +2421,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
-                                  className="w-6 h-6"
+                                  className="w-5 h-5"
                                 >
                                   <path
                                     strokeLinecap="round"
@@ -2463,7 +2442,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -2480,7 +2459,7 @@ const Swot = () => {
                               onClose={() => setIsWeaknessModalOpen(false)}
                               BackdropProps={{
                                 style: {
-                                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
+                                  backgroundColor: "rgba(0, 0, 0, 0.2)", // Adjust the last value (alpha) to control darkness
                                 },
                               }}
                             >
@@ -2495,31 +2474,21 @@ const Swot = () => {
                                 <Box
                                   sx={{
                                     background: "white",
-                                    padding: 6,
+                                    padding: 4,
                                     borderRadius: 2,
                                     textAlign: "center",
                                     position: "relative",
-                                    maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                    width: "25rem",
                                   }}
                                 >
                                   <Typography
-                                    variant="h4"
-                                    component="h2"
-                                    sx={{
-                                      fontWeight: "bold",
-                                      mb: 3,
-                                      color: "#4D4C4C",
-                                    }}
-                                  >
+                                    sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                    >
                                     Confirm Deletion
                                   </Typography>
-                                  <Typography
-                                    variant="h5"
-                                    sx={{ mb: 5, color: "#4D4C4C" }}
-                                  >
+                                  <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                                     Are you sure you want to delete this
-                                    weakness? <br />
-                                    You can still restore it later if needed.
+                                    weakness? You can still restore it later if needed.
                                   </Typography>
                                   <Box
                                     sx={{
@@ -2539,7 +2508,7 @@ const Swot = () => {
                                         width: "30%",
                                         color: "#AB3510",
                                         p: 1,
-                                        fontSize: "18px",
+                                        fontSize: "15px",
                                       }}
                                       style={{
                                         background: "white",
@@ -2556,7 +2525,7 @@ const Swot = () => {
                                         background:
                                           "linear-gradient(to left, #8a252c, #AB3510)",
                                         p: 1,
-                                        fontSize: "18px",
+                                        fontSize: "15px",
                                       }}
                                     >
                                       Delete
@@ -2579,7 +2548,7 @@ const Swot = () => {
                   sx={{ p: 1 }}
                   style={{
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    fontSize: "18px",
+                    fontSize: "13px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -2601,34 +2570,31 @@ const Swot = () => {
                 </Button>
                 {isOpportunitiesVisible && (
                   <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                    <Typography
-                      variant="h6"
-                      sx={{ fontWeight: "bolder", mb: 1 }}
-                    >
+                    <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Deleted Opportunities
                     </Typography>
                     {deletedOpportunities.length === 0 ? (
-                      <Typography variant="h6" className="text-gray-500">
+                      <Typography sx={{pb:1 , fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                         No deleted opportunities found.
                       </Typography>
                     ) : (
-                      <ul className="space-y-3">
-                        <Divider sx={{ my: 2 }} />
+                      <ul className="space-y-1">
+                        <Divider sx={{ my: 1 }} />
                         {deletedOpportunities.map((opportunity, index) => (
                           <li
                             key={opportunity.id}
-                            className={`flex items-center justify-between p-3 ${
+                            className={`flex items-center justify-between p-2 ${
                               index < deletedOpportunities.length - 1
                                 ? "border-b border-gray-200"
                                 : ""
                             }`}
                           >
                             <Typography
-                              variant="h6"
                               sx={{
+                                fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' },
                                 fontWeight: "400",
-                                overflowWrap: "break-word", // Allow long words to break
-                                wordBreak: "break-word", // Break words at any character
+                                overflowWrap: "break-word", 
+                                wordBreak: "break-word", 
                               }}
                             >
                               {opportunity.value}
@@ -2644,7 +2610,7 @@ const Swot = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="w-6 h-6"
+                                className="w-5 h-5"
                               >
                                 <path
                                   fillRule="evenodd"
@@ -2669,8 +2635,8 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
@@ -2678,14 +2644,14 @@ const Swot = () => {
                         <img
                           src="/opportunity.png"
                           alt=""
-                          className="h-[6rem]"
+                          className="h-[3.5rem]"
                         />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           Opportunity
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           An external chance for growth or improvement.
                         </Typography>
                       </Box>
@@ -2697,8 +2663,8 @@ const Swot = () => {
                           p: 1,
                           background: "#ff7b00d3",
                           borderRadius: "50%",
-                          width: "3rem",
-                          height: "3rem",
+                          width: "2.5rem",
+                          height: "2.5rem",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
@@ -2712,7 +2678,7 @@ const Swot = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 24 24"
                               fill="currentColor"
-                              className="size-8"
+                              className="size-6"
                             >
                               <path
                                 fill-rule="evenodd"
@@ -2743,12 +2709,11 @@ const Swot = () => {
                           onChange={opportunities.handleChange}
                           onKeyDown={opportunities.addOpportunities}
                           sx={{
-                            mt: 3,
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            mt: 2,
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
-                              // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", 
                             },
                           }}
                         />
@@ -2767,7 +2732,7 @@ const Swot = () => {
                         (opportunity, index: number) => (
                           <div
                             key={opportunity.id}
-                            className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                            className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                               index < fetchedOpportunities.length - 1
                                 ? "border-b border-gray-200"
                                 : ""
@@ -2775,8 +2740,7 @@ const Swot = () => {
                           >
                             <Box className="flex flex-row overflow-y-auto">
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "bold", mr: 1 }}
+                                sx={{ fontWeight: "bold", mr: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {"O" + (index + 1)}:
                               </Typography>
@@ -2821,8 +2785,7 @@ const Swot = () => {
                                 />
                               ) : (
                                 <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "400" }}
+                                  sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                                 >
                                   {opportunity.value.length > 110
                                     ? opportunity.value.slice(0, 110) + "..."
@@ -2845,7 +2808,7 @@ const Swot = () => {
                                     viewBox="0 0 24 24"
                                     strokeWidth="1.5"
                                     stroke="currentColor"
-                                    className="w-6 h-6"
+                                    className="w-5 h-5"
                                   >
                                     <path
                                       strokeLinecap="round"
@@ -2866,7 +2829,7 @@ const Swot = () => {
                                     viewBox="0 0 24 24"
                                     stroke-width="1.5"
                                     stroke="currentColor"
-                                    className="size-6"
+                                    className="size-5"
                                   >
                                     <path
                                       stroke-linecap="round"
@@ -2883,7 +2846,7 @@ const Swot = () => {
                                 onClose={() => setIsOpportunityModalOpen(false)}
                                 BackdropProps={{
                                   style: {
-                                    backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
+                                    backgroundColor: "rgba(0, 0, 0, 0.2)", // Adjust the last value (alpha) to control darkness
                                   },
                                 }}
                               >
@@ -2898,31 +2861,21 @@ const Swot = () => {
                                   <Box
                                     sx={{
                                       background: "white",
-                                      padding: 6,
+                                      padding: 4,
                                       borderRadius: 2,
                                       textAlign: "center",
                                       position: "relative",
-                                      maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                      width: "25rem",
                                     }}
                                   >
                                     <Typography
-                                      variant="h4"
-                                      component="h2"
-                                      sx={{
-                                        fontWeight: "bold",
-                                        mb: 3,
-                                        color: "#4D4C4C",
-                                      }}
+                                    sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                                     >
                                       Confirm Deletion
                                     </Typography>
-                                    <Typography
-                                      variant="h5"
-                                      sx={{ mb: 5, color: "#4D4C4C" }}
-                                    >
+                                    <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                                       Are you sure you want to delete this
-                                      opportunity? <br />
-                                      You can still restore it later if needed.
+                                      opportunity? You can still restore it later if needed.
                                     </Typography>
                                     <Box
                                       sx={{
@@ -2942,7 +2895,7 @@ const Swot = () => {
                                           width: "30%",
                                           color: "#AB3510",
                                           p: 1,
-                                          fontSize: "18px",
+                                          fontSize: "15px",
                                         }}
                                         style={{
                                           background: "white",
@@ -2959,7 +2912,7 @@ const Swot = () => {
                                           background:
                                             "linear-gradient(to left, #8a252c, #AB3510)",
                                           p: 1,
-                                          fontSize: "18px",
+                                          fontSize: "15px",
                                         }}
                                       >
                                         Delete
@@ -2983,7 +2936,7 @@ const Swot = () => {
                   sx={{ p: 1 }}
                   style={{
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
-                    fontSize: "18px",
+                    fontSize: "15px",
                   }}
                   onClick={() =>
                     toggleVisibility(
@@ -3001,31 +2954,31 @@ const Swot = () => {
                 </Button>
                 {isThreatsVisible && (
                   <div className="bg-white shadow-md rounded-lg p-6 border border-gray-200">
-                    <Typography variant="h6" sx={{ fontWeight: "600", mb: 1 }}>
+                    <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                       Deleted Threats
                     </Typography>
                     {deletedThreats.length === 0 ? (
-                      <Typography variant="h6" className="text-gray-500">
+                      <Typography sx={{pb:1 , fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                         No deleted threats found.
                       </Typography>
                     ) : (
-                      <ul className="space-y-3">
-                        <Divider sx={{ my: 2 }} />
+                      <ul className="space-y-1">
+                        <Divider sx={{ my: 1 }} />
                         {deletedThreats.map((threat, index) => (
                           <li
                             key={threat.id}
-                            className={`flex items-center justify-between p-3 ${
+                            className={`flex items-center justify-between p-2 ${
                               index < deletedThreats.length - 1
                                 ? "border-b border-gray-200"
                                 : ""
                             }`}
                           >
                             <Typography
-                              variant="h6"
                               sx={{
+                                fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' },
                                 fontWeight: "400",
-                                overflowWrap: "break-word", // Allow long words to break
-                                wordBreak: "break-word", // Break words at any character
+                                overflowWrap: "break-word", 
+                                wordBreak: "break-word", 
                               }}
                             >
                               {threat.value}
@@ -3039,7 +2992,7 @@ const Swot = () => {
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
                                 fill="currentColor"
-                                className="w-6 h-6"
+                                className="w-5 h-5"
                               >
                                 <path
                                   fillRule="evenodd"
@@ -3064,19 +3017,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/threats.png" alt="" className="h-[6rem]" />
+                        <img src="/threats.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           Threat
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           An external risk or challenge.
                         </Typography>
                       </Box>
@@ -3088,8 +3041,8 @@ const Swot = () => {
                           p: 1,
                           background: "#ff7b00d3",
                           borderRadius: "50%",
-                          width: "3rem",
-                          height: "3rem",
+                          width: "2.5rem",
+                          height: "2.5rem",
                           alignItems: "center",
                           justifyContent: "center",
                         }}
@@ -3103,7 +3056,7 @@ const Swot = () => {
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 24 24"
                               fill="currentColor"
-                              className="size-8"
+                              className="size-6"
                             >
                               <path
                                 fill-rule="evenodd"
@@ -3134,12 +3087,11 @@ const Swot = () => {
                           onChange={threats.handleChange}
                           onKeyDown={threats.addThreats}
                           sx={{
-                            mt: 3,
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            mt: 2,
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
-                              // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", 
                             },
                           }}
                         />
@@ -3157,7 +3109,7 @@ const Swot = () => {
                       {fetchedThreats.map((threat, index: number) => (
                         <div
                           key={threat.id}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                             index < fetchedThreats.length - 1
                               ? "border-b border-gray-200"
                               : ""
@@ -3165,9 +3117,8 @@ const Swot = () => {
                         >
                           <Box className="flex flex-row overflow-y-auto">
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "bold", mr: 1 }}
-                            >
+                                sx={{ fontWeight: "bold", mr: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
                               {"T" + (index + 1)}:
                             </Typography>
 
@@ -3209,9 +3160,8 @@ const Swot = () => {
                               />
                             ) : (
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "400" }}
-                              >
+                                  sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                >
                                 {threat.value.length > 110
                                   ? threat.value.slice(0, 110) + "..."
                                   : threat.value}
@@ -3231,7 +3181,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   strokeWidth="1.5"
                                   stroke="currentColor"
-                                  className="w-6 h-6"
+                                  className="w-5 h-5"
                                 >
                                   <path
                                     strokeLinecap="round"
@@ -3250,7 +3200,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -3267,7 +3217,7 @@ const Swot = () => {
                               onClose={() => setIsThreatModalOpen(false)}
                               BackdropProps={{
                                 style: {
-                                  backgroundColor: "rgba(0, 0, 0, 0.1)", // Adjust the last value (alpha) to control darkness
+                                  backgroundColor: "rgba(0, 0, 0, 0.2)", // Adjust the last value (alpha) to control darkness
                                 },
                               }}
                             >
@@ -3282,30 +3232,20 @@ const Swot = () => {
                                 <Box
                                   sx={{
                                     background: "white",
-                                    padding: 6,
+                                    padding: 4,
                                     borderRadius: 2,
                                     textAlign: "center",
                                     position: "relative",
-                                    maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                                    width: "25rem",
                                   }}
                                 >
                                   <Typography
-                                    variant="h4"
-                                    component="h2"
-                                    sx={{
-                                      fontWeight: "bold",
-                                      mb: 3,
-                                      color: "#4D4C4C",
-                                    }}
-                                  >
+                                    sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                    >
                                     Confirm Deletion
                                   </Typography>
-                                  <Typography
-                                    variant="h5"
-                                    sx={{ mb: 5, color: "#4D4C4C" }}
-                                  >
+                                  <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                                     Are you sure you want to delete this threat?{" "}
-                                    <br />
                                     You can still restore it later if needed.
                                   </Typography>
                                   <Box
@@ -3326,7 +3266,7 @@ const Swot = () => {
                                         width: "30%",
                                         color: "#AB3510",
                                         p: 1,
-                                        fontSize: "18px",
+                                        fontSize: "15px",
                                       }}
                                       style={{
                                         background: "white",
@@ -3343,7 +3283,7 @@ const Swot = () => {
                                         background:
                                           "linear-gradient(to left, #8a252c, #AB3510)",
                                         p: 1,
-                                        fontSize: "18px",
+                                        fontSize: "15px",
                                       }}
                                     >
                                       Delete
@@ -3365,8 +3305,7 @@ const Swot = () => {
                   display: "flex",
                   justifyContent: "center",
                   gap: 2,
-                  mt: 8,
-                  mb: 5,
+                  mt: 3,
                   flexWrap: "wrap", // Allow buttons to wrap
                 }}
               >
@@ -3375,7 +3314,7 @@ const Swot = () => {
                   onClick={generateStrategies}
                   sx={{
                     p: 2,
-                    fontSize: "18px",
+                    fontSize: "15px",
                   }}
                   style={{
                     background: "linear-gradient(to left, #8a252c, #AB3510)",
@@ -3407,21 +3346,20 @@ const Swot = () => {
                     <Box
                       sx={{
                         background: "white",
-                        padding: 6,
+                        padding: 4,
                         borderRadius: 2,
+                        boxShadow: 24,
                         textAlign: "center",
                         position: "relative",
-                        maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                        width: "25rem",
                       }}
                     >
                       <Typography
-                        variant="h4"
-                        component="h2"
-                        sx={{ fontWeight: "bold", mb: 3, color: "#4D4C4C" }}
-                      >
+                        sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                        >
                         Strategies Successfully Generated
                       </Typography>
-                      <Typography variant="h5" sx={{ mb: 5, color: "#4D4C4C" }}>
+                      <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                         The AI has analyzed the inputted SWOT <br />
                         data and created strategies.
                       </Typography>
@@ -3442,7 +3380,7 @@ const Swot = () => {
                             background:
                               "linear-gradient(to left, #8a252c, #AB3510)",
                             p: 1,
-                            fontSize: "18px",
+                            fontSize: "15px",
                           }}
                         >
                           Close
@@ -3465,19 +3403,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/so.png" alt="" className="h-[6rem]" />
+                        <img src="/so.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           S-O Strategies
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           Leveraging internal advantages to capitalize on
                           external chances.
                         </Typography>
@@ -3495,14 +3433,16 @@ const Swot = () => {
                       {soApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                             index < soApiresponse.length - 1
                               ? "border-b border-gray-200"
                               : ""
                           }`}
                         >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                          <Typography
+                                  sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                >
                               {strategy["s_oResponses"]}
                             </Typography>
                           </Box>
@@ -3519,7 +3459,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -3547,19 +3487,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/wo.png" alt="" className="h-[6rem]" />
+                        <img src="/wo.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           W-O Strategies
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           Addressing internal deficiencies to seize external
                           opportunities.
                         </Typography>
@@ -3577,14 +3517,16 @@ const Swot = () => {
                       {woApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                             index < woApiresponse.length - 1
                               ? "border-b border-gray-200"
                               : ""
                           }`}
                         >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                          <Typography
+                                  sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                >
                               {strategy["w_oResponses"]}
                             </Typography>
                           </Box>
@@ -3601,7 +3543,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -3628,19 +3570,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/st.png" alt="" className="h-[6rem]" />
+                        <img src="/st.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                        <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           S-T Strategies
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           Using internal strengths to mitigate external risks.
                         </Typography>
                       </Box>
@@ -3657,14 +3599,16 @@ const Swot = () => {
                       {stApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                             index < stApiresponse.length - 1
                               ? "border-b border-gray-200"
                               : ""
                           }`}
                         >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                            <Typography
+                                  sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                >
                               {strategy["s_tResponses"]}
                             </Typography>
                           </Box>
@@ -3681,7 +3625,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -3708,19 +3652,19 @@ const Swot = () => {
                     p={1}
                     sx={{
                       ml: 1,
-                      height: "85px",
-                      "& .MuiInputBase-root": { height: "85px" },
+                      height: "55px",
+                      "& .MuiInputBase-root": { height: "55px" },
                     }}
                   >
                     <Grid item sm={11.3} container alignItems="center">
                       <Box>
-                        <img src="/wt.png" alt="" className="h-[6rem]" />
+                        <img src="/wt.png" alt="" className="h-[3.5rem]" />
                       </Box>
                       <Box sx={{ ml: 1 }}>
-                        <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                      <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                           W-T Strategies
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           Vulnerabilities that may be exploited by external
                           challenges.
                         </Typography>
@@ -3738,14 +3682,16 @@ const Swot = () => {
                       {wtApiresponse.map((strategy, index) => (
                         <div
                           key={index}
-                          className={`flex justify-between items-center pb-2 pt-3 pl-2 pr-2 m-5 w-auto ${
+                          className={`flex justify-between items-center pl-2 pr-2 m-3 w-auto ${
                             index < wtApiresponse.length - 1
                               ? "border-b border-gray-200"
                               : ""
                           }`}
                         >
                           <Box className="flex flex-row overflow-y-auto">
-                            <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                            <Typography
+                                  sx={{ fontWeight: "400", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                                >
                               {strategy["w_tResponses"]}
                             </Typography>
                           </Box>
@@ -3762,7 +3708,7 @@ const Swot = () => {
                                   viewBox="0 0 24 24"
                                   stroke-width="1.5"
                                   stroke="currentColor"
-                                  className="size-6"
+                                  className="size-5"
                                 >
                                   <path
                                     stroke-linecap="round"
@@ -3785,21 +3731,20 @@ const Swot = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 6,
+                      padding: 4,
                       borderRadius: 2,
+                      boxShadow: 24,
                       textAlign: "center",
                       position: "relative",
-                      maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                      width: "25rem",
                     }}
                   >
                     <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{ fontWeight: "bold", mb: 3 }}
-                    >
+                      sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                      >
                       Confirm Deletion
                     </Typography>
-                    <Typography variant="h5" sx={{ mb: 5 }}>
+                    <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                       Are you sure you want to delete this strategy?
                     </Typography>
                     <Box
@@ -3818,7 +3763,7 @@ const Swot = () => {
                           width: "30%",
                           color: "#AB3510",
                           p: 1,
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
                         style={{
                           background: "white",
@@ -3836,7 +3781,7 @@ const Swot = () => {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           p: 1,
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
                       >
                         Delete
