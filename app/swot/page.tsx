@@ -255,7 +255,7 @@ const Swot = () => {
       console.log("Threats Input:", threatsInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY_2}`,
         {
           method: "POST",
           headers: {
@@ -380,7 +380,7 @@ const Swot = () => {
       console.log("threats Input:", threatsInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY_2}`,
         {
           method: "POST",
           headers: {
@@ -508,7 +508,7 @@ const Swot = () => {
       console.log("Opportunities Input:", OpportunitiesInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY_2}`,
         {
           method: "POST",
           headers: {
@@ -648,7 +648,7 @@ const Swot = () => {
       console.log("Opportunities Input:", OpportunitiesInput);
 
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyAseoTgESiDKU2-_qZuZ9u1fZz9q7LhWwE`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.NEXT_PUBLIC_GEMINI_API_KEY_2}`,
         {
           method: "POST",
           headers: {
