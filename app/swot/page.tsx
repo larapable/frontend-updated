@@ -716,7 +716,7 @@ const Swot = () => {
       }
   
       setNewSOStrategy(""); // Clear the input field
-      fetchwoData(); // Refresh the list of strategies
+      fetchsoData(); // Refresh the list of strategies
     } catch (error) {
       console.error("Error saving manual strategy:", error);
     }
