@@ -164,6 +164,7 @@ export default function QAAcademic() {
                     md: "2rem",
                     xs: "1.5rem",
                   },
+                  width: "25rem",
                 }}
               >
                 ACADEMIC
@@ -189,7 +190,7 @@ export default function QAAcademic() {
                 ADMINISTRATIVE
               </Button>
             </Grid>
-            
+
             <Typography
               sx={{
                 fontSize: { lg: "1rem", sm: "1rem", md: "1rem", xs: "0.8rem" },
