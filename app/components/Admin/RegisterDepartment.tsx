@@ -26,7 +26,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import FormControl from "@mui/material/FormControl";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -62,21 +62,18 @@ export default function RegisterDepartment() {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    // if (
-    //   !departmentName ||
-    //   !headOfficer ||
-    //   !departmentLandline ||
-    //   !location ||
-    //   !university ||
-    //   !description ||
-    //   !email ||
-    //   !category
-    // ) {
-    //   // alert("Please fill in all required fields.");
-    //   setModalMessage("Please fill in all required fields.");
-    //   setShowModal(true);
-    //   return;
-    // }
+    // ngano gicomment ni ang if statement? ako gi uncomment kay makaregister og dep bisag incomplete ang values or bisan empty
+
+    if (
+      !departmentName ||
+      !headOfficer ||
+      !university ||
+      !category
+    ) {
+      setModalMessage("Please fill in all required fields.");
+      setShowModal(true);
+      return;
+    }
 
     try {
       const response = await fetch(
@@ -113,14 +110,10 @@ export default function RegisterDepartment() {
       setEmail("");
       setCategory("");
 
-      // alert("Department registered successfully!");
       setModalMessage("Department registered successfully!");
       setShowModal(true);
     } catch (error) {
       console.error("Error:", error);
-      // alert(
-      //   "An error occurred while registering the department. Please try again later."
-      // );
       setModalMessage(
         "An error occurred while registering the department. Please try again later."
       );
@@ -168,12 +161,9 @@ export default function RegisterDepartment() {
             }}
           >
             <Typography
-              variant="h4"
-              component="h1"
               sx={{
                 fontWeight: "bold",
-                marginBottom: 2,
-                fontSize: { xs: "2rem", sm: "3.5rem" },
+                fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
               }}
             >
               REGISTER DEPARTMENT
@@ -187,11 +177,9 @@ export default function RegisterDepartment() {
             }}
           >
             <Typography
-              variant="h5"
-              component="h1"
               sx={{
-                fontWeight: "400",
-                marginBottom: 2,
+                fontWeight: "bold",
+                fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' },
               }}
             >
               Enter the details to get going
@@ -205,24 +193,24 @@ export default function RegisterDepartment() {
             }}
           >
             {/* indicator */}
-            <div className="w-full max-w-3xl mx-auto px-4 py-6 mt-5 mb-5">
+            <div className="w-full max-w-xl mx-auto px-4 py-6 mt-2 mb-2">
               <div className="flex items-center justify-between">
                 <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center">
+                  <div className="w-7 h-7 bg-[#c7360a] rounded-full flex items-center justify-center">
                     <span className="font-semibold text-white">1</span>
                   </div>
                   <span className="mt-2 text-sm font-medium">Information</span>
                 </div>
-                <div className="w-[15rem] h-2 bg-[#c7360a] mt-[-1rem] ml-[-0.6rem]"></div>
+                <div className="w-[12rem] h-2 bg-[#c7360a] mt-[-1.5rem] ml-[-0.9rem]"></div>
                 <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
+                  <div className="w-7 h-7 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
                     <span className="font-semibold text-white">2</span>
                   </div>
                   <span className="mt-2 text-sm font-medium">Contact</span>
                 </div>
-                <div className="w-[15rem] h-2 bg-[#c7360a] mt-[-1rem] ml-[-0.6rem]"></div>
+                <div className="w-[12rem] h-2 bg-[#c7360a] mt-[-1.5rem] ml-[-0.9rem]"></div>
                 <div className="flex flex-col items-center">
-                  <div className="w-10 h-10 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
+                  <div className="w-7 h-7 bg-[#c7360a] rounded-full flex items-center justify-center ml-[-1rem]">
                     <span className="font-semibold text-white">3</span>
                   </div>
                   <span className="mt-2 text-sm font-medium">Details</span>
@@ -245,8 +233,8 @@ export default function RegisterDepartment() {
                 background: "white",
                 fontSize: "20px",
                 fontWeight: "600",
-                p: 5,
-                width: "50%",
+                p: 3,
+                width: "60%",
                 height: "auto",
                 borderColor: "#e9e8e8",
                 borderStyle: "solid",
@@ -254,11 +242,11 @@ export default function RegisterDepartment() {
                 boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
               }}
             >
-              <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
+              <Typography sx={{ fontWeight: "600", mb: 2, fontSize: '20px' }}>
                 Basic Information
               </Typography>
 
-              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+              <Typography sx={{ fontSize: '15px' }}>
                 Department Name
                 <span className="text-[#DD1414]">*</span>
               </Typography>
@@ -278,7 +266,7 @@ export default function RegisterDepartment() {
                   onChange={handleDepartmentNameChange}
                 />
               </Grid>
-              <Typography variant="h6" sx={{ fontWeight: "400", mt: 3 }}>
+              <Typography sx={{ fontWeight: "400", mt: 3, fontSize: '15px' }}>
                 Department Category
                 <span className="text-[#DD1414]">*</span>
               </Typography>
@@ -308,7 +296,7 @@ export default function RegisterDepartment() {
 
               <Grid container alignItems="center" sx={{ mt: 3 }}>
                 <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                  <Typography sx={{ fontSize: '15px' }}>
                     University
                     <span className="text-[#DD1414]">*</span>
                   </Typography>
@@ -329,7 +317,7 @@ export default function RegisterDepartment() {
                 </Grid>
                 <Grid item xs={1}></Grid>
                 <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                  <Typography sx={{ fontSize: '15px' }}>
                     Location
                     <span className="text-[#DD1414]">*</span>
                   </Typography>
@@ -366,8 +354,8 @@ export default function RegisterDepartment() {
                 background: "white",
                 fontSize: "20px",
                 fontWeight: "600",
-                p: 5,
-                width: "50%",
+                p: 3,
+                width: "60%",
                 height: "auto",
                 borderColor: "#e9e8e8",
                 borderStyle: "solid",
@@ -375,11 +363,11 @@ export default function RegisterDepartment() {
                 boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
               }}
             >
-              <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
+              <Typography sx={{ fontWeight: "600", mb: 2, fontSize: '20px' }}>
                 Contact Information
               </Typography>
 
-              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+              <Typography sx={{ fontSize: '15px' }}>
                 Head Officer
                 <span className="text-[#DD1414]">*</span>
               </Typography>
@@ -402,7 +390,7 @@ export default function RegisterDepartment() {
 
               <Grid container alignItems="center" sx={{ mt: 3 }}>
                 <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                  <Typography sx={{ fontSize: '15px' }}>
                     Department Landline
                     <span className="text-[#DD1414]">*</span>
                   </Typography>
@@ -423,7 +411,7 @@ export default function RegisterDepartment() {
                 </Grid>
                 <Grid item xs={1}></Grid>
                 <Grid item xs={5.5}>
-                  <Typography variant="h6" sx={{ fontWeight: "400" }}>
+                  <Typography sx={{ fontSize: '15px' }}>
                     Email
                     <span className="text-[#DD1414]">*</span>
                   </Typography>
@@ -460,8 +448,8 @@ export default function RegisterDepartment() {
                 background: "white",
                 fontSize: "20px",
                 fontWeight: "600",
-                p: 5,
-                width: "50%",
+                p: 3,
+                width: "60%",
                 height: "auto",
                 borderColor: "#e9e8e8",
                 borderStyle: "solid",
@@ -469,11 +457,11 @@ export default function RegisterDepartment() {
                 boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
               }}
             >
-              <Typography variant="h5" sx={{ fontWeight: "600", mb: 2 }}>
+              <Typography sx={{ fontWeight: "600", mb: 2, fontSize: '20px' }}>
                 Details About Department
               </Typography>
 
-              <Typography variant="h6" sx={{ fontWeight: "400" }}>
+              <Typography sx={{ fontSize: '15px' }}>
                 Description
                 <span className="text-[#DD1414]">*</span>
               </Typography>
@@ -504,7 +492,7 @@ export default function RegisterDepartment() {
             }}
           >
             <button
-              className="rounded-lg text-white font-bold text-xl mt-5 px-32 py-5 border[0.1rem] border-white hover:text-[#f3deb0] mb-10"
+              className="rounded-lg text-white font-bold text-[15px] mt-2 px-20 py-3 border[0.1rem] border-white hover:text-[#f3deb0] mb-5"
               style={{
                 backgroundImage: `url('bgimagemaroon.png')`,
                 backgroundSize: "cover",
@@ -529,22 +517,20 @@ export default function RegisterDepartment() {
               <Box
                 sx={{
                   background: "white",
-                  padding: 6,
+                  padding: 4,
                   borderRadius: 2,
                   boxShadow: 24,
                   textAlign: "center",
                   position: "relative",
-                  width: "30%", // Limit modal width to 80% of viewport width
+                  width: "25rem",
                 }}
               >
                 <Typography
-                  variant="h4"
-                  component="h2"
-                  sx={{ fontWeight: "bold", mb: 3 }}
-                >
+                  sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                  >
                   Notice!
                 </Typography>
-                <Typography variant="h5" sx={{ mb: 5 }}>
+                <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                   {modalMessage}
                 </Typography>
                 <Box
@@ -560,10 +546,10 @@ export default function RegisterDepartment() {
                     variant="contained"
                     onClick={() => setShowModal(false)}
                     sx={{
-                      width: "40%",
+                      width: "30%",
                       background: "linear-gradient(to left, #8a252c, #AB3510)",
                       p: 1,
-                      fontSize: "18px",
+                      fontSize: '15px',
                     }}
                   >
                     Close

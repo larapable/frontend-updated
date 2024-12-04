@@ -27,7 +27,7 @@ import axios from "axios";
 import styled from "@emotion/styled";
 import Image from "next/image";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -235,22 +235,14 @@ const FeedbackForm: React.FC = () => {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 FEEDBACK FORM
               </Typography>
-              <Typography
-                variant="h5"
-                sx={{
-                  marginBottom: 2,
-                }}
-              >
+              <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                 We value your input! Let us know how you feel about using the
                 app, rate different aspects of our service, and provide any
                 additional comments. Your feedback is crucial in helping us
@@ -267,7 +259,7 @@ const FeedbackForm: React.FC = () => {
               sx={{
                 flexGrow: 1,
                 width: isMobile ? "100%" : `calc(100% - ${drawerWidth}px)`,
-                p: 3,
+                p: 2,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
@@ -279,14 +271,11 @@ const FeedbackForm: React.FC = () => {
                     textAlign: "center",
                     background: "#A43214",
                     borderRadius: 2,
-                    p: 2,
+                    p: 1,
                     mb: -2,
                   }}
                 >
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: 500, color: "white" }}
-                  >
+                  <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, color: 'white', fontWeight: 500}}>
                     How are you feeling?
                   </Typography>
                 </Box>
@@ -340,15 +329,12 @@ const FeedbackForm: React.FC = () => {
                     textAlign: "center",
                     background: "#A43214",
                     borderRadius: 2,
-                    p: 2,
+                    p: 1,
                     mb: -2,
                     mt: 5,
                   }}
                 >
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: 500, color: "white" }}
-                  >
+                  <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, color: 'white', fontWeight: 500}}>
                     Overall Satisfaction of Service
                   </Typography>
                 </Box>
@@ -362,7 +348,7 @@ const FeedbackForm: React.FC = () => {
                     borderRadius: "8px",
                   }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: 500 }}>
+                  <Typography sx={{ fontWeight: 500, fontSize: '13px' }}>
                     <table className="border-collapse w-full align-center rounded-md shadow-md border-[#ccc]">
                       <thead>
                         <tr>
@@ -410,8 +396,8 @@ const FeedbackForm: React.FC = () => {
                                   }
                                   style={{
                                     opacity: 100,
-                                    width: "1.5rem",
-                                    height: "1.5rem",
+                                    width: "1rem",
+                                    height: "1rem",
                                     cursor: "pointer",
                                   }}
                                 />
@@ -429,16 +415,13 @@ const FeedbackForm: React.FC = () => {
                     textAlign: "center",
                     background: "#A43214",
                     borderRadius: "8px",
-                    p: 2,
+                    p: 1,
                     mb: -2,
                     mt: 5,
                     boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)",
                   }}
                 >
-                  <Typography
-                    variant="h5"
-                    sx={{ fontWeight: 500, color: "white" }}
-                  >
+                  <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, color: 'white', fontWeight: 500}}>
                     Overall Feedback
                   </Typography>
                 </Box>
@@ -450,7 +433,7 @@ const FeedbackForm: React.FC = () => {
                     background: "white",
                   }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                  <Typography sx={{ fontWeight: "500", fontSize: '13px' }}>
                     <textarea
                       className="w-full p-2 border rounded-md shadow-md border-[#ccc]"
                       rows={4}
@@ -473,7 +456,7 @@ const FeedbackForm: React.FC = () => {
                 >
                   <Button
                     type="submit"
-                    sx={{ py: 2, px: 5, fontSize: "18px" }}
+                    sx={{ py: 1, px: 5, fontSize: "13px" }}
                     style={{
                       background: "linear-gradient(to left, #8a252c, #AB3510)",
                       color: "white",
@@ -497,22 +480,20 @@ const FeedbackForm: React.FC = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 6,
+                      padding: 4,
                       borderRadius: 2,
                       boxShadow: 24,
                       textAlign: "center",
                       position: "relative",
-                      maxWidth: "50vw", // Limit modal width to 80% of viewport width
+                      width: "25rem",
                     }}
                   >
                     <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{ fontWeight: "bold", mb: 3 }}
-                    >
+                      sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                      >
                       Success!
                     </Typography>
-                    <Typography variant="h5" sx={{ mb: 5 }}>
+                    <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                       Your feedback has been submitted successfully.
                     </Typography>
                     <Box
@@ -532,7 +513,7 @@ const FeedbackForm: React.FC = () => {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           p: 1,
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
                       >
                         Close
@@ -557,22 +538,20 @@ const FeedbackForm: React.FC = () => {
                   <Box
                     sx={{
                       background: "white",
-                      padding: 6,
+                      padding: 4,
                       borderRadius: 2,
                       boxShadow: 24,
                       textAlign: "center",
                       position: "relative",
-                      maxWidth: "100vw", // Limit modal width to 80% of viewport width
+                      width: "25rem",
                     }}
                   >
                     <Typography
-                      variant="h4"
-                      component="h2"
-                      sx={{ fontWeight: "bold", mb: 3 }}
-                    >
+                      sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                      >
                       Notice!
                     </Typography>
-                    <Typography variant="h5" sx={{ mb: 5 }}>
+                    <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                       {modalMessage}
                     </Typography>
                     <Box
@@ -592,7 +571,7 @@ const FeedbackForm: React.FC = () => {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           p: 1,
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
                       >
                         Close

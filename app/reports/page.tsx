@@ -986,12 +986,9 @@ const ReportsPage = () => {
           }}
         >
           <Typography
-            variant="h4"
-            component="h1"
             sx={{
               fontWeight: "bold",
-              marginBottom: 2,
-              fontSize: { xs: "2rem", sm: "3.5rem" },
+              fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
             }}
           >
             REPORT
@@ -1002,18 +999,19 @@ const ReportsPage = () => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            width="18rem"
-            height="4rem"
+            width="auto"
+            height="3rem"
             borderRadius={2}
-            sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+            sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: {lg: '-2'}, mb: 0.5 }}
           >
             <Button
               onClick={() => setCurrentView("default")}
               variant={currentView === "default" ? "contained" : "outlined"}
               fullWidth
               sx={{
-                p: 3,
-                fontSize: "18px",
+                py: 2,
+                px: 3,
+                fontSize: '13px',
                 background:
                   currentView === "default"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1038,8 +1036,8 @@ const ReportsPage = () => {
               variant={currentView === "printed" ? "contained" : "outlined"}
               fullWidth
               sx={{
-                p: 3,
-                fontSize: "18px",
+                py:2,
+                fontSize: '13px',
                 background:
                   currentView === "printed"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1061,11 +1059,7 @@ const ReportsPage = () => {
             </Button>
           </Box>
         </Box>
-        <Typography
-          sx={{
-            fontSize: "1.4rem",
-          }}
-        >
+        <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
           The Report feature in Atlas allows users to view a comprehensive
           summary of their progress over the past months. It provides a clear
           and concise overview of your accomplishments and areas for
@@ -1074,15 +1068,15 @@ const ReportsPage = () => {
         </Typography>
 
         {/* Year Dropdown */}
-        <div className="mb-4 mt-10">
-          <label htmlFor="year-select" className="mr-2 text-lg font-medium">
-            Select Year:
+        <div className="mt-7">
+          <label htmlFor="year-select" className="mr-2 text-[18px] font-bold">
+            SELECT A YEAR:
           </label>
           <select
             id="year-select"
             value={selectedYear}
             onChange={handleYearChange}
-            className="border border-gray-300 rounded-md p-2"
+            className="border border-gray-300 rounded-md p-2 text-[13px]"
             key={selectedYear} // Add the key prop here
           >
             {targetYears.map((year) => (
@@ -1099,15 +1093,15 @@ const ReportsPage = () => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              height="4rem"
+              height="3rem"
               borderRadius={2}
-              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 2, mb: 1 }}
+              sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 5 }}
             >
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
-                  p: 3,
-                  fontSize: "18px",
+                  py: 2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Financial"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1126,9 +1120,9 @@ const ReportsPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Financial
@@ -1136,8 +1130,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
-                  p: 3,
-                  fontSize: "18px",
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Stakeholder"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1156,9 +1150,9 @@ const ReportsPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Stakeholder
@@ -1166,8 +1160,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Internal")}
                 sx={{
-                  p: 3,
-                  fontSize: "18px",
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Internal"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1185,9 +1179,9 @@ const ReportsPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Internal
@@ -1195,8 +1189,8 @@ const ReportsPage = () => {
               <Button
                 onClick={() => changeComponent("Learning")}
                 sx={{
-                  p: 3,
-                  fontSize: "18px",
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Learning"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1214,9 +1208,9 @@ const ReportsPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Learning
@@ -1271,7 +1265,7 @@ const ReportsPage = () => {
                   width: "60%",
                 }}
               >
-                <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+                <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
                   REPORT VISUALIZATION
                 </Typography>
                 <Box ref={chartRef} sx={{ padding: 1, height: "100%" }}>
@@ -1310,7 +1304,7 @@ const ReportsPage = () => {
                                 "rgba(249, 105, 14, 1)",
                               ],
                               borderWidth: 1,
-                              borderRadius: 10,
+                              borderRadius: 5,
                             },
                           },
                           datasets: {
@@ -1351,7 +1345,7 @@ const ReportsPage = () => {
                 }}
               >
                 <Box sx={{ display: "flex", justifyContent: "space-between" }}>
-                  <Typography sx={{ fontSize: "1.5rem", fontWeight: "bold" }}>
+                  <Typography sx={{ fontSize: "1.2rem", fontWeight: "bold" }}>
                     APPROVAL SECTION
                   </Typography>
                   <Box>
@@ -1361,12 +1355,13 @@ const ReportsPage = () => {
                         disabled={isReadOnly}
                         variant="contained"
                         sx={{
-                          py: 1,
+                          py: 0.5,
                           px: 5,
                           borderRadius: "8px",
                           fontWeight: "500",
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
+                          fontSize: '13px'
                         }}
                       >
                         Save
@@ -1378,12 +1373,12 @@ const ReportsPage = () => {
                         variant="contained"
                         color="error"
                         sx={{
-                          py: 1,
                           px: 3,
                           borderRadius: "8px",
                           fontWeight: "500",
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
+                          fontSize: '13px'
                         }}
                       >
                         {isEditing ? "Save" : "Edit"}
@@ -1410,24 +1405,21 @@ const ReportsPage = () => {
                           }}
                         >
                           <Typography
-                            sx={{ fontSize: "1.875rem", fontWeight: "bold" }}
-                          >
+                            sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                            >
                             Notice!
                           </Typography>
-                          <Typography sx={{ fontSize: "1.25rem", mb: 2 }}>
+                          <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                             {modalMessage}
                           </Typography>
                           <Button
                             onClick={() => setShowModal(false)}
                             variant="contained"
                             sx={{
-                              background:
-                                "linear-gradient(to left, #8a252c, #AB3510)",
-                              color: "#ffffff",
-                              borderRadius: "10px",
-                              fontSize: "1rem",
-                              width: 144,
-                              py: 1,
+                              width: "30%",
+                              background: "linear-gradient(to left, #8a252c, #AB3510)",
+                              p:1,
+                              fontSize: '15px',
                             }}
                           >
                             Close
@@ -1437,8 +1429,8 @@ const ReportsPage = () => {
                     </Modal>
                   </Box>
                 </Box>
-                <Box sx={{ mt: 2 }}>
-                  <span className="font-normal text-[1.1rem]">
+                <Box sx={{ mt: 3 }}>
+                  <span className="font-normal text-[13px]">
                     Prepared By:
                   </span>
                   <div className="flex flex-row mt-1 gap-10">
@@ -1450,7 +1442,7 @@ const ReportsPage = () => {
                       onChange={(e) => setPreparedByName(e.target.value)}
                       // readOnly={!isEditing}
                       readOnly={isReadOnly}
-                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full h-[1.8rem] text-[13px]"
                     />
                     <input
                       type="text"
@@ -1460,12 +1452,12 @@ const ReportsPage = () => {
                       onChange={(e) => setPreparedByRole(e.target.value)}
                       // readOnly={!isEditing}
                       readOnly={isReadOnly}
-                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full h-[1.8rem] text-[13px]"
                     />
                   </div>
                 </Box>
                 <div className="flex flex-col mt-8">
-                  <span className="font-normal text-[1.1rem]">
+                  <span className="font-normal text-[13px]">
                     Acknowledged By:
                   </span>
                   <div className="flex flex-row mt-1 gap-10">
@@ -1477,7 +1469,7 @@ const ReportsPage = () => {
                       onChange={(e) => setAcknowledgedByName(e.target.value)}
                       // readOnly={!isEditing}
                       readOnly={isReadOnly}
-                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full h-[1.8rem] text-[13px]"
                     />
                     <input
                       type="text"
@@ -1487,12 +1479,12 @@ const ReportsPage = () => {
                       onChange={(e) => setAcknowledgedByRole(e.target.value)}
                       // readOnly={!isEditing}
                       readOnly={isReadOnly}
-                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full h-[1.8rem] text-[13px]"
                     />
                   </div>
                 </div>
                 <div className="flex flex-col mt-8">
-                  <span className="font-normal text-[1.1rem]">
+                  <span className="font-normal text-[13px]">
                     Reviewed By:
                   </span>
                   <div className="flex flex-row mt-1 gap-10">
@@ -1504,7 +1496,7 @@ const ReportsPage = () => {
                       onChange={(e) => setReviewedByName(e.target.value)}
                       // readOnly={!isEditing}
                       readOnly={isReadOnly}
-                      className="border border-gray-300 rounded-md px-3 py-2 w-full "
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full h-[1.8rem] text-[13px]"
                     />
                     <input
                       type="text"
@@ -1514,7 +1506,7 @@ const ReportsPage = () => {
                       onChange={(e) => setReviewedByRole(e.target.value)}
                       // readOnly={!isEditing}
                       readOnly={isReadOnly}
-                      className="border border-gray-300 rounded-md px-3 py-2 w-full"
+                      className="border border-gray-300 rounded-md px-3 py-2 w-full h-[1.8rem] text-[13px]"
                     />
                   </div>
                 </div>
@@ -1585,11 +1577,12 @@ const ReportsPage = () => {
               onClick={handleDownload}
               variant="contained"
               sx={{
-                py: 2,
+                py: 1,
                 px: 3,
                 borderRadius: "8px",
                 fontWeight: "500",
                 background: "linear-gradient(to left, #8a252c, #AB3510)",
+                fontSize: '13px'
               }}
             >
               Download Report

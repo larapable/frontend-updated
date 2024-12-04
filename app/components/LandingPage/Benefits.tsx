@@ -21,21 +21,21 @@ const Benefits = () => {
             id="benefit-section"
         >
             <Box display="flex" flexDirection="column" alignItems="center">
-                <Typography variant="h3" sx={{ mt: 5, fontWeight: 'bold', color: '#302E2E' }}>
+                <Typography variant="h3" sx={{fontWeight: 'bold', color: '#302E2E', fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' } }}>
                     Benefits of Choosing Atlas
                 </Typography>
-                <Typography variant="body1" sx={{ mt: 2, fontSize: '1.5rem' }}>
+                <Typography variant="body1" sx={{ mt: 2, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                     Explore the advantages of using Atlas for your strategic planning needs.
                     <br /> Benefit from intuitive AI-powered tools.
                 </Typography>
             </Box>
 
             <Grid container justifyContent="center" alignItems="center" spacing={5} sx={{ mt: -6 }}>
-                <Grid item>
-                    <img src="/advantages.png" alt="" style={{ height: '30rem', marginTop: '20px' }} />
+                <Grid item sx={{ display: { xs: 'none', sm: 'none', lg:'flex', md:'flex' }}}>
+                    <img src="/advantages.png" alt="" style={{ height: '20rem', marginTop: '20px' }} />
                 </Grid>
                 <Grid item>
-                    <Box display="flex" flexDirection="column" justifyContent="center" gap={3}>
+                    <Box display="flex" flexDirection="column" justifyContent="center" gap={3} sx={{mt:'3rem'}}>
                         {[
                             'Streamline strategic planning with intuitive AI-driven features.',
                             'Gain a competitive edge through comprehensive SWOT analysis.',
@@ -52,7 +52,7 @@ const Benefits = () => {
                                         clipRule="evenodd"
                                     />
                                 </SvgIcon>
-                                <Typography variant="body1" sx={{ color: '#302E2E', fontSize: '1.5rem' }}>
+                                <Typography sx={{color: '#302E2E', fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
                                     {text}
                                 </Typography>
                             </Box>

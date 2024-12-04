@@ -198,16 +198,16 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
           sx={{
             width: "100%",
             display: "flex",
-            mt: -2,
+            mt: -1,
             mb: 2,
           }}
         >
-          <img src="/internal.png" alt="" className=" h-[6rem] mr-2" />
+          <img src="/internal.png" alt="" className=" h-[4rem] mr-2" />
           <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-            <Typography variant="h5" sx={{ fontWeight: "600" }}>
+          <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
               Internal Process Scorecard Overview
             </Typography>
-            <Typography variant="h6" sx={{ fontWeight: "500" }}>
+            <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
               Assesses the efficiency and quality of internal operations.
             </Typography>
           </Box>
@@ -222,7 +222,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -231,7 +231,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -241,7 +241,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -252,7 +252,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                  align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -262,7 +262,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -272,7 +272,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -283,7 +283,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -293,7 +293,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -304,7 +304,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -314,7 +314,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -359,18 +359,18 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                     >
                       {/* Table Cells */}
                       <TableCell>
-                        <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                        <span className="font-medium text-[#2e2c2c] text-[13px]">
                           {scorecard.target_code || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell sx={{ maxWidth: "35rem" }}>
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        <span className="font-medium text-[13px] text-[#2e2c2c]">
                           {scorecard.office_target || "N/A"}
                         </span>
                       </TableCell>
                        {/* {added KPI} */}
                        <TableCell>
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px] text-[#2e2c2c]">
                             {scorecard.key_performance_indicator && scorecard.key_performance_indicator.length > 20
                               ? `${scorecard.key_performance_indicator.substring(0, 15)}...`
                               : scorecard.key_performance_indicator || "N/A"}
@@ -378,28 +378,28 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                         </TableCell>
                        {/* {added target year} */}
                        <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        <span className="font-medium text-[13px] text-[#2e2c2c]">
                           {scorecard.targetYear || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        <span className="font-medium text-[13px] text-[#2e2c2c]">
                           {scorecard.metric || "N/A"}
                         </span>
                       </TableCell>
                       <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        <span className="font-medium text-[13px] text-[#2e2c2c]">
                           {scorecard.target_performance || "N/A"}
                         </span>
                       </TableCell>
                        {/* {added actual performance} */}
                        <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px] text-[#2e2c2c]">
                             {scorecard.actual_performance || "N/A"}
                           </span>
                         </TableCell>
                       <TableCell align="center">
-                        <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        <span className="font-medium text-[13px] text-[#2e2c2c]">
                           {validatedLevelOfAttainment || "N/A"}%
                         </span>
                       </TableCell>
@@ -421,7 +421,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                     )}
                   </TableCell>
                       <TableCell align="center">
-                        <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
+                        <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[13px] text-[#2e2c2c]">
                           {scorecard.status || "N/A"}
                         </div>
                       </TableCell>
@@ -435,7 +435,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                             viewBox="0 0 24 24"
                             strokeWidth="1.5"
                             stroke="currentColor"
-                            className="w-6 h-6"
+                            className="w-5 h-5"
                           >
                             <path
                               strokeLinecap="round"
@@ -465,19 +465,16 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
-              maxWidth: "80vw",
+              width: "70%",
+              height: "70%",
               overflowX: "hidden",
             }}
           >
-            <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-            >
+            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
               Internal Process
             </Typography>
             <Box
@@ -489,7 +486,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -497,15 +494,18 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryTargetCode}
                   onChange={(e) => setPrimaryTargetCode(e.target.value)}
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Year
                 </span>
                 <TextField
@@ -521,7 +521,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Metric / Unit of Measure
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -559,7 +559,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Key Performance Indicator
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -567,15 +567,22 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryKPI}
                   onChange={(e) => setPrimaryKPI(e.target.value)}
                 />
+                <span className="mr-3 break-words font-regular italic text-xs text-[#2c2c2c]">
+                  For Multiple KPIs, separate each KPI with a bar | (e.g., KPI 1
+                  | KPI 2 | KPI 3).
+                </span>
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Status 
                 </span>
                 <FormControl fullWidth>
@@ -584,12 +591,12 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                     onChange={(e) => setPrimaryStatus(e.target.value)}
                     disabled={userRole !== "qualityAssurance"}
                     sx={{
-                      height: "47px",
-                      "& .MuiInputBase-root": { height: "47px" },
+                      height: "37px",
+                      "& .MuiInputBase-root": { height: "37px" },
                       "& .MuiOutlinedInput-input": {
-                        fontSize: "18px",
+                        fontSize: "15px", 
                       },
-                      background: "#f2f2f2",
+                      background: '#f2f2f2'
                     }}
                   >
                     <MenuItem value="" disabled>
@@ -600,7 +607,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   </Select>
                 </FormControl>
                 {userRole !== "qualityAssurance" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                  <span className="mr-3 break-words font-regular italic text-xs text-[#2c2c2c]">
                     You cannot edit the status unless you are in a QA role.
                   </span>
                 )}
@@ -611,11 +618,12 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                gap: 4,
                 mb: 2,
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -624,8 +632,11 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryTargetPerformance}
                   onChange={(e) => {
@@ -687,7 +698,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 )}
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Actual Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -696,8 +707,11 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryActualPerformance}
                   onChange={(e) => {
@@ -762,7 +776,7 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
              {/* {added link of evidence} */}
              <Box>
               <div className="flex flex-col mt-5">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                  Link of Evidence
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -770,8 +784,11 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryEvidenceLink}
                   onChange={(e) => setPrimaryEvidenceLink(e.target.value)}
@@ -780,13 +797,13 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
             </Box>
             <Box>
               <div className="flex flex-col mt-5">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Office Target
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={primaryOfficeTarget}
-                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem]"
+                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[7rem] text-[15px]"
                   onChange={(e) => setPrimaryOfficeTarget(e.target.value)}
                 />
               </div>
@@ -804,10 +821,10 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 variant="contained"
                 onClick={handleCloseModal}
                 sx={{
-                  minWidth: "10rem",
+                  width: "15%",
                   color: "#AB3510",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
                 style={{
                   background: "white",
@@ -820,10 +837,10 @@ const PrimaryInternal: React.FC<PrimaryInternalProps> = ({ selectedYear }) => {
                 variant="contained"
                 onClick={handlePrimaryUpdateScorecard}
                 sx={{
-                  minWidth: "10rem",
+                  width: "15%",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
               >
                 {primaryEditMode ? "Edit" : "Save"}

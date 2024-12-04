@@ -35,7 +35,7 @@ import styled from "@emotion/styled";
 import Image from "next/image";
 import Link from "next/link";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -140,22 +140,14 @@ export default function QADepartmentView() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 DEPARTMENT PORTAL
               </Typography>
-              <Typography
-                variant="h5"
-                sx={{
-                  marginBottom: 2,
-                }}
-              >
+              <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                 Welcome to the Department Portal! This central hub provides
                 access to information and resources related to both the academic
                 and administrative functions of the department. Use the button
@@ -174,16 +166,17 @@ export default function QADepartmentView() {
                 flexDirection: "row",
                 alignItems: "center",
                 justifyContent: "center",
+                mt:1
               }}
             >
               <Grid item xs={12} md={6}>
-                <div className="items-center align-middle mt-10 justify-center text-center">
-                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
-                    <div className="flex flex-col mt-28">
-                      <span className="font-bold text-[3rem] text-gray-400 text-center">
+                <div className="items-center align-middle justify-center text-center">
+                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[25rem]">
+                    <div className="flex flex-col mt-14">
+                      <span className="font-bold text-[2rem] text-gray-400 text-center">
                         ADMIN & <br/>ACADEMIC SUPPORT
                       </span>
-                      <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
+                      <span className="font-medium mt-5 text-[1rem] text-gray-400">
                         Institutional strategic framework
                       </span>
                       <Button
@@ -195,8 +188,7 @@ export default function QADepartmentView() {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           p: 1,
-                          paddingY: 2,
-                          fontSize: "18px",
+                          fontSize: "13px",
                           alignSelf: "center",
                         }}
                       >
@@ -207,14 +199,14 @@ export default function QADepartmentView() {
                 </div>
               </Grid>
               <Grid item xs={12} md={6}>
-                <div className="items-center align-middle mt-10 justify-center text-center">
-                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[35rem]">
-                    <div className="flex flex-col mt-28">
-                      <span className="font-bold text-[3rem] text-gray-400 text-center">
+                <div className="items-center align-middle justify-center text-center">
+                  <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-[100%] h-[25rem]">
+                    <div className="flex flex-col mt-14">
+                      <span className="font-bold text-[2rem] text-gray-400 text-center">
                         ACADEMIC <br />
                         DEPARTMENTS
                       </span>
-                      <span className="font-medium mt-5 text-[1.3rem] text-gray-400">
+                      <span className="font-medium mt-5 text-[1rem] text-gray-400">
                         Institutional strategic framework
                       </span>
                       <Button
@@ -226,8 +218,7 @@ export default function QADepartmentView() {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           p: 1,
-                          paddingY: 2,
-                          fontSize: "18px",
+                          fontSize: "13px",
                           alignSelf: "center",
                         }}
                       >

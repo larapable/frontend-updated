@@ -46,11 +46,11 @@ const FeaturesPic = () => {
         {/* Image Box */}
         <Box
           sx={{
-            width: '50%', // Set width for the image box
+            width: { lg: '50%', md: '50%', sm: '100%', xs: '100%' },
             display: 'flex',
-            justifyContent: 'center', // Center the image horizontally
+            justifyContent: 'center',
             alignItems: 'center', 
-            ml: '3rem', // Adjust margin left as needed
+            ml: { lg: '3rem', md: '3rem', sm: '1rem', xs: '0.5rem' },
           }}
         >
           <img
@@ -63,18 +63,18 @@ const FeaturesPic = () => {
         {/* Description Box */}
         <Box
           sx={{
-            display: 'flex',
+            display: {lg:'flex', md: 'flex', sm: 'none', xs: 'none'},
             flexDirection: 'column',
-            ml: '5rem', 
-            mt: '15rem', 
+            ml: '3rem', 
+            mt: '2rem', 
             textAlign: 'left', 
             width: '40%', // Set a width for the text box to control justification
           }}
         >
-          <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+          <Typography sx={{ fontWeight: 'bold', fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' } }}>
             A Visual Tour of Atlas
           </Typography>
-          <Typography sx={{ mt: "3rem", fontSize: '1.5rem', textAlign: 'justify' }}>
+          <Typography sx={{ mt: "2rem", textAlign: 'justify', fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
             Take a guided tour through Atlas and explore its intuitive interface
             and powerful features firsthand. This slideshow offers a glimpse into
             how Atlas simplifies strategic planning with AI-driven tools,

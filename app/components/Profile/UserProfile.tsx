@@ -29,7 +29,7 @@ import { SelectChangeEvent } from "@mui/material/Select";
 import SpinnerPages from "../Misc/SpinnerPages";
 import ModeEditRoundedIcon from "@mui/icons-material/ModeEditRounded";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -283,7 +283,7 @@ export default function UserProfile() {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -309,12 +309,9 @@ export default function UserProfile() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 PROFILE
@@ -326,10 +323,10 @@ export default function UserProfile() {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                width="20rem"
-                height="4rem"
+                width="15rem"
+                height="3rem"
                 borderRadius={2}
-                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: {lg: '-2'}, mb: 1 }}
               >
                 <Button
                   onClick={() => setCurrentView("department")}
@@ -338,8 +335,9 @@ export default function UserProfile() {
                   }
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    py: 2,
+                    px: 3,
+                    fontSize: "13px",
                     background:
                       currentView === "department"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -366,8 +364,8 @@ export default function UserProfile() {
                   variant={currentView === "user" ? "contained" : "outlined"}
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    p: 2,
+                    fontSize: "13px",
                     background:
                       currentView === "user"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -391,7 +389,7 @@ export default function UserProfile() {
             </Grid>
 
             {/* enter description here */}
-            <Typography variant="h5">
+            <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
               The Profile feature allows you to view your department’s details,
               including department name, while also giving you access to your
               personal profile where you can update your contact information,
@@ -425,7 +423,9 @@ export default function UserProfile() {
                       <Grid container alignItems="center" spacing={2}>
                         <Grid item xs={12} sm={4}>
                           {image ? (
-                            <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 flex items-center justify-center overflow-hidden">
+                            <Box 
+                            sx={{width: {lg:'12rem', sm:'8rem', xs:'8rem', md:'8rem'}, height: {lg: '12rem', xs: '8rem', sm: '8rem', md: '8rem'}}}
+                            className="border border-solid border-gray-300 shadow-lg ml-4 rounded-full flex items-center justify-center overflow-hidden">
                               <img
                                 src={image}
                                 alt="Department Image"
@@ -433,7 +433,9 @@ export default function UserProfile() {
                               />
                             </Box>
                           ) : (
-                            <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 my-4 flex items-center justify-center">
+                            <Box 
+                            sx={{width: {lg:'12rem', sm:'8rem', xs:'8rem', md:'8rem'}, height: {lg: '12rem', xs: '8rem', sm: '8rem', md: '8rem'}}}
+                            className="border border-solid border-gray-300 shadow-lg ml-4 rounded-full flex items-center justify-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -450,15 +452,13 @@ export default function UserProfile() {
                           )}
                         </Grid>
 
-                        <Grid item xs={12} sm={8} sx={{ ml: -2 }}>
+                        <Grid item xs={12} sm={8} sx={{ ml: {lg: -2} }}>
                           <Typography
-                            variant="h4"
-                            component="h2"
-                            sx={{ fontWeight: "bold", mr: 5 }}
+                            sx={{ fontWeight: "600", mr: {lg: 5}, fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' }, }}
                           >
                             {department}
                           </Typography>
-                          <Typography variant="h6" color="textSecondary">
+                          <Typography color="textSecondary" sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                             Department Name
                           </Typography>
                         </Grid>
@@ -469,21 +469,19 @@ export default function UserProfile() {
                       <Box
                         sx={{
                           background: "#fff6d1",
-                          p: 3,
+                          p: 2,
                           borderRadius: 2,
                           textAlign: "center",
                           mb: 2,
                         }}
                       >
                         <Typography
-                          variant="h5"
-                          sx={{ fontWeight: "500", mb: 1 }}
+                          sx={{ fontWeight: "500", mb: 1, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' }  }}
                         >
                           DEPARTMENT PROFILE
                         </Typography>
                         <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "400", mb: 1 }}
+                          sx={{ fontWeight: "400", mb: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                         >
                           Access and view details about your department here.
                         </Typography>
@@ -497,7 +495,7 @@ export default function UserProfile() {
                         }}
                       >
                         {/* contents of small box */}
-                        <Grid item sx={{ p: 1 }} spacing={2}>
+                        <Grid item spacing={2}>
                           <Grid
                             container
                             alignItems="center"
@@ -514,26 +512,22 @@ export default function UserProfile() {
                                     : "transparent",
                                 borderRadius: 2,
                                 p: 1,
-                                mt: 2,
                               }}
                             >
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "bolder" }}
+                                sx={{ fontWeight: "bolder", fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {roleCounts.headOfficer}
                               </Typography>
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 HEAD
                               </Typography>
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
-                                Users
+                                Officer
                               </Typography>
                             </Grid>
                             <Grid
@@ -546,24 +540,20 @@ export default function UserProfile() {
                                     : "transparent",
                                 borderRadius: 2,
                                 p: 1,
-                                mt: 2,
                               }}
                             >
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "bolder" }}
+                                sx={{ fontWeight: "bolder", fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {roleCounts.faculty}
                               </Typography>
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 FACULTY
                               </Typography>
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 Users
                               </Typography>
@@ -576,7 +566,7 @@ export default function UserProfile() {
 
                   <Divider sx={{ background: "#eeeeee" }} />
 
-                  <Grid container alignItems="center" sx={{ p: 2 }}>
+                  <Grid container alignItems="center" sx={{ p: 1 }}>
                     <Boxes
                       sx={{
                         background: "white",
@@ -585,8 +575,7 @@ export default function UserProfile() {
                       }}
                     >
                       <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", p: 3 }}
+                        sx={{ fontWeight: "600", p: 3, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                       >
                         Basic Information
                       </Typography>
@@ -596,14 +585,13 @@ export default function UserProfile() {
                         <Grid
                           container
                           alignItems="center"
-                          sx={{ mt: -5 }}
+                          sx={{ mt: -7 }}
                           justifyContent="space-between"
                           spacing={2}
                         >
                           <Grid item sm={4}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Head Officer
                             </Typography>
@@ -611,11 +599,11 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
                                   // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", // Adjust the font size as needed
                                 },
                               }}
                               value={headOfficer}
@@ -624,8 +612,7 @@ export default function UserProfile() {
                           </Grid>
                           <Grid item sm={4}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Email
                             </Typography>
@@ -633,11 +620,11 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
                                   // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", // Adjust the font size as needed
                                 },
                               }}
                               value={email}
@@ -646,8 +633,7 @@ export default function UserProfile() {
                           </Grid>
                           <Grid item sm={4}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Landline
                             </Typography>
@@ -655,8 +641,8 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
                                   // Target the input element specifically
                                   fontSize: "18px", // Adjust the font size as needed
@@ -680,8 +666,7 @@ export default function UserProfile() {
                         >
                           <Grid item sm={6}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               University
                             </Typography>
@@ -689,11 +674,11 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
                                   // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", // Adjust the font size as needed
                                 },
                               }}
                               value={university}
@@ -702,8 +687,7 @@ export default function UserProfile() {
                           </Grid>
                           <Grid item sm={6}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Location
                             </Typography>
@@ -711,11 +695,11 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
                                   // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", // Adjust the font size as needed
                                 },
                               }}
                               value={location}
@@ -730,15 +714,15 @@ export default function UserProfile() {
                           background: "white",
                           borderRadius: 5,
                           borderColor: "gray",
+                          mt: -3
                         }}
                       >
                         <Typography
-                          variant="h5"
-                          sx={{ fontWeight: "bold", p: 3 }}
+                        sx={{ fontWeight: "600", p: 3, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                         >
                           About Department
                         </Typography>
-                        <Grid item sx={{ p: 3, mt: -3 }}>
+                        <Grid item sx={{ p: 3, mt: -5 }}>
                           <TextField
                             fullWidth
                             variant="outlined"
@@ -749,7 +733,7 @@ export default function UserProfile() {
                               },
                               "& .MuiOutlinedInput-input": {
                                 // Target the input element specifically
-                                fontSize: "18px", // Adjust the font size as needed
+                                fontSize: "15px", // Adjust the font size as needed
                               },
                             }}
                             value={departmentDescription}
@@ -783,7 +767,9 @@ export default function UserProfile() {
                       <Grid container alignItems="center" spacing={2}>
                         <Grid item xs={12} sm={4}>
                           {userImage ? (
-                            <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 flex items-center justify-center overflow-hidden">
+                            <Box 
+                            sx={{width: {lg:'12rem', sm:'8rem', xs:'8rem', md:'8rem'}, height: {lg: '12rem', xs: '8rem', sm: '8rem', md: '8rem'}}}
+                            className="border border-solid border-gray-300 shadow-lg rounded-full ml-4 flex items-center justify-center overflow-hidden">
                               <img
                                 src={userImage}
                                 alt="User Image"
@@ -791,7 +777,9 @@ export default function UserProfile() {
                               />
                             </Box>
                           ) : (
-                            <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 my-4 flex items-center justify-center">
+                            <Box 
+                            sx={{width: {lg:'12rem', sm:'8rem', xs:'8rem', md:'8rem'}, height: {lg: '12rem', xs: '8rem', sm: '8rem', md: '8rem'}}}
+                            className="border border-solid border-gray-300 shadow-lg rounded-full ml-4 flex items-center justify-center">
                               <svg
                                 xmlns="http://www.w3.org/2000/svg"
                                 viewBox="0 0 24 24"
@@ -808,15 +796,13 @@ export default function UserProfile() {
                           )}
                         </Grid>
 
-                        <Grid item xs={12} sm={8} sx={{ ml: -2 }}>
+                        <Grid item xs={12} sm={8} sx={{ ml: {lg: -2} }}>
                           <Typography
-                            variant="h4"
-                            component="h2"
-                            sx={{ fontWeight: "bold" }}
+                            sx={{ fontWeight: "600", mr: {lg: 5}, fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' }, }}
                           >
                             {username}
                           </Typography>
-                          <Typography variant="h6" color="textSecondary">
+                          <Typography color="textSecondary" sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                             {role === "headOfficer"
                               ? "Head Officer"
                               : "Faculty"}
@@ -829,21 +815,19 @@ export default function UserProfile() {
                       <Box
                         sx={{
                           background: "#fff6d1",
-                          p: 3,
+                          p: 2,
                           borderRadius: 2,
                           textAlign: "center",
                           mb: 2,
                         }}
                       >
                         <Typography
-                          variant="h5"
-                          sx={{ fontWeight: "500", mb: 1 }}
+                          sx={{ fontWeight: "500", mb: 1, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' }  }}
                         >
-                          User Profile
+                          USER PROFILE
                         </Typography>
                         <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "400", mb: 1 }}
+                          sx={{ fontWeight: "400", mb: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                         >
                           Access and view your personal <br />
                           information here.
@@ -864,7 +848,7 @@ export default function UserProfile() {
                             container
                             alignItems="center"
                             justifyContent="space-between"
-                            spacing={2}
+                            spacing={1}
                           >
                             <Grid
                               item
@@ -880,22 +864,19 @@ export default function UserProfile() {
                               }}
                             >
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "bolder" }}
+                                sx={{ fontWeight: "bolder", fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {roleCounts.headOfficer}
                               </Typography>
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 HEAD
                               </Typography>
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
-                                Users
+                                Officer
                               </Typography>
                             </Grid>
                             <Grid
@@ -912,20 +893,17 @@ export default function UserProfile() {
                               }}
                             >
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "bolder" }}
+                                sx={{ fontWeight: "bolder", fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 {roleCounts.faculty}
                               </Typography>
                               <Typography
-                                variant="h5"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 FACULTY
                               </Typography>
                               <Typography
-                                variant="h6"
-                                sx={{ fontWeight: "500" }}
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                               >
                                 Users
                               </Typography>
@@ -947,8 +925,7 @@ export default function UserProfile() {
                       }}
                     >
                       <Typography
-                        variant="h5"
-                        sx={{ fontWeight: "bold", p: 3 }}
+                        sx={{ fontWeight: "600", p: 3, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
                       >
                         Basic Information
                       </Typography>
@@ -958,14 +935,13 @@ export default function UserProfile() {
                         <Grid
                           container
                           alignItems="center"
-                          sx={{ mt: -5 }}
+                          sx={{ mt: -7 }}
                           justifyContent="space-between"
                           spacing={2}
                         >
                           <Grid item sm={4}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                              color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               First Name
                             </Typography>
@@ -973,11 +949,11 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
                                   // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", // Adjust the font size as needed
                                 },
                               }}
                               value={firstname}
@@ -986,8 +962,7 @@ export default function UserProfile() {
                           </Grid>
                           <Grid item sm={4}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                              color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Last Name
                             </Typography>
@@ -995,11 +970,10 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
-                                  // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", 
                                 },
                               }}
                               value={lastname}
@@ -1008,8 +982,7 @@ export default function UserProfile() {
                           </Grid>
                           <Grid item sm={4}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                              color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Email
                             </Typography>
@@ -1017,11 +990,10 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
-                                  // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", 
                                 },
                               }}
                               value={userEmail}
@@ -1042,8 +1014,7 @@ export default function UserProfile() {
                         >
                           <Grid item sm={6}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                              color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Birthdate
                             </Typography>
@@ -1051,11 +1022,10 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
-                                  // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", 
                                 },
                               }}
                               value={birthdate}
@@ -1064,8 +1034,7 @@ export default function UserProfile() {
                           </Grid>
                           <Grid item sm={6}>
                             <Typography
-                              variant="h6"
-                              sx={{ fontWeight: "500", color: "#8d8d8d" }}
+                              color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
                             >
                               Age
                             </Typography>
@@ -1073,11 +1042,10 @@ export default function UserProfile() {
                               fullWidth
                               variant="outlined"
                               sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
                                 "& .MuiOutlinedInput-input": {
-                                  // Target the input element specifically
-                                  fontSize: "18px", // Adjust the font size as needed
+                                  fontSize: "15px", 
                                 },
                               }}
                               value={age}
@@ -1088,7 +1056,7 @@ export default function UserProfile() {
                       </Grid>
 
                       <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                        <Typography variant="h6">
+                        <Typography sx={{fontSize: { lg: '1rem', sm: '0.9rem', md: '1rem', xs: '0.7rem' }}}>
                           If you want to change password,{" "}
                           <a
                             href="/password"

@@ -44,8 +44,13 @@ import { format, isSameDay } from "date-fns";
 import "@/app/page.css";
 import AdminNavbar from "../Admin/AdminNavBar";
 //import RecentLogin from '@/models/recentlogin';
+import dayjs from 'dayjs';
+import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DateCalendar } from '@mui/x-date-pickers/DateCalendar';
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -129,6 +134,7 @@ const AdminPage = () => {
   >("strength");
   const [universityCount, setUniversityCount] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const [selectedDate, setSelectedDate] = React.useState(dayjs());
 
   useEffect(() => {
     async function fetchCounts() {
@@ -241,19 +247,20 @@ const AdminPage = () => {
     return (
       <Box
         sx={{
-          height: "27rem",
-          mt: -3,
-          p: 5,
+          height: "20rem",
+          mt: 1,
+          p: 2,
           display: "flex",
           flexDirection: "column",
+          fontSize:'16px'
         }}
       >
-        <Typography variant="h6" sx={{ mb: 2, mt: -6, fontWeight: "bold" }}>
+        <Typography sx={{ mb: 2, mt: -6, fontWeight: "bold", fontSize:'16px' }}>
           {title}
         </Typography>
-        <Box sx={{ flex: 1, overflow: "auto" }}>
+        <Box sx={{ flex: 1, overflow: "auto", fontSize: "13px" }}>
           {data.length > 0 ? (
-            <List>
+            <List sx={{fontSize: "13px"}}>
               {data.map((item, index) => (
                 <ListItem
                   key={item.id}
@@ -263,6 +270,7 @@ const AdminPage = () => {
                     display: "flex", // Ensures the text aligns properly
                     justifyContent: "flex-start", // Aligns items to the start
                     padding: "8px", // Padding inside the ListItem
+                    fontSize: "13px"
                   }}
                 >
                   <ListItemText
@@ -271,6 +279,7 @@ const AdminPage = () => {
                       overflowWrap: "break-word", // Allow breaking of long words
                       whiteSpace: "normal", // Allow text to wrap to the next line
                       wordBreak: "break-word", // Ensures long words break
+                      fontSize: "13px"
                     }}
                   />
                 </ListItem>
@@ -675,7 +684,7 @@ const AdminPage = () => {
           >
             <Typography
               fontWeight="bold"
-              sx={{ fontSize: "18px", textAlign: "center" }}
+              sx={{ fontSize: "13px", textAlign: "center" }}
             >
               {departmentName}
             </Typography>
@@ -740,7 +749,7 @@ const AdminPage = () => {
         }}
       >
         <Grid container spacing={2}>
-          <Grid item xs={12} md={9}>
+          <Grid item xs={12} md={8.5}>
             <Grid container spacing={2}>
               {/* Welcome Message */}
               <Grid item xs={12}>
@@ -762,14 +771,12 @@ const AdminPage = () => {
                     }}
                   >
                     <Box flex={1}>
-                      <Typography
-                        variant="h4"
-                        fontWeight="bold"
-                        sx={{ color: "#2e2c2c" }}
-                      >
+                        <Typography
+                            sx={{ fontWeight: "600", mr: {lg: 5}, fontSize: { lg: '1.5rem', sm: '1.5rem', md: '1.5rem', xs: '1rem' }, }}
+                          >
                         Welcome, Admin!
                       </Typography>
-                      <Typography variant="h5" mt={3} sx={{ color: "#2e2c2c" }}>
+                      <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mt:2}}>
                         Use the Atlas Balance Scorecard system to effortlessly
                         track and navigate your business success. Manage
                         metrics, analyze performance, and achieve your strategic
@@ -781,9 +788,8 @@ const AdminPage = () => {
                         src="/welcomeadmin.png"
                         alt="Welcome Admin"
                         style={{
-                          height: "13rem",
-                          width: "18rem",
-                          marginLeft: "1rem",
+                          height: "8rem",
+                          width: "11rem",
                         }}
                       />
                     </Box>
@@ -808,7 +814,7 @@ const AdminPage = () => {
                     >
                       <Typography
                         fontWeight="bold"
-                        sx={{ color: "#2e2c2c", fontSize: "20px" }}
+                        sx={{ color: "#2e2c2c", fontSize: "16px" }}
                       >
                         Summary of User Distribution
                       </Typography>
@@ -824,7 +830,7 @@ const AdminPage = () => {
                                   backgroundColor: "#b83216",
                                   color: "white",
                                   fontWeight: "bold",
-                                  fontSize: "18px",
+                                  fontSize: "15px",
                                 }}
                               >
                                 Name
@@ -834,7 +840,7 @@ const AdminPage = () => {
                                   backgroundColor: "#b83216",
                                   color: "white",
                                   fontWeight: "bold",
-                                  fontSize: "18px",
+                                  fontSize: "15px",
                                 }}
                               >
                                 Department
@@ -850,10 +856,10 @@ const AdminPage = () => {
                                     index % 2 === 0 ? "#fff6d1" : "white",
                                 }}
                               >
-                                <TableCell sx={{ fontSize: "18px" }}>
+                                <TableCell sx={{ fontSize: "13px" }}>
                                   {user.username}
                                 </TableCell>
-                                <TableCell sx={{ fontSize: "18px" }}>
+                                <TableCell sx={{ fontSize: "13px" }}>
                                   {user.department?.department_name ||
                                     "No Department (QA)"}
                                 </TableCell>
@@ -878,7 +884,7 @@ const AdminPage = () => {
                     >
                       <Typography
                         fontWeight="bold"
-                        sx={{ color: "#2e2c2c", fontSize: "20px" }}
+                        sx={{ color: "#2e2c2c", fontSize: "16px" }}
                       >
                         Faculty and Executive Staff
                       </Typography>
@@ -887,10 +893,11 @@ const AdminPage = () => {
                           display: "flex",
                           justifyContent: "center", // Center horizontally
                           alignItems: "center", // Center vertically
-                          height: "305px", // Set a fixed height for the Box
+                          height: "270px", // Set a fixed height for the Box
                           width: "100%", // Ensure the Box takes full width
                           padding: "20px 0", // Add padding instead of negative margin
                           marginTop: "10px",
+                          fontSize: '13px'
                         }}
                       >
                         <ResponsiveContainer width="100%" height="130%">
@@ -932,8 +939,9 @@ const AdminPage = () => {
               <Grid item xs={12} sx={{ mt: 2 }}>
                 <Card
                   sx={{
-                    p: 3,
+                    p: 1,
                     width: "100%",
+                    height: "93%",
                     borderRadius: "20px",
                     boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
                     borderColor: "#e9e8e8",
@@ -942,17 +950,17 @@ const AdminPage = () => {
                   }}
                 >
                   <CardContent>
-                    <Typography variant="h6" fontWeight="bold" sx={{ mb: 3 }}>
+                    <Typography fontWeight="bold" sx={{ mb: 3, fontSize: '16px' }}>
                       User Distribution Across Departments
                     </Typography>
-                    <ResponsiveContainer width="100%" height={300}>
+                    <ResponsiveContainer width="100%" height={250}>
                       <BarChart
                         data={departmentUserCounts}
-                        margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+                        margin={{ top: 10, right: 10, left: 10, bottom: 10 }}
                       >
                         <CartesianGrid strokeDasharray="3 3" stroke="#d3d3d3" />
-                        <XAxis dataKey="name" tick={{ fill: "#4A4A4A" }} />
-                        <YAxis tick={{ fill: "#4A4A4A" }} />
+                        <XAxis dataKey="name" tick={{ fill: "#4A4A4A", fontSize: '12px' }}/>
+                        <YAxis tick={{ fill: "#4A4A4A", fontSize: '12px' }} />
                         <RechartsTooltip
                           contentStyle={{
                             backgroundColor: "#f0f0f0",
@@ -961,14 +969,14 @@ const AdminPage = () => {
                           cursor={{ fill: "rgba(200, 200, 200, 0.3)" }}
                         />
                         <Legend
-                          wrapperStyle={{ color: "#4A4A4A" }}
-                          iconSize={25}
+                          wrapperStyle={{ color: "#4A4A4A", fontSize: '12px' }}
+                          iconSize={20}
                           iconType="circle"
                         />
                         <Bar
                           dataKey="userCount"
                           fill="#b83216"
-                          barSize={200}
+                          barSize={100}
                           radius={[10, 10, 0, 0]}
                         />
                       </BarChart>
@@ -977,10 +985,10 @@ const AdminPage = () => {
                 </Card>
               </Grid>
 
-              <Grid item xs={12} sx={{ mt: 2 }}>
+              <Grid item xs={12}>
                 <Card
                   sx={{
-                    p: 3,
+                    p: 1,
                     width: "100%",
                     borderRadius: "20px",
                     boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
@@ -1000,7 +1008,7 @@ const AdminPage = () => {
                         marginTop: "1px",
                         width: "150px",
                         height: "40px",
-                        fontSize: "14px",
+                        fontSize: "13px",
                         "&:hover .MuiOutlinedInput-notchedOutline": {
                           borderColor: "red", // Keeps the border red when hovered
                         },
@@ -1021,10 +1029,10 @@ const AdminPage = () => {
             </Grid>
           </Grid>
 
-          <Grid item xs={12} md={3}>
+          <Grid item xs={12} md={3.5}>
             <Card
               sx={{
-                p: 3,
+                p: 1,
                 display: "flex",
                 flexDirection: "column",
                 height: "auto",
@@ -1042,9 +1050,20 @@ const AdminPage = () => {
                   justifyContent: "center",
                 }}
               >
-                <Calendar />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <DemoContainer components={['DateCalendar']}>
+                    <DateCalendar
+                      referenceDate={selectedDate}
+                      views={['year', 'month', 'day']}
+                      sx={{ width: '100%', fontSize:'10px' }}
+                      onMonthChange={(newMonth) => setSelectedDate(newMonth)}
+                      onYearChange={(newYear) => setSelectedDate(newYear)}
+                    />
+                  </DemoContainer>
+                </LocalizationProvider>
               </Box>
-              <Typography fontWeight="bold" sx={{ mb: 2, fontSize: "20px" }}>
+              <Box sx={{p:3, mt:-5}}>
+              <Typography fontWeight="bold" sx={{ mb: 2, fontSize: "16px" }}>
                 {" "}
                 {/* Adjust font size */}
                 Overview Statistics
@@ -1064,16 +1083,15 @@ const AdminPage = () => {
                 <img
                   src="/user-admin.png"
                   alt="Users"
-                  style={{ height: "4rem", width: "4rem" }}
+                  style={{ height: "3rem", width: "3rem" }}
                 />
                 <Box ml={1}>
-                  <Typography variant="h6" sx={{ color: "#2e2c2c" }}>
+                  <Typography fontWeight="500" sx={{ color: "#2e2c2c", fontSize: '13px' }}>
                     Total Users
                   </Typography>
                   <Typography
-                    variant="h5"
                     fontWeight="bold"
-                    sx={{ color: "#2e2c2c" }}
+                    sx={{ color: "#2e2c2c", fontSize: '18px' }}
                   >
                     {usersCount}
                   </Typography>
@@ -1095,16 +1113,16 @@ const AdminPage = () => {
                 <img
                   src="/department-admin.png"
                   alt="Departments"
-                  style={{ height: "4rem", width: "4rem" }}
+                  style={{ height: "3rem", width: "3rem" }}
                 />
                 <Box ml={1}>
-                  <Typography variant="h6" sx={{ color: "#2e2c2c" }}>
+                  <Typography fontWeight="500" sx={{ color: "#2e2c2c", fontSize: '13px' }}>
                     Total Departments
                   </Typography>
                   <Typography
                     variant="h5"
                     fontWeight="bold"
-                    sx={{ color: "#2e2c2c" }}
+                    sx={{ color: "#2e2c2c", fontSize: '18px' }}
                   >
                     {departmentCount}
                   </Typography>
@@ -1126,16 +1144,16 @@ const AdminPage = () => {
                 <img
                   src="/university-admin.png"
                   alt="Universities"
-                  style={{ height: "4rem", width: "4rem" }}
+                  style={{ height: "3rem", width: "3rem" }}
                 />
                 <Box ml={1}>
-                  <Typography variant="h6" sx={{ color: "#2e2c2c" }}>
+                  <Typography fontWeight="500" sx={{ color: "#2e2c2c", fontSize: '13px' }}>
                     Total Universities
                   </Typography>
                   <Typography
                     variant="h5"
                     fontWeight="bold"
-                    sx={{ color: "#2e2c2c" }}
+                    sx={{ color: "#2e2c2c", fontSize: '18px' }}
                   >
                     {universityCount}
                   </Typography>
@@ -1144,7 +1162,7 @@ const AdminPage = () => {
 
               <Typography
                 fontWeight="bold"
-                sx={{ mb: 2, fontSize: "20px", mt: 5 }}
+                sx={{ mb: 2, fontSize: "16px", mt: 5 }}
               >
                 {" "}
                 {/* Adjust font size */}
@@ -1162,7 +1180,7 @@ const AdminPage = () => {
                   borderWidth: "1px",
                 }}
               >
-                <ResponsiveContainer width="100%" height={300}>
+                <ResponsiveContainer width="100%" height={255}>
                   <PieChart>
                     <Pie
                       data={mappingData}
@@ -1189,7 +1207,7 @@ const AdminPage = () => {
                       iconType="circle"
                       iconSize={10}
                       formatter={(value, entry) => (
-                        <span style={{ color: entry.color }}>{value}</span>
+                        <span style={{ color: entry.color, fontSize: '12px' }}>{value}</span>
                       )}
                     />
                   </PieChart>
@@ -1200,13 +1218,13 @@ const AdminPage = () => {
                 <img
                   src="/adminquote.png"
                   alt="Welcome Admin"
-                  style={{ height: "18rem", width: "23rem", marginTop: "3rem" }}
+                  style={{ height: "10rem", width: "13rem", marginTop: "2.5rem", marginLeft:15 }}
                 />
               </Box>
               <Typography
                 mt={2}
                 sx={{
-                  fontSize: "18px",
+                  fontSize: "15px",
                   fontWeight: "500",
                   fontStyle: "italic",
                   textAlign: "center",
@@ -1215,6 +1233,7 @@ const AdminPage = () => {
                 "The backbone of any successful organization is a great admin
                 team."
               </Typography>
+              </Box>
             </Card>
           </Grid>
         </Grid>

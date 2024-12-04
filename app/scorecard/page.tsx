@@ -143,7 +143,7 @@ const ScorecardPage = () => {
         container
         direction="column"
         sx={{
-          mt: 3, // Add some margin at the top
+          mt: 3.5, // Add some margin at the top
           px: 3, // Optional: Add some padding on the left and right
         }}
       >
@@ -156,12 +156,9 @@ const ScorecardPage = () => {
           }}
         >
           <Typography
-            variant="h4"
-            component="h1"
             sx={{
               fontWeight: "bold",
-              marginBottom: 2,
-              fontSize: { xs: "2rem", sm: "3.5rem" },
+              fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
             }}
           >
             BALANCED SCORECARD
@@ -173,32 +170,33 @@ const ScorecardPage = () => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            width="18rem"
-            height="4rem"
+            width="auto"
+            height="3rem"
             borderRadius={2}
-            sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+            sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: {lg: '-2'}, mb: 0.5 }}
           >
             <Button
               onClick={() => changeView("primary")}
               variant={currentView === "primary" ? "contained" : "outlined"}
               fullWidth
               sx={{
-                p:3,
-                fontSize: '18px',
+                py: 2,
+                px: 3,
+                fontSize: '13px',
                 background:
                   currentView === "primary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
                     : "transparent",
                 color: currentView === "primary" ? "white" : "#AB3510",
-                flexGrow: 2, // Ensure both buttons have equal size
-                height: "100%", // Match the height of the container
-                border: "1px solid transparent", // Keep border style consistent
-                transition: "background-color 0.3s, color 0.3s", // Smooth transition for hover
+                flexGrow: 2, 
+                height: "100%", 
+                border: "1px solid transparent", 
+                transition: "background-color 0.3s, color 0.3s", 
                 "&:hover": {
-                  background: "linear-gradient(to left, #8a252c, #AB3510)", // Change background on hover
-                  color: "white", // Change text color on hover
+                  background: "linear-gradient(to left, #8a252c, #AB3510)", 
+                  color: "white", 
                   border:
-                    currentView === "primary" ? "none" : "0.5px solid #AB3510", // Border on hover if not current
+                    currentView === "primary" ? "none" : "0.5px solid #AB3510", 
                 },
               }}
             >
@@ -209,8 +207,8 @@ const ScorecardPage = () => {
               variant={currentView === "secondary" ? "contained" : "outlined"}
               fullWidth
               sx={{
-                p:3,
-                fontSize: '18px',
+                py:2,
+                fontSize: '13px',
                 background:
                   currentView === "secondary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -234,7 +232,7 @@ const ScorecardPage = () => {
             </Button>
           </Box>
         </Box>
-        <Typography variant="h5">
+        <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
           Explore the Balanced Scorecard feature to gain a comprehensive view of
           your organization&apos;s performance across different dimensions. Use
           it to set clear objectives, track progress, and drive strategic
@@ -242,15 +240,15 @@ const ScorecardPage = () => {
         </Typography>
 
         {/* Year Dropdown */}
-        <div className="mb-4 mt-10">
-          <label htmlFor="year-select" className="mr-2 text-lg font-medium">
-            Select Year:
+        <div className="mt-7">
+          <label htmlFor="year-select" className="mr-2 text-[18px] font-bold">
+            SELECT A YEAR:
           </label>
           <select
           id="year-select"
           value={selectedYear}
           onChange={handleYearChange}
-          className="border border-gray-300 rounded-md p-2"
+          className="border border-gray-300 rounded-md p-2 text-[13px]"
           key={selectedYear} // Add the key prop here 
         >
           {targetYears.map((year) => (
@@ -267,15 +265,15 @@ const ScorecardPage = () => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              height="4rem"
+              height="3rem"
               borderRadius={2}
               sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 5}}
             >
               <Button
                 onClick={() => changePrimaryComponent("Financial")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  py: 2,
+                  fontSize: '13px',
                   background:
                     primarySelectedComponent === "Financial"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -296,9 +294,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Financial
@@ -306,8 +304,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changePrimaryComponent("Stakeholder")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     primarySelectedComponent === "Stakeholder"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -328,9 +326,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Stakeholder
@@ -338,8 +336,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changePrimaryComponent("Internal")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     primarySelectedComponent === "Internal"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -360,9 +358,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Internal
@@ -370,8 +368,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changePrimaryComponent("Learning")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     primarySelectedComponent === "Learning"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -392,9 +390,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Learning
@@ -438,15 +436,15 @@ const ScorecardPage = () => {
               display="flex"
               justifyContent="center"
               alignItems="center"
-              height="4rem"
+              height="3rem"
               borderRadius={2}
               sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: 5 }}
             >
               <Button
                 onClick={() => changeComponent("Financial")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Financial"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -465,9 +463,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Financial
@@ -475,8 +473,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changeComponent("Stakeholder")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Stakeholder"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -495,9 +493,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Stakeholder
@@ -505,8 +503,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changeComponent("Internal")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Internal"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -524,9 +522,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Internal
@@ -534,8 +532,8 @@ const ScorecardPage = () => {
               <Button
                 onClick={() => changeComponent("Learning")}
                 sx={{
-                  p:3,
-                  fontSize: '18px',
+                  p:2,
+                  fontSize: '13px',
                   background:
                     selectedComponent === "Learning"
                       ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -553,9 +551,9 @@ const ScorecardPage = () => {
                         ? "none"
                         : "0.5px solid #AB3510", // Border on hover if not current
                   },
-                  paddingX: 4,
-                  paddingY: 3,
-                  borderRadius: 2,
+                  paddingX: 3.5,
+                  paddingY: 2,
+                  borderRadius: 1,
                 }}
               >
                 Learning

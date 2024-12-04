@@ -15,31 +15,31 @@ const AboutUs = () => {
       icon: 'mdi:strategy',
       term: 'Strategic Planning',
       definition:
-        'Our platform provides comprehensive frameworks to develop long-term strategic plans tailored to your organization’s goals and market dynamics.',
+        'Provides comprehensive frameworks to develop long-term strategic plans.',
     },
     {
       icon: 'mdi:chart-timeline-variant',
       term: 'Execution Management',
       definition:
-        'Efficiently manage and execute your strategic plans with our user-friendly tools designed to monitor progress and adapt to changing conditions.',
+        'Manage and execute your strategic plans with our user-friendly tools.',
     },
     {
       icon: 'mdi:brain',
       term: 'AI-Driven Insights',
       definition:
-        'Leverage advanced AI algorithms to gain actionable insights that enhance decision-making and drive performance improvements across your organization.',
+        'Leverage advanced AI algorithms to gain actionable insights.',
     },
     {
       icon: 'mdi:chart-areaspline',
       term: 'Performance Tracking',
       definition:
-        'Track key performance indicators (KPIs) in real time to evaluate the effectiveness of your strategies and make informed adjustments as necessary.',
+        'Track KPIs in real time to evaluate the effectiveness of your strategies.',
     },
     {
       icon: 'mdi:clipboard-list',
       term: 'SWOT Analysis',
       definition:
-        'Conduct thorough SWOT analyses to identify strengths, weaknesses, opportunities, and threats, enabling you to capitalize on your unique position in the market.',
+        'Conduct thorough SWOT analyses enabling you to capitalize on your unique position in the market.',
     },
   ];
 
@@ -72,12 +72,12 @@ const AboutUs = () => {
       id="strategic-management-section"
     >
       <Box sx={{ mb: '-5rem' }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold', color: 'white' }}>
+        <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' } }}>
           What Makes Atlas Stand Out?
         </Typography>
-        <Typography sx={{ mt: 2, fontSize: '1.5rem', color: 'white' }}>
+        <Typography sx={{ mt: 2, color: 'white', fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' }  }}>
           Explore what distinguishes Atlas as the leading platform for
-          strategic planning and <br />
+          <br />strategic planning and
           execution, offering advanced tools and AI-driven insights
         </Typography>
       </Box>
@@ -110,10 +110,12 @@ const FeatureBox = ({ icon, term, definition }: FeatureBoxProps) => {
     border: '1px solid #fad655',
     borderRadius: '2rem',
     padding: '2rem',
-    width: '300px',
+    width: {lg: '300px'},
     textAlign: 'center',
     justifyContent: 'center',
-    height: '400px',
+    flexDirection: { lg: 'row', md: 'row', sm: 'column', xs: 'column' },
+    height: { lg: '280px', md: '280px', sm: '280px', xs: '280px' },
+    marginTop: { lg: '3rem' },
     cursor: 'pointer',
     overflow: 'hidden',
     wordWrap: 'break-word',
@@ -131,11 +133,13 @@ const FeatureBox = ({ icon, term, definition }: FeatureBoxProps) => {
   const textStyle = {
     color: isHovered ? '#302E2E' : '#FFFFFF',
     transition: 'color 0.3s',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
   };
 
   const iconStyle = {
     color: isHovered ? '#AB3510' : '#FFFFFF',
-    fontSize: '3rem',
+    fontSize: '1.8rem',
     transition: 'color 0.3s',
   };
 
@@ -146,10 +150,10 @@ const FeatureBox = ({ icon, term, definition }: FeatureBoxProps) => {
       onMouseLeave={() => setIsHovered(false)}
     >
       <Icon icon={icon} style={iconStyle} />
-      <Typography variant="h5" sx={{ mt: 2, ...titleStyle, fontWeight: '600' }}>
+      <Typography sx={{ mt: 2, ...titleStyle, fontWeight: '600' }}>
         {term}
       </Typography>
-      <Typography sx={{ mt: 3, ...textStyle, fontSize: '18px' }}>
+      <Typography sx={{ mt: 2, ...textStyle, fontSize: '15px' }}>
         {definition}
       </Typography>
     </Box>

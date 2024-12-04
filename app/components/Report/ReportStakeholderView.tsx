@@ -110,11 +110,11 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
             width: "100%",
             display: "flex",
             alignItems: "center",
-            mt: -2,
+            mt: -1,
             mb: 2,
           }}
         >
-          <img src="/stakeholder.png" alt="" className=" h-[6rem] mr-2" />
+          <img src="/stakeholder.png" alt="" className=" h-[4rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -124,10 +124,10 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography variant="h5" sx={{ fontWeight: "600" }}>
+              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                 STAKEHOLDER PERSPECTIVE
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: "500" }}>
+              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                 The Annual Progress Report offers a detailed look into academic
                 performance during the first half of the year.
               </Typography>
@@ -147,7 +147,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -156,7 +156,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -167,7 +167,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -178,7 +178,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -188,12 +188,12 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
                   Performance <br />
-                  <div className="font-medium ">
+                  <div className="font-medium text-[11px]">
                     <span>Actual </span>
                     <span className="font-bold">|</span>
                     <span> Target</span>
@@ -204,7 +204,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -247,32 +247,32 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                   >
                     {/* Table Cells */}
                     <TableCell sx={{ maxWidth: "35rem" }}>
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {report.office_target}
                       </span>
                     </TableCell>
                     <TableCell>
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report.key_performance_indicator, 20)}
                       </span>
                     </TableCell>
                     {/* <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.incharge || "...", 8)}
                       </span>
                     </TableCell> */}
                      {/* {added targetYear} */}
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {report.targetYear}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] mr-2">
+                      <span className="font-medium text-[13px] mr-2">
                         {report.actual_performance}
                       </span>
                       <span className="text-center">|</span>
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] ml-2">
+                      <span className="font-medium text-[13px] ml-2">
                         {report.target_performance}
                       </span>
                     </TableCell>
@@ -282,7 +282,7 @@ const ReportStakeholderView: React.FC<ReportStakeholderViewProps> = ({ selectedY
                           href={report.evidence_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-orange-500 underline font-medium text-[1.1rem]"
+                          className="text-orange-500 underline font-medium text-[13px]"
                         >
                           {report.evidence_link.length > 20
                             ? `${report.evidence_link.substring(0, 15)}...`

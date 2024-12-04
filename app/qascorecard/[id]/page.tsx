@@ -136,8 +136,8 @@ const QAScorecard = () => {
         container
         direction="column"
         sx={{
-          mt: 3, // Add some margin at the top
-          px: 3, // Optional: Add some padding on the left and right
+          mt: 3.5, 
+          px: 3,
         }}
       >
         <Box
@@ -149,12 +149,9 @@ const QAScorecard = () => {
           }}
         >
           <Typography
-            variant="h4"
-            component="h1"
             sx={{
               fontWeight: "bold",
-              marginBottom: 2,
-              fontSize: { xs: "2rem", sm: "3.5rem" },
+              fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
             }}
           >
             BALANCED SCORECARD
@@ -165,18 +162,19 @@ const QAScorecard = () => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            width="18rem"
-            height="4rem"
+            width="auto"
+            height="3rem"
             borderRadius={2}
-            sx={{ gap: 1, p: 0.5, borderWidth: 0.5 }}
+            sx={{ gap: 1, p: 0.5, borderWidth: 0.5, mt: {lg: '-2'}, mb: 0.5 }}
           >
             <Button
               onClick={() => changeView("primary")}
               variant={currentView === "primary" ? "contained" : "outlined"}
               fullWidth
               sx={{
-                p: 3,
-                fontSize: "18px",
+                py: 2,
+                px: 3,
+                fontSize: '13px',
                 background:
                   currentView === "primary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -201,8 +199,8 @@ const QAScorecard = () => {
               variant={currentView === "secondary" ? "contained" : "outlined"}
               fullWidth
               sx={{
-                p: 3,
-                fontSize: "18px",
+                py:2,
+                fontSize: '13px',
                 background:
                   currentView === "secondary"
                     ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -226,11 +224,7 @@ const QAScorecard = () => {
             </Button>
           </Box>
         </Box>
-        <Typography
-          sx={{
-            fontSize: "1.4rem",
-          }}
-        >
+        <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
           Explore the Balanced Scorecard feature to gain a comprehensive view of
           your organization&apos;s performance across different dimensions. Use
           it to set clear objectives, track progress, and drive strategic
@@ -241,14 +235,14 @@ const QAScorecard = () => {
           {/* Year Dropdown */}
 
           <div>
-            <label htmlFor="year-select" className="mr-2 text-lg font-medium">
-              Select Year:
+            <label htmlFor="year-select" className="mr-2 text-[18px] font-bold">
+              SELECT A YEAR:
             </label>
             <select
               id="year-select"
               value={selectedYear}
               onChange={handleYearChange}
-              className="border border-gray-300 rounded-md p-2"
+              className="border border-gray-300 rounded-md p-2 text-[13px]"
               key={selectedYear} // Add the key prop here
             >
               {targetYears.map((year) => (
@@ -413,7 +407,7 @@ const QAScorecard = () => {
             <Button
               variant="contained"
               sx={{
-                py: 2,
+                py: 1,
                 px: 3,
                 borderRadius: "8px",
                 fontWeight: "500",

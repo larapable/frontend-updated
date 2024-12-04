@@ -324,11 +324,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
             width: "100%",
             display: "flex",
             alignItems: "center",
-            mt: -2,
+            mt: -1,
             mb: 2,
           }}
         >
-          <img src="/stakeholder.png" alt="" className=" h-[6rem] mr-2" />
+          <img src="/stakeholder.png" alt="" className=" h-[4rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -338,10 +338,10 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography variant="h5" sx={{ fontWeight: "600" }}>
+            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                 Stakeholder Scorecard Overview
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: "500" }}>
+              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                 Each objective is categorized annually. Users must input the{" "}
                 <span className="font-bold">
                   actions taken, budget, person in charge,{" "}
@@ -367,7 +367,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -377,7 +377,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -387,7 +387,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -397,7 +397,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -407,7 +407,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -417,12 +417,12 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
                   Performance <br />
-                  <div className="font-medium ">
+                  <div className="font-medium text-[11px]">
                     <span>Actual </span>
                     <span className="font-bold">|</span>
                     <span> Target</span>
@@ -432,7 +432,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -442,7 +442,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -473,41 +473,41 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   >
                     {/* Table Cells */}
                     <TableCell>
-                      <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report.office_target, 45)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report.key_performance_indicator, 20)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.actions || "...", 8)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {report?.budget || "..."}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.incharge || "...", 8)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] mr-2">
+                      <span className="font-medium text-[13px] mr-2">
                         {report.actual_performance}
                       </span>
                       <span className="text-center">|</span>
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] ml-2">
+                      <span className="font-medium text-[13px] ml-2">
                         {report.target_performance}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.ofi || "...", 4)}
                       </span>
                     </TableCell>
@@ -517,7 +517,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                           href={report.evidence_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-orange-500 underline font-medium text-[1.1rem]"
+                          className="text-orange-500 underline font-medium text-[13px]"
                         >
                           {report.evidence_link.length > 20
                             ? `${report.evidence_link.substring(0, 15)}...`
@@ -535,7 +535,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                           viewBox="0 0 24 24"
                           strokeWidth="1.5"
                           stroke="currentColor"
-                          className="w-6 h-6"
+                          className="w-5 h-5"
                         >
                           <path
                             strokeLinecap="round"
@@ -567,41 +567,41 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   >
                     {/* Table Cells */}
                     <TableCell>
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report.office_target, 45)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report.key_performance_indicator, 20)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.actions || "...", 8)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {report?.budget || "..."}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.incharge || "...", 8)}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] mr-2">
+                      <span className="font-medium text-[13px] mr-2">
                         {report.actual_performance}
                       </span>
                       <span className="text-center">|</span>
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c] ml-2">
+                      <span className="font-medium text-[13px] ml-2">
                         {report.target_performance}
                       </span>
                     </TableCell>
                     <TableCell align="center">
-                      <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                      <span className="font-medium text-[13px]">
                         {truncateString(report?.ofi || "...", 4)}
                       </span>
                     </TableCell>
@@ -611,7 +611,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                           href={report.evidence_link}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-orange-500 underline font-medium text-[1.1rem]"
+                          className="text-orange-500 underline font-medium text-[13px]"
                         >
                           {report.evidence_link.length > 20
                             ? `${report.evidence_link.substring(0, 15)}...`
@@ -631,7 +631,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                           viewBox="0 0 24 24"
                           strokeWidth="1.5"
                           stroke="currentColor"
-                          className="w-6 h-6"
+                          className="w-5 h-5"
                         >
                           <path
                             strokeLinecap="round"
@@ -660,19 +660,16 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
-              maxWidth: "80vw",
+              width: "60%",
+              height: "70%",
               overflowX: "hidden",
             }}
           >
-            <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-            >
+            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
               Stakeholder
             </Typography>
             <Box
@@ -684,7 +681,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               }}
             >
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -692,8 +689,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={stakeholderTargetCode}
                   onChange={(e) => setStakeholderTargetCode(e.target.value)}
@@ -701,7 +701,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               </div>
 
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Budget
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -709,8 +709,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={stakeholderBudget}
                   onChange={(e) =>
@@ -719,16 +722,19 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                 />
               </div>
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   KPI
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
-                    background: "#f2f2f2",
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
+                     background: "#f2f2f2",
                   }}
                   value={stakeholderKPI}
                   disabled
@@ -744,7 +750,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               }}
             >
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   In Charge
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -752,8 +758,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={stakeholderIncharge}
                   onChange={(e) => setStakeholderIncharge(e.target.value)}
@@ -761,7 +770,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               </div>
 
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Link of Evidence
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -769,25 +778,31 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
-                    background: "#f2f2f2",
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
+                     background: "#f2f2f2",
                   }}
                   value={stakeholderEvidenceLink}
                   disabled
                 />
               </div>
               <div className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Performance (Actual | Target)
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
-                    background: "#f2f2f2",
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
+                     background: "#f2f2f2",
                   }}
                   value={
                     stakeholderActualPerformance +
@@ -804,12 +819,12 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               }}
             >
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Office Target
                 </span>
                 <textarea
                   value={stakeholderOfficeTarget}
-                  className="text-lg font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-[13px] font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   disabled
                 />
               </div>
@@ -820,13 +835,13 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               }}
             >
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Actions
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={stakeholderActions}
-                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-[13px] font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setStakeholderActions(e.target.value)}
                 />
               </div>
@@ -837,14 +852,14 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               }}
             >
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   OFI
                   <span className="text-[#DD1414]">*</span>
                 </span>
 
                 <textarea
                   value={stakeholderOFI}
-                  className="text-lg font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-[13px] font-regular border border-gray-300 h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setStakeholderOFI(e.target.value)}
                 />
               </div>
@@ -865,7 +880,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   minWidth: "10rem",
                   color: "#AB3510",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
                 style={{
                   background: "white",
@@ -881,7 +896,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
               >
                 Save
@@ -902,25 +917,22 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
-              maxWidth: "80vw",
+              width: "60%",
+              height: "70%",
               overflowX: "hidden",
             }}
           >
-            <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-            >
+            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
               Stakeholder
             </Typography>
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: 4, mb: 6 }}>
               <Box className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Code
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -928,8 +940,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryTargetCode}
                   onChange={(e) => setPrimaryTargetCode(e.target.value)}
@@ -945,8 +960,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryBudget}
                   onChange={(e) =>
@@ -956,16 +974,19 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               </Box>
 
               <Box className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   KPI
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
-                    background: "#f2f2f2",
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
+                     background: "#f2f2f2",
                   }}
                   value={primaryKPI}
                   disabled
@@ -975,7 +996,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
             <Box sx={{ display: "flex", flexDirection: "row", gap: 4, mb: 6 }}>
               <Box className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   In Charge
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -983,8 +1004,11 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
                   }}
                   value={primaryIncharge}
                   onChange={(e) => setPrimaryIncharge(e.target.value)}
@@ -992,16 +1016,19 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               </Box>
 
               <Box className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Link of Evidence
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
-                    background: "#f2f2f2",
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
+                     background: "#f2f2f2",
                   }}
                   value={primaryEvidenceLink}
                   disabled
@@ -1009,16 +1036,19 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
               </Box>
 
               <Box className="flex flex-col w-[23rem] h-10">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Performance (Actual | Target)
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
-                    background: "#f2f2f2",
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px", 
+                    },
+                     background: "#f2f2f2",
                   }}
                   value={
                     primaryActualPerformance + " | " + primaryTargetPerformance
@@ -1030,12 +1060,12 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
             <Box sx={{ mb: 2 }}>
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Office Target
                 </span>
                 <textarea
                   value={primaryOfficeTarget}
-                  className="text-lg font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-[13px] font-regular border border-gray-300 bg-[#f2f2f2] h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   disabled
                 />
               </div>
@@ -1043,13 +1073,13 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
             <Box sx={{ mb: 2 }}>
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Actions
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={primaryActions}
-                  className="text-lg font-regular border border-gray-300  h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-[13px] font-regular border border-gray-300  h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setPrimaryActions(e.target.value)}
                 />
               </div>
@@ -1057,13 +1087,13 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
 
             <Box sx={{ mb: 2 }}>
               <div className="flex flex-col">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   OFI
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={primaryOfi}
-                  className="text-lg font-regular border border-gray-300  h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
+                  className="text-[13px] font-regular border border-gray-300  h-[5rem] rounded-md px-3 py-2 text-[rgb(59,59,59)]"
                   onChange={(e) => setPrimaryOfi(e.target.value)}
                 />
               </div>
@@ -1085,7 +1115,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   minWidth: "10rem",
                   color: "#AB3510",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
                 style={{
                   background: "white",
@@ -1102,7 +1132,7 @@ const ReportStakeholder: React.FC<ReportStakeholderProps> = ({
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
               >
                 Save

@@ -28,7 +28,7 @@ interface UserEntity {
   // Add other fields if they exist in your UserEntity class
 }
 
-const drawerWidth = 50;
+const drawerWidth = 0;
 
 const AdminListOfUser: React.FC = () => {
   const [users, setUsers] = useState<UserEntity[]>([]);
@@ -115,8 +115,12 @@ const AdminListOfUser: React.FC = () => {
         }}
       >
         <Typography
-          variant="h3"
-          sx={{ fontWeight: "bold", textAlign: "center", mb: 3 }}
+          sx={{
+            fontWeight: "bold",
+            fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
+            textAlign: 'center',
+            mb:3
+          }}
         >
           List of Users
         </Typography>
@@ -157,7 +161,7 @@ const AdminListOfUser: React.FC = () => {
             >
               <Table className="w-full border-collapse border border-gray-400">
                 <TableHead>
-                  <TableRow className="bg-[#b83216]">
+                  <TableRow className="bg-[#f88a30]">
                     {[
                       "ID",
                       "Username",
@@ -176,7 +180,7 @@ const AdminListOfUser: React.FC = () => {
                           color: "white",
                           fontWeight: "bold",
                           textAlign: "center",
-                          fontSize: "1.125rem",
+                          fontSize: "15px",
                         }}
                       >
                         {header}
@@ -192,49 +196,49 @@ const AdminListOfUser: React.FC = () => {
                     >
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.id}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.username}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.email}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.firstname}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.lastname}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.role}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.age}
                       </TableCell>
                       <TableCell
                         className="border border-gray-400"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.birthdate
                           ? new Date(user.birthdate).toLocaleDateString()
@@ -242,7 +246,7 @@ const AdminListOfUser: React.FC = () => {
                       </TableCell>
                       {/* <TableCell
                         className="border border-gray-400 max-w-xs break-words"
-                        sx={{ fontSize: "1rem", textAlign: "center" }}
+                        sx={{ fontSize: "13px", textAlign: "center" }}
                       >
                         {user.generatedAiStrats}
                       </TableCell>*/}

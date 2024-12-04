@@ -35,6 +35,7 @@ import ExpandLess from "@mui/icons-material/ExpandLess";
 import ExpandMore from "@mui/icons-material/ExpandMore";
 import { BrowserRouter as Router } from "react-router-dom";
 import HomeRoundedIcon from "@mui/icons-material/HomeRounded";
+import { Summarize } from "@mui/icons-material";
 
 interface Department {
   id: number;
@@ -42,7 +43,7 @@ interface Department {
   head_officer: string;
 }
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 export default function QANavbar() {
   return (
@@ -92,20 +93,14 @@ export default function QANavbar() {
                   }}
                 >
                   <Link href="/qaprofileview" legacyBehavior>
-                    <ListItemButton
-                      sx={{ minHeight: "60px", fontSize: "40px" }}
-                    >
+                    <ListItemButton sx={{ minHeight: "10%" }}>
                       <ListItemIcon>
-                        <HomeRoundedIcon
-                          sx={{ color: "#F2F2F2", fontSize: "40px" }}
-                        />
+                        <HomeRoundedIcon sx={{ color: "#F2F2F2" }} />
                       </ListItemIcon>
                       <ListItemText
                         primary="Home"
                         primaryTypographyProps={{
-                          fontSize: "23px",
-                          ml: 2,
-                          fontWeight: 400,
+                          fontSize: "15px",
                         }}
                       />
                     </ListItemButton>
@@ -121,24 +116,42 @@ export default function QANavbar() {
                   }}
                 >
                   <Link href="/qastratmapview" legacyBehavior>
-                    <ListItemButton sx={{ minHeight: "60px" }}>
+                    <ListItemButton sx={{ minHeight: "10%" }}>
                       <ListItemIcon>
-                        <ForkRightIcon
-                          sx={{ color: "#F2F2F2", fontSize: "40px" }}
-                        />
+                        <ForkRightIcon sx={{ color: "#F2F2F2" }} />
                       </ListItemIcon>
                       <ListItemText
                         primary="Strat Mapping"
                         primaryTypographyProps={{
-                          fontSize: "23px",
-                          ml: 2,
-                          fontWeight: 400,
+                          fontSize: "15px",
                         }}
                       />
                     </ListItemButton>
                   </Link>
                 </ListItem>
 
+                <ListItem
+                  disablePadding
+                  sx={{
+                    "&:hover": {
+                      backgroundColor: "#962203",
+                    },
+                  }}
+                >
+                  <Link href="/qapo" legacyBehavior>
+                    <ListItemButton sx={{ minHeight: "10%" }}>
+                      <ListItemIcon>
+                        <Summarize sx={{ color: "#F2F2F2" }} />
+                      </ListItemIcon>
+                      <ListItemText
+                        primary="QA PO"
+                        primaryTypographyProps={{
+                          fontSize: "15px",
+                        }}
+                      />
+                    </ListItemButton>
+                  </Link>
+                </ListItem>
                 {/* <ListItem
                   disablePadding
                   sx={{
@@ -188,18 +201,16 @@ export default function QANavbar() {
                 }}
               >
                 <ListItemButton
-                  sx={{ minHeight: "60px" }}
+                  sx={{ minHeight: "10%" }}
                   onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   <ListItemIcon>
-                    <LogoutIcon sx={{ color: "#F2F2F2", fontSize: "40px" }} />
+                    <LogoutIcon sx={{ color: "#F2F2F2" }} />
                   </ListItemIcon>
                   <ListItemText
                     primary="Logout"
                     primaryTypographyProps={{
-                      fontSize: "23px",
-                      ml: 2,
-                      fontWeight: 400,
+                      fontSize: "15px",
                     }}
                   />
                 </ListItemButton>

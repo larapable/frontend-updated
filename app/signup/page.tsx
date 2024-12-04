@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect } from "react";
 import {
   Box,
@@ -17,7 +16,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import Image from 'next/image';
+import Image from "next/image";
 import styled from "@emotion/styled";
 import { signIn } from "next-auth/react";
 import Spinner from "../components/Misc/Spinner";
@@ -25,6 +24,7 @@ import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ReCAPTCHA from "react-google-recaptcha";
 import CloseIcon from "@mui/icons-material/Close";
+import "@/app/page.css";
 
 const drawerWidth = 0;
 
@@ -46,7 +46,7 @@ const Cards = styled(Box)({
   borderRadius: "20px",
   boxShadow: "0px 4px 8px rgba(0.2, 0.2, 0.2, 0.2)",
   borderColor: "#e9e8e8",
-  borderStyle: "solid", 
+  borderStyle: "solid",
   borderWidth: "1px",
 });
 
@@ -312,6 +312,7 @@ export default function SignupPage() {
         flexDirection: isMobile ? "column" : "row",
         color: "#2e2c2c",
         height: "100vh",
+        alignItems: "center",
       }}
     >
       <Box
@@ -323,341 +324,550 @@ export default function SignupPage() {
         }}
       >
         <StyledBox>
-        <Grid container alignItems="center" justifyContent="space-between">
-          <Grid item xs={12} md={6}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center", 
-              padding: "4rem", 
-            }}
-          >
-            <Box sx={{
-              border: '1px solid #ee552a',
-              borderRadius: '2rem',
-              width: '40rem',
-              // height: '40rem',
-              padding:5,
-              textAlign: "center", 
-              boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
-              // overflowY: "auto"
-            }}>
-            <Typography variant="h3" fontWeight="bold" gutterBottom>
-              Sign Up
-            </Typography>
-            <Typography variant="h6" color="textSecondary">
-              Welcome to atlas! Please enter your details
-            </Typography>
-            <Box
-              display="flex"
-              alignItems="center"
-              mt={2}
-              mb={1}
-              py={1}
-              px={2}
-              gap={2}
+          <Grid container alignItems="center" justifyContent="space-between">
+            <Grid
+              item
+              xs={12}
+              md={6}
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "2rem",
+              }}
             >
-             <TextField
-              value={firstname}
-              onChange={(e) => setFirstname(e.target.value)}
-              label="First Name"
-              variant="outlined"
-              className="w-[17rem]"
-              InputLabelProps={{ className: "font-medium" }}
-              InputProps={{ className: "placeholder-[#807979]" }}
-            />
-            <TextField
-              value={lastname}
-              onChange={(e) => setLastname(e.target.value)}
-              label="Last Name"
-              variant="outlined"
-              className="w-[17rem]"
-              InputLabelProps={{ className: "font-medium" }}
-              InputProps={{ className: "placeholder-[#807979]" }}
-            />
-            </Box>
-            <FormControl variant="outlined" className="w-[33rem] mb-4">
-              {" "}
-              <InputLabel id="role-select-label">Select a role</InputLabel>
-              <Select
-                labelId="role-select-label"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-                label="Select a role"
+              <Box
+                sx={{
+                  border: "1px solid #ee552a",
+                  borderRadius: "2rem",
+                  width: "100%",
+                  padding: 2,
+                  textAlign: "center",
+                  boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+                }}
               >
-                <MenuItem value="">
-                  <strong>Select a role</strong>
-                </MenuItem>
-                <MenuItem value="headOfficer">HEAD OFFICER</MenuItem>
-                {/* <MenuItem value="faculty">FACULTY</MenuItem> */}
-                <MenuItem value="qualityAssurance">QUALITY ASSURANCE</MenuItem>
-              </Select>
-            </FormControl>
+                <Typography
+                  fontWeight="bold"
+                  gutterBottom
+                  sx={{
+                    fontSize: {
+                      lg: "2rem",
+                      sm: "2rem",
+                      md: "2rem",
+                      xs: "1.5rem",
+                    },
+                  }}
+                >
+                  Sign Up
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  sx={{
+                    fontSize: {
+                      lg: "1rem",
+                      sm: "1rem",
+                      md: "1rem",
+                      xs: "0.8rem",
+                    },
+                  }}
+                >
+                  Welcome to atlas! Please enter your details
+                </Typography>
+                <Box
+                  display="flex"
+                  alignItems="center"
+                  mb={1}
+                  mt={2}
+                  py={1}
+                  px={2}
+                  gap={2}
+                >
+                  <TextField
+                    value={firstname}
+                    onChange={(e) => setFirstname(e.target.value)}
+                    label="First Name"
+                    variant="outlined"
+                    sx={{
+                      width: {
+                        lg: "16rem",
+                        md: "15rem",
+                        sm: "15rem",
+                        xs: "15rem",
+                      },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                      classes: {
+                        root: "centered-placeholder",
+                      },
+                    }}
+                  />
+                  <TextField
+                    value={lastname}
+                    onChange={(e) => setLastname(e.target.value)}
+                    label="Last Name"
+                    variant="outlined"
+                    sx={{
+                      width: {
+                        lg: "16rem",
+                        md: "15rem",
+                        sm: "15rem",
+                        xs: "15rem",
+                      },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                      classes: {
+                        root: "centered-placeholder",
+                      },
+                    }}
+                  />
+                  <TextField
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    label="Email"
+                    variant="outlined"
+                    sx={{
+                      width: {
+                        lg: "16rem",
+                        md: "15rem",
+                        sm: "15rem",
+                        xs: "15rem",
+                      },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                    }}
+                    InputLabelProps={{
+                      shrink: true,
+                      classes: {
+                        root: "centered-placeholder",
+                      },
+                    }}
+                  />
+                </Box>
+                <TextField
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  label="Username"
+                  className="w-[95.6%] mb-4"
+                  sx={{
+                    width: {
+                      lg: "16rem",
+                      md: "15rem",
+                      sm: "15rem",
+                      xs: "15rem",
+                    },
+                    height: "40px",
+                    "& .MuiInputBase-root": {
+                      height: "40px",
+                      "& input::placeholder": {
+                        textAlign: "center",
+                        lineHeight: "40px",
+                        marginBottom: "1rem",
+                      },
+                    },
+                  }}
+                  InputLabelProps={{
+                    shrink: true,
+                    classes: {
+                      root: "centered-placeholder",
+                    },
+                  }}
+                />
 
-            {role === "faculty" && (
-              <FormControl variant="outlined" className="w-[33rem] mb-4">
+                <FormControl
+                  variant="outlined"
+                  className="w-[95.6%] mb-4"
+                  sx={{
+                    width: {
+                      lg: "16rem",
+                      md: "15rem",
+                      sm: "15rem",
+                      xs: "15rem",
+                    },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiInputLabel-outlined": {
+                      transform: "translate(14px, 16px) scale(1)",
+                      "&.MuiInputLabel-shrink": {
+                        transform: "translate(14px, -6px) scale(0.75)",
+                        backgroundColor: "white",
+                        padding: "0 4px",
+                      },
+                    },
+                  }}
+                >
                   {" "}
-                  {/* Reduced width */}
-                  <InputLabel id="head-officer-select-label">
-                    Select Head Officer
+                  <InputLabel
+                    id="role-select-label"
+                    shrink
+                    classes={{ root: "centered-placeholder" }}
+                  >
+                    Select a role
                   </InputLabel>
                   <Select
-                    labelId="head-officer-select-label"
-                    value={selectedHead || ""}
-                    onChange={(e) => setSelectedHead(e.target.value)}
-                    label="Select Head Officer"
+                    labelId="role-select-label"
+                    value={role}
+                    onChange={(e) => setRole(e.target.value)}
+                    label="Select a role"
                   >
                     <MenuItem value="">
-                      <strong>Select Head Officer</strong>
+                      <strong>Select a role</strong>
                     </MenuItem>
-                    {Array.isArray(heads) &&
-                      Array.from(new Set(heads.filter(Boolean))).map(
-                        (headName, index) => (
-                          <MenuItem key={index} value={headName}>
-                            {headName}
-                          </MenuItem>
-                        )
-                      )}
+                    <MenuItem value="headOfficer">HEAD OFFICER</MenuItem>
+                    {/* <MenuItem value="faculty">FACULTY</MenuItem> */}
+                    <MenuItem value="qualityAssurance">
+                      QUALITY ASSURANCE
+                    </MenuItem>
                   </Select>
                 </FormControl>
-              )}
 
-            {role !== "qualityAssurance" && (
-              <FormControl variant="outlined" className="w-[33rem] mb-4">
-                {" "}
-                {/* Reduced width */}
-                <InputLabel id="department-select-label">
-                  Select a default department
-                </InputLabel>
-                <Select
-                  labelId="department-select-label"
-                  value={
-                    selectedDepartment !== null ? selectedDepartment.toString() : ""
-                  }
-                  onChange={(e: SelectChangeEvent<string>) => {
-                    const value = e.target.value;
-                    const departmentId = value ? parseInt(value) : null; // Handle parsing
-                    setSelectedDepartment(departmentId); // Set the state
+                {role === "faculty" && (
+                  <FormControl
+                    variant="outlined"
+                    className="w-[95.6%]"
+                    sx={{
+                      width: {
+                        lg: "16rem",
+                        md: "15rem",
+                        sm: "15rem",
+                        xs: "15rem",
+                      },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiInputLabel-outlined": {
+                        transform: "translate(14px, 16px) scale(1)",
+                        "&.MuiInputLabel-shrink": {
+                          transform: "translate(14px, -6px) scale(0.75)",
+                          backgroundColor: "white",
+                          padding: "0 4px",
+                        },
+                      },
+                    }}
+                  >
+                    {" "}
+                    {/* Reduced width */}
+                    <InputLabel
+                      id="head-officer-select-label"
+                      shrink
+                      classes={{ root: "centered-placeholder" }}
+                    >
+                      Select Head Officer
+                    </InputLabel>
+                    <Select
+                      labelId="head-officer-select-label"
+                      value={selectedHead || ""}
+                      onChange={(e) => setSelectedHead(e.target.value)}
+                      label="Select Head Officer"
+                    >
+                      <MenuItem value="">
+                        <strong>Select Head Officer</strong>
+                      </MenuItem>
+                      {Array.isArray(heads) &&
+                        Array.from(new Set(heads.filter(Boolean))).map(
+                          (headName, index) => (
+                            <MenuItem key={index} value={headName}>
+                              {headName}
+                            </MenuItem>
+                          )
+                        )}
+                    </Select>
+                  </FormControl>
+                )}
+
+                {role !== "qualityAssurance" && (
+                  <FormControl
+                    variant="outlined"
+                    className="w-[95.6%] mb-2"
+                    sx={{
+                      width: {
+                        lg: "16rem",
+                        md: "15rem",
+                        sm: "15rem",
+                        xs: "15rem",
+                      },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiInputLabel-outlined": {
+                        transform: "translate(14px, 16px) scale(1)",
+                        "&.MuiInputLabel-shrink": {
+                          transform: "translate(14px, -6px) scale(0.75)",
+                          backgroundColor: "white", // This ensures the label has a solid background
+                          padding: "0 4px", // Add some padding around the label
+                        },
+                      },
+                    }}
+                  >
+                    {" "}
+                    {/* Reduced width */}
+                    <InputLabel
+                      id="department-select-label"
+                      shrink
+                      classes={{ root: "centered-placeholder" }}
+                    >
+                      Select a default department
+                    </InputLabel>
+                    <Select
+                      labelId="department-select-label"
+                      value={
+                        selectedDepartment !== null
+                          ? selectedDepartment.toString()
+                          : ""
+                      }
+                      onChange={(e: SelectChangeEvent<string>) => {
+                        const value = e.target.value;
+                        const departmentId = value ? parseInt(value) : null; // Handle parsing
+                        setSelectedDepartment(departmentId); // Set the state
+                      }}
+                      label="Select a default department"
+                    >
+                      <MenuItem value="">
+                        <strong>Select a default department</strong>
+                      </MenuItem>
+                      {departments &&
+                        departments
+                          .filter(
+                            (department: Department) =>
+                              department.head_officer === selectedHead
+                          )
+                          .map((department) => (
+                            <MenuItem key={department.id} value={department.id}>
+                              {department.department_name}
+                            </MenuItem>
+                          ))}
+                    </Select>
+                  </FormControl>
+                )}
+
+                <Box display="flex" alignItems="center" py={1} px={2} gap={2}>
+                  <div className="flex flex-row w-[100%] gap-4">
+                    {" "}
+                    {/* Keep the row layout for the text fields */}
+                    <div className="flex flex-col">
+                      {" "}
+                      {/* Wrap the password field and requirements in a column */}
+                      <TextField
+                        value={password}
+                        onChange={handlePasswordChange}
+                        onFocus={handlePasswordFocus} // Show requirements when focused
+                        onBlur={handlePasswordBlur} // Hide requirements on blur
+                        label="Password"
+                        type="password"
+                        variant="outlined"
+                        sx={{
+                          width: {
+                            lg: "100%",
+                            md: "14rem",
+                            sm: "17rem",
+                            xs: "10rem",
+                          },
+                          height: "40px",
+                          "& .MuiInputBase-root": { height: "40px" },
+                          mb: 1,
+                        }}
+                        InputLabelProps={{
+                          shrink: true,
+                          classes: {
+                            root: "centered-placeholder",
+                          },
+                        }}
+                      />
+                      {/* Display password requirements */}
+                      <div
+                        className={`bg-white border border-gray-300 rounded-md p-2 shadow-lg ${
+                          passwordRequirementsMet.show ? "" : "hidden"
+                        }`}
+                        style={{ zIndex: 1000, fontSize: "0.8rem" }} // Add z-index for overlay
+                      >
+                        <ul className="list-disc list-inside space-y-1">
+                          <li
+                            className={`${
+                              passwordRequirementsMet.minLength
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            Minimum 8 characters
+                          </li>
+                          <li
+                            className={`${
+                              passwordRequirementsMet.uppercase
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            At least one uppercase letter
+                          </li>
+                          <li
+                            className={`${
+                              passwordRequirementsMet.lowercase
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            At least one lowercase letter
+                          </li>
+                          <li
+                            className={`${
+                              passwordRequirementsMet.number
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            At least one number
+                          </li>
+                          <li
+                            className={`${
+                              passwordRequirementsMet.specialChar
+                                ? "text-green-500"
+                                : "text-red-500"
+                            }`}
+                          >
+                            At least one special character
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+                    <TextField
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      label="Confirm Password"
+                      type="password"
+                      variant="outlined"
+                      sx={{
+                        width: {
+                          lg: "71.6%",
+                          md: "12.5rem",
+                          sm: "15rem",
+                          xs: "13rem",
+                        },
+                        height: "40px",
+                        "& .MuiInputBase-root": { height: "40px" },
+                        mb: 1,
+                      }}
+                      InputLabelProps={{
+                        shrink: true,
+                        classes: {
+                          root: "centered-placeholder",
+                        },
+                      }}
+                    />
+                  </div>
+                </Box>
+
+                <Button
+                  variant="contained"
+                  onClick={handleSubmit}
+                  sx={{
+                    width: { lg: "95%", md: "95%", sm: "95%", xs: "95%" },
+                    background: "linear-gradient(to left, #8a252c, #AB3510)",
+                    fontSize: "18px",
+                    mb: 2,
                   }}
-                  label="Select a default department"
                 >
-                  <MenuItem value="">
-                    <strong>Select a default department</strong>
-                  </MenuItem>
-                  {departments &&
-                    departments
-                      .filter(
-                        (department: Department) =>
-                          department.head_officer === selectedHead
-                      )
-                      .map((department) => (
-                        <MenuItem key={department.id} value={department.id}>
-                          {department.department_name}
-                        </MenuItem>
-                      ))}
-                </Select>
-              </FormControl>
-            )}
-
-              <TextField
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                label="Email"
-                variant="outlined"
-                className="w-[33rem] mb-4"
-                InputLabelProps={{ className: "font-medium" }}
-                InputProps={{ className: "placeholder-[#807979]" }}
-              />
-              <TextField
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                label="Username"
-                variant="outlined"
-                className="w-[33rem] mb-2"
-                InputLabelProps={{ className: "font-medium" }}
-                InputProps={{ className: "placeholder-[#807979]" }}
-              />
-
-            <Box
-              display="flex"
-              alignItems="center"
-              mb={3}
-              py={1}
-              px={2}
-              gap={2}
-            >
-              <div className="flex flex-row space-x-4">
-              {" "}
-              {/* Keep the row layout for the text fields */}
-              <div className="flex flex-col">
-                {" "}
-                {/* Wrap the password field and requirements in a column */}
-                <TextField
-                  value={password}
-                  onChange={handlePasswordChange}
-                  onFocus={handlePasswordFocus} // Show requirements when focused
-                  onBlur={handlePasswordBlur} // Hide requirements on blur
-                  label="Password"
-                  type="password"
-                  variant="outlined"
-                  className="w-[16rem] mb-1" // Add margin bottom for spacing
-                  InputLabelProps={{ className: "font-medium" }}
-                  InputProps={{ className: "placeholder-[#807979]" }}
-                />
-                {/* Display password requirements */}
-                <div
-                  className={`bg-white border border-gray-300 rounded-md p-2 shadow-lg ${
-                    passwordRequirementsMet.show ? "" : "hidden"
-                  }`}
-                  style={{ zIndex: 1000, fontSize: "0.8rem" }} // Add z-index for overlay
+                  Sign Up
+                </Button>
+                <Typography
+                  mb={1}
+                  sx={{
+                    fontSize: {
+                      lg: "1rem",
+                      sm: "1rem",
+                      md: "1rem",
+                      xs: "0.8rem",
+                    },
+                  }}
                 >
-                  <ul className="list-disc list-inside space-y-1">
-                    <li
-                      className={`${
-                        passwordRequirementsMet.minLength
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      Minimum 8 characters
-                    </li>
-                    <li
-                      className={`${
-                        passwordRequirementsMet.uppercase
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      At least one uppercase letter
-                    </li>
-                    <li
-                      className={`${
-                        passwordRequirementsMet.lowercase
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      At least one lowercase letter
-                    </li>
-                    <li
-                      className={`${
-                        passwordRequirementsMet.number
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      At least one number
-                    </li>
-                    <li
-                      className={`${
-                        passwordRequirementsMet.specialChar
-                          ? "text-green-500"
-                          : "text-red-500"
-                      }`}
-                    >
-                      At least one special character
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <TextField
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                label="Confirm Password"
-                type="password"
-                variant="outlined"
-                className="w-[16rem]"
-                InputLabelProps={{ className: "font-medium" }}
-                InputProps={{ className: "placeholder-[#807979]" }}
-              />
-            </div>
-            </Box>
+                  Already have an account?{" "}
+                  <Link
+                    href="/login"
+                    className="font-bold text-black"
+                    underline="hover"
+                  >
+                    Click here!
+                  </Link>
+                </Typography>
+              </Box>
+            </Grid>
 
-            <Button
-              variant="contained"
-              onClick={handleSubmit}
-              sx={{
-                width: "100%",
-                background: "linear-gradient(to left, #8a252c, #AB3510)",
-                px:10,
-                fontSize: '18px',
-                mb:2,
-                py:2,
-                mt:1
-              }}
-            >
-              Sign Up
-            </Button>
-            <Typography variant="h6" mb={1}>
-              Already have an account?{" "}
-              <Link
-                href="/login"
-                className="font-bold text-black"
-                underline="hover"
+            <Grid item xs={12} md={6}>
+              <Box
+                sx={{
+                  width: "100%",
+                  height: "35rem",
+                  display: { xs: "none", sm: "none", md: "flex", lg: "flex" },
+                  backgroundImage: `url('/landingbg.png')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  padding: "4rem",
+                  color: "white",
+                  // position: "relative",
+                  borderRadius: "20px",
+                  textAlign: "center",
+                  animation: "floatingBackground 10s ease-in-out infinite",
+                  "@keyframes floatingBackground": {
+                    "0%": { backgroundPosition: "center top" },
+                    "50%": { backgroundPosition: "center bottom" },
+                    "100%": { backgroundPosition: "center top" },
+                  },
+                }}
               >
-                Click here!
-              </Link>
-            </Typography>
-            <Box display="flex" alignItems="center" width="100%">
-              <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
-              <Typography sx={{ mx: 2 }}>or</Typography>
-              <Divider sx={{ flex: 1, bgcolor: "#807979" }} />
-            </Box>
-            <Button
-              href="/"
-              sx={{
-                color: "#AB3510",
-                fontWeight: "bold",
-                fontSize: "20px",
-                textDecoration: "underline",
-              }}
-            >
-              Back Home
-            </Button>
-            </Box>
+                <Image src="/logo.png" alt="Logo" width={100} height={100} />
+                <Typography
+                  fontWeight="bold"
+                  mb={2}
+                  sx={{
+                    fontSize: {
+                      lg: "2rem",
+                      sm: "2rem",
+                      md: "2rem",
+                      xs: "1.5rem",
+                    },
+                  }}
+                >
+                  Welcome to Atlas! <br /> Please login to your atlas account
+                </Typography>
+                <Typography
+                  color="textSecondary"
+                  textAlign="center"
+                  sx={{
+                    color: "white",
+                    mb: 3,
+                    fontSize: {
+                      lg: "1rem",
+                      sm: "1rem",
+                      md: "1rem",
+                      xs: "0.8rem",
+                    },
+                  }}
+                >
+                  Gain insights, track progress, and achieve your goals.
+                </Typography>
+                <Box
+                  sx={{
+                    borderRadius: "20px",
+                    boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
+                    overflow: "hidden", // This ensures the image is clipped to the rounded corners
+                  }}
+                >
+                  <Image
+                    src="/loginimg.png"
+                    alt="Logo"
+                    width={400}
+                    height={400}
+                  />
+                </Box>
+              </Box>
+            </Grid>
           </Grid>
-
-          <Grid item xs={12} md={6}
-            sx={{
-              backgroundImage: `url('/landingbg.png')`, 
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "4rem",
-              color: "white",
-              position: "relative",
-              borderRadius: "20px",
-              textAlign: "center", 
-              animation: "floatingBackground 10s ease-in-out infinite",
-              "@keyframes floatingBackground": {
-                "0%": { backgroundPosition: "center top" },
-                "50%": { backgroundPosition: "center bottom" },
-                "100%": { backgroundPosition: "center top" },
-              }}}
-
-          >
-            <Image src="/logo.png" alt="Logo" width={150} height={150}/>
-            <Typography variant="h4" fontWeight="bold" mt={3} mb={3}>
-              Welcome to Atlas! <br/> Please sign up to your atlas account
-            </Typography>
-            <Typography color="textSecondary" textAlign="center" sx={{fontSize: '18px', color:'white', mb:5}}>
-              Gain insights, track progress, and achieve your goals.
-            </Typography>
-            <Box
-              sx={{
-                borderRadius: "20px",
-                boxShadow: "0px 4px 8px rgba(0, 0, 0, 0.5)",
-                overflow: "hidden", // This ensures the image is clipped to the rounded corners
-              }}
-            >
-              <Image src="/loginimg.png" alt="Logo" width={800} height={400} />
-            </Box>
-          </Grid>
-        </Grid>
         </StyledBox>
       </Box>
 
@@ -678,7 +888,7 @@ export default function SignupPage() {
               bgcolor: "white",
               p: 4,
               borderRadius: 2,
-              width: "40rem",
+              width: "25rem",
               textAlign: "center",
               position: "relative",
             }}
@@ -688,22 +898,35 @@ export default function SignupPage() {
               sx={{ position: "absolute", top: 8, right: 8 }}
             ></IconButton>
             <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 3 }}
+              sx={{
+                fontWeight: "bold",
+                mb: 3,
+                fontSize: {
+                  lg: "1.5rem",
+                  sm: "1rem",
+                  md: "1rem",
+                  xs: "0.8rem",
+                },
+              }}
             >
               Attention!
             </Typography>
-            <Typography id="error-modal-description" variant="h5" sx={{ mb: 5 }}>
+            <Typography
+              id="error-modal-description"
+              sx={{
+                mb: 3,
+                fontSize: { lg: "1rem", sm: "1rem", md: "1rem", xs: "0.8rem" },
+              }}
+            >
               {errorMessage}
             </Typography>
             <Button
               variant="contained"
               sx={{
-                width: "30%",
+                width: "50%",
                 background: "linear-gradient(to left, #8a252c, #AB3510)",
-                p:1,
-                fontSize: '18px',
+                p: 1,
+                fontSize: "13px",
               }}
               onClick={handleCloseErrorModal}
             >
@@ -730,29 +953,42 @@ export default function SignupPage() {
               bgcolor: "white",
               p: 4,
               borderRadius: 2,
-              width: "40rem",
+              width: "25rem",
               textAlign: "center",
               position: "relative",
             }}
           >
             <Typography
               id="success-modal-title"
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 3 }}
+              sx={{
+                fontWeight: "bold",
+                mb: 3,
+                fontSize: {
+                  lg: "1.5rem",
+                  sm: "1rem",
+                  md: "1rem",
+                  xs: "0.8rem",
+                },
+              }}
             >
               Success!
             </Typography>
-            <Typography id="success-modal-description" variant="h5" sx={{ mb: 5 }}>
+            <Typography
+              id="success-modal-description"
+              sx={{
+                mb: 3,
+                fontSize: { lg: "1rem", sm: "1rem", md: "1rem", xs: "0.8rem" },
+              }}
+            >
               Account successfully created.
             </Typography>
             <Button
               variant="contained"
               sx={{
-                width: "30%",
+                width: "50%",
                 background: "linear-gradient(to left, #8a252c, #AB3510)",
-                p:1,
-                fontSize: '18px',
+                p: 1,
+                fontSize: "13px",
               }}
               onClick={handleCloseSuccessModal}
             >
@@ -761,9 +997,6 @@ export default function SignupPage() {
           </Box>
         </Box>
       </Modal>
-
-
-      
     </Box>
   );
 }

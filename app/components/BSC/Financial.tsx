@@ -51,7 +51,6 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
   const currentYear = new Date().getFullYear();
   const yearAsString = currentYear.toString();
   const yearOptions = Array.from({ length: 10 }, (_, i) => currentYear + i);
-  
 
   // open modal
   const [financialModalOpen, setFinancialModalOpen] = useState(false);
@@ -293,11 +292,11 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
             width: "100%",
             display: "flex",
             alignItems: "center",
-            mt: -2,
+            mt: -1,
             mb: 2,
           }}
         >
-          <img src="/financial.png" alt="" className=" h-[6rem] mr-2" />
+          <img src="/financial.png" alt="" className=" h-[4rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -307,10 +306,29 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography variant="h5" sx={{ fontWeight: "600" }}>
+              <Typography
+                sx={{
+                  fontWeight: "600",
+                  fontSize: {
+                    lg: "1rem",
+                    sm: "1rem",
+                    md: "1rem",
+                    xs: "0.8rem",
+                  },
+                }}
+              >
                 Financial Scorecard Overview
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: "500" }}>
+              <Typography
+                sx={{
+                  fontSize: {
+                    lg: "0.9rem",
+                    sm: "0.9rem",
+                    md: "0.9rem",
+                    xs: "0.8rem",
+                  },
+                }}
+              >
                 Measures financial performance and profitability.
               </Typography>
             </Box>
@@ -321,8 +339,8 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 justifyContent: "center",
                 alignItems: "center",
                 borderRadius: "50%",
-                width: "3rem",
-                height: "3rem",
+                width: "2.5rem",
+                height: "2.5rem",
                 backgroundColor: "#ff7b00d3",
                 marginTop: "0.5rem",
               }}
@@ -332,9 +350,8 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
                   fill="currentColor"
+                  className="size-6"
                   style={{
-                    width: "2rem",
-                    height: "2rem",
                     color: "#ffffff",
                   }}
                 >
@@ -358,7 +375,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -367,7 +384,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -377,18 +394,18 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
-                  KPI 
+                  KPI
                 </TableCell>
                 {/* {added target Year} */}
                 <TableCell
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -398,7 +415,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -408,28 +425,28 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
-                  Target 
+                  Target
                 </TableCell>
-                 {/* {added actual} */}
+                {/* {added actual} */}
                 <TableCell
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
-                  Actual 
+                  Actual
                 </TableCell>
                 <TableCell
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -440,7 +457,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -450,7 +467,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -496,48 +513,52 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                       >
                         {/* Table Cells */}
                         <TableCell>
-                          <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.target_code || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell sx={{ maxWidth: "35rem" }}>
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.office_target || "N/A"}
                           </span>
                         </TableCell>
                         {/* {added KPI} */}
                         <TableCell>
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
-                            {scorecard.key_performance_indicator && scorecard.key_performance_indicator.length > 20
-                              ? `${scorecard.key_performance_indicator.substring(0, 15)}...`
+                          <span className="font-medium text-[13px]">
+                            {scorecard.key_performance_indicator &&
+                            scorecard.key_performance_indicator.length > 20
+                              ? `${scorecard.key_performance_indicator.substring(
+                                  0,
+                                  15
+                                )}...`
                               : scorecard.key_performance_indicator || "N/A"}
                           </span>
                         </TableCell>
 
                         {/* {added target year} */}
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.targetYear || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.metric || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.target_performance || "N/A"}
                           </span>
                         </TableCell>
-                         {/* {added actual performance} */}
-                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                        {/* {added actual performance} */}
+                        <TableCell align="center">
+                          <span className="font-medium text-[13px]">
                             {scorecard.actual_performance || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {validatedLevelOfAttainment || "N/A"}%
                           </span>
                         </TableCell>
@@ -562,7 +583,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                           )}
                         </TableCell>
                         <TableCell align="center">
-                          <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
+                          <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[13px]">
                             {scorecard.status || "N/A"}
                           </div>
                         </TableCell>
@@ -578,7 +599,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                               viewBox="0 0 24 24"
                               strokeWidth="1.5"
                               stroke="currentColor"
-                              className="w-6 h-6"
+                              className="w-5 h-5"
                             >
                               <path
                                 strokeLinecap="round"
@@ -611,18 +632,21 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
-              maxWidth: "80vw",
+              width: "70%",
+              height: "70%",
               overflowX: "hidden",
             }}
           >
             <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
+              sx={{
+                fontWeight: "600",
+                fontSize: { lg: "1rem", sm: "1rem", md: "1rem", xs: "0.8rem" },
+                mb: 1,
+              }}
             >
               Financial
             </Typography>
@@ -635,7 +659,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Code
                   <span className="text-[rgb(221,20,20)]">*</span>
                 </span>
@@ -643,8 +667,11 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px",
+                    },
                   }}
                   value={financialTargetCode}
                   onChange={(e) => setFinancialTargetCode(e.target.value)}
@@ -652,7 +679,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
               </div>
               {/* {target year added} */}
               {/* <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 font-regular text-lg text-[#000000]">
+                <span className="mr-3 font-regular text-[13px]">
                   Target Year
                 </span>
                 <TextField
@@ -667,34 +694,34 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   disabled
                 />
               </div> */}
-               <div className="flex flex-col w-[26rem]">
-                  <span className="mr-3 break-words font-regular text-lg text-[#000000]">
-                    Target Year
-                    <span className="text-[#DD1414]">*</span>
-                  </span>
-                  <FormControl fullWidth>
-                    <Select
-                      value={financialTargetYear}
-                      onChange={(e) => setFinancialTargetYear(e.target.value)}
-                      sx={{
-                        height: "47px",
-                        "& .MuiInputBase-root": { height: "47px" },
-                        "& .MuiOutlinedInput-input": {
-                          fontSize: "18px",
-                        },
-                      }}
-                    >
-                      {yearOptions.map((year) => (
-                        <MenuItem key={year} value={year}>
-                          {year}
-                        </MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
-                </div>
-              
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
+                  Target Year
+                  <span className="text-[#DD1414]">*</span>
+                </span>
+                <FormControl fullWidth>
+                  <Select
+                    value={financialTargetYear}
+                    onChange={(e) => setFinancialTargetYear(e.target.value)}
+                    sx={{
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
+                      "& .MuiOutlinedInput-input": {
+                        fontSize: "15px",
+                      },
+                    }}
+                  >
+                    {yearOptions.map((year) => (
+                      <MenuItem key={year} value={year}>
+                        {year}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </div>
+
+              <div className="flex flex-col w-[26rem]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Metric / Unit of Measure
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -703,10 +730,10 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                     value={financialMetric || ""}
                     onChange={(e) => setFinancialMetric(e.target.value)}
                     sx={{
-                      height: "47px",
-                      "& .MuiInputBase-root": { height: "47px" },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
                       "& .MuiOutlinedInput-input": {
-                        fontSize: "18px",
+                        fontSize: "15px",
                       },
                     }}
                   >
@@ -746,23 +773,31 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Key Performance Indicator
                   <span className="text-[#DD1414]">*</span>
                 </span>
+
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px",
+                    },
                   }}
                   value={financialKPI}
                   onChange={(e) => setFinancialKPI(e.target.value)}
                 />
+                <span className="mr-3 break-words font-regular italic text-xs text-[#2c2c2c]">
+                  For Multiple KPIs, separate each KPI with a bar | (e.g., KPI 1
+                  | KPI 2 | KPI 3).
+                </span>
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Status
                 </span>
                 <FormControl fullWidth>
@@ -771,10 +806,10 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                     onChange={(e) => setFinancialStatus(e.target.value)}
                     disabled={userRole !== "qualityAssurance"}
                     sx={{
-                      height: "47px",
-                      "& .MuiInputBase-root": { height: "47px" },
+                      height: "37px",
+                      "& .MuiInputBase-root": { height: "37px" },
                       "& .MuiOutlinedInput-input": {
-                        fontSize: "18px",
+                        fontSize: "15px",
                       },
                       background: "#f2f2f2",
                     }}
@@ -799,7 +834,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   <option value="Achieved">Achieved</option>
                 </select> */}
                 {userRole !== "qualityAssurance" && (
-                  <span className="mr-3 break-words font-regular italic text-sm text-[#2c2c2c]">
+                  <span className="mr-3 break-words font-regular italic text-xs text-[#2c2c2c]">
                     You cannot edit the status unless you are in a QA role.
                   </span>
                 )}
@@ -810,11 +845,12 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                gap: 4,
                 mb: 2,
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Performance
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -823,8 +859,11 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px",
+                    },
                   }}
                   value={financialTargetPerformance}
                   onChange={(e) => {
@@ -886,7 +925,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 )}
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-md text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Actual
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -895,8 +934,11 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px",
+                    },
                   }}
                   value={financialActualPerformance}
                   onChange={(e) => {
@@ -961,7 +1003,7 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
             {/* {added link of evidence} */}
             <Box>
               <div className="flex flex-col mt-5">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Link of Evidence
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -969,8 +1011,11 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
+                    "& .MuiOutlinedInput-input": {
+                      fontSize: "15px",
+                    },
                   }}
                   value={financialEvidenceLink}
                   onChange={(e) => setFinancialEvidenceLink(e.target.value)}
@@ -979,13 +1024,13 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
             </Box>
             <Box>
               <div className="flex flex-col mt-5">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Office Target
                   <span className="text-[#DD1414]">*</span>
                 </span>
                 <textarea
                   value={financialOfficeTarget}
-                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem]"
+                  className="border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[7rem] text-[15px]"
                   onChange={(e) => setFinancialOfficeTarget(e.target.value)}
                 />
               </div>
@@ -1003,10 +1048,10 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 variant="contained"
                 onClick={handleFinancialCloseModal}
                 sx={{
-                  minWidth: "10rem",
+                  width: "15%",
                   color: "#AB3510",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
                 style={{
                   background: "white",
@@ -1019,10 +1064,10 @@ const Financial: React.FC<FinancialProps> = ({ selectedYear }) => {
                 variant="contained"
                 onClick={handleSaveButtonClick}
                 sx={{
-                  minWidth: "10rem",
+                  width: "15%",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
               >
                 {financialEditMode ? "Edit" : "Save"}

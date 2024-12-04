@@ -195,11 +195,11 @@ export default function QAStakeholder({
             width: "100%",
             display: "flex",
             alignItems: "center",
-            mt: -2,
+            mt: -1,
             mb: 2,
           }}
         >
-          <img src="/stakeholder.png" alt="" className=" h-[6rem] mr-2" />
+          <img src="/stakeholder.png" alt="" className=" h-[4rem] mr-2" />
           <Box
             sx={{
               display: "flex",
@@ -209,10 +209,10 @@ export default function QAStakeholder({
             }}
           >
             <Box sx={{ alignContent: "center", justifyContent: "center" }}>
-              <Typography variant="h5" sx={{ fontWeight: "600" }}>
+              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                 Stakeholder Scorecard Overview
               </Typography>
-              <Typography variant="h6" sx={{ fontWeight: "500" }}>
+              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                 Evaluates value delivered to stakeholders, including customers.
               </Typography>
             </Box>
@@ -228,7 +228,7 @@ export default function QAStakeholder({
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -237,7 +237,7 @@ export default function QAStakeholder({
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -247,7 +247,7 @@ export default function QAStakeholder({
                 <TableCell
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -258,7 +258,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -268,7 +268,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -278,7 +278,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -289,7 +289,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -299,7 +299,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -310,7 +310,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -320,7 +320,7 @@ export default function QAStakeholder({
                   align="center"
                   sx={{
                     fontWeight: "bold",
-                    fontSize: "18px",
+                    fontSize: "13px",
                     color: "#2e2c2c",
                   }}
                 >
@@ -366,18 +366,18 @@ export default function QAStakeholder({
                       >
                         {/* Table Cells */}
                         <TableCell>
-                          <span className="font-medium text-[#2e2c2c] text-[1.1rem]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.target_code || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell sx={{ maxWidth: "35rem" }}>
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.office_target || "N/A"}
                           </span>
                         </TableCell>
                         {/* {added KPI} */}
                         <TableCell>
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.key_performance_indicator && scorecard.key_performance_indicator.length > 20
                               ? `${scorecard.key_performance_indicator.substring(0, 15)}...`
                               : scorecard.key_performance_indicator || "N/A"}
@@ -385,28 +385,28 @@ export default function QAStakeholder({
                         </TableCell>
                         {/* {added target year} */}
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.targetYear || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.metric || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.target_performance || "N/A"}
                           </span>
                         </TableCell>
                         {/* {added actual performance} */}
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {scorecard.actual_performance || "N/A"}
                           </span>
                         </TableCell>
                         <TableCell align="center">
-                          <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                          <span className="font-medium text-[13px]">
                             {validatedLevelOfAttainment || "N/A"}%
                           </span>
                         </TableCell>
@@ -431,7 +431,7 @@ export default function QAStakeholder({
                           )}
                         </TableCell>
                         <TableCell align="center">
-                          <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[1.1rem] text-[#2e2c2c]">
+                          <div className="font-medium border rounded-lg bg-yellow-200 border-yellow-500 px-1 py-3 text-[13px]">
                             {scorecard.status || "N/A"}
                           </div>
                         </TableCell>
@@ -447,7 +447,7 @@ export default function QAStakeholder({
                               viewBox="0 0 24 24"
                               strokeWidth="1.5"
                               stroke="currentColor"
-                              className="w-6 h-6"
+                              className="w-5 h-5"
                             >
                               <path
                                 strokeLinecap="round"
@@ -480,19 +480,16 @@ export default function QAStakeholder({
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               position: "relative",
-              maxWidth: "80vw",
+              width: "80%",
+              height: "90%",
               overflowX: "hidden",
             }}
           >
-            <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-            >
+            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
               Stakeholder
             </Typography>
             <Box
@@ -504,15 +501,15 @@ export default function QAStakeholder({
               }}
             >
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Code
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
                     backgroundColor:
                       userRole === "qualityAssurance" ? "#f2f2f2" : "white",
                   }}
@@ -522,15 +519,15 @@ export default function QAStakeholder({
                 />
               </div>
               <div className="flex flex-col w-[26rem] ">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Year
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
                     background: "#f2f2f2",
                   }}
                   value={stakeholderTargetYear}
@@ -538,7 +535,7 @@ export default function QAStakeholder({
                 />
               </div>
               <div className="flex flex-col w-[26rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Metric / Unit of Measure
                 </span>
                 <FormControl fullWidth>
@@ -547,10 +544,10 @@ export default function QAStakeholder({
                     onChange={(e) => setStakeholderMetric(e.target.value)}
                     disabled={userRole === "qualityAssurance"}
                     sx={{
-                      height: "47px",
-                      "& .MuiInputBase-root": { height: "47px" },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
                       "& .MuiOutlinedInput-input": {
-                        fontSize: "18px",
+                        fontSize: "13px",
                       },
                       backgroundColor:
                         userRole === "qualityAssurance" ? "#f2f2f2" : "white",
@@ -578,15 +575,15 @@ export default function QAStakeholder({
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Key Performance Indicator
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
                     backgroundColor:
                       userRole === "qualityAssurance" ? "#f2f2f2" : "white",
                   }}
@@ -596,7 +593,7 @@ export default function QAStakeholder({
                 />
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Status
                   <span className="text-[#DD1414]">*</span>
                 </span>
@@ -606,10 +603,10 @@ export default function QAStakeholder({
                     onChange={(e) => setStakeholderStatus(e.target.value)}
                     disabled={userRole !== "qualityAssurance"}
                     sx={{
-                      height: "47px",
-                      "& .MuiInputBase-root": { height: "47px" },
+                      height: "40px",
+                      "& .MuiInputBase-root": { height: "40px" },
                       "& .MuiOutlinedInput-input": {
-                        fontSize: "18px",
+                        fontSize: "13px",
                       },
                       backgroundColor:
                         userRole === "qualityAssurance" ? "white" : "#f2f2f2",
@@ -634,11 +631,12 @@ export default function QAStakeholder({
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "space-between",
+                gap:4,
                 mb: 2,
               }}
             >
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Target Performance
                 </span>
                 <TextField
@@ -646,8 +644,8 @@ export default function QAStakeholder({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
                     backgroundColor:
                       userRole === "qualityAssurance" ? "#f2f2f2" : "white",
                   }}
@@ -712,7 +710,7 @@ export default function QAStakeholder({
                 )}
               </div>
               <div className="flex flex-col w-[40rem]">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Actual Performance
                 </span>
                 <TextField
@@ -720,8 +718,8 @@ export default function QAStakeholder({
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
                     backgroundColor:
                       userRole === "qualityAssurance" ? "#f2f2f2" : "white",
                   }}
@@ -788,16 +786,16 @@ export default function QAStakeholder({
             </Box>
             {/* {added link of evidence} */}
             <Box>
-              <div className="flex flex-col mt-5">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+              <div className="flex flex-col mt-3">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Link of Evidence
                 </span>
                 <TextField
                   fullWidth
                   variant="outlined"
                   sx={{
-                    height: "50px",
-                    "& .MuiInputBase-root": { height: "50px" },
+                    height: "40px",
+                    "& .MuiInputBase-root": { height: "40px" },
                     backgroundColor:
                       userRole === "qualityAssurance" ? "#f2f2f2" : "white",
                   }}
@@ -808,13 +806,13 @@ export default function QAStakeholder({
               </div>
             </Box>
             <Box>
-              <div className="flex flex-col ">
-                <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+              <div className="flex flex-col mt-3">
+                <span className="mr-3 break-words font-regular text-[13px]">
                   Office Target
                 </span>
                 <textarea
                   value={stakeholderOfficeTarget}
-                  className={`border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[10rem] ${
+                  className={`border border-gray-300 px-3 py-2 pl-2 pr-2 mt-1 rounded-md h-[7rem] text-[15px] text-gray-400 font-regular ${
                     userRole === "qualityAssurance"
                       ? "bg-[#f2f2f2]"
                       : "bg-white"
@@ -840,7 +838,7 @@ export default function QAStakeholder({
                   minWidth: "10rem",
                   color: "#AB3510",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
                 style={{
                   background: "white",
@@ -856,7 +854,7 @@ export default function QAStakeholder({
                   minWidth: "10rem",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "13px",
                 }}
               >
                 {stakeholderEditMode ? "Edit" : "Save"}

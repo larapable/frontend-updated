@@ -33,7 +33,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="bg-gray-100 py-5 px-6" style={{background: "linear-gradient(to left, #882723, #AB3510)"}}>
+    <nav className="bg-gray-100 px-6" style={{background: "linear-gradient(to left, #882723, #AB3510)"}}>
       <div className="container mx-auto flex items-center justify-between flex-wrap">
         <Link href="/">
           <div className="flex justify-start">

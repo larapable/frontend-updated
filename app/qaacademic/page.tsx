@@ -35,7 +35,7 @@ import React from "react";
 import styled from "@emotion/styled";
 import Link from "next/link";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -156,12 +156,14 @@ export default function QAAcademic() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: {
+                    lg: "2rem",
+                    sm: "2rem",
+                    md: "2rem",
+                    xs: "1.5rem",
+                  },
                 }}
               >
                 ACADEMIC
@@ -174,9 +176,9 @@ export default function QAAcademic() {
                 variant="contained"
                 sx={{
                   borderRadius: 2,
-                  width: "13rem",
-                  height: "3.5rem",
-                  fontSize: "18px",
+                  width: "10rem",
+                  height: "2.5rem",
+                  fontSize: "13px",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   color: "white",
                   flexGrow: 2,
@@ -187,11 +189,10 @@ export default function QAAcademic() {
                 ADMINISTRATIVE
               </Button>
             </Grid>
-
+            
             <Typography
-              variant="h5"
               sx={{
-                marginBottom: 2,
+                fontSize: { lg: "1rem", sm: "1rem", md: "1rem", xs: "0.8rem" },
               }}
             >
               This central hub provides access to information related to the
@@ -294,13 +295,13 @@ export default function QAAcademic() {
                                 href={`/qascorecard/${department.id}`}
                                 passHref
                               >
-                                <span className="font-medium text-[1.1rem] text-[#2e2c2c] underline cursor-pointer">
+                                <span className="font-medium text-[13px] text-[#2e2c2c] underline cursor-pointer">
                                   {department.department_name}
                                 </span>
                               </Link>
                             </TableCell>
                             <TableCell>
-                              <span className="font-medium text-[1.1rem] text-[#2e2c2c]">
+                              <span className="font-medium text-[13px] text-[#2e2c2c]">
                                 {department.head_officer}
                               </span>
                             </TableCell>

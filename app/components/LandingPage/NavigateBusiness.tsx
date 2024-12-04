@@ -1,3 +1,4 @@
+
 'use client';
 import Link from 'next/link'
 import React from 'react'
@@ -23,7 +24,7 @@ const NavigateBusiness = () => {
       <div className="container mx-auto text-center justify-center items-center">
         <div className="max-w-3xl mx-auto">
           {/* Image */}
-          <div className="flex overflow-hidden justify-center items-center">
+          <div className="flex overflow-hidden justify-center items-center lg:mt-[-3rem]">
             <Image
               src="/landingbg.gif"
               alt="Navigate Business"
@@ -33,12 +34,12 @@ const NavigateBusiness = () => {
           </div>
   
           {/* Title */}
-          <Typography sx={{ fontWeight: 'bold', mb: 1, fontSize: '5rem' }}>
+          <Typography sx={{ fontWeight: 'bold', mb: 1, fontSize: { lg: '3rem', sm: '3rem', md: '3rem', xs: '1.5rem' }  }}>
             Navigate Your Business with Ease
           </Typography>
   
           {/* Short Description */}
-          <Typography sx={{ fontWeight: 'regular', mb: 4, fontSize: '1.5rem' }}>
+          <Typography sx={{ fontWeight: 'regular', mb: 4, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
             Welcome to Atlas, your all-in-one solution for tracking, analyzing,
             <br /> and optimizing your business performance.
           </Typography>

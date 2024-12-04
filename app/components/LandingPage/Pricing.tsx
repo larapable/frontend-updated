@@ -2,6 +2,8 @@ import { useRef, useEffect, useState } from 'react';
 import '@/app/page.css'
 import { Box, Typography, Button, Paper, Avatar, Divider } from '@mui/material';
 import { CheckCircle } from '@mui/icons-material';
+import StarRateRoundedIcon from '@mui/icons-material/StarRateRounded';
+import { keyframes } from '@emotion/react';
 
 
 const Pricing = () => {
@@ -17,6 +19,11 @@ const Pricing = () => {
     color: isHovered ? '#302E2E' : '#FFFFFF',
     transition: 'color 0.3s',
   };
+
+  const spinAnimation = keyframes`
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  `;
 
   return (
     <Box
@@ -46,17 +53,31 @@ const Pricing = () => {
       id="pricing-section"
     >
       <Box sx={{ mb: '-5rem' }}>
-        <Typography variant="h3" sx={{ fontWeight: 'bold', color: 'white' }}>
-          Start for free and upgrade to <br />unlock more features
+        <Typography sx={{ fontWeight: 'bold', color: 'white', fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' } }}>
+          Start for free and upgrade to <br />
+          <StarRateRoundedIcon 
+            sx={{ 
+              color: 'yellow', 
+              ml: 1, // Add margin left
+              animation: `${spinAnimation} 2s linear infinite`, // Apply spin animation
+            }} 
+          />
+          unlock more features
+          <StarRateRoundedIcon 
+            sx={{ 
+              color: 'yellow', 
+              animation: `${spinAnimation} 2s linear infinite`, // Apply spin animation
+            }} 
+          />
         </Typography>
       </Box>
 
       <Box
         sx={{
           display: 'flex',
-          flexDirection: 'col',
+          flexDirection: { lg: 'row', md: 'row', sm: 'column', xs: 'column' },
           gap: 5,
-          mt: 10,
+          mt: '6rem',
           alignItems: 'center',
           width: '100%',
           height: 'auto',
@@ -66,11 +87,12 @@ const Pricing = () => {
       >
         <Box
           sx={{
+            display: { xs: 'none', sm: 'none', md: 'block', lg: 'block' },
             backgroundColor: isHovered ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)',
             border: '1px solid #fad655',
             borderRadius: '2rem',
-            height: '33rem',
-            width: '25rem',
+            height: '25rem',
+            width: '18rem',
             textAlign: 'start',
             p: 5,
             transition: 'transform 0.3s ease-in-out',
@@ -79,13 +101,13 @@ const Pricing = () => {
             },
           }}
         >
-          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+          <Typography sx={{ ...textStyle, fontSize: '15px' }}>
             Free
           </Typography>
-          <Typography variant="h4" sx={{ ...titleStyle, fontWeight: '600' }}>
+          <Typography sx={{ ...titleStyle, fontWeight: '600', fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
             PHP 0.00
           </Typography>
-          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+          <Typography sx={{ ...textStyle, fontSize: '15px' }}>
             Forever
           </Typography>
 
@@ -106,9 +128,9 @@ const Pricing = () => {
               }}
             >
               <CheckCircle
-                sx={{ mr: 1, mt: 2, color: 'white' }}
+                sx={{ mr: 1, color: 'white' }}
               />
-              <Typography sx={{ ...textStyle, fontSize: '18px', mt: 2 }}>
+              <Typography sx={{ ...textStyle, fontSize: '13px' }}>
                 {feature}
               </Typography>
             </Box>
@@ -118,11 +140,11 @@ const Pricing = () => {
               href="/signup"
               sx={{
                 background: '#ffffff',
-                fontSize: "18px",
+                fontSize: "15px",
                 fontWeight: "bold",
                 color: '#AB3510',
                 width: '13rem',
-                height: '3rem',
+                height: '2rem',
                 '&:hover': {
                   transform: 'scale(1.1)',
                   background: '#fad655'
@@ -139,8 +161,8 @@ const Pricing = () => {
             backgroundColor: isHovered ? '#FFFFFF' : 'rgba(255, 255, 255, 0.1)',
             border: '1px solid #fad655',
             borderRadius: '2rem',
-            height: '38rem',
-            width: '25rem',
+            height: '27rem',
+            width: '18rem',
             textAlign: 'start',
             p: 5,
             transition: 'transform 0.3s ease-in-out',
@@ -149,14 +171,14 @@ const Pricing = () => {
             },
           }}
         >
-          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
+          <Typography sx={{ ...textStyle, fontSize: '15px' }}>
             Pro
           </Typography>
-          <Typography variant="h4" sx={{ ...titleStyle, fontWeight: '600' }}>
+          <Typography sx={{ ...titleStyle, fontWeight: '600',fontSize: { lg: '1.5rem', sm: '1.5rem', md: '1.5rem', xs: '1rem' } }}>
             PHP 200.00
           </Typography>
-          <Typography sx={{ ...textStyle, fontSize: '18px' }}>
-            Forever
+          <Typography sx={{ ...textStyle, fontSize: '15px' }}>
+            Per Month
           </Typography>
 
           <Divider sx={{ mx: 1, my: 2, background: 'white' }} />
@@ -166,8 +188,6 @@ const Pricing = () => {
             'Unlimited SWOT analysis input',
             'Advanced AI-generated insights',
             'PDF report download available',
-            'Unlimited strategy maps',
-            'Unlimited balanced scorecards',
           ].map((feature, index) => (
             <Box
               key={index}
@@ -178,9 +198,9 @@ const Pricing = () => {
               }}
             >
               <CheckCircle
-                sx={{ mr: 1, mt: 2, color: 'white' }}
+                sx={{ mr: 1, color: 'white' }}
               />
-              <Typography sx={{ ...textStyle, fontSize: '18px', mt: 2 }}>
+              <Typography sx={{ ...textStyle, fontSize: '13px',  }}>
                 {feature}
               </Typography>
             </Box>
@@ -190,11 +210,11 @@ const Pricing = () => {
               href="/payment"
               sx={{
                 background: '#ffffff',
-                fontSize: "18px",
+                fontSize: "15px",
                 fontWeight: "bold",
                 color: '#AB3510',
                 width: '13rem',
-                height: '3rem',
+                height: '2rem',
                 '&:hover': {
                   transform: 'scale(1.1)',
                   background: '#fad655'

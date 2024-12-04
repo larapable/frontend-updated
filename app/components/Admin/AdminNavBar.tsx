@@ -20,7 +20,7 @@ import SpaceDashboardRoundedIcon from '@mui/icons-material/SpaceDashboardRounded
 import PeopleAltRoundedIcon from '@mui/icons-material/PeopleAltRounded';
 import HowToRegRoundedIcon from '@mui/icons-material/HowToRegRounded';
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 export default function AdminNavBar() {
   return (
@@ -55,11 +55,11 @@ export default function AdminNavBar() {
                   }}
                 >
                   <Link href="/admindashboard" legacyBehavior>
-                    <ListItemButton sx={{ minHeight: '60px', fontSize: '40px' }}>
+                    <ListItemButton sx={{ minHeight: '10%' }}>
                       <ListItemIcon>
-                        <SpaceDashboardRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                        <SpaceDashboardRoundedIcon sx={{ color: "#F2F2F2" }} />
                       </ListItemIcon>
-                      <ListItemText primary="Dashboard" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                      <ListItemText primary="Dashboard" primaryTypographyProps={{ fontSize: '15px', fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -73,11 +73,11 @@ export default function AdminNavBar() {
                   }}
                 >
                   <Link href="/adminlistofusers" legacyBehavior>
-                    <ListItemButton sx={{ minHeight: '60px' }}>
+                    <ListItemButton sx={{ minHeight: '10%' }}>
                       <ListItemIcon>
-                        <PeopleAltRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                        <PeopleAltRoundedIcon sx={{ color: "#F2F2F2" }} />
                       </ListItemIcon>
-                      <ListItemText primary="List of Users" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                      <ListItemText primary="List of Users" primaryTypographyProps={{ fontSize: '15px', fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -91,11 +91,11 @@ export default function AdminNavBar() {
                   }}
                 >
                   <Link href="/registerdepartment" legacyBehavior>
-                    <ListItemButton sx={{ minHeight: '60px' }}>
+                    <ListItemButton sx={{ minHeight: '10%'}}>
                       <ListItemIcon>
-                        <HowToRegRoundedIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                        <HowToRegRoundedIcon sx={{ color: "#F2F2F2" }} />
                       </ListItemIcon>
-                      <ListItemText primary="Register Dep" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                      <ListItemText primary="Register Dep" primaryTypographyProps={{ fontSize: '15px', fontWeight: 400 }}/>
                     </ListItemButton>
                   </Link>
                 </ListItem>
@@ -113,13 +113,13 @@ export default function AdminNavBar() {
                 }}
               >
                 <ListItemButton
-                  sx={{ minHeight: '60px' }}
+                  sx={{minHeight: '10%' }}
                   onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   <ListItemIcon>
-                    <LogoutIcon sx={{ color: "#F2F2F2", fontSize: '40px' }} />
+                    <LogoutIcon sx={{ color: "#F2F2F2" }} />
                   </ListItemIcon>
-                  <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                  <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '15px', fontWeight: 400 }}/>
                 </ListItemButton>
               </ListItem>
             </Box>

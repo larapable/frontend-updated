@@ -185,14 +185,14 @@
 .react-calendar {
   border: 1px solid white !important;
   width: 50rem;
-  height: 27rem;
+  height: 20rem;
 }
 
 /* Adjust the border of individual tiles if needed */
 .react-calendar__tile {
   border: 1px solid white !important;
   margin: 2px;
-  font-size: 1rem !important;
+  font-size: 13px !important;
   gap: 2rem;
 }
 
@@ -202,20 +202,21 @@
   color: white !important;
   border-radius: 50%;
   border-radius: 50%;
-  font-size: 1rem;
+  font-size: 10px;
   gap: 2rem;
 }
 
 .react-calendar__month-view__weekdays__weekday,
 .react-calendar__month-view__days__day,
 .react-calendar__navigation__label__labelText {
-  font-size: 1.2rem;
+  font-size: 11px;
   margin-top: 1rem;
   text-decoration: none !important;
 }
 
 .react-calendar a {
   text-decoration: none !important;
+  font-size: 13px;
 }
 .react-calendar__month-view__weekdays__weekday abbr {
   text-decoration: none !important;
@@ -230,36 +231,26 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 2rem;
+  font-size: 13px;
   padding: 1rem;
-  margin-top: 2rem;
   gap: 1rem;
 }
 
 /* Styling for the month name */
 .react-calendar__navigation__label {
-  font-size: 1rem !important;
+  font-size: 13px !important;
   font-weight: bold;
   color: #333;
-  margin-top: 2rem;
-  text-align: center;
-  flex-grow: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Styling for the previous and next buttons */
 .react-calendar__navigation__arrow {
-  font-size: 1.5rem;
+  font-size: 13px;
   color: #fff;
   background: #b83216 !important;
-  width: 1rem !important;
-  height: 3rem !important;
+  width: 0.5rem !important;
+  height: 1.5rem !important;
   border-radius: 2rem !important;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 /* Ensure navigation buttons have no underline */
@@ -299,15 +290,9 @@
 }
 
 @keyframes rotate {
-  0% {
-    transform: rotate(0deg) scale(0.8);
-  }
-  50% {
-    transform: rotate(360deg) scale(1.2);
-  }
-  100% {
-    transform: rotate(720deg) scale(0.8);
-  }
+  0% { transform: rotate(0deg) scale(0.8) }
+  50% { transform: rotate(360deg) scale(1.2) }
+  100% { transform: rotate(720deg) scale(0.8) }
 }
 
 @keyframes ball1 {
@@ -339,3 +324,24 @@
     margin-top: 0;
   }
 }
+
+.centered-placeholder .MuiInputBase-input {
+  text-align: center;
+  line-height: 40px; /* Match your TextField height */
+}
+
+.centered-placeholder .MuiOutlinedInput-notchedOutline {
+  border: none; /* Remove the outline completely */
+}
+
+.centered-placeholder .MuiInputLabel-shrink {
+  /* Center the label text */
+  transform: translate(0, -1.5em) scale(0.75);
+  transform-origin: top left;
+  text-align: center;
+  width: 100%; /* Make the label span the full width */
+}
+
+
+
+

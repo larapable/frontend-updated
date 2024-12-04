@@ -26,7 +26,7 @@ interface Department {
     head_officer: string;
   };
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 export default function Navbar() {
 
@@ -113,11 +113,11 @@ export default function Navbar() {
                     },
                   }}
               >
-                <ListItemButton sx={{ minHeight: '60px',py:1 }}>
+                <ListItemButton sx={{ minHeight: '10%',py:1 }}>
                   <ListItemIcon>
-                    <CorporateFareIcon sx={{ color: '#F2F2F2', fontSize: '40px' }} />
+                    <CorporateFareIcon sx={{ color: '#F2F2F2' }} />
                   </ListItemIcon>
-                  <ListItemText primary="Department" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                  <ListItemText primary="Department" primaryTypographyProps={{ fontSize: '15px', fontWeight: 400 }}/>
                   {openDepartmentDropdown ? <ExpandLess /> : <ExpandMore />}
                 </ListItemButton>
               </ListItem>
@@ -130,11 +130,11 @@ export default function Navbar() {
                       .map((department) => (
                         <ListItemButton 
                           key={department.id} 
-                          sx={{ pl: 4, minHeight: '60px' }} 
+                          sx={{ pl: 2, minHeight: '60px' }} 
                           onClick={() => handleDepartmentChange(department.id)}
                           selected={selectedDepartmentId === department.id}
                         >
-                          <ListItemText primary={department.department_name} primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }}/>
+                          <ListItemText primary={department.department_name} primaryTypographyProps={{ fontSize: '15px', ml:2, fontWeight: 400 }}/>
                         </ListItemButton>
                       ))}
                 </List>
@@ -148,11 +148,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/profile" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                  <AccountCircleIcon sx={{ color: '#F2F2F2', fontSize: '40px' }} />
+                  <AccountCircleIcon sx={{ color: '#F2F2F2' }} />
                     </ListItemIcon>
-                  <ListItemText primary="Profile" primaryTypographyProps={{ fontSize: '23px', ml:2, fontWeight: 400 }} />
+                  <ListItemText primary="Profile" primaryTypographyProps={{ fontSize: '15px', fontWeight: 400 }} />
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -165,11 +165,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/inputgoals" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <FlagIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <FlagIcon sx={{ color: '#F2F2F2' }} />
                     </ListItemIcon>
-                  <ListItemText primary="Goal Settings" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="Goal Settings" primaryTypographyProps={{ fontSize: '15px' }}/>
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -182,11 +182,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/swot" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <TipsAndUpdatesIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <TipsAndUpdatesIcon sx={{ color: '#F2F2F2' }} />
                     </ListItemIcon>
-                  <ListItemText primary="SWOT Matrix" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="SWOT Matrix" primaryTypographyProps={{ fontSize: '15px' }}/>
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -199,11 +199,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/stratmap" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <ForkRightIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <ForkRightIcon sx={{ color: '#F2F2F2' }} />
                     </ListItemIcon>
-                  <ListItemText primary="Strat Mapping" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="Strat Mapping" primaryTypographyProps={{ fontSize: '15px'}}/>
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -216,11 +216,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/scorecard" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <CreditScoreIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <CreditScoreIcon sx={{ color: '#F2F2F2' }} />
                     </ListItemIcon>
-                  <ListItemText primary="Scorecard" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="Scorecard" primaryTypographyProps={{ fontSize: '15px'}}/>
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -233,11 +233,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/reports" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <BarChartIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <BarChartIcon sx={{ color: '#F2F2F2'}} />
                     </ListItemIcon>
-                  <ListItemText primary="Report Analysis" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="Report Analysis" primaryTypographyProps={{ fontSize: '15px' }}/>
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -250,11 +250,11 @@ export default function Navbar() {
                     }}
                 >
                 <Link href="/feedback" legacyBehavior>
-                <ListItemButton sx={{ minHeight: '60px' }}>
+                <ListItemButton sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <MessageIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <MessageIcon sx={{ color: '#F2F2F2'}} />
                     </ListItemIcon>
-                  <ListItemText primary="Feedback" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="Feedback" primaryTypographyProps={{ fontSize: '15px'}}/>
                 </ListItemButton>
                 </Link>
               </ListItem>
@@ -270,11 +270,11 @@ export default function Navbar() {
                         },
                     }}
                 >
-                <ListItemButton onClick={() => signOut({ callbackUrl: '/login' })} sx={{ minHeight: '60px' }}>
+                <ListItemButton onClick={() => signOut({ callbackUrl: '/login' })} sx={{ minHeight: '10%' }}>
                   <ListItemIcon>
-                      <LogoutIcon sx={{ color: '#F2F2F2', fontSize: '40px'  }} />
+                      <LogoutIcon sx={{ color: '#F2F2F2'  }} />
                     </ListItemIcon>
-                  <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '23px', ml:2 }}/>
+                  <ListItemText primary="Logout" primaryTypographyProps={{ fontSize: '15px' }}/>
                 </ListItemButton>
               </ListItem>
               </Box>

@@ -32,7 +32,7 @@ import CloseIcon from "@mui/icons-material/Close";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)(() => ({
   wordWrap: "break-word",
@@ -368,6 +368,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A8.4: 100% compliance to prescribed budget ceiling",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A8.4",
     },
     {
       perspective: "stakeholder", // Added perspective field
@@ -375,6 +376,7 @@ export default function Inputgoals() {
         "Excellence in Service Quality A1.1: 90% average awareness rate of the services",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A1.1",
     },
     {
       perspective: "stakeholder", // Added perspective field
@@ -382,6 +384,7 @@ export default function Inputgoals() {
         "Excellence in Service Quality A1.2: 90% of eligible employees availed of the services of the administrative and academic support offices",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A1.2",
     },
     {
       perspective: "stakeholder", // Added perspective field
@@ -389,6 +392,7 @@ export default function Inputgoals() {
         "Excellence in Service Quality A1.3: At least 4.5 (out of 5.0) inter-office customer satisfaction",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A1.3",
     },
     {
       perspective: "stakeholder", // Added perspective field
@@ -396,6 +400,7 @@ export default function Inputgoals() {
         "Excellence in Service Quality A2.1: Have at least 4-star (out of 5) customer service rating",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A2.1",
     },
     {
       perspective: "stakeholder", // Added perspective field
@@ -403,6 +408,7 @@ export default function Inputgoals() {
         "Excellence in Service Quality A2.2: Have at least 9-star (out of 10) net promoter score",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A2.2",
     },
     {
       perspective: "stakeholder", // Added perspective field
@@ -410,6 +416,7 @@ export default function Inputgoals() {
         "Excellence in Service Quality A2.3: 90% transanctions resolved or answered customer query within expected time",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A2.3",
     },
     {
       perspective: "internal", // Added perspective field
@@ -417,6 +424,7 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A4.1: 100% of the office systems standardized and documented",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A4.1",
     },
     {
       perspective: "internal", // Added perspective field
@@ -424,6 +432,7 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A4.2: 100% of process records meet its requirements",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A4.2",
     },
     {
       perspective: "internal", // Added perspective field
@@ -431,6 +440,7 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A5.1: 100% awareness of the existence of the University Brand Bible and of its guidelines and templates",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A5.1",
     },
     {
       perspective: "internal", // Added perspective field
@@ -438,6 +448,7 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A5.2: 100% compliance to the branding guidelines in their instructional, operational and communication materials",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A5.2",
     },
     {
       perspective: "internal", // Added perspective field
@@ -445,6 +456,7 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A6.1: 100% awareness of the existence of the 5S+ Program",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A6.1",
     },
     {
       perspective: "internal", // Added perspective field
@@ -452,6 +464,7 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A6.2: 100% participation in the orientation/re-orientation of 5S+ training",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A6.2",
     },
     {
       perspective: "internal", // Added perspective field
@@ -459,12 +472,14 @@ export default function Inputgoals() {
         "Excellence in Internal Service Systems A6.3: 100% compliance of the 5S+ standard",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A6.3",
     },
     {
       perspective: "learning", // Added perspective field
       office_target: "A7.1: At least 90% participation in CIT-sponsored events",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A7.1",
     },
     {
       perspective: "learning", // Added perspective field
@@ -472,6 +487,7 @@ export default function Inputgoals() {
         "A7.2: At least 90% participation in CIT-sponsored trainings, seminars, workshops, and conferences",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A7.2",
     },
     {
       perspective: "learning", // Added perspective field
@@ -479,6 +495,7 @@ export default function Inputgoals() {
         "A7.3: At least 90% participation in CIT-commissioned surveys, FGDs, etc.",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A7.3",
     },
     {
       perspective: "learning",
@@ -486,6 +503,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A9.1: 100% of admin staff are evaluated on time",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A9.1",
     },
     {
       perspective: "learning",
@@ -493,6 +511,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A9.2: 100% completed the Competence & Competency Matrix (CCM), training & development needs analysis (TDNA), and professional development plan",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A9.2",
     },
     {
       perspective: "learning",
@@ -500,6 +519,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A9.3: 50% of admin staff are involved in research work",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A9.3",
     },
     {
       perspective: "learning",
@@ -507,6 +527,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A9.4: 100% of staff are ranked",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A9.4",
     },
     {
       perspective: "learning",
@@ -514,6 +535,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A9.5: 100% submission of succession plan",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A9.5",
     },
     {
       perspective: "learning",
@@ -521,6 +543,7 @@ export default function Inputgoals() {
         "Excellence in Organizational Stewardship A9.6: 100% of staff have 1 community involvement activity per year",
       department: { id: department_id },
       targetYear: targetYear,
+      target_code: "A9.6",
     },
   ];
 
@@ -548,7 +571,9 @@ export default function Inputgoals() {
     }
 
     const postPromises = strategiesData.map(async (strategyData) => {
-      const endpoint = `${process.env.NEXT_PUBLIC_BACKEND_URL}/stratmap/primary${
+      const endpoint = `${
+        process.env.NEXT_PUBLIC_BACKEND_URL
+      }/stratmap/primary${
         strategyData.perspective.charAt(0).toUpperCase() +
         strategyData.perspective.slice(1)
       }/insert`;
@@ -878,17 +903,29 @@ export default function Inputgoals() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: {
+                    lg: "2rem",
+                    sm: "2rem",
+                    md: "2rem",
+                    xs: "1.5rem",
+                  },
+                  mt: { lg: 0.5 },
                 }}
               >
                 INPUT GOALS
               </Typography>
-              <Typography variant="h5">
+              <Typography
+                sx={{
+                  fontSize: {
+                    lg: "1rem",
+                    sm: "1rem",
+                    md: "1rem",
+                    xs: "0.8rem",
+                  },
+                }}
+              >
                 Goal setting involves defining specific objectives, outlining
                 actionable steps, and establishing a timeframe for achievement.
                 It provides direction and motivation for personal or
@@ -904,10 +941,9 @@ export default function Inputgoals() {
                     borderRadius: "0.6rem",
                     padding: 2,
                     border: "1px solid #E6E6E6",
-                    marginTop: "5px",
                   }}
                 >
-                  <Grid container spacing={5}>
+                  <Grid container spacing={3}>
                     <Grid item xs={12}>
                       <Box
                         sx={{
@@ -925,9 +961,9 @@ export default function Inputgoals() {
                               "linear-gradient(to left, #8a252c, #AB3510)",
                             color: "#FFFFFF",
                             border: "1px solid transparent",
-                            height: "3.5rem",
+                            height: "2.5rem",
                             padding: "0.8rem 2rem",
-                            fontSize: "18px",
+                            fontSize: "15px",
                             transition: "background-color 0.3s, color 0.3s",
                             "&:hover": {
                               background:
@@ -947,19 +983,38 @@ export default function Inputgoals() {
                         sx={{
                           display: "flex",
                           alignItems: "center",
-                          marginTop: "-10px",
+                          marginTop: { lg: "-25px" },
                         }}
                       >
                         <img
                           src="/year.png"
                           alt="Year Icon"
-                          style={{ height: "5rem", marginRight: "1rem" }}
+                          style={{ height: "3.5rem", marginRight: "0.5rem" }}
                         />
                         <Box>
-                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                          <Typography
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: {
+                                lg: "1rem",
+                                sm: "1rem",
+                                md: "1rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             Target Year
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                lg: "0.9rem",
+                                sm: "0.9rem",
+                                md: "0.9rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             The specific year by which a goal is intended to be
                             achieved.
                           </Typography>
@@ -969,17 +1024,17 @@ export default function Inputgoals() {
                         sx={{
                           mt: 2,
                           border: "1px solid #ccc", // Add a border similar to the TextField
-                          borderRadius: "8px", // Match the TextField's border radius
+                          borderRadius: "5px", // Match the TextField's border radius
                           padding: "16px", // Keep consistent padding
                           backgroundColor: "#ffffff", // Match the TextField background color
                           width: "20%", // Adjust width as needed to match the TextField
-                          height: "30%",
+                          height: "20%",
                           display: "flex",
                           flexDirection: "column",
                           justifyContent: "center",
                           alignItems: "flex-start",
                           boxShadow: "0px 2px 4px rgba(0, 0, 0, 0.1)", // Subtle shadow to match the TextField's style
-                          fontSize: "18px", // Adjust font size to match TextField
+                          fontSize: "15px", // Adjust font size to match TextField
                         }}
                       >
                         <DatePicker
@@ -999,7 +1054,17 @@ export default function Inputgoals() {
                       </Box>
 
                       {displayedYear && (
-                        <Typography variant="h6" color="textSecondary">
+                        <Typography
+                          sx={{
+                            fontSize: {
+                              lg: "1rem",
+                              sm: "1rem",
+                              md: "1rem",
+                              xs: "0.8rem",
+                            },
+                            mt: 1,
+                          }}
+                        >
                           Academic Year: {displayedYear}
                         </Typography>
                       )}
@@ -1016,13 +1081,32 @@ export default function Inputgoals() {
                         <img
                           src="/proposition.png"
                           alt="Vision Icon"
-                          style={{ height: "5rem", marginRight: "1rem" }}
+                          style={{ height: "3.5rem", marginRight: "0.5rem" }}
                         />
                         <Box>
-                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                          <Typography
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: {
+                                lg: "1rem",
+                                sm: "1rem",
+                                md: "1rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             Office Vision
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                lg: "0.9rem",
+                                sm: "0.9rem",
+                                md: "0.9rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             A brief statement articulating the company’s
                             long-term goals and values.
                           </Typography>
@@ -1032,7 +1116,7 @@ export default function Inputgoals() {
                         fullWidth
                         multiline
                         variant="outlined"
-                        rows={2} // Adjust number of rows for multiline behavior
+                        rows={3} // Adjust number of rows for multiline behavior
                         value={officeVision}
                         onChange={(event) =>
                           setOfficeVision(event.target.value)
@@ -1044,7 +1128,7 @@ export default function Inputgoals() {
                             height: "90px", // Adjust this value as needed to set the height
                           },
                           "& .MuiOutlinedInput-input": {
-                            fontSize: "18px", // Adjust the font size as needed
+                            fontSize: "15px", // Adjust the font size as needed
                           },
                         }}
                       />
@@ -1055,13 +1139,32 @@ export default function Inputgoals() {
                         <img
                           src="/proposition.png"
                           alt="Proposition Icon"
-                          style={{ height: "5rem", marginRight: "1rem" }}
+                          style={{ height: "3.5rem", marginRight: "0.5rem" }}
                         />
                         <Box>
-                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                          <Typography
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: {
+                                lg: "1rem",
+                                sm: "1rem",
+                                md: "1rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             Value Proposition
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                lg: "0.9rem",
+                                sm: "0.9rem",
+                                md: "0.9rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             A concise statement that communicates the unique
                             benefits and advantages of your service.
                           </Typography>
@@ -1071,7 +1174,7 @@ export default function Inputgoals() {
                         fullWidth
                         multiline
                         variant="outlined"
-                        rows={2} // Adjust number of rows for the desired base height
+                        rows={3} // Adjust number of rows for the desired base height
                         value={valueProposition}
                         onChange={(event) =>
                           setValueProposition(event.target.value)
@@ -1083,8 +1186,7 @@ export default function Inputgoals() {
                             height: "90px", // Adjust this value to control the height
                           },
                           "& .MuiOutlinedInput-input": {
-                            fontSize: "18px", // Adjust the font size as needed
-                            padding: "10px", // Adjust padding if needed for better appearance
+                            fontSize: "15px", // Adjust the font size as needed
                           },
                         }}
                       />
@@ -1095,13 +1197,32 @@ export default function Inputgoals() {
                         <img
                           src="/mission.png"
                           alt="Mission Icon"
-                          style={{ height: "5rem", marginRight: "1rem" }}
+                          style={{ height: "3.5rem", marginRight: "0.5rem" }}
                         />
                         <Box>
-                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                          <Typography
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: {
+                                lg: "1rem",
+                                sm: "1rem",
+                                md: "1rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             Mission
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                lg: "0.9rem",
+                                sm: "0.9rem",
+                                md: "0.9rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             A statement defining the company’s purpose and
                             commitment to delivering value.
                           </Typography>
@@ -1111,18 +1232,17 @@ export default function Inputgoals() {
                         fullWidth
                         multiline
                         variant="outlined"
-                        rows={2} // Adjust the number of rows for the desired base height
+                        rows={3} // Adjust the number of rows for the desired base height
                         value={mission}
                         onChange={(event) => setMission(event.target.value)}
                         disabled={!isEditing && !isNew}
                         sx={{
                           mt: 2,
                           "& .MuiInputBase-root": {
-                            height: "90px", // Adjust this value to control the height
+                            height: "90px",
                           },
                           "& .MuiOutlinedInput-input": {
-                            fontSize: "18px", // Adjust the font size as needed
-                            padding: "10px", // Adjust padding for a better appearance if needed
+                            fontSize: "15px",
                           },
                         }}
                       />
@@ -1133,13 +1253,32 @@ export default function Inputgoals() {
                         <img
                           src="/strategicgoals.png"
                           alt="Strategic Goals Icon"
-                          style={{ height: "5rem", marginRight: "1rem" }}
+                          style={{ height: "3.5rem", marginRight: "0.5rem" }}
                         />
                         <Box>
-                          <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                          <Typography
+                            sx={{
+                              fontWeight: "600",
+                              fontSize: {
+                                lg: "1rem",
+                                sm: "1rem",
+                                md: "1rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             Strategic Goals
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography
+                            sx={{
+                              fontSize: {
+                                lg: "0.9rem",
+                                sm: "0.9rem",
+                                md: "0.9rem",
+                                xs: "0.8rem",
+                              },
+                            }}
+                          >
                             A guiding principle for decision-making, driving the
                             organization towards its desired future state.
                           </Typography>
@@ -1147,15 +1286,15 @@ export default function Inputgoals() {
                       </Box>
 
                       {(isEditing || isNew) && !isSaved && (
-                        <Box sx={{ position: "absolute", right: 10, top: 60 }}>
+                        <Box sx={{ position: "absolute", right: 3, top: 45 }}>
                           <Box
                             sx={{
                               display: "flex",
                               justifyContent: "center",
                               alignItems: "center",
                               borderRadius: "50%",
-                              width: "2.5rem",
-                              height: "2.5rem",
+                              width: "2rem",
+                              height: "2rem",
                               backgroundColor: "#ff7b00d3",
                               marginTop: "0.5rem",
                             }}
@@ -1166,8 +1305,8 @@ export default function Inputgoals() {
                               viewBox="0 0 24 24"
                               fill="currentColor"
                               style={{
-                                width: "2rem",
-                                height: "2rem",
+                                width: "1.5rem",
+                                height: "1.5rem",
                                 color: "#ffffff",
                               }}
                             >
@@ -1189,20 +1328,18 @@ export default function Inputgoals() {
                             fullWidth
                             multiline
                             variant="outlined"
-                            rows={2} // Adjust the number of rows for the desired base height
+                            rows={3} // Adjust the number of rows for the desired base height
                             value={goal}
                             onChange={(event) =>
                               handleGoalChange(index, event.target.value)
                             }
                             disabled={!isEditing && !isNew}
                             sx={{
-                              mt: -3,
                               "& .MuiInputBase-root": {
                                 height: "90px", // Adjust this value to control the height
                               },
                               "& .MuiOutlinedInput-input": {
-                                fontSize: "18px", // Adjust the font size as needed
-                                padding: "10px", // Adjust padding for a better appearance if needed
+                                fontSize: "15px",
                               },
                             }}
                           />
@@ -1254,15 +1391,17 @@ export default function Inputgoals() {
                 onClose={handleCloseShowGoalsModal}
               >
                 <div className="flex justify-center items-center h-screen">
-                  <div className="p-10 bg-white rounded-lg shadow-md w-[80rem] max-h-[80vh] overflow-y-auto">
-                    <Typography variant="h4" sx={{ fontWeight: "bold" }}>
+                  <div className="p-5 bg-white rounded-lg shadow-md w-[60rem] max-h-[80vh] overflow-y-auto">
+                    <Typography
+                      sx={{ fontWeight: "bold", fontSize: { lg: "1.5rem" } }}
+                    >
                       Goals
                     </Typography>
-                    <div className="flex mb-4 mt-5">
+                    <div className="flex mt-1">
                       <Button
                         variant="text"
                         sx={{
-                          fontSize: "18px",
+                          fontSize: "15px",
                           color: currentTab === "current" ? "black" : "black",
                           fontWeight:
                             currentTab === "current" ? "bold" : "normal",
@@ -1277,7 +1416,7 @@ export default function Inputgoals() {
                       <Button
                         variant="text"
                         sx={{
-                          fontSize: "18px",
+                          fontSize: "15px",
                           color:
                             currentTab === "accomplished" ? "black" : "black",
                           fontWeight:
@@ -1298,37 +1437,37 @@ export default function Inputgoals() {
                           <TableRow className="bg-[#fff6d1]">
                             <TableCell
                               className="border border-gray-400 font-bold"
-                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                              sx={{ textAlign: "center", fontSize: "15px" }} // Increased font size
                             >
                               Target Year
                             </TableCell>
                             <TableCell
                               className="border border-gray-400 font-bold"
-                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                              sx={{ textAlign: "center", fontSize: "15px" }} // Increased font size
                             >
                               Vision
                             </TableCell>
                             <TableCell
                               className="border border-gray-400 font-bold"
-                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                              sx={{ textAlign: "center", fontSize: "15px" }} // Increased font size
                             >
                               Value Proposition
                             </TableCell>
                             <TableCell
                               className="border border-gray-400 font-bold"
-                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                              sx={{ textAlign: "center", fontSize: "15px" }} // Increased font size
                             >
                               Mission
                             </TableCell>
                             <TableCell
                               className="border border-gray-400 max-w-xs break-words font-bold"
-                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                              sx={{ textAlign: "center", fontSize: "15px" }} // Increased font size
                             >
                               Strategic Goals
                             </TableCell>
                             <TableCell
                               className="border border-gray-400 font-bold"
-                              sx={{ textAlign: "center", fontSize: "1.125rem" }} // Increased font size
+                              sx={{ textAlign: "center", fontSize: "15px" }} // Increased font size
                             >
                               Status
                             </TableCell>
@@ -1346,7 +1485,7 @@ export default function Inputgoals() {
                               <TableRow key={goal.id}>
                                 <TableCell
                                   className="border border-gray-400 whitespace-nowrap"
-                                  style={{ fontSize: "1rem" }}
+                                  style={{ fontSize: "15px" }}
                                 >
                                   {" "}
                                   {/* Font size for body text */}
@@ -1354,7 +1493,7 @@ export default function Inputgoals() {
                                 </TableCell>
                                 <TableCell
                                   className="border border-gray-400 max-w-xs break-words"
-                                  style={{ fontSize: "1rem" }}
+                                  style={{ fontSize: "15px" }}
                                 >
                                   {" "}
                                   {/* Font size for body text */}
@@ -1362,7 +1501,7 @@ export default function Inputgoals() {
                                 </TableCell>
                                 <TableCell
                                   className="border border-gray-400 max-w-xs break-words"
-                                  style={{ fontSize: "1rem" }}
+                                  style={{ fontSize: "15px" }}
                                 >
                                   {" "}
                                   {/* Font size for body text */}
@@ -1370,7 +1509,7 @@ export default function Inputgoals() {
                                 </TableCell>
                                 <TableCell
                                   className="border border-gray-400 max-w-xs break-words"
-                                  style={{ fontSize: "1rem" }}
+                                  style={{ fontSize: "15px" }}
                                 >
                                   {" "}
                                   {/* Font size for body text */}
@@ -1378,7 +1517,7 @@ export default function Inputgoals() {
                                 </TableCell>
                                 <TableCell
                                   className="border border-gray-400 max-w-xs break-words"
-                                  style={{ fontSize: "1rem" }}
+                                  style={{ fontSize: "15px" }}
                                 >
                                   {" "}
                                   {/* Font size for body text */}
@@ -1386,7 +1525,7 @@ export default function Inputgoals() {
                                     {goal.goals.map((item, index) => (
                                       <li
                                         key={index}
-                                        style={{ fontSize: "1rem" }}
+                                        style={{ fontSize: "15px" }}
                                       >
                                         {" "}
                                         {/* Font size for list items */}
@@ -1397,7 +1536,7 @@ export default function Inputgoals() {
                                 </TableCell>
                                 <TableCell
                                   className="px-4 py-2 flex justify-center items-center border border-gray-400"
-                                  style={{ height: "auto", fontSize: "1rem" }} // Font size for body text
+                                  style={{ height: "auto", fontSize: "15px" }} // Font size for body text
                                 >
                                   {currentTab === "current" ? (
                                     <div className="flex flex-col items-center justify-center">
@@ -1450,22 +1589,39 @@ export default function Inputgoals() {
                           <Box
                             sx={{
                               background: "white",
-                              padding: 6,
+                              padding: 4,
                               borderRadius: 2,
                               boxShadow: 24,
                               textAlign: "center",
                               position: "relative",
-                              minWidth: "30%",
-                              maxWidth: "40%",
+                              width: "25rem",
                             }}
                           >
                             <Typography
-                              variant="h5"
-                              sx={{ fontWeight: "600", marginBottom: 3 }}
+                              sx={{
+                                fontWeight: "bold",
+                                mb: 3,
+                                fontSize: {
+                                  lg: "1.5rem",
+                                  sm: "1rem",
+                                  md: "1rem",
+                                  xs: "0.8rem",
+                                },
+                              }}
                             >
                               Success!
                             </Typography>
-                            <Typography variant="h5" sx={{ marginBottom: 5 }}>
+                            <Typography
+                              sx={{
+                                mb: 3,
+                                fontSize: {
+                                  lg: "1rem",
+                                  sm: "1rem",
+                                  md: "1rem",
+                                  xs: "0.8rem",
+                                },
+                              }}
+                            >
                               Goal has been accomplished.
                             </Typography>
                             <Box
@@ -1482,7 +1638,7 @@ export default function Inputgoals() {
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "15px",
                                 }}
                                 onClick={() => {
                                   handleAddNew();
@@ -1504,9 +1660,9 @@ export default function Inputgoals() {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           color: "#ffffff",
-                          fontSize: "18px",
+                          fontSize: "15px",
                         }}
-                        className="font-semibold text-[1.2rem] w-[11rem]"
+                        className="font-semibold text-[15px] w-[8rem]"
                         onClick={handleCloseShowGoalsModal}
                       >
                         Close
@@ -1522,8 +1678,8 @@ export default function Inputgoals() {
               spacing={2}
               justifyContent="center"
               alignItems="center"
-              marginBottom={3}
-              marginTop={5}
+              marginBottom={1}
+              marginTop={1}
             >
               <Grid
                 container
@@ -1551,9 +1707,9 @@ export default function Inputgoals() {
                         sx={{
                           background: "white",
                           color: "#AB3510",
-                          fontSize: "18px", // Consistent font size
-                          height: "3.5rem", // Consistent height
-                          width: "13rem", // Consistent width
+                          fontSize: "15px", // Consistent font size
+                          height: "2.5rem", // Consistent height
+                          width: "8rem", // Consistent width
                           border: "2px solid #AB3510",
                           padding: "0.8rem 2rem",
                           transition: "background-color 0.3s, color 0.3s",
@@ -1582,9 +1738,9 @@ export default function Inputgoals() {
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
                           color: "#FFFFFF",
-                          fontSize: "18px", // Consistent font size
-                          height: "3.5rem", // Consistent height
-                          width: "13rem", // Consistent width
+                          fontSize: "15px", // Consistent font size
+                          height: "2.5rem", // Consistent height
+                          width: "8rem", // Consistent width
                           padding: "0.8rem 2rem",
                           border: "1px solid transparent",
                           transition: "background-color 0.3s, color 0.3s",
@@ -1632,23 +1788,17 @@ export default function Inputgoals() {
                       borderRadius: "0.5rem",
                       boxShadow: 3,
                       height: "auto",
-                      width: "35rem",
+                      width: "25rem",
                       textAlign: "center",
                       position: "relative",
                     }}
                   >
                     <Typography
-                      id="success-modal-title"
-                      variant="h3"
-                      sx={{ fontWeight: "bold", marginBottom: 2 }}
+                      sx={{ fontWeight: "bold", mb: 3, fontSize: "1.5rem" }}
                     >
                       Success!
                     </Typography>
-                    <Typography
-                      id="success-modal-description"
-                      variant="h6"
-                      sx={{ marginBottom: 2, marginTop: 2 }}
-                    >
+                    <Typography sx={{ mb: 3, fontSize: "1rem" }}>
                       Goal Successfully Saved.
                     </Typography>
                     <Button
@@ -1659,13 +1809,13 @@ export default function Inputgoals() {
                         fontWeight: "bold",
                         fontSize: "1.2rem",
                         marginTop: 2,
-                        width: "11rem",
+                        width: "8rem",
                         padding: "0.5rem 2.2rem",
                         borderRadius: "0.6rem",
                       }}
                       onClick={handleCloseSuccessModal}
                     >
-                      OK
+                      Close
                     </Button>
                   </Box>
                 </Box>
@@ -1687,23 +1837,20 @@ export default function Inputgoals() {
                 <Box
                   sx={{
                     background: "white",
-                    padding: 6,
+                    padding: 4,
                     borderRadius: 2,
                     boxShadow: 24,
                     textAlign: "center",
                     position: "relative",
-                    minWidth: "30%", // Limit modal width to 80% of viewport width
-                    maxWidth: "40%",
+                    width: "25rem",
                   }}
                 >
                   <Typography
-                    variant="h4"
-                    component="h2"
-                    sx={{ fontWeight: "bold", mb: 3 }}
+                    sx={{ fontWeight: "bold", mb: 3, fontSize: "1.5rem" }}
                   >
                     Notice!
                   </Typography>
-                  <Typography variant="h5" sx={{ mb: 5 }}>
+                  <Typography sx={{ mb: 3, fontSize: "1rem" }}>
                     {modalMessage}
                   </Typography>
                   <Box
@@ -1723,7 +1870,7 @@ export default function Inputgoals() {
                         background:
                           "linear-gradient(to left, #8a252c, #AB3510)",
                         p: 1,
-                        fontSize: "18px",
+                        fontSize: "15px",
                       }}
                     >
                       Close

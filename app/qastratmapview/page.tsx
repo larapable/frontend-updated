@@ -21,7 +21,7 @@ interface Department {
   department_name: string;
 }
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -978,12 +978,9 @@ export default function QAStratmapView() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 STRATEGY MAPPING
@@ -996,18 +993,19 @@ export default function QAStratmapView() {
                 display="flex"
                 justifyContent="center"
                 alignItems="center"
-                width="18rem"
-                height="4rem"
+                width="auto"
+                height="3rem"
                 borderRadius={2}
-                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: -2 }}
+                sx={{ gap: 1, p: 1, borderWidth: 0.5, mt: {lg: '-2'}, mb: 1 }}
               >
                 <Button
                   onClick={() => setCurrentView("primary")}
                   variant={currentView === "primary" ? "contained" : "outlined"}
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    py: 2,
+                    px: 3,
+                    fontSize: "13px",
                     background:
                       currentView === "primary"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1036,8 +1034,8 @@ export default function QAStratmapView() {
                   }
                   fullWidth
                   sx={{
-                    p: 3,
-                    fontSize: "18px",
+                    p: 2,
+                    fontSize: "13px",
                     background:
                       currentView === "secondary"
                         ? "linear-gradient(to left, #8a252c, #AB3510)"
@@ -1061,7 +1059,7 @@ export default function QAStratmapView() {
                 </Button>
               </Box>
             </Grid>
-            <Typography variant="h5">
+            <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
               The Strategy Mapping feature uses AI to automatically generate
               strategies based on your inputs from four key perspectives:
               Financial, Stakeholder, Internal Processes, and Learning & Growth.
@@ -1081,27 +1079,27 @@ export default function QAStratmapView() {
                         alignItems="center"
                         p={1}
                         sx={{
-                          ml: 1,
-                          height: "85px",
-                          "& .MuiInputBase-root": { height: "85px" },
-                        }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                       >
                         <Grid item sm={11.3} container alignItems="center">
                           <Box>
                             <img
                               src="/financial.png"
                               alt=""
-                              className="h-[6rem]"
+                              className="h-[4rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                               <span className="text-[#ff7b00d3]">
                                 Financial:
                               </span>{" "}
                               Stewardship Overview
                             </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                               Measures financial performance and profitability.
                             </Typography>
                           </Box>
@@ -1116,8 +1114,8 @@ export default function QAStratmapView() {
                               p: 1,
                               background: "#ff7b00d3",
                               borderRadius: "50%",
-                              width: "3rem",
-                              height: "3rem",
+                              width: "2.5rem",
+                              height: "2.5rem",
                               alignItems: "center",
                               justifyContent: "center",
                             }}
@@ -1131,7 +1129,7 @@ export default function QAStratmapView() {
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
-                                  className="size-8"
+                                  className="size-6"
                                 >
                                   <path
                                     fill-rule="evenodd"
@@ -1157,19 +1155,11 @@ export default function QAStratmapView() {
                               // maxHeight: '100vh',
                             }}
                           >
-                            <Typography
-                              variant="h4"
-                              component="h2"
-                              sx={{
-                                fontWeight: "bold",
-                                mb: 2,
-                                color: "#2e2c2c",
-                              }}
-                            >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                               Financial Strategy
                             </Typography>
                             <div className="flex flex-col mb-1">
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
                               </span>
@@ -1180,22 +1170,25 @@ export default function QAStratmapView() {
                               onChange={(e) =>
                                 setNewPrimaryFTargetCode(e.target.value)
                               }
-                              sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                             sx={{
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
+                                "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                               }}
                             />
                             <Box sx={{ mt: 3 }}>
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
                               </span>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -1203,7 +1196,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                              <ul className="list-disc ml-10 mb-2 text-[13px]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -1214,27 +1207,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold text-[1.1rem]">
+                              <span className="font-bold text-[13px]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -1250,11 +1243,14 @@ export default function QAStratmapView() {
                                     setNewPrimaryFStrategy(e.target.value)
                                   }
                                   multiline
-                                  rows={3}
+                                  rows={5}
                                   sx={{
                                     width: "100%",
                                     overflowY: "auto",
                                     "& .MuiInputBase-root": {},
+                                    "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                   }}
                                 />
                               </Grid>
@@ -1273,10 +1269,10 @@ export default function QAStratmapView() {
                                 variant="contained"
                                 onClick={closePrimaryFModal}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   color: "#AB3510",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                                 style={{
                                   background: "white",
@@ -1294,11 +1290,11 @@ export default function QAStratmapView() {
                                   ); //change
                                 }}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                               >
                                 Save
@@ -1320,16 +1316,13 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                className={`flex justify-between items-center p-2 m-3 w-auto ${
                                   index < primaryFinancialStrategies.length - 1
                                     ? "border-b border-gray-200"
                                     : ""
                                 }`}
                               >
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "400" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   {strategy.value}
                                 </Typography>
                               </div>
@@ -1347,27 +1340,27 @@ export default function QAStratmapView() {
                         alignItems="center"
                         p={1}
                         sx={{
-                          ml: 1,
-                          height: "85px",
-                          "& .MuiInputBase-root": { height: "85px" },
-                        }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                       >
                         <Grid item sm={11.3} container alignItems="center">
                           <Box>
                             <img
                               src="/learning.png"
                               alt=""
-                              className="h-[6rem]"
+                              className="h-[4rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                               <span className="text-[#ff7b00d3]">
                                 Learning & Growth:
                               </span>{" "}
                               Culture & People Development Overview
                             </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                               Enhances organizational culture and employee
                               growth.
                             </Typography>
@@ -1383,8 +1376,8 @@ export default function QAStratmapView() {
                               p: 1,
                               background: "#ff7b00d3",
                               borderRadius: "50%",
-                              width: "3rem",
-                              height: "3rem",
+                              width: "2.5rem",
+                              height: "2.5rem",
                               alignItems: "center",
                               justifyContent: "center",
                             }}
@@ -1398,7 +1391,7 @@ export default function QAStratmapView() {
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
-                                  className="size-8"
+                                  className="size-6"
                                 >
                                   <path
                                     fill-rule="evenodd"
@@ -1424,19 +1417,11 @@ export default function QAStratmapView() {
                               // maxHeight: '100vh',
                             }}
                           >
-                            <Typography
-                              variant="h4"
-                              component="h2"
-                              sx={{
-                                fontWeight: "bold",
-                                mb: 2,
-                                color: "#2e2c2c",
-                              }}
-                            >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                               Learning & Growth Strategy
                             </Typography>
                             <div className="flex flex-col mb-1">
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
                               </span>
@@ -1447,22 +1432,25 @@ export default function QAStratmapView() {
                               onChange={(e) =>
                                 setNewPrimaryLGTargetCode(e.target.value)
                               }
-                              sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                             sx={{
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
+                                "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                               }}
                             />
                             <Box sx={{ mt: 3 }}>
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
                               </span>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -1470,7 +1458,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                              <ul className="list-disc ml-10 mb-2 text-[13px]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -1481,27 +1469,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold text-[1.1rem]">
+                              <span className="font-bold text-[13px]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -1517,11 +1505,14 @@ export default function QAStratmapView() {
                                     setNewPrimaryLGStrategy(e.target.value)
                                   }
                                   multiline
-                                  rows={3}
+                                  rows={5}
                                   sx={{
                                     width: "100%",
                                     overflowY: "auto",
                                     "& .MuiInputBase-root": {},
+                                    "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                   }}
                                 />
                               </Grid>
@@ -1540,10 +1531,10 @@ export default function QAStratmapView() {
                                 variant="contained"
                                 onClick={closePrimaryLGModal}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   color: "#AB3510",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                                 style={{
                                   background: "white",
@@ -1561,11 +1552,11 @@ export default function QAStratmapView() {
                                   ); //change
                                 }}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                               >
                                 Save
@@ -1587,17 +1578,14 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                className={`flex justify-between items-center p-2 m-3 w-auto ${
                                   index <
                                   primaryLearningGrowthStrategies.length - 1
                                     ? "border-b border-gray-200"
                                     : ""
                                 }`}
                               >
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "400" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   {strategy.value}
                                 </Typography>
                               </div>
@@ -1616,30 +1604,27 @@ export default function QAStratmapView() {
                         alignItems="center"
                         p={1}
                         sx={{
-                          ml: 1,
-                          height: "85px",
-                          "& .MuiInputBase-root": { height: "85px" },
-                        }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                       >
                         <Grid item sm={11.3} container alignItems="center">
                           <Box>
                             <img
                               src="/internal.png"
                               alt=""
-                              className="h-[6rem]"
+                              className="h-[4rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                               <span className="text-[#ff7b00d3]">
                                 Internal Process:
                               </span>{" "}
                               Process & Technology Overview
                             </Typography>
-                            <Typography
-                              variant="body2"
-                              sx={{ fontWeight: "500" }}
-                            >
+                            <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                               Optimizes and manages internal processes and
                               technology.
                             </Typography>
@@ -1655,8 +1640,8 @@ export default function QAStratmapView() {
                               p: 1,
                               background: "#ff7b00d3",
                               borderRadius: "50%",
-                              width: "3rem",
-                              height: "3rem",
+                              width: "2.5rem",
+                              height: "2.5rem",
                               alignItems: "center",
                               justifyContent: "center",
                             }}
@@ -1670,7 +1655,7 @@ export default function QAStratmapView() {
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
-                                  className="size-8"
+                                  className="size-6"
                                 >
                                   <path
                                     fill-rule="evenodd"
@@ -1696,19 +1681,11 @@ export default function QAStratmapView() {
                               // maxHeight: '100vh',
                             }}
                           >
-                            <Typography
-                              variant="h4"
-                              component="h2"
-                              sx={{
-                                fontWeight: "bold",
-                                mb: 2,
-                                color: "#2e2c2c",
-                              }}
-                            >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                               Internal Process Strategy
                             </Typography>
                             <div className="flex flex-col mb-1">
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
                               </span>
@@ -1719,22 +1696,25 @@ export default function QAStratmapView() {
                               onChange={(e) =>
                                 setNewPrimaryIPTargetCode(e.target.value)
                               }
-                              sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                             sx={{
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
+                                "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                               }}
                             />
                             <Box>
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
                               </span>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -1742,7 +1722,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                              <ul className="list-disc ml-10 mb-2 text-[13px]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -1753,27 +1733,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span className="text-[1.1rem]">
+                              <span className="text-[13px]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold text-[1.1rem]">
+                              <span className="font-bold text-[13px]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -1789,11 +1769,14 @@ export default function QAStratmapView() {
                                     setNewPrimaryIPStrategy(e.target.value)
                                   }
                                   multiline
-                                  rows={3}
+                                  rows={5}
                                   sx={{
                                     width: "100%",
                                     overflowY: "auto",
                                     "& .MuiInputBase-root": {},
+                                    "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                   }}
                                 />
                               </Grid>
@@ -1812,10 +1795,10 @@ export default function QAStratmapView() {
                                 variant="contained"
                                 onClick={closePrimaryIPModal}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   color: "#AB3510",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                                 style={{
                                   background: "white",
@@ -1831,11 +1814,11 @@ export default function QAStratmapView() {
                                   fetchExistingStrategies(department_id); //change
                                 }}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                               >
                                 Save
@@ -1857,17 +1840,14 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                className={`flex justify-between items-center p-2 m-3 w-auto ${
                                   index <
                                   primaryInternalProcessStrategies.length - 1
                                     ? "border-b border-gray-200"
                                     : ""
                                 }`}
                               >
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "400" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   {strategy.value}
                                 </Typography>
                               </div>
@@ -1886,27 +1866,27 @@ export default function QAStratmapView() {
                         alignItems="center"
                         p={1}
                         sx={{
-                          ml: 1,
-                          height: "85px",
-                          "& .MuiInputBase-root": { height: "85px" },
-                        }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                       >
                         <Grid item sm={11.3} container alignItems="center">
                           <Box>
                             <img
                               src="/stakeholder.png"
                               alt=""
-                              className="h-[6rem]"
+                              className="h-[4rem]"
                             />
                           </Box>
                           <Box sx={{ ml: 1 }}>
-                            <Typography variant="h5" sx={{ fontWeight: "600" }}>
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                               <span className="text-[#ff7b00d3]">
                                 Stakeholder:
                               </span>{" "}
                               Client Relationship Overview
                             </Typography>
-                            <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                               Measures client engagement quality and value.
                             </Typography>
                           </Box>
@@ -1921,8 +1901,8 @@ export default function QAStratmapView() {
                               p: 1,
                               background: "#ff7b00d3",
                               borderRadius: "50%",
-                              width: "3rem",
-                              height: "3rem",
+                              width: "2.5rem",
+                              height: "2.5rem",
                               alignItems: "center",
                               justifyContent: "center",
                             }}
@@ -1936,7 +1916,7 @@ export default function QAStratmapView() {
                                   xmlns="http://www.w3.org/2000/svg"
                                   viewBox="0 0 24 24"
                                   fill="currentColor"
-                                  className="size-8"
+                                  className="size-6"
                                 >
                                   <path
                                     fill-rule="evenodd"
@@ -1962,19 +1942,11 @@ export default function QAStratmapView() {
                               // maxHeight: '100vh',
                             }}
                           >
-                            <Typography
-                              variant="h4"
-                              component="h2"
-                              sx={{
-                                fontWeight: "bold",
-                                mb: 2,
-                                color: "#2e2c2c",
-                              }}
-                            >
+                            <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                               Stakeholder Strategy
                             </Typography>
                             <div className="flex flex-col mb-1">
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Target Code
                                 <span className="text-[#DD1414]">*</span>
                               </span>
@@ -1985,22 +1957,25 @@ export default function QAStratmapView() {
                               onChange={(e) =>
                                 setNewPrimarySTargetCode(e.target.value)
                               }
-                              sx={{
-                                height: "50px",
-                                "& .MuiInputBase-root": { height: "50px" },
+                             sx={{
+                                height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
+                                "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                               }}
                             />
                             <Box>
-                              <span className="mr-3 break-words font-regular text-lg text-[#000000]">
+                              <span className="mr-3 break-words font-regular text-[13px]">
                                 Strategy
                                 <span className="text-[#DD1414]">*</span>
                               </span>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 Before inputting a strategy, please follow this
                                 format.
                               </span>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 1. Choose one of the following{" "}
                                 <span className="font-bold">
@@ -2008,7 +1983,7 @@ export default function QAStratmapView() {
                                 </span>
                                 :
                               </span>
-                              <ul className="list-disc ml-10 mb-2 text-[1.1rem]">
+                              <ul className="list-disc ml-10 mb-2 text-[13px]">
                                 <li className="font-bold">
                                   Excellence in Service Quality
                                 </li>
@@ -2019,27 +1994,27 @@ export default function QAStratmapView() {
                                   Excellence in Organizational Stewardship
                                 </li>
                               </ul>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 2. After selecting the theme, leave a space and
                                 then input the{" "}
                                 <span className="font-bold">target code</span>{" "}
                                 followed by a colon{" "}
                                 <span className="font-bold">(:)</span>
                               </span>
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 3. Finally, write the{" "}
                                 <span className="font-bold">strategy.</span>
                               </span>
                               <br />
-                              <span className="mb-3 text-[1.1rem]">
+                              <span className="mb-3 text-[13px]">
                                 <br />
                                 The correct format should be:{" "}
                                 <span className="font-bold">
                                   Strategic Theme Target Code: Strategy
                                 </span>
                               </span>
-                              <span className="font-bold text-[1.1rem]">
+                              <span className="font-bold text-[13px]">
                                 <br />
                                 Example:{" "}
                                 <span className="font-bold text-red-500">
@@ -2055,11 +2030,14 @@ export default function QAStratmapView() {
                                     setNewPrimarySStrategy(e.target.value)
                                   }
                                   multiline
-                                  rows={3}
+                                  rows={5}
                                   sx={{
                                     width: "100%",
                                     overflowY: "auto",
                                     "& .MuiInputBase-root": {},
+                                    "& .MuiOutlinedInput-input": { 
+                                        fontSize: "15px", 
+                                      },
                                   }}
                                 />
                               </Grid>
@@ -2078,10 +2056,10 @@ export default function QAStratmapView() {
                                 variant="contained"
                                 onClick={closePrimarySModal}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   color: "#AB3510",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                                 style={{
                                   background: "white",
@@ -2097,11 +2075,11 @@ export default function QAStratmapView() {
                                   fetchExistingStrategies(department_id); //change
                                 }}
                                 sx={{
-                                  minWidth: "10rem",
+                                  minWidth: "15%",
                                   background:
                                     "linear-gradient(to left, #8a252c, #AB3510)",
                                   p: 1,
-                                  fontSize: "18px",
+                                  fontSize: "13px",
                                 }}
                               >
                                 Save
@@ -2123,17 +2101,14 @@ export default function QAStratmapView() {
                             (strategy: GeneratedSentence, index: number) => (
                               <div
                                 key={strategy.id}
-                                className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                className={`flex justify-between items-center p-2 m-3 w-auto ${
                                   index <
                                   primaryStakeholderStrategies.length - 1
                                     ? "border-b border-gray-200"
                                     : ""
                                 }`}
                               >
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "400" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   {strategy.value}
                                 </Typography>
                               </div>
@@ -2157,7 +2132,7 @@ export default function QAStratmapView() {
                   >
                     <select
                       id="departmentSelect"
-                      className="border border-gray-200 shadow-sm rounded-xl mb-8 px-3 py-2 w-[65%] md:w-[full] h-[4rem]"
+                      className="border border-gray-200 shadow-sm rounded-md mb-8 px-3 py-1 w-[65%] md:w-[full] h-[2.5rem] text-[15px]"
                       onChange={handleDepartmentChange}
                     >
                       <option value="">Select a department</option>
@@ -2173,7 +2148,13 @@ export default function QAStratmapView() {
                       variant="outlined"
                       value={selectedYear}
                       onChange={(e) => setSelectedYear(e.target.value)}
-                      sx={{ width: "35%", mt: -4 }}
+                      sx={{ width: "35%", mt: -4,
+                        height: "40px",
+                                "& .MuiInputBase-root": { height: "40px" },
+                                "& .MuiOutlinedInput-input": {
+                                  fontSize: "15px", 
+                                },
+                       }}
                     />
                     <IconButton
                       color="primary"
@@ -2184,11 +2165,10 @@ export default function QAStratmapView() {
                           "linear-gradient(to left, #8a252c, #AB3510)",
                         color: "white",
                         width: 50,
-                        height: 50,
-                        borderRadius: 2, // Optional: round corners of the icon container
+                        borderRadius: 1, 
                       }}
                     >
-                      <CheckIcon sx={{ fontSize: 30 }} />
+                      <CheckIcon sx={{ fontSize: 20 }} />
                     </IconButton>
                   </Box>
                   {/* ADD !SELECTED DEP HERE */}
@@ -2196,10 +2176,10 @@ export default function QAStratmapView() {
                     <div className="items-center align-middle mt-10 justify-center text-center">
                       <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[97%] h-auto md:h-[30rem]">
                         <div className="flex flex-col mt-28">
-                          <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                          <span className="font-bold text-2xl md:text-[2rem] text-gray-300 text-center">
                             Please Select a Department
                           </span>
-                          <span className="font-medium mt-5 text-base md:text-[1.3rem] text-gray-300">
+                          <span className="font-medium mt-5 text-base md:text-[1rem] text-gray-300">
                             Please select a department from the dropdown menu
                             <br /> to view the mapped strategies.
                           </span>
@@ -2219,33 +2199,27 @@ export default function QAStratmapView() {
                             alignItems="center"
                             p={1}
                             sx={{
-                              ml: 1,
-                              height: "85px",
-                              "& .MuiInputBase-root": { height: "85px" },
-                            }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                           >
                             <Grid item sm={11.3} container alignItems="center">
                               <Box>
                                 <img
                                   src="/financial.png"
                                   alt=""
-                                  className="h-[6rem]"
+                                  className="h-[4rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography
-                                  variant="h5"
-                                  sx={{ fontWeight: "600" }}
-                                >
+                                <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                   <span className="text-[#ff7b00d3]">
                                     Financial:
                                   </span>{" "}
                                   Stewardship Overview
                                 </Typography>
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "500" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   Measures financial performance and
                                   profitability.
                                 </Typography>
@@ -2269,17 +2243,14 @@ export default function QAStratmapView() {
                                     ) => (
                                       <div
                                         key={strategy.id}
-                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                        className={`flex justify-between items-center p-2 m-3 w-auto ${
                                           index <
                                           strategies.financial.length - 1
                                             ? "border-b border-gray-200"
                                             : ""
                                         }`}
                                       >
-                                        <Typography
-                                          variant="h6"
-                                          sx={{ fontWeight: "400" }}
-                                        >
+                                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -2290,7 +2261,7 @@ export default function QAStratmapView() {
                                 <div className="items-center align-middle justify-center text-center">
                                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
                                     <div className="flex flex-col mt-28">
-                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                      <span className="font-bold text-2xl md:text-[2rem] text-gray-300 text-center">
                                         No strategies exist for this
                                         perspective... yet.
                                       </span>
@@ -2312,33 +2283,27 @@ export default function QAStratmapView() {
                             alignItems="center"
                             p={1}
                             sx={{
-                              ml: 1,
-                              height: "85px",
-                              "& .MuiInputBase-root": { height: "85px" },
-                            }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                           >
                             <Grid item sm={11.3} container alignItems="center">
                               <Box>
                                 <img
                                   src="/learning.png"
                                   alt=""
-                                  className="h-[6rem]"
+                                  className="h-[4rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography
-                                  variant="h5"
-                                  sx={{ fontWeight: "600" }}
-                                >
+                                <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                   <span className="text-[#ff7b00d3]">
                                     Learning & Growth:
                                   </span>{" "}
                                   Culture & People Development Overview
                                 </Typography>
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "500" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   Enhances organizational culture and employee
                                   growth.
                                 </Typography>
@@ -2362,17 +2327,14 @@ export default function QAStratmapView() {
                                     ) => (
                                       <div
                                         key={strategy.id}
-                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                        className={`flex justify-between items-center p-2 m-3 w-auto ${
                                           index <
                                           strategies.learningGrowth.length - 1
                                             ? "border-b border-gray-200"
                                             : ""
                                         }`}
                                       >
-                                        <Typography
-                                          variant="h6"
-                                          sx={{ fontWeight: "400" }}
-                                        >
+                                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -2383,7 +2345,7 @@ export default function QAStratmapView() {
                                 <div className="items-center align-middle justify-center text-center">
                                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
                                     <div className="flex flex-col mt-28">
-                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                      <span className="font-bold text-2xl md:text-[2rem] text-gray-300 text-center">
                                         No strategies exist for this
                                         perspective... yet.
                                       </span>
@@ -2405,33 +2367,27 @@ export default function QAStratmapView() {
                             alignItems="center"
                             p={1}
                             sx={{
-                              ml: 1,
-                              height: "85px",
-                              "& .MuiInputBase-root": { height: "85px" },
-                            }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                           >
                             <Grid item sm={11.3} container alignItems="center">
                               <Box>
                                 <img
                                   src="/internal.png"
                                   alt=""
-                                  className="h-[6rem]"
+                                  className="h-[4rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography
-                                  variant="h5"
-                                  sx={{ fontWeight: "600" }}
-                                >
+                                <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                   <span className="text-[#ff7b00d3]">
                                     Internal Process:
                                   </span>{" "}
                                   Process & Technology Overview
                                 </Typography>
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "500" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   Optimizes and manages internal processes and
                                   technology.
                                 </Typography>
@@ -2455,17 +2411,14 @@ export default function QAStratmapView() {
                                     ) => (
                                       <div
                                         key={strategy.id}
-                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                        className={`flex justify-between items-center p-2 m-3 w-auto ${
                                           index <
                                           strategies.internalProcess.length - 1
                                             ? "border-b border-gray-200"
                                             : ""
                                         }`}
                                       >
-                                        <Typography
-                                          variant="h6"
-                                          sx={{ fontWeight: "400" }}
-                                        >
+                                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -2476,7 +2429,7 @@ export default function QAStratmapView() {
                                 <div className="items-center align-middle justify-center text-center">
                                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
                                     <div className="flex flex-col mt-28">
-                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                      <span className="font-bold text-2xl md:text-[2rem] text-gray-300 text-center">
                                         No strategies exist for this
                                         perspective... yet.
                                       </span>
@@ -2498,33 +2451,27 @@ export default function QAStratmapView() {
                             alignItems="center"
                             p={1}
                             sx={{
-                              ml: 1,
-                              height: "85px",
-                              "& .MuiInputBase-root": { height: "85px" },
-                            }}
+                            ml: 1,
+                            height: "55px",
+                            "& .MuiInputBase-root": { height: "55px" },
+                          }}
                           >
                             <Grid item sm={11.3} container alignItems="center">
                               <Box>
                                 <img
                                   src="/stakeholder.png"
                                   alt=""
-                                  className="h-[6rem]"
+                                  className="h-[4rem]"
                                 />
                               </Box>
                               <Box sx={{ ml: 1 }}>
-                                <Typography
-                                  variant="h5"
-                                  sx={{ fontWeight: "600" }}
-                                >
+                                <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
                                   <span className="text-[#ff7b00d3]">
                                     Stakeholder:
                                   </span>{" "}
                                   Client Relationship Overview
                                 </Typography>
-                                <Typography
-                                  variant="h6"
-                                  sx={{ fontWeight: "500" }}
-                                >
+                                <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   Measures client engagement quality and value.
                                 </Typography>
                               </Box>
@@ -2547,17 +2494,14 @@ export default function QAStratmapView() {
                                     ) => (
                                       <div
                                         key={strategy.id}
-                                        className={`flex justify-between items-center p-5 m-5 w-auto ${
+                                        className={`flex justify-between items-center p-2 m-3 w-auto ${
                                           index <
                                           strategies.stakeholder.length - 1
                                             ? "border-b border-gray-200"
                                             : ""
                                         }`}
                                       >
-                                        <Typography
-                                          variant="h6"
-                                          sx={{ fontWeight: "400" }}
-                                        >
+                                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                           {strategy.value}
                                         </Typography>
                                       </div>
@@ -2568,7 +2512,7 @@ export default function QAStratmapView() {
                                 <div className="items-center align-middle justify-center text-center">
                                   <div className="border-4 border-dashed border-gray-200 p-8 rounded-lg w-full md:w-[100%] h-auto md:h-[30rem]">
                                     <div className="flex flex-col mt-28">
-                                      <span className="font-bold text-2xl md:text-[3rem] text-gray-300 text-center">
+                                      <span className="font-bold text-2xl md:text-[2rem] text-gray-300 text-center">
                                         No strategies exist for this
                                         perspective... yet.
                                       </span>

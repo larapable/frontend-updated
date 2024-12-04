@@ -27,7 +27,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
 import { SelectChangeEvent } from "@mui/material/Select";
 
-const drawerWidth = 310;
+const drawerWidth = 250;
 
 const StyledBox = styled(Box)({
   wordWrap: "break-word",
@@ -308,7 +308,7 @@ export default function EditProfileUsers() {
       sx={{
         display: "flex",
         flexDirection: isMobile ? "column" : "row",
-        color: "#4D4C4C",
+        color: "#2e2c2c",
       }}
     >
       <Box
@@ -334,18 +334,15 @@ export default function EditProfileUsers() {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h4"
-                component="h1"
                 sx={{
                   fontWeight: "bold",
-                  marginBottom: 2,
-                  fontSize: { xs: "2rem", sm: "3.5rem" },
+                  fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' },
                 }}
               >
                 EDIT PROFILE
               </Typography>
             </Grid>
-            <Typography variant="h5">
+            <Typography sx={{fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }}}>
               The Profile feature allows you to view your department’s details,
               including department name, while also giving you access to your
               personal profile where you can update your contact information,
@@ -376,7 +373,9 @@ export default function EditProfileUsers() {
                   <Grid container alignItems="center" spacing={2}>
                     <Grid item xs={12} sm={4}>
                       {userImage ? (
-                        <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 flex items-center justify-center overflow-hidden">
+                        <Box 
+                        sx={{width: {lg:'12rem', sm:'8rem', xs:'8rem', md:'8rem'}, height: {lg: '12rem', xs: '8rem', sm: '8rem', md: '8rem'}}}
+                        className="border border-solid border-gray-300 shadow-lg rounded-full ml-4 flex items-center justify-center overflow-hidden">
                           <img
                             src={userImage}
                             alt="User Image"
@@ -384,7 +383,9 @@ export default function EditProfileUsers() {
                           />
                         </Box>
                       ) : (
-                        <Box className="border border-solid border-gray-300 shadow-lg rounded-full w-64 h-64 ml-10 my-4 flex items-center justify-center">
+                        <Box 
+                        sx={{width: {lg:'12rem', sm:'8rem', xs:'8rem', md:'8rem'}, height: {lg: '12rem', xs: '8rem', sm: '8rem', md: '8rem'}}}
+                        className="border border-solid border-gray-300 shadow-lg rounded-full ml-4 flex items-center justify-center">
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             viewBox="0 0 24 24"
@@ -401,12 +402,10 @@ export default function EditProfileUsers() {
                       )}
                     </Grid>
 
-                    <Grid item xs={12} sm={8} sx={{ ml: -2 }}>
+                    <Grid item xs={12} sm={8} sx={{ ml: {lg: -2} }}>
                       <Typography
-                        variant="h4"
-                        component="h2"
-                        sx={{ fontWeight: "bold", mr: 5 }}
-                      >
+                            sx={{ fontWeight: "600", mr: {lg: 5}, fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' }, }}
+                          >
                         {username}
                       </Typography>
                       <Grid item sm={4}>
@@ -418,11 +417,11 @@ export default function EditProfileUsers() {
                             variant="outlined"
                             inputProps={{ readOnly: true }}
                             sx={{
-                              height: "50px",
-                              "& .MuiInputBase-root": { height: "50px" },
+                              height: "40px",
+                              "& .MuiInputBase-root": { height: "40px" },
                               "& .MuiOutlinedInput-input": {
                                 // Target the input element specifically
-                                fontSize: "18px", // Adjust the font size as needed
+                                fontSize: "15px", // Adjust the font size as needed
                               },
                             }}
                           >
@@ -440,7 +439,7 @@ export default function EditProfileUsers() {
                       <Button
                         variant="contained"
                         component="label"
-                        sx={{ p: 1, fontSize: "20px" }}
+                        sx={{ p: 1, fontSize: "15px" }}
                         style={{
                           background:
                             "linear-gradient(to left, #8a252c, #AB3510)",
@@ -463,16 +462,20 @@ export default function EditProfileUsers() {
                   <Box
                     sx={{
                       background: "#fff6d1",
-                      p: 3,
+                      p: 2,
                       borderRadius: 2,
                       textAlign: "center",
                       mb: 2,
                     }}
                   >
-                    <Typography variant="h5" sx={{ fontWeight: "500", mb: 1 }}>
+                    <Typography
+                          sx={{ fontWeight: "500", mb: 1, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' }  }}
+                        >                      
                       USER PROFILE
                     </Typography>
-                    <Typography variant="h6" sx={{ fontWeight: "400", mb: 1 }}>
+                    <Typography
+                          sx={{ fontWeight: "400", mb: 1, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                        >
                       Access and view your personal <br />
                       information here.
                     </Typography>
@@ -508,16 +511,19 @@ export default function EditProfileUsers() {
                           }}
                         >
                           <Typography
-                            variant="h5"
-                            sx={{ fontWeight: "bolder" }}
-                          >
+                                sx={{ fontWeight: "bolder", fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
                             {roleCounts.headOfficer}
                           </Typography>
-                          <Typography variant="h5" sx={{ fontWeight: "500" }}>
+                          <Typography
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
                             HEAD
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
-                            Users
+                          <Typography
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
+                            Officer
                           </Typography>
                         </Grid>
                         <Grid
@@ -532,15 +538,18 @@ export default function EditProfileUsers() {
                           }}
                         >
                           <Typography
-                            variant="h5"
-                            sx={{ fontWeight: "bolder" }}
-                          >
+                                sx={{ fontWeight: "bolder", fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
                             {roleCounts.faculty}
                           </Typography>
-                          <Typography variant="h5" sx={{ fontWeight: "500" }}>
+                          <Typography
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
                             FACULTIES
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography
+                                sx={{ fontWeight: "500", fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                              >
                             Users
                           </Typography>
                         </Grid>
@@ -552,7 +561,7 @@ export default function EditProfileUsers() {
 
               <Divider sx={{ background: "#eeeeee" }} />
 
-              <Grid container alignItems="center" sx={{ p: 2 }}>
+              <Grid container alignItems="center" sx={{ p: 1 }}>
                 <Boxes
                   sx={{
                     background: "white",
@@ -560,35 +569,36 @@ export default function EditProfileUsers() {
                     borderColor: "gray",
                   }}
                 >
-                  <Typography sx={{ fontWeight: "bold", p: 3 }}>
-                    Basic Information
-                  </Typography>
+                  <Typography
+                        sx={{ fontWeight: "600", p: 3, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+                      >
+                        Basic Information
+                      </Typography>
 
                   {/* pa horizontal */}
                   <Grid item sx={{ p: 3 }} spacing={5}>
                     <Grid
                       container
                       alignItems="center"
-                      sx={{ mt: -5 }}
+                      sx={{ mt: -7 }}
                       justifyContent="space-between"
                       spacing={2}
                     >
                       <Grid item sm={4}>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
-                        >
+                      <Typography
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
+                            >
                           First Name
                         </Typography>
                         <TextField
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
                               // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", // Adjust the font size as needed
                             },
                           }}
                           value={firstname}
@@ -597,21 +607,20 @@ export default function EditProfileUsers() {
                         />
                       </Grid>
                       <Grid item sm={4}>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
-                        >
+                      <Typography
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
+                            >
                           Last Name
                         </Typography>
                         <TextField
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
                               // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", // Adjust the font size as needed
                             },
                           }}
                           value={lastname}
@@ -620,21 +629,20 @@ export default function EditProfileUsers() {
                         />
                       </Grid>
                       <Grid item sm={4}>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
-                        >
+                      <Typography
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
+                            >
                           Email
                         </Typography>
                         <TextField
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
                               // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", // Adjust the font size as needed
                             },
                           }}
                           value={email}
@@ -655,10 +663,9 @@ export default function EditProfileUsers() {
                       spacing={2}
                     >
                       <Grid item sm={6}>
-                        <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
-                        >
+                      <Typography
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
+                            >
                           Birthdate
                         </Typography>
                         <TextField
@@ -667,11 +674,11 @@ export default function EditProfileUsers() {
                           variant="outlined"
                           onChange={handleBirthdateChange}
                           sx={{
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
                             "& .MuiOutlinedInput-input": {
                               // Target the input element specifically
-                              fontSize: "18px", // Adjust the font size as needed
+                              fontSize: "15px", // Adjust the font size as needed
                             },
                           }}
                           value={birthdate}
@@ -680,17 +687,19 @@ export default function EditProfileUsers() {
                       </Grid>
                       <Grid item sm={6}>
                         <Typography
-                          variant="h6"
-                          sx={{ fontWeight: "500", color: "#8d8d8d" }}
-                        >
+                            color="textSecondary" sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.7rem' }}}
+                            >
                           Age
                         </Typography>
                         <TextField
                           fullWidth
                           variant="outlined"
                           sx={{
-                            height: "50px",
-                            "& .MuiInputBase-root": { height: "50px" },
+                            height: "40px",
+                            "& .MuiInputBase-root": { height: "40px" },
+                            "& .MuiOutlinedInput-input": { 
+                              fontSize: "15px", 
+                            },
                           }}
                           value={age}
                           onChange={(e) => setAge(e.target.value)}
@@ -713,28 +722,26 @@ export default function EditProfileUsers() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            height: "100vh", // Occupy full viewport height
+            height: "100vh", 
           }}
         >
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               textAlign: "center",
               position: "relative",
-              maxWidth: "100vw", // Limit modal width to 80% of viewport width
+              width: "25rem",
             }}
           >
             <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 3 }}
-            >
+              sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+              >
               Confirm Updates
             </Typography>
-            <Typography variant="h5" sx={{ mb: 5 }}>
+            <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
               {confirmationMessage
                 ? confirmationMessage
                 : "Do you want to save these updates and proceed?"}
@@ -755,7 +762,7 @@ export default function EditProfileUsers() {
                   width: "30%",
                   color: "#AB3510",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "15px",
                 }}
                 style={{
                   background: "white",
@@ -772,7 +779,7 @@ export default function EditProfileUsers() {
                   width: "30%",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "15px",
                 }}
               >
                 Save
@@ -794,22 +801,20 @@ export default function EditProfileUsers() {
           <Box
             sx={{
               background: "white",
-              padding: 6,
+              padding: 4,
               borderRadius: 2,
               boxShadow: 24,
               textAlign: "center",
               position: "relative",
-              maxWidth: "100vw", // Limit modal width to 80% of viewport width
+              width: "25rem",
             }}
           >
             <Typography
-              variant="h4"
-              component="h2"
-              sx={{ fontWeight: "bold", mb: 3 }}
-            >
+              sx={{ fontWeight: "bold", mb: 3, fontSize: { lg: '1.5rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}
+              >
               Notice!
             </Typography>
-            <Typography variant="h5" sx={{ mb: 5 }}>
+            <Typography sx={{ mb: 3, fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
               {modalMessage}
             </Typography>
             <Box
@@ -828,7 +833,7 @@ export default function EditProfileUsers() {
                   width: "30%",
                   background: "linear-gradient(to left, #8a252c, #AB3510)",
                   p: 1,
-                  fontSize: "18px",
+                  fontSize: "15px",
                 }}
               >
                 Close

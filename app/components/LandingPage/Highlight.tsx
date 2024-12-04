@@ -16,19 +16,20 @@ const Highlight = () => {
       }}
     >
       <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <Typography variant="h4" sx={{ fontWeight: 'bold' }}>
+        <Typography sx={{ fontWeight: 'bold', fontSize: { lg: '2rem', sm: '2rem', md: '2rem', xs: '1.5rem' } }}>
           Why Choose Atlas?
         </Typography>
-        <Typography sx={{ mt: 2, fontSize: '1.5rem' }}>
-          Discover how Atlas can revolutionize your strategic planning with AI-driven insights,
-          <br /> comprehensive SWOT analysis, and balanced scorecard creation.
+        <Typography sx={{ mt: 2, fontSize: { lg: '1.3rem', sm: '1rem', md: '1rem', xs: '0.8rem' } }}>
+          Discover how Atlas can revolutionize your strategic planning with AI-driven  <br />insights,
+          comprehensive SWOT analysis, and balanced scorecard creation.
         </Typography>
       </Box>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'center',
-          mt: 5
+          mt: 5,
+          flexDirection: {lg: 'row', sm: 'column', md: 'row', xs: 'column'}
         }}
       >
         {[
