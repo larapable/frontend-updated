@@ -126,6 +126,57 @@ const Swot = () => {
   const delay = (ms: number | undefined) => {
     return new Promise((resolve) => setTimeout(resolve, ms));
   };
+
+  //new SO Modal Strategies
+  const [isSOModalOpen, setIsSOModalOpen] = useState(false);
+  const [newSOStrategy, setNewSOStrategy] = useState("");
+  const openSOModal = () => {
+    setIsSOModalOpen(true);
+    setNewSOStrategy("");
+  };
+
+  const closeSOModal = () => {
+    setIsSOModalOpen(false);
+  };
+
+  //new WO Modal Strategies
+  const [isWOModalOpen, setIsWOModalOpen] = useState(false);
+  const [newWOStrategy, setNewWOStrategy] = useState("");
+  const openWOModal = () => {
+    setIsWOModalOpen(true);
+    setNewWOStrategy("");
+  };
+
+  const closeWOModal = () => {
+    setIsWOModalOpen(false);
+  };
+
+  
+  //new ST Modal Strategies
+  const [isSTModalOpen, setIsSTModalOpen] = useState(false);
+  const [newSTStrategy, setNewSTStrategy] = useState("");
+  const openSTModal = () => {
+    setIsSTModalOpen(true);
+    setNewSTStrategy("");
+  };
+
+  const closeSTModal = () => {
+    setIsSTModalOpen(false);
+  };
+
+
+  //new WT Modal Strategies
+  const [isWTModalOpen, setIsWTModalOpen] = useState(false);
+  const [newWTStrategy, setNewWTStrategy] = useState("");
+  const openWTModal = () => {
+    setIsWTModalOpen(true);
+    setNewWTStrategy("");
+  };
+
+  const closeWTModal = () => {
+    setIsWTModalOpen(false);
+  };
+  
   //new for strength
   const [strengthEditingId, setStrengthEditingId] = useState<string | null>(
     null
@@ -315,6 +366,40 @@ const Swot = () => {
       setWtApiResponse("An error occurred while calling the API");
     }
   };
+  const saveManualWTStrategy = async () => {
+    if (!newWTStrategy.trim()) {
+      alert("Please enter a valid strategy.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/wtStrat/insert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            w_tResponses: newWTStrategy,
+            department: { id: department_id },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        console.error("Error saving manual strategy", response);
+        return;
+      }
+  
+      setNewWTStrategy(""); // Clear the input field
+      fetchData(); // Refresh the list of strategies
+    } catch (error) {
+      console.error("Error saving manual strategy:", error);
+    }
+  };
+  
+  
 
   const deleteStrategy = async (id: string, department_id: string) => {
     try {
@@ -439,6 +524,41 @@ const Swot = () => {
       setStApiResponse("An error occurred while calling the API");
     }
   };
+
+  const saveManualSTStrategy = async () => {
+    if (!newSTStrategy.trim()) {
+      alert("Please enter a valid strategy.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/stStrat/insert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            s_tResponses: newSTStrategy,
+            department: { id: department_id },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        console.error("Error saving manual strategy", response);
+        return;
+      }
+  
+      setNewSTStrategy(""); // Clear the input field
+      fetchstData(); // Refresh the list of strategies
+    } catch (error) {
+      console.error("Error saving manual strategy:", error);
+    }
+  };
+  
+  
 
   const deletestStrategy = async (id: string, department_id: string) => {
     try {
@@ -568,6 +688,40 @@ const Swot = () => {
       setSoApiResponse("An error occurred while calling the API");
     }
   };
+    
+  const saveManualSOStrategy = async () => {
+    if (!newSOStrategy.trim()) {
+      alert("Please enter a valid strategy.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/soStrat/insert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            s_oResponses: newSOStrategy,
+            department: { id: department_id },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        console.error("Error saving manual strategy", response);
+        return;
+      }
+  
+      setNewSOStrategy(""); // Clear the input field
+      fetchwoData(); // Refresh the list of strategies
+    } catch (error) {
+      console.error("Error saving manual strategy:", error);
+    }
+  };
+  
 
   // Example: Modify all your deleteStrategy functions like this
   const deletesoStrategy = async (
@@ -706,6 +860,39 @@ const Swot = () => {
     } catch (error) {
       console.error("Error calling Gemini API:", error);
       setWoApiResponse("An error occurred while calling the API");
+    }
+  };
+
+  const saveManualWOStrategy = async () => {
+    if (!newWOStrategy.trim()) {
+      alert("Please enter a valid strategy.");
+      return;
+    }
+  
+    try {
+      const response = await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/woStrat/insert`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            w_oResponses: newWOStrategy,
+            department: { id: department_id },
+          }),
+        }
+      );
+  
+      if (!response.ok) {
+        console.error("Error saving manual strategy", response);
+        return;
+      }
+  
+      setNewWOStrategy(""); // Clear the input field
+      fetchwoData(); // Refresh the list of strategies
+    } catch (error) {
+      console.error("Error saving manual strategy:", error);
     }
   };
   const deletewoStrategy = async (id: string, department_id: string) => {
@@ -3483,8 +3670,127 @@ const Swot = () => {
                         </Typography>
                       </Box>
                     </Grid>
+                     {/* {newly added} */}
+                   <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button
+                          className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                          onClick={openSOModal}
+                        >
+                          <div className="flex flex-row">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                        </button>
+                      </Box>
+                    </Grid>
+                    {/* {end} */}
                   </Grid>
-
+                   {/* add modal here */}
+                   {isSOModalOpen && (
+                          <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                            <Box
+                              className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                              sx={{
+                                width: "60%",
+                                height: "80%",
+                                maxWidth: "95vw",
+                                maxHeight: "40vh",
+                              }}
+                            >
+                              <Typography
+                                variant="h4"
+                                component="h2"
+                                sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
+                              >
+                                Strength - Opportunity Strategy
+                              </Typography>
+                                <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                                  Input the strategy that leverages your strengths to seize opportunities.
+                                </Typography>
+                              <Box sx={{ mt: 3 }}>
+                                <Grid item sx={{ mt: 2 }}>
+                                  <TextField
+                                    value={newSOStrategy}
+                                    onChange={(e) =>
+                                      setNewSOStrategy(e.target.value)
+                                    }
+                                    multiline
+                                    rows={3}
+                                    sx={{
+                                      width: "100%",
+                                      overflowY: "auto",
+                                      "& .MuiInputBase-root": {},
+                                    }}
+                                  />
+                                </Grid>
+                              </Box>
+                              <Box
+                            sx={{
+                              display: "flex",
+                              justifyContent: "center",
+                              gap: 2,
+                              mt: 3,
+                              flexWrap: "wrap", // Allow buttons to wrap
+                            }}
+                          >
+                            <Button
+                              variant="contained"
+                              onClick={closeSOModal}
+                              sx={{
+                                minWidth: "10rem",
+                                color: "#AB3510",
+                                p: 1,
+                                fontSize: "18px",
+                              }}
+                              style={{
+                                background: "white",
+                                border: "1px solid #AB3510",
+                              }}
+                            >
+                              Cancel
+                            </Button>
+                            <Button
+                              variant="contained"
+                              onClick={async () => {
+                                await saveManualSOStrategy();
+                                closeSOModal();
+                              }}
+                              sx={{
+                                minWidth: "10rem",
+                                background:
+                                  "linear-gradient(to left, #8a252c, #AB3510)",
+                                p: 1,
+                                fontSize: "18px",
+                              }}
+                            >
+                              Save
+                            </Button>
+                          </Box>
+                        </Box>
+                        </Box>
+                        )}
+                       {/* {end} */}
                   <Grid
                     container
                     alignItems="center"
@@ -3565,8 +3871,127 @@ const Swot = () => {
                         </Typography>
                       </Box>
                     </Grid>
+                     {/* {newly added} */}
+                   <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button
+                          className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                          onClick={openWOModal}
+                        >
+                          <div className="flex flex-row">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                        </button>
+                      </Box>
+                    </Grid>
+                    {/* {end} */}
                   </Grid>
-
+                  {/* add modal here */}
+                    {isWOModalOpen && (
+                      <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                        <Box
+                          className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                          sx={{
+                            width: "60%",
+                            height: "80%",
+                            maxWidth: "95vw",
+                            maxHeight: "40vh",
+                          }}
+                        >
+                          <Typography
+                                variant="h4"
+                                component="h2"
+                                sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
+                              >
+                            Weakness - Opportunity Strategy
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            Input the strategy that minimizes your weaknesses to take advantage of opportunities.
+                          </Typography>
+                          <Box sx={{ mt: 3 }}>
+                            <Grid item sx={{ mt: 2 }}>
+                              <TextField
+                                value={newWOStrategy}
+                                onChange={(e) =>
+                                  setNewWOStrategy(e.target.value)
+                                }
+                                multiline
+                                rows={3}
+                                sx={{
+                                  width: "100%",
+                                  overflowY: "auto",
+                                  "& .MuiInputBase-root": {},
+                                }}
+                              />
+                            </Grid>
+                          </Box>
+                          <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: 2,
+                          mt: 3,
+                          flexWrap: "wrap", // Allow buttons to wrap
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          onClick={closeWOModal}
+                          sx={{
+                            minWidth: "10rem",
+                            color: "#AB3510",
+                            p: 1,
+                            fontSize: "18px",
+                          }}
+                          style={{
+                            background: "white",
+                            border: "1px solid #AB3510",
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={async () => {
+                            await saveManualWOStrategy();
+                            closeWOModal();
+                          }}
+                          sx={{
+                            minWidth: "10rem",
+                            background:
+                              "linear-gradient(to left, #8a252c, #AB3510)",
+                            p: 1,
+                            fontSize: "18px",
+                          }}
+                        >
+                          Save
+                        </Button>
+                      </Box>
+                    </Box>
+                    </Box>
+                    )}
+                    {/* {end} */}
                   <Grid
                     container
                     alignItems="center"
@@ -3645,8 +4070,127 @@ const Swot = () => {
                         </Typography>
                       </Box>
                     </Grid>
+                      {/* {newly added} */}
+                   <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button
+                          className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                          onClick={openSTModal}
+                        >
+                          <div className="flex flex-row">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                        </button>
+                      </Box>
+                    </Grid>
+                    {/* {end} */}
                   </Grid>
-
+                  {/* add modal here */}
+                  {isSTModalOpen && (
+                    <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                      <Box
+                        className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                        sx={{
+                          width: "60%",
+                          height: "80%",
+                          maxWidth: "95vw",
+                          maxHeight: "40vh",
+                        }}
+                      >
+                        <Typography
+                            variant="h4"
+                            component="h2"
+                            sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
+                          >
+                          Strength - Threat Strategy
+                        </Typography>
+                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          Input the strategy that uses your strengths to counter threats.
+                          </Typography>
+                        <Box sx={{ mt: 3 }}>
+                          <Grid item sx={{ mt: 2 }}>
+                            <TextField
+                              value={newSTStrategy}
+                              onChange={(e) =>
+                                setNewSTStrategy(e.target.value)
+                              }
+                              multiline
+                              rows={3}
+                              sx={{
+                                width: "100%",
+                                overflowY: "auto",
+                                "& .MuiInputBase-root": {},
+                              }}
+                            />
+                          </Grid>
+                        </Box>
+                        <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: 2,
+                        mt: 3,
+                        flexWrap: "wrap", // Allow buttons to wrap
+                      }}
+                    >
+                      <Button
+                        variant="contained"
+                        onClick={closeSTModal}
+                        sx={{
+                          minWidth: "10rem",
+                          color: "#AB3510",
+                          p: 1,
+                          fontSize: "18px",
+                        }}
+                        style={{
+                          background: "white",
+                          border: "1px solid #AB3510",
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                      <Button
+                        variant="contained"
+                        onClick={async () => {
+                          await saveManualSTStrategy();
+                          closeSTModal();
+                        }}
+                        sx={{
+                          minWidth: "10rem",
+                          background:
+                            "linear-gradient(to left, #8a252c, #AB3510)",
+                          p: 1,
+                          fontSize: "18px",
+                        }}
+                      >
+                        Save
+                      </Button>
+                    </Box>
+                  </Box>
+                  </Box>
+                  )}
+                  {/* {end} */}
                   <Grid
                     container
                     alignItems="center"
@@ -3726,8 +4270,131 @@ const Swot = () => {
                         </Typography>
                       </Box>
                     </Grid>
+                     {/* {newly added} */}
+                   <Grid item sm={0.7} style={{ justifyContent: "flex-end" }}>
+                      <Box
+                        sx={{
+                          p: 1,
+                          background: "#ff7b00d3",
+                          borderRadius: "50%",
+                          width: "3rem",
+                          height: "3rem",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        <button
+                          className="text-[#ffffff] w-[3rem] h-6 cursor-pointer"
+                          onClick={openWTModal}
+                        >
+                          <div className="flex flex-row">
+                            <svg
+                              xmlns="http://www.w3.org/2000/svg"
+                              viewBox="0 0 24 24"
+                              fill="currentColor"
+                              className="size-8"
+                            >
+                              <path
+                                fill-rule="evenodd"
+                                d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25ZM12.75 9a.75.75 0 0 0-1.5 0v2.25H9a.75.75 0 0 0 0 1.5h2.25V15a.75.75 0 0 0 1.5 0v-2.25H15a.75.75 0 0 0 0-1.5h-2.25V9Z"
+                                clip-rule="evenodd"
+                              />
+                            </svg>
+                          </div>
+                        </button>
+                      </Box>
+                    </Grid>
+                    {/* {end} */}
                   </Grid>
-
+                  {/* add modal here */}
+                    {isWTModalOpen && (
+                      <Box className="fixed inset-0 bg-black bg-opacity-30 overflow-y-auto h-full w-full flex items-center justify-center">
+                        <Box
+                          className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
+                          sx={{
+                            width: "60%",
+                            height: "80%",
+                            maxWidth: "95vw",
+                            maxHeight: "40vh",
+                          }}
+                        >
+                          <Typography
+                            variant="h4"
+                            component="h2"
+                            sx={{
+                              fontWeight: "bold",
+                              mb: 2,
+                              color: "#2e2c2c",
+                            }}
+                          >
+                            Weakness - Threat Strategy
+                          </Typography>
+                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                            Input the strategy that reduces your weaknesses to avoid threats.
+                          </Typography>
+                          <Box sx={{ mt: 3 }}>
+                            <Grid item sx={{ mt: 2 }}>
+                              <TextField
+                                value={newWTStrategy}
+                                onChange={(e) =>
+                                  setNewWTStrategy(e.target.value)
+                                }
+                                multiline
+                                rows={3}
+                                sx={{
+                                  width: "100%",
+                                  overflowY: "auto",
+                                  "& .MuiInputBase-root": {},
+                                }}
+                              />
+                            </Grid>
+                          </Box>
+                          <Box
+                        sx={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: 2,
+                          mt: 3,
+                          flexWrap: "wrap", // Allow buttons to wrap
+                        }}
+                      >
+                        <Button
+                          variant="contained"
+                          onClick={closeWTModal}
+                          sx={{
+                            minWidth: "10rem",
+                            color: "#AB3510",
+                            p: 1,
+                            fontSize: "18px",
+                          }}
+                          style={{
+                            background: "white",
+                            border: "1px solid #AB3510",
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="contained"
+                          onClick={async () => {
+                            await saveManualWTStrategy();
+                            closeWTModal();
+                          }}
+                          sx={{
+                            minWidth: "10rem",
+                            background:
+                              "linear-gradient(to left, #8a252c, #AB3510)",
+                            p: 1,
+                            fontSize: "18px",
+                          }}
+                        >
+                          Save
+                        </Button>
+                      </Box>
+                    </Box>
+                    </Box>
+                    )}
+                    {/* {end} */}
                   <Grid
                     container
                     alignItems="center"
