@@ -76,7 +76,7 @@ export default function QANavbar() {
             component="img"
             src="/logo.png"
             alt="Description"
-            sx={{ width: "90%", height: "25%", ml: 1, mt: 1 }}
+            sx={{ width: "100%", height: "20%", mt: 1 }}
           />
           <Box
             sx={{ display: "flex", flexDirection: "column", height: "100%" }}

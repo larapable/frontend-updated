@@ -3852,19 +3852,15 @@ const Swot = () => {
                               className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                               sx={{
                                 width: "60%",
-                                height: "80%",
+                                height: "70%",
                                 maxWidth: "95vw",
-                                maxHeight: "40vh",
+                                maxHeight: "35vh",
                               }}
                             >
-                              <Typography
-                                variant="h4"
-                                component="h2"
-                                sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-                              >
+                              <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                                 Strength - Opportunity Strategy
                               </Typography>
-                                <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                              <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                                   Input the strategy that leverages your strengths to seize opportunities.
                                 </Typography>
                               <Box sx={{ mt: 3 }}>
@@ -3880,6 +3876,9 @@ const Swot = () => {
                                       width: "100%",
                                       overflowY: "auto",
                                       "& .MuiInputBase-root": {},
+                                      "& .MuiOutlinedInput-input": {
+                                      fontSize: "0.9rem", 
+                                    },
                                     }}
                                   />
                                 </Grid>
@@ -4053,19 +4052,15 @@ const Swot = () => {
                           className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                           sx={{
                             width: "60%",
-                            height: "80%",
+                            height: "70%",
                             maxWidth: "95vw",
-                            maxHeight: "40vh",
+                            maxHeight: "35vh",
                           }}
                         >
-                          <Typography
-                                variant="h4"
-                                component="h2"
-                                sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-                              >
+                          <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                             Weakness - Opportunity Strategy
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                             Input the strategy that minimizes your weaknesses to take advantage of opportunities.
                           </Typography>
                           <Box sx={{ mt: 3 }}>
@@ -4081,6 +4076,9 @@ const Swot = () => {
                                   width: "100%",
                                   overflowY: "auto",
                                   "& .MuiInputBase-root": {},
+                                  "& .MuiOutlinedInput-input": {
+                                      fontSize: "0.9rem", 
+                                    },
                                 }}
                               />
                             </Grid>
@@ -4252,19 +4250,15 @@ const Swot = () => {
                         className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                         sx={{
                           width: "60%",
-                          height: "80%",
+                          height: "70%",
                           maxWidth: "95vw",
-                          maxHeight: "40vh",
+                          maxHeight: "35vh",
                         }}
                       >
-                        <Typography
-                            variant="h4"
-                            component="h2"
-                            sx={{ fontWeight: "bold", mb: 2, color: "#2e2c2c" }}
-                          >
+                        <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                           Strength - Threat Strategy
                         </Typography>
-                        <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                        <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                           Input the strategy that uses your strengths to counter threats.
                           </Typography>
                         <Box sx={{ mt: 3 }}>
@@ -4280,6 +4274,9 @@ const Swot = () => {
                                 width: "100%",
                                 overflowY: "auto",
                                 "& .MuiInputBase-root": {},
+                                "& .MuiOutlinedInput-input": {
+                                      fontSize: "0.9rem", 
+                                    },
                               }}
                             />
                           </Grid>
@@ -4452,23 +4449,15 @@ const Swot = () => {
                           className="bg-white p-8 rounded-lg shadow-md relative overflow-y-auto"
                           sx={{
                             width: "60%",
-                            height: "80%",
+                            height: "70%",
                             maxWidth: "95vw",
-                            maxHeight: "40vh",
+                            maxHeight: "35vh",
                           }}
                         >
-                          <Typography
-                            variant="h4"
-                            component="h2"
-                            sx={{
-                              fontWeight: "bold",
-                              mb: 2,
-                              color: "#2e2c2c",
-                            }}
-                          >
+                          <Typography sx={{fontWeight: '600', fontSize: { lg: '1rem', sm: '1rem', md: '1rem', xs: '0.8rem' }, mb:1}}>
                             Weakness - Threat Strategy
                           </Typography>
-                          <Typography variant="h6" sx={{ fontWeight: "500" }}>
+                          <Typography sx={{fontSize: { lg: '0.9rem', sm: '0.9rem', md: '0.9rem', xs: '0.8rem' }}}>
                             Input the strategy that reduces your weaknesses to avoid threats.
                           </Typography>
                           <Box sx={{ mt: 3 }}>
@@ -4484,6 +4473,9 @@ const Swot = () => {
                                   width: "100%",
                                   overflowY: "auto",
                                   "& .MuiInputBase-root": {},
+                                  "& .MuiOutlinedInput-input": {
+                                      fontSize: "0.9rem", 
+                                    },
                                 }}
                               />
                             </Grid>

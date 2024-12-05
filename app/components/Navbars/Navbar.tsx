@@ -99,7 +99,7 @@ export default function Navbar() {
           flexShrink: 0,
           [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box', background: 'linear-gradient(to left, #8a252c, #AB3510)', color: 'white', borderTopRightRadius: '30px',borderBottomRightRadius: '30px', },
         }}>
-        <Box component="img" src="/logo.png" alt="Description" sx={{ width: '90%', height: '25%',ml:1, mt: 1}} />
+        <Box component="img" src="/logo.png" alt="Description" sx={{ width: '100%', height: '20%', mt: 1}} />
         <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
           <Box sx={{ flex: 1, overflow: 'auto' }}>
             <List>
