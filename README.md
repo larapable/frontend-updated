@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Atlas: AI Assisted Balance Scorecard Management and Solution
 
-## Getting Started
+Atlas is a web application designed to simplify the creation, management, and evaluation of balanced scorecards for various departments within an organization. 
+With integrated features such as goal setting, SWOT analysis, strategy mapping, and report generation, Atlas enables users to align their departmental strategies 
+with organizational goals effective.
 
-First, run the development server:
+# Introduction
+Atlas is designed to support departmental heads, managers, and administrators in creating and maintaining balanced scorecards. The platform integrates AI-driven 
+insights to assist in strategy mapping and alignment. By focusing on user experience and simplicity, Atlas aims to be a user-friendly tool that allows teams to manage 
+goals and strategies with ease.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+# Features
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### User Account Management
+- Create and manage accounts with personalized access to department-specific goals and reports.
+#### Departmental Goal Input
+- Set, track, and manage departmental goals aligned with organizational objectives.
+#### SWOT Analysis and AI-Strategy Generation
+- Add, edit, and manage SWOT entries to analyze departmental strengths, weaknesses, opportunities, and threats. Generate strategies from the inputted swot with the help of AI.
+#### AI Strategy Mapping
+- Map strategies with AI assistance to key perspectives and track progress.
+#### Balanced Scorecard Management
+- Manage real time KPI and update balanced scorecards to assess departmental performance across different perspectives (Financial, Stakeholder, Internal Processes, Learning & Growth).
+#### Report Generation
+- Generate comprehensive reports for strategic analysis and decision-making.
+#### User Feedback
+- UAT surveys to gather user feedback on system functionality and user experience.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+# Technology Used
+- Frontend: NextJS, React, Tailwind CSS
+- Backend: Spring Boot, Java
+- Database: MySQL (via Railway)
+- Authentication: NextAuth.js (Custom Credentials Provider with JWT Session Strategy)
+- Deployment: Vercel and Railway
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+# Deployment
+You can access the Atlas web application through the following link:  
+[https://citu-atlas.vercel.app/](https://citu-atlas.vercel.app/)  
+This link will redirect you to the deployed application, where you can log in, test features, and provide feedback.
 
-To learn more about Next.js, take a look at the following resources:
+### Usage
+- Upon accessing the application, department heads will be prompted to  sign up and log in with their credentials.
+- Once logged in, they can select their department if user has multiple departments and begin inputting departmental goals and other relevant data.
+- Use the navigation bar to manage SWOT, strategy mapping, balanced scorecard, and reports.
+- Participate in User Acceptance Testing (UAT) surveys to provide feedback on the system’s functionality.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### Sample Credentials to Login
+- Username: Lara
+- Password: Lara@123
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+# Contact
+For further inquiries or contributions, please reach out to:
+- Email: pablelara@gmail.com
+- Frontend Link: https://github.com/larapable/frontend-updated.git
+- Backend Link: https://github.com/larapable/atlas-backend-updated.git
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+
