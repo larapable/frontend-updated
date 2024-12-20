@@ -45,9 +45,69 @@ This link will redirect you to the deployed application, where you can log in, t
 - Use the navigation bar to manage SWOT, strategy mapping, balanced scorecard, and reports.
 - Participate in User Acceptance Testing (UAT) surveys to provide feedback on the system’s functionality.
 
+#### Credentials to Admin
+- username: admin
+- password: A@dmin123
 #### Sample Credentials to Login
 - Username: Lara
 - Password: Lara@123
+
+# Installation Instructions
+#### Prerequisites
+Ensure the following tools are installed on your system:
+
+- Node.js 
+- Java JDK 
+- MySQL 
+- Maven
+
+### Backend Setup
+1. Clone the backend repository:
+   ```bash
+   git clone https://github.com/larapable/atlas-backend-updated.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd atlas-backend-updated
+   ```
+3. Configure database credentials in `application.properties`:
+   ```properties
+   spring.datasource.url=jdbc:mysql://<your-database-host>:<port>/defaultdb
+   spring.datasource.username=<your-username>
+   spring.datasource.password=<your-password>
+   ```
+4. Build and run the application:
+   ```bash
+   mvn spring-boot:run
+   ```
+
+### Frontend Setup
+1. Clone the frontend repository:
+   ```bash
+   git clone https://github.com/larapable/frontend-updated.git
+   ```
+2. Navigate to the project directory:
+   ```bash
+   cd frontend-updated
+   ```
+3. Install dependencies:
+   ```bash
+   npm install
+   ```
+4. Start the development server:
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## System Setup for First-Time Users
+1. Deploy the backend and frontend applications on their respective platforms (Railway for backend, Vercel for frontend).
+2. Configure the database schema using the provided SQL migration scripts in the backend repository.
+3. Use the admin credentials to log in and create department-specific users.
+4. Provide department heads with their unique credentials to access the system.
+
+---
 
 # Contact
 For further inquiries or contributions, please reach out to:
