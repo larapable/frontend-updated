@@ -46,7 +46,7 @@ This link will redirect you to the deployed application, where you can log in, t
 - Participate in User Acceptance Testing (UAT) surveys to provide feedback on the system’s functionality.
 
 #### Credentials to Admin
-- username: admin
+- username: Admin
 - password: A@dmin123
 #### Sample Credentials to Login
 - Username: Lara
